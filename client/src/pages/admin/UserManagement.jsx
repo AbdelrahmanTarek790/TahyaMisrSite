@@ -7,19 +7,22 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../components/ui/sheet';
 import { useError } from '../../context/ErrorContext';
-import { usersAPI } from '../../api';
+import { usersAPI, positionsAPI } from '../../api';
 import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter } from 'lucide-react';
 import { EGYPT_GOVERNORATES } from '../../constants/governorates';
 
+// Backend User model validation schema
 const userSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters').optional(),
-  phone: z.string().optional(),
+  phone: z.string().min(1, 'Phone number is required'),
   university: z.string().min(2, 'University must be at least 2 characters'),
-  governorate: z.string().min(2, 'Governorate must be at least 2 characters'),
-  faculty: z.string().optional(),
-  year: z.string().optional(),
+  nationalId: z.string().min(1, 'National ID is required'),
+  governorate: z.string().min(1, 'Governorate is required'),
+  position: z.string().optional(),
+  membershipNumber: z.string().optional(),
+  membershipExpiry: z.string().optional(),
   role: z.enum(['student', 'volunteer', 'admin']),
 });
 
@@ -27,16 +30,19 @@ const createUserSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
   password: z.string().min(6, 'Password must be at least 6 characters'),
-  phone: z.string().optional(),
+  phone: z.string().min(1, 'Phone number is required'),
   university: z.string().min(2, 'University must be at least 2 characters'),
-  governorate: z.string().min(2, 'Governorate must be at least 2 characters'),
-  faculty: z.string().optional(),
-  year: z.string().optional(),
+  nationalId: z.string().min(1, 'National ID is required'),
+  governorate: z.string().min(1, 'Governorate is required'),
+  position: z.string().optional(),
+  membershipNumber: z.string().optional(),
+  membershipExpiry: z.string().optional(),
   role: z.enum(['student', 'volunteer', 'admin']),
 });
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false);
@@ -68,6 +74,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     fetchUsers();
+    fetchPositions();
   }, [pagination.page]);
 
   const fetchUsers = async () => {
@@ -86,6 +93,16 @@ const UserManagement = () => {
       addError('Failed to fetch users');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchPositions = async () => {
+    try {
+      const response = await positionsAPI.getAll();
+      setPositions(response.data?.positions || []);
+    } catch (error) {
+      // Positions might not be available, don't show error
+      console.warn('Failed to fetch positions:', error);
     }
   };
 
@@ -118,9 +135,11 @@ const UserManagement = () => {
       email: user.email,
       phone: user.phone || '',
       university: user.university,
+      nationalId: user.nationalId || '',
       governorate: user.governorate,
-      faculty: user.faculty || '',
-      year: user.year || '',
+      position: user.position?._id || '',
+      membershipNumber: user.membershipNumber || '',
+      membershipExpiry: user.membershipExpiry ? new Date(user.membershipExpiry).toISOString().split('T')[0] : '',
       role: user.role,
     });
     setIsSheetOpen(true);
@@ -129,7 +148,22 @@ const UserManagement = () => {
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
-      await usersAPI.update(editingUser._id, data);
+      
+      // Convert membershipExpiry to proper date format if provided
+      const submitData = {
+        ...data,
+        membershipExpiry: data.membershipExpiry ? new Date(data.membershipExpiry).toISOString() : undefined,
+        position: data.position || undefined, // Don't send empty string
+      };
+      
+      // Remove undefined fields
+      Object.keys(submitData).forEach(key => {
+        if (submitData[key] === undefined || submitData[key] === '') {
+          delete submitData[key];
+        }
+      });
+      
+      await usersAPI.update(editingUser._id, submitData);
       addError('User updated successfully!', 'success');
       setIsSheetOpen(false);
       setEditingUser(null);
@@ -145,7 +179,22 @@ const UserManagement = () => {
   const onCreateSubmit = async (data) => {
     try {
       setIsLoading(true);
-      await usersAPI.create(data);
+      
+      // Convert membershipExpiry to proper date format if provided
+      const submitData = {
+        ...data,
+        membershipExpiry: data.membershipExpiry ? new Date(data.membershipExpiry).toISOString() : undefined,
+        position: data.position || undefined, // Don't send empty string
+      };
+      
+      // Remove undefined fields
+      Object.keys(submitData).forEach(key => {
+        if (submitData[key] === undefined || submitData[key] === '') {
+          delete submitData[key];
+        }
+      });
+      
+      await usersAPI.create(submitData);
       addError('User created successfully!', 'success');
       setIsCreateSheetOpen(false);
       resetCreate();
@@ -174,7 +223,8 @@ const UserManagement = () => {
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.university.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.governorate.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (user.faculty && user.faculty.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (user.nationalId && user.nationalId.includes(searchTerm)) ||
+      (user.membershipNumber && user.membershipNumber.toLowerCase().includes(searchTerm.toLowerCase())) ||
       (user.phone && user.phone.includes(searchTerm));
     
     const matchesRole = filterRole === 'all' || user.role === filterRole;
@@ -237,7 +287,7 @@ const UserManagement = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
             type="text"
-            placeholder="Search users (name, email, university, faculty, phone)..."
+            placeholder="Search users (name, email, university, national ID, membership, phone)..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -321,6 +371,9 @@ const UserManagement = () => {
                     <th className="text-left pb-3 font-medium">Role</th>
                     <th className="text-left pb-3 font-medium">University</th>
                     <th className="text-left pb-3 font-medium">Governorate</th>
+                    <th className="text-left pb-3 font-medium">National ID</th>
+                    <th className="text-left pb-3 font-medium">Position</th>
+                    <th className="text-left pb-3 font-medium">Membership</th>
                     <th className="text-left pb-3 font-medium">Joined</th>
                     <th className="text-left pb-3 font-medium">Actions</th>
                   </tr>
@@ -345,6 +398,18 @@ const UserManagement = () => {
                       </td>
                       <td className="py-4 text-sm">{user.university}</td>
                       <td className="py-4 text-sm">{user.governorate}</td>
+                      <td className="py-4 text-sm font-mono">{user.nationalId}</td>
+                      <td className="py-4 text-sm">{user.position?.name || 'N/A'}</td>
+                      <td className="py-4 text-sm">
+                        <div>
+                          <div>{user.membershipNumber || 'N/A'}</div>
+                          {user.membershipExpiry && (
+                            <div className="text-xs text-gray-400">
+                              Expires: {new Date(user.membershipExpiry).toLocaleDateString()}
+                            </div>
+                          )}
+                        </div>
+                      </td>
                       <td className="py-4 text-sm">
                         {new Date(user.createdAt).toLocaleDateString()}
                       </td>
@@ -416,7 +481,7 @@ const UserManagement = () => {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
+                Full Name *
               </label>
               <Input
                 {...register('name')}
@@ -429,7 +494,7 @@ const UserManagement = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
+                Email *
               </label>
               <Input
                 {...register('email')}
@@ -444,7 +509,7 @@ const UserManagement = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number
+                  Phone Number *
                 </label>
                 <Input
                   {...register('phone')}
@@ -457,18 +522,14 @@ const UserManagement = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Role
+                  National ID *
                 </label>
-                <select
-                  {...register('role')}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                >
-                  <option value="student">Student</option>
-                  <option value="volunteer">Volunteer</option>
-                  <option value="admin">Admin</option>
-                </select>
-                {errors.role && (
-                  <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>
+                <Input
+                  {...register('nationalId')}
+                  placeholder="Enter national ID"
+                />
+                {errors.nationalId && (
+                  <p className="text-red-500 text-sm mt-1">{errors.nationalId.message}</p>
                 )}
               </div>
             </div>
@@ -476,7 +537,7 @@ const UserManagement = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  University
+                  University *
                 </label>
                 <Input
                   {...register('university')}
@@ -489,7 +550,7 @@ const UserManagement = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Governorate
+                  Governorate *
                 </label>
                 <select
                   {...register('governorate')}
@@ -511,27 +572,67 @@ const UserManagement = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Faculty
+                  Role *
                 </label>
-                <Input
-                  {...register('faculty')}
-                  placeholder="Enter faculty"
-                />
-                {errors.faculty && (
-                  <p className="text-red-500 text-sm mt-1">{errors.faculty.message}</p>
+                <select
+                  {...register('role')}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="student">Student</option>
+                  <option value="volunteer">Volunteer</option>
+                  <option value="admin">Admin</option>
+                </select>
+                {errors.role && (
+                  <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>
                 )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Academic Year
+                  Position
+                </label>
+                <select
+                  {...register('position')}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="">Select Position</option>
+                  {positions.map((position) => (
+                    <option key={position._id} value={position._id}>
+                      {position.name}
+                    </option>
+                  ))}
+                </select>
+                {errors.position && (
+                  <p className="text-red-500 text-sm mt-1">{errors.position.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Membership Number
                 </label>
                 <Input
-                  {...register('year')}
-                  placeholder="Enter academic year"
+                  {...register('membershipNumber')}
+                  placeholder="Enter membership number"
                 />
-                {errors.year && (
-                  <p className="text-red-500 text-sm mt-1">{errors.year.message}</p>
+                {errors.membershipNumber && (
+                  <p className="text-red-500 text-sm mt-1">{errors.membershipNumber.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Membership Expiry
+                </label>
+                <Input
+                  {...register('membershipExpiry')}
+                  type="date"
+                  placeholder="Select expiry date"
+                />
+                {errors.membershipExpiry && (
+                  <p className="text-red-500 text-sm mt-1">{errors.membershipExpiry.message}</p>
                 )}
               </div>
             </div>
@@ -557,7 +658,7 @@ const UserManagement = () => {
           <form onSubmit={handleSubmitCreate(onCreateSubmit)} className="space-y-4 mt-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Full Name
+                Full Name *
               </label>
               <Input
                 {...registerCreate('name')}
@@ -570,7 +671,7 @@ const UserManagement = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Email
+                Email *
               </label>
               <Input
                 {...registerCreate('email')}
@@ -584,7 +685,7 @@ const UserManagement = () => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Password
+                Password *
               </label>
               <Input
                 {...registerCreate('password')}
@@ -599,7 +700,7 @@ const UserManagement = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Phone Number
+                  Phone Number *
                 </label>
                 <Input
                   {...registerCreate('phone')}
@@ -612,18 +713,14 @@ const UserManagement = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Role
+                  National ID *
                 </label>
-                <select
-                  {...registerCreate('role')}
-                  className="w-full p-2 border border-gray-300 rounded-md"
-                >
-                  <option value="student">Student</option>
-                  <option value="volunteer">Volunteer</option>
-                  <option value="admin">Admin</option>
-                </select>
-                {errorsCreate.role && (
-                  <p className="text-red-500 text-sm mt-1">{errorsCreate.role.message}</p>
+                <Input
+                  {...registerCreate('nationalId')}
+                  placeholder="Enter national ID"
+                />
+                {errorsCreate.nationalId && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.nationalId.message}</p>
                 )}
               </div>
             </div>
@@ -631,7 +728,7 @@ const UserManagement = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  University
+                  University *
                 </label>
                 <Input
                   {...registerCreate('university')}
@@ -644,7 +741,7 @@ const UserManagement = () => {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Governorate
+                  Governorate *
                 </label>
                 <select
                   {...registerCreate('governorate')}
@@ -666,27 +763,67 @@ const UserManagement = () => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Faculty
+                  Role *
                 </label>
-                <Input
-                  {...registerCreate('faculty')}
-                  placeholder="Enter faculty"
-                />
-                {errorsCreate.faculty && (
-                  <p className="text-red-500 text-sm mt-1">{errorsCreate.faculty.message}</p>
+                <select
+                  {...registerCreate('role')}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="student">Student</option>
+                  <option value="volunteer">Volunteer</option>
+                  <option value="admin">Admin</option>
+                </select>
+                {errorsCreate.role && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.role.message}</p>
                 )}
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Academic Year
+                  Position
+                </label>
+                <select
+                  {...registerCreate('position')}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="">Select Position</option>
+                  {positions.map((position) => (
+                    <option key={position._id} value={position._id}>
+                      {position.name}
+                    </option>
+                  ))}
+                </select>
+                {errorsCreate.position && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.position.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Membership Number
                 </label>
                 <Input
-                  {...registerCreate('year')}
-                  placeholder="Enter academic year"
+                  {...registerCreate('membershipNumber')}
+                  placeholder="Enter membership number"
                 />
-                {errorsCreate.year && (
-                  <p className="text-red-500 text-sm mt-1">{errorsCreate.year.message}</p>
+                {errorsCreate.membershipNumber && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.membershipNumber.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Membership Expiry
+                </label>
+                <Input
+                  {...registerCreate('membershipExpiry')}
+                  type="date"
+                  placeholder="Select expiry date"
+                />
+                {errorsCreate.membershipExpiry && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.membershipExpiry.message}</p>
                 )}
               </div>
             </div>
