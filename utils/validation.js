@@ -29,6 +29,20 @@ const updateUserSchema = Joi.object({
   membershipExpiry: Joi.date().optional()
 });
 
+const forgotPasswordSchema = Joi.object({
+  email: Joi.string().email().required()
+});
+
+const resetPasswordSchema = Joi.object({
+  token: Joi.string().required(),
+  password: Joi.string().min(6).required()
+});
+
+const changePasswordSchema = Joi.object({
+  currentPassword: Joi.string().required(),
+  newPassword: Joi.string().min(6).required()
+});
+
 // Position validation schemas
 const positionSchema = Joi.object({
   name: Joi.string().min(2).max(100).required(),
@@ -69,6 +83,9 @@ module.exports = {
   registerSchema,
   loginSchema,
   updateUserSchema,
+  forgotPasswordSchema,
+  resetPasswordSchema,
+  changePasswordSchema,
   positionSchema,
   newsSchema,
   eventSchema,
