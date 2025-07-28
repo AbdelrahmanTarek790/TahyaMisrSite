@@ -157,7 +157,7 @@ const EventsManagement = () => {
                   <div className="flex-1">
                     <p className="text-gray-600 line-clamp-3">{event.description}</p>
                     <div className="mt-2 text-sm text-gray-500">
-                      Registrations: {event.registrations?.length || 0} users
+                      Registrations: {event.registeredUsers?.length || 0} users
                     </div>
                   </div>
                 </div>
