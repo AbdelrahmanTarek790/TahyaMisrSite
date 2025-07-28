@@ -22,7 +22,7 @@ const NewsDetailPage = () => {
     try {
       setIsLoading(true)
       // For public access, make direct fetch request
-      const response = await fetch(`http://localhost:5000/api/news/${id}`)
+      const response = await fetch(`http://localhost:5000/api/v1/news/${id}`)
       if (response.ok) {
         const data = await response.json()
         setNewsItem(data.news || data.data)
@@ -39,7 +39,7 @@ const NewsDetailPage = () => {
 
   const fetchRelatedNews = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/api/news?limit=3`)
+      const response = await fetch(`http://localhost:5000/api/v1/news?limit=3`)
       if (response.ok) {
         const data = await response.json()
         setRelatedNews((data.news || data.data || []).filter(item => item._id !== id).slice(0, 3))

@@ -8,7 +8,8 @@ import { Input } from '../../components/ui/input';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../components/ui/sheet';
 import { useError } from '../../context/ErrorContext';
 import { usersAPI } from '../../api';
-import { Search, Edit, Trash2, Eye, UserPlus, Shield, User } from 'lucide-react';
+import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter } from 'lucide-react';
+import { EGYPT_GOVERNORATES } from '../../constants/governorates';
 
 const userSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -42,6 +43,8 @@ const UserManagement = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
+  const [filterGovernorate, setFilterGovernorate] = useState('all');
+  const [filterUniversity, setFilterUniversity] = useState('all');
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
   const { addError } = useError();
 
@@ -170,12 +173,27 @@ const UserManagement = () => {
       user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       user.university.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.governorate.toLowerCase().includes(searchTerm.toLowerCase());
+      user.governorate.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (user.faculty && user.faculty.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (user.phone && user.phone.includes(searchTerm));
     
     const matchesRole = filterRole === 'all' || user.role === filterRole;
+    const matchesGovernorate = filterGovernorate === 'all' || user.governorate === filterGovernorate;
+    const matchesUniversity = filterUniversity === 'all' || user.university === filterUniversity;
     
-    return matchesSearch && matchesRole;
+    return matchesSearch && matchesRole && matchesGovernorate && matchesUniversity;
   });
+
+  // Get unique universities for filter
+  const uniqueUniversities = [...new Set(users.map(user => user.university).filter(Boolean))];
+
+  // Clear filters function
+  const clearFilters = () => {
+    setSearchTerm('');
+    setFilterRole('all');
+    setFilterGovernorate('all');
+    setFilterUniversity('all');
+  };
 
   const getRoleIcon = (role) => {
     switch (role) {
@@ -219,7 +237,7 @@ const UserManagement = () => {
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
           <Input
             type="text"
-            placeholder="Search users..."
+            placeholder="Search users (name, email, university, faculty, phone)..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -235,6 +253,34 @@ const UserManagement = () => {
           <option value="volunteer">Volunteers</option>
           <option value="admin">Admins</option>
         </select>
+        <select
+          value={filterGovernorate}
+          onChange={(e) => setFilterGovernorate(e.target.value)}
+          className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          <option value="all">All Governorates</option>
+          {EGYPT_GOVERNORATES.map((governorate) => (
+            <option key={governorate} value={governorate}>
+              {governorate}
+            </option>
+          ))}
+        </select>
+        <select
+          value={filterUniversity}
+          onChange={(e) => setFilterUniversity(e.target.value)}
+          className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
+          <option value="all">All Universities</option>
+          {uniqueUniversities.map((university) => (
+            <option key={university} value={university}>
+              {university}
+            </option>
+          ))}
+        </select>
+        <Button variant="outline" onClick={clearFilters}>
+          <Filter className="h-4 w-4 mr-2" />
+          Clear
+        </Button>
       </div>
 
       {/* Users Table */}
@@ -249,10 +295,10 @@ const UserManagement = () => {
           <CardContent className="flex items-center justify-center py-12">
             <div className="text-center">
               <h3 className="text-lg font-medium text-gray-900 mb-2">
-                {searchTerm || filterRole !== 'all' ? 'No users found' : 'No users available'}
+                {searchTerm || filterRole !== 'all' || filterGovernorate !== 'all' || filterUniversity !== 'all' ? 'No users found' : 'No users available'}
               </h3>
               <p className="text-gray-600">
-                {searchTerm || filterRole !== 'all'
+                {searchTerm || filterRole !== 'all' || filterGovernorate !== 'all' || filterUniversity !== 'all'
                   ? 'Try adjusting your search or filter criteria'
                   : 'Users will appear here once they register'
                 }
@@ -445,10 +491,17 @@ const UserManagement = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Governorate
                 </label>
-                <Input
+                <select
                   {...register('governorate')}
-                  placeholder="Enter governorate"
-                />
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="">Select Governorate</option>
+                  {EGYPT_GOVERNORATES.map((governorate) => (
+                    <option key={governorate} value={governorate}>
+                      {governorate}
+                    </option>
+                  ))}
+                </select>
                 {errors.governorate && (
                   <p className="text-red-500 text-sm mt-1">{errors.governorate.message}</p>
                 )}
@@ -593,10 +646,17 @@ const UserManagement = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Governorate
                 </label>
-                <Input
+                <select
                   {...registerCreate('governorate')}
-                  placeholder="Enter governorate"
-                />
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="">Select Governorate</option>
+                  {EGYPT_GOVERNORATES.map((governorate) => (
+                    <option key={governorate} value={governorate}>
+                      {governorate}
+                    </option>
+                  ))}
+                </select>
                 {errorsCreate.governorate && (
                   <p className="text-red-500 text-sm mt-1">{errorsCreate.governorate.message}</p>
                 )}

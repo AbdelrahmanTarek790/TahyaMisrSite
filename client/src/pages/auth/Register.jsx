@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { useAuth } from '../../context/AuthContext';
 import { useError } from '../../context/ErrorContext';
 import { positionsAPI } from '../../api';
+import { EGYPT_GOVERNORATES } from '../../constants/governorates';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -75,13 +76,7 @@ const Register = () => {
     }
   };
 
-  const governorates = [
-    'Cairo', 'Alexandria', 'Giza', 'Qalyubia', 'Port Said', 'Suez',
-    'Dakahlia', 'Sharqia', 'Gharbia', 'Menoufia', 'Kafr el-Sheikh',
-    'Beheira', 'Ismailia', 'Damietta', 'Faiyum', 'Beni Suef',
-    'Minya', 'Asyut', 'Sohag', 'Qena', 'Aswan', 'Luxor',
-    'Red Sea', 'New Valley', 'Matrouh', 'North Sinai', 'South Sinai'
-  ];
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -216,7 +211,7 @@ const Register = () => {
                     {...register('governorate')}
                   >
                     <option value="">Select your governorate</option>
-                    {governorates.map((gov) => (
+                    {EGYPT_GOVERNORATES.map((gov) => (
                       <option key={gov} value={gov}>{gov}</option>
                     ))}
                   </select>
