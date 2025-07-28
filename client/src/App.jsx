@@ -8,7 +8,10 @@ import Login from './pages/auth/Login'
 import Register from './pages/auth/Register'
 import Dashboard from './pages/dashboard/Dashboard'
 import News from './pages/News'
+import Events from './pages/Events'
 import NewsManagement from './pages/admin/NewsManagement'
+import EventsManagement from './pages/admin/EventsManagement'
+import UserManagement from './pages/admin/UserManagement'
 import './index.css'
 
 function App() {
@@ -37,10 +40,34 @@ function App() {
                 }
               />
               <Route
+                path="/events"
+                element={
+                  <ProtectedRoute>
+                    <Events />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
                 path="/admin/news"
                 element={
                   <ProtectedRoute roles={['admin']}>
                     <NewsManagement />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/events"
+                element={
+                  <ProtectedRoute roles={['admin']}>
+                    <EventsManagement />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/admin/users"
+                element={
+                  <ProtectedRoute roles={['admin']}>
+                    <UserManagement />
                   </ProtectedRoute>
                 }
               />
