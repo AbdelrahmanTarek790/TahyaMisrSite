@@ -21,6 +21,7 @@ import AboutPage from "./pages/public/AboutPage"
 import ContactPage from "./pages/public/ContactPage"
 import PublicNewsPage from "./pages/public/PublicNewsPage"
 import PublicEventsPage from "./pages/public/PublicEventsPage"
+import NewsDetailPage from "./pages/public/NewsDetailPage"
 import "./index.css"
 import { DashboardLayout } from "./components/layout/DashboardLayout"
 import PublicLayout from "./components/layout/PublicPagesLayout"
@@ -37,6 +38,7 @@ function App() {
                             <Route path="/about" element={<AboutPage />} />
                             <Route path="/contact" element={<ContactPage />} />
                             <Route path="/public/news" element={<PublicNewsPage />} />
+                            <Route path="/news/:id" element={<NewsDetailPage />} />
                             <Route path="/public/events" element={<PublicEventsPage />} />
                         </Route>
 
