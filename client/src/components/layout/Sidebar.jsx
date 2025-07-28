@@ -23,6 +23,7 @@ const Sidebar = () => {
     { name: 'Events', href: '/events', icon: Calendar, roles: ['student', 'volunteer', 'admin'] },
     { name: 'Media', href: '/media', icon: Image, roles: ['student', 'volunteer', 'admin'] },
     { name: 'Manage News', href: '/admin/news', icon: Newspaper, roles: ['admin'] },
+    { name: 'Manage Events', href: '/admin/events', icon: Calendar, roles: ['admin'] },
     { name: 'Users', href: '/admin/users', icon: Users, roles: ['admin'] },
     { name: 'Positions', href: '/admin/positions', icon: Settings, roles: ['admin'] },
     { name: 'Notifications', href: '/admin/notifications', icon: Bell, roles: ['admin'] },
