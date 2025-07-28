@@ -20,7 +20,7 @@ const PublicNewsPage = () => {
     try {
       setIsLoading(true)
       // For public access, we'll make a request without authentication headers
-      const response = await fetch(`http://localhost:5000/api/news?page=${pagination.page}&limit=${pagination.limit}`)
+      const response = await fetch(`http://localhost:5000/api/v1/news?page=${pagination.page}&limit=${pagination.limit}`)
       if (response.ok) {
         const data = await response.json()
         setNews(data.news || [])

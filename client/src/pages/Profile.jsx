@@ -11,6 +11,7 @@ import { useError } from '../context/ErrorContext';
 import { usersAPI } from '../api';
 import { User, Mail, University, MapPin, Phone, Calendar, Edit } from 'lucide-react';
 import { getInitials } from '../lib/utils';
+import { EGYPT_GOVERNORATES } from '../constants/governorates';
 
 const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -208,11 +209,25 @@ const Profile = () => {
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Governorate
                   </label>
-                  <Input
-                    {...register('governorate')}
-                    disabled={!isEditing}
-                    placeholder="Enter your governorate"
-                  />
+                  {isEditing ? (
+                    <select
+                      {...register('governorate')}
+                      className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    >
+                      <option value="">Select Governorate</option>
+                      {EGYPT_GOVERNORATES.map((governorate) => (
+                        <option key={governorate} value={governorate}>
+                          {governorate}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <Input
+                      {...register('governorate')}
+                      disabled={!isEditing}
+                      placeholder="Enter your governorate"
+                    />
+                  )}
                   {errors.governorate && (
                     <p className="text-red-500 text-sm mt-1">{errors.governorate.message}</p>
                   )}
