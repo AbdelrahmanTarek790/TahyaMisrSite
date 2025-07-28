@@ -78,7 +78,7 @@ const CreateNewsSheet = ({ isOpen, onClose, onSuccess, editingNews = null }) => 
         <SheetHeader>
           <SheetTitle>{editingNews ? 'Edit News Article' : 'Create News Article'}</SheetTitle>
         </SheetHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6 px-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Title
