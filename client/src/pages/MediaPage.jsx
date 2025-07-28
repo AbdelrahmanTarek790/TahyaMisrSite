@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card'
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
+import { useError } from '../context/ErrorContext'
+import { mediaAPI } from '../api'
 import { Search, Download, Eye, Calendar, Image as ImageIcon, Video, FileText, Upload } from 'lucide-react'
 
 const MediaPage = () => {
@@ -10,78 +12,38 @@ const MediaPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [pagination, setPagination] = useState({ page: 1, limit: 12, total: 0 })
+  const { addError } = useError()
 
-  // Mock data for media files
   useEffect(() => {
-    // In a real app, this would fetch from the API
-    setMedia([
-      {
-        _id: '1',
-        name: 'Student Union Conference 2024',
-        type: 'image',
-        url: '/api/media/conference-2024.jpg',
-        size: '2.4 MB',
-        uploadedAt: '2024-01-15T10:30:00Z',
-        uploadedBy: 'Admin',
-        category: 'events'
-      },
-      {
-        _id: '2', 
-        name: 'Tahya Misr Logo Pack',
-        type: 'image',
-        url: '/api/media/logo-pack.zip',
-        size: '1.2 MB',
-        uploadedAt: '2024-01-10T14:20:00Z',
-        uploadedBy: 'Design Team',
-        category: 'branding'
-      },
-      {
-        _id: '3',
-        name: 'Welcome Video 2024',
-        type: 'video',
-        url: '/api/media/welcome-video.mp4',
-        size: '45.6 MB',
-        uploadedAt: '2024-01-05T09:15:00Z',
-        uploadedBy: 'Media Team',
-        category: 'promotional'
-      },
-      {
-        _id: '4',
-        name: 'Student Handbook 2024',
-        type: 'document',
-        url: '/api/media/handbook-2024.pdf',
-        size: '3.8 MB',
-        uploadedAt: '2024-01-01T12:00:00Z',
-        uploadedBy: 'Admin',
-        category: 'documents'
-      },
-      {
-        _id: '5',
-        name: 'Event Gallery - Cultural Night',
-        type: 'image',
-        url: '/api/media/cultural-night-gallery.zip',
-        size: '15.2 MB',
-        uploadedAt: '2023-12-20T16:45:00Z',
-        uploadedBy: 'Photography Team',
-        category: 'events'
-      },
-      {
-        _id: '6',
-        name: 'Annual Report 2023',
-        type: 'document',
-        url: '/api/media/annual-report-2023.pdf',
-        size: '5.1 MB',
-        uploadedAt: '2023-12-31T23:59:00Z',
-        uploadedBy: 'Admin',
-        category: 'reports'
-      }
-    ])
-  }, [])
+    fetchMedia()
+  }, [pagination.page])
+
+  const fetchMedia = async () => {
+    try {
+      setIsLoading(true)
+      const response = await mediaAPI.getAll({
+        page: pagination.page,
+        limit: pagination.limit,
+      })
+      setMedia(response.data?.media || [])
+      setPagination(prev => ({
+        ...prev,
+        total: response.data?.total || 0,
+      }))
+    } catch (error) {
+      addError('Failed to fetch media')
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const filteredMedia = media.filter(item => {
-    const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         item.category.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesType = filterType === 'all' || item.type === filterType
+    const matchesSearch = item.caption?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         item.originalName?.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesType = filterType === 'all' || 
+                       (filterType === 'image' && item.type?.startsWith('image/')) ||
+                       (filterType === 'video' && item.type?.startsWith('video/')) ||
+                       (filterType === 'document' && !item.type?.startsWith('image/') && !item.type?.startsWith('video/'))
     return matchesSearch && matchesType
   })
 
@@ -94,7 +56,14 @@ const MediaPage = () => {
     })
   }
 
-  const getFileIcon = (type) => {
+  const getFileType = (mimeType) => {
+    if (mimeType?.startsWith('image/')) return 'image'
+    if (mimeType?.startsWith('video/')) return 'video'
+    return 'document'
+  }
+
+  const getFileIcon = (mimeType) => {
+    const type = getFileType(mimeType)
     switch (type) {
       case 'image':
         return <ImageIcon className="h-8 w-8 text-blue-600" />
@@ -107,7 +76,8 @@ const MediaPage = () => {
     }
   }
 
-  const getTypeColor = (type) => {
+  const getTypeColor = (mimeType) => {
+    const type = getFileType(mimeType)
     switch (type) {
       case 'image':
         return 'bg-blue-100 text-blue-800'
@@ -120,16 +90,28 @@ const MediaPage = () => {
     }
   }
 
+  const formatFileSize = (bytes) => {
+    if (!bytes) return 'Unknown size'
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    if (bytes === 0) return '0 Bytes'
+    const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)))
+    return Math.round(bytes / Math.pow(1024, i) * 100) / 100 + ' ' + sizes[i]
+  }
+
   const handleDownload = (mediaItem) => {
-    // In a real app, this would handle file download
-    console.log('Downloading:', mediaItem.name)
-    alert(`Downloading ${mediaItem.name}...`)
+    if (mediaItem.url) {
+      window.open(`http://localhost:5000${mediaItem.url}`, '_blank')
+    } else {
+      addError('File not available for download')
+    }
   }
 
   const handlePreview = (mediaItem) => {
-    // In a real app, this would open file preview
-    console.log('Previewing:', mediaItem.name)
-    alert(`Previewing ${mediaItem.name}...`)
+    if (mediaItem.url) {
+      window.open(`http://localhost:5000${mediaItem.url}`, '_blank')
+    } else {
+      addError('File not available for preview')
+    }
   }
 
   return (
@@ -234,17 +216,19 @@ const MediaPage = () => {
                 <div className="flex items-center justify-between">
                   {getFileIcon(mediaItem.type)}
                   <span className={`px-2 py-1 rounded-full text-xs font-medium ${getTypeColor(mediaItem.type)}`}>
-                    {mediaItem.type}
+                    {getFileType(mediaItem.type)}
                   </span>
                 </div>
-                <CardTitle className="text-sm line-clamp-2">{mediaItem.name}</CardTitle>
+                <CardTitle className="text-sm line-clamp-2">
+                  {mediaItem.caption || mediaItem.originalName || 'Untitled'}
+                </CardTitle>
                 <CardDescription className="text-xs">
                   <div className="flex items-center text-gray-500 mb-1">
                     <Calendar className="mr-1 h-3 w-3" />
-                    {formatDate(mediaItem.uploadedAt)}
+                    {formatDate(mediaItem.createdAt)}
                   </div>
                   <div className="text-gray-500">
-                    {mediaItem.size} • {mediaItem.uploadedBy}
+                    {formatFileSize(mediaItem.size)}
                   </div>
                 </CardDescription>
               </CardHeader>
@@ -269,14 +253,32 @@ const MediaPage = () => {
                     Download
                   </Button>
                 </div>
-                <div className="mt-2">
-                  <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                    {mediaItem.category}
-                  </span>
-                </div>
               </CardContent>
             </Card>
           ))}
+        </div>
+      )}
+
+      {/* Pagination */}
+      {pagination.total > pagination.limit && !searchTerm && (
+        <div className="flex justify-center space-x-2">
+          <Button
+            variant="outline"
+            onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
+            disabled={pagination.page === 1 || isLoading}
+          >
+            Previous
+          </Button>
+          <span className="flex items-center px-4">
+            Page {pagination.page} of {Math.ceil(pagination.total / pagination.limit)}
+          </span>
+          <Button
+            variant="outline"
+            onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
+            disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit) || isLoading}
+          >
+            Next
+          </Button>
         </div>
       )}
 
@@ -288,7 +290,9 @@ const MediaPage = () => {
               <ImageIcon className="h-8 w-8 text-blue-600" />
               <div className="ml-3">
                 <p className="text-sm text-gray-600">Images</p>
-                <p className="text-2xl font-semibold">{media.filter(m => m.type === 'image').length}</p>
+                <p className="text-2xl font-semibold">
+                  {media.filter(m => getFileType(m.type) === 'image').length}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -300,7 +304,9 @@ const MediaPage = () => {
               <Video className="h-8 w-8 text-purple-600" />
               <div className="ml-3">
                 <p className="text-sm text-gray-600">Videos</p>
-                <p className="text-2xl font-semibold">{media.filter(m => m.type === 'video').length}</p>
+                <p className="text-2xl font-semibold">
+                  {media.filter(m => getFileType(m.type) === 'video').length}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -312,7 +318,9 @@ const MediaPage = () => {
               <FileText className="h-8 w-8 text-green-600" />
               <div className="ml-3">
                 <p className="text-sm text-gray-600">Documents</p>
-                <p className="text-2xl font-semibold">{media.filter(m => m.type === 'document').length}</p>
+                <p className="text-2xl font-semibold">
+                  {media.filter(m => getFileType(m.type) === 'document').length}
+                </p>
               </div>
             </div>
           </CardContent>
