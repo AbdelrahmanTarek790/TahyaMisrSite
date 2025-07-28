@@ -20,7 +20,7 @@ const PublicNewsPage = () => {
     try {
       setIsLoading(true)
       // For public access, we'll make a request without authentication headers
-      const response = await fetch(`http://localhost:5000/api/news?page=${pagination.page}&limit=${pagination.limit}`)
+      const response = await fetch(`http://localhost:5000/api/v1/news?page=${pagination.page}&limit=${pagination.limit}`)
       if (response.ok) {
         const data = await response.json()
         setNews(data.news || [])
@@ -141,9 +141,11 @@ const PublicNewsPage = () => {
                   <CardContent>
                     <p className="text-gray-600 line-clamp-3 mb-4">{newsItem.content}</p>
                     <div className="flex justify-between items-center">
-                      <Button variant="outline" size="sm">
-                        Read More
-                      </Button>
+                      <Link to={`/news/${newsItem._id}`}>
+                        <Button variant="outline" size="sm">
+                          Read More
+                        </Button>
+                      </Link>
                       <span className="text-xs text-gray-500">
                         By {newsItem.author?.name || 'Admin'}
                       </span>

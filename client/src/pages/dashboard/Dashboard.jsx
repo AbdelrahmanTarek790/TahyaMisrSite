@@ -1,32 +1,83 @@
+import { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Users, Newspaper, Calendar, Image } from 'lucide-react';
+import { newsAPI, eventsAPI, usersAPI, mediaAPI } from '../../api';
+import { useError } from '../../context/ErrorContext';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const { addError } = useError();
+  const [dashboardData, setDashboardData] = useState({
+    newsCount: 0,
+    eventsCount: 0,
+    usersCount: 0,
+    mediaCount: 0,
+    recentNews: [],
+    upcomingEvents: [],
+  });
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch dashboard data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Fetch all data in parallel
+        const [newsResponse, eventsResponse, usersResponse, mediaResponse] = await Promise.allSettled([
+          newsAPI.getAll({ page: 1, limit: 3 }).catch(() => ({ data: { news: [], total: 0 } })),
+          eventsAPI.getAll({ page: 1, limit: 3 }).catch(() => ({ data: { events: [], total: 0 } })),
+          user?.role === 'admin' ? usersAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } })) : Promise.resolve({ data: { total: 0 } }),
+          mediaAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } })),
+        ]);
+
+        const newsData = newsResponse.status === 'fulfilled' ? newsResponse.value.data : { news: [], total: 0 };
+        const eventsData = eventsResponse.status === 'fulfilled' ? eventsResponse.value.data : { events: [], total: 0 };
+        const usersData = usersResponse.status === 'fulfilled' ? usersResponse.value.data : { total: 0 };
+        const mediaData = mediaResponse.status === 'fulfilled' ? mediaResponse.value.data : { total: 0 };
+
+        setDashboardData({
+          newsCount: newsData.total || 0,
+          eventsCount: eventsData.total || 0,
+          usersCount: usersData.total || 0,
+          mediaCount: mediaData.total || 0,
+          recentNews: newsData.news || [],
+          upcomingEvents: eventsData.events || [],
+        });
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+        addError('Failed to load dashboard data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [user?.role, addError]);
 
   const stats = [
     {
       title: 'News Articles',
-      value: '12',
+      value: isLoading ? '...' : dashboardData.newsCount.toString(),
       icon: Newspaper,
-      description: 'Published this month',
+      description: 'Published articles',
     },
     {
       title: 'Upcoming Events',
-      value: '5',
+      value: isLoading ? '...' : dashboardData.eventsCount.toString(),
       icon: Calendar,
-      description: 'Next 30 days',
+      description: 'Total events',
     },
     {
       title: 'Media Items',
-      value: '48',
+      value: isLoading ? '...' : dashboardData.mediaCount.toString(),
       icon: Image,
       description: 'Photos and videos',
     },
     {
       title: 'Active Members',
-      value: '234',
+      value: isLoading ? '...' : dashboardData.usersCount.toString(),
       icon: Users,
       description: 'Registered users',
     },
@@ -37,6 +88,16 @@ const Dashboard = () => {
     if (hour < 12) return 'Good morning';
     if (hour < 18) return 'Good afternoon';
     return 'Good evening';
+  };
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   };
 
   return (
@@ -83,27 +144,25 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                <div>
-                  <p className="font-medium">New University Guidelines</p>
-                  <p className="text-sm text-gray-500">2 hours ago</p>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                 </div>
-              </div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                <div>
-                  <p className="font-medium">Student Union Election Results</p>
-                  <p className="text-sm text-gray-500">1 day ago</p>
+              ) : dashboardData.recentNews.length > 0 ? (
+                dashboardData.recentNews.map((article) => (
+                  <div key={article._id} className="flex items-center">
+                    <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
+                    <div>
+                      <p className="font-medium">{article.title}</p>
+                      <p className="text-sm text-gray-500">{formatDate(article.createdAt)}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-sm text-gray-500">No news articles yet</p>
                 </div>
-              </div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-primary rounded-full mr-3"></div>
-                <div>
-                  <p className="font-medium">Campus Safety Updates</p>
-                  <p className="text-sm text-gray-500">3 days ago</p>
-                </div>
-              </div>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -115,27 +174,25 @@ const Dashboard = () => {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
-                <div>
-                  <p className="font-medium">Student Council Meeting</p>
-                  <p className="text-sm text-gray-500">Tomorrow, 2:00 PM</p>
+              {isLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
                 </div>
-              </div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-blue-500 rounded-full mr-3"></div>
-                <div>
-                  <p className="font-medium">Career Fair 2024</p>
-                  <p className="text-sm text-gray-500">Next week</p>
+              ) : dashboardData.upcomingEvents.length > 0 ? (
+                dashboardData.upcomingEvents.map((event) => (
+                  <div key={event._id} className="flex items-center">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                    <div>
+                      <p className="font-medium">{event.title}</p>
+                      <p className="text-sm text-gray-500">{formatDate(event.date)}</p>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="text-center py-4">
+                  <p className="text-sm text-gray-500">No upcoming events</p>
                 </div>
-              </div>
-              <div className="flex items-center">
-                <div className="w-2 h-2 bg-purple-500 rounded-full mr-3"></div>
-                <div>
-                  <p className="font-medium">Cultural Night</p>
-                  <p className="text-sm text-gray-500">Jan 15, 7:00 PM</p>
-                </div>
-              </div>
+              )}
             </div>
           </CardContent>
         </Card>
