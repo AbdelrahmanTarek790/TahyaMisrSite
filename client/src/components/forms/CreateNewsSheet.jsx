@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -14,7 +14,7 @@ const newsSchema = z.object({
   image: z.any().optional(),
 });
 
-const CreateNewsSheet = ({ isOpen, onClose, onSuccess }) => {
+const CreateNewsSheet = ({ isOpen, onClose, onSuccess, editingNews = null }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { addError } = useError();
 
@@ -27,6 +27,18 @@ const CreateNewsSheet = ({ isOpen, onClose, onSuccess }) => {
     resolver: zodResolver(newsSchema),
   });
 
+  // Reset form when editingNews changes
+  useEffect(() => {
+    if (editingNews) {
+      reset({
+        title: editingNews.title,
+        content: editingNews.content,
+      });
+    } else {
+      reset({ title: '', content: '' });
+    }
+  }, [editingNews, reset]);
+
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
@@ -37,13 +49,19 @@ const CreateNewsSheet = ({ isOpen, onClose, onSuccess }) => {
         formData.append('image', data.image[0]);
       }
 
-      await newsAPI.create(formData);
-      addError('News created successfully!', 'success');
+      if (editingNews) {
+        await newsAPI.update(editingNews._id, formData);
+        addError('News updated successfully!', 'success');
+      } else {
+        await newsAPI.create(formData);
+        addError('News created successfully!', 'success');
+      }
+      
       reset();
       onClose();
       if (onSuccess) onSuccess();
     } catch (error) {
-      addError(error?.error || 'Failed to create news');
+      addError(error?.error || `Failed to ${editingNews ? 'update' : 'create'} news`);
     } finally {
       setIsLoading(false);
     }
@@ -58,7 +76,7 @@ const CreateNewsSheet = ({ isOpen, onClose, onSuccess }) => {
     <Sheet open={isOpen} onOpenChange={handleClose}>
       <SheetContent className="w-[600px] sm:max-w-[600px]">
         <SheetHeader>
-          <SheetTitle>Create News Article</SheetTitle>
+          <SheetTitle>{editingNews ? 'Edit News Article' : 'Create News Article'}</SheetTitle>
         </SheetHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
           <div>
@@ -107,7 +125,7 @@ const CreateNewsSheet = ({ isOpen, onClose, onSuccess }) => {
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Creating...' : 'Create News'}
+              {isLoading ? `${editingNews ? 'Updating...' : 'Creating...'}` : `${editingNews ? 'Update News' : 'Create News'}`}
             </Button>
           </div>
         </form>
