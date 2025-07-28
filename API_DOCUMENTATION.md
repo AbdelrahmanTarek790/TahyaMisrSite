@@ -56,12 +56,41 @@ Authorization: Bearer <jwt_token>
 }
 ```
 
+#### Forgot Password
+- **POST** `/auth/forgot-password`
+- **Body:**
+```json
+{
+  "email": "ahmed@example.com"
+}
+```
+
+#### Reset Password
+- **POST** `/auth/reset-password`
+- **Body:**
+```json
+{
+  "token": "reset_token_from_email",
+  "password": "new_password123"
+}
+```
+
+#### Change Password
+- **PUT** `/auth/change-password` (Protected)
+- **Body:**
+```json
+{
+  "currentPassword": "current_password123",
+  "newPassword": "new_password123"
+}
+```
+
 #### Get Current User
-- **GET** `/auth/me` (Protected)
+- **GET** `/users/me` (Protected)
 - Returns current user's profile
 
 #### Update Current User
-- **PUT** `/auth/me` (Protected)
+- **PUT** `/users/me` (Protected)
 - **Body:** Same as register (optional fields)
 
 ### User Management (Admin Only)
