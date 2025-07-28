@@ -11,13 +11,11 @@ import { positionsAPI } from '../../api';
 import { Plus, Edit, Trash2, Users, MapPin, Building, Search } from 'lucide-react';
 
 const positionSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  department: z.string().min(2, 'Department must be at least 2 characters'),
-  location: z.string().min(2, 'Location must be at least 2 characters'),
-  requirements: z.string().min(10, 'Requirements must be at least 10 characters'),
-  type: z.enum(['full-time', 'part-time', 'volunteer', 'internship']),
-  status: z.enum(['active', 'inactive', 'filled']).default('active'),
+  name: z.string().min(3, 'Position name must be at least 3 characters'),
+  description: z.string().optional(),
+  isActive: z.boolean().default(true),
+  isGlobal: z.boolean().default(false),
+  governorate: z.string().optional(),
 });
 
 const PositionsManagement = () => {
@@ -26,8 +24,8 @@ const PositionsManagement = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingPosition, setEditingPosition] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterType, setFilterType] = useState('all');
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterActive, setFilterActive] = useState('all');
+  const [filterGlobal, setFilterGlobal] = useState('all');
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
   const { addError } = useError();
 
@@ -51,10 +49,10 @@ const PositionsManagement = () => {
         page: pagination.page,
         limit: pagination.limit,
       });
-      setPositions(response.data?.positions || []);
+      setPositions(response.data || []);
       setPagination(prev => ({
         ...prev,
-        total: response.data?.total || 0,
+        total: response.data?.length || 0,
       }));
     } catch (error) {
       addError('Failed to fetch positions');
@@ -87,13 +85,11 @@ const PositionsManagement = () => {
   const handleEdit = (position) => {
     setEditingPosition(position);
     reset({
-      title: position.title,
-      description: position.description,
-      department: position.department,
-      location: position.location,
-      requirements: position.requirements,
-      type: position.type,
-      status: position.status,
+      name: position.name,
+      description: position.description || '',
+      isActive: position.isActive,
+      isGlobal: position.isGlobal,
+      governorate: position.governorate || '',
     });
     setIsSheetOpen(true);
   };
@@ -118,42 +114,31 @@ const PositionsManagement = () => {
 
   const filteredPositions = positions.filter(position => {
     const matchesSearch = 
-      position.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      position.department.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      position.location.toLowerCase().includes(searchTerm.toLowerCase());
+      position.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (position.description && position.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (position.governorate && position.governorate.toLowerCase().includes(searchTerm.toLowerCase()));
     
-    const matchesType = filterType === 'all' || position.type === filterType;
-    const matchesStatus = filterStatus === 'all' || position.status === filterStatus;
+    const matchesActive = filterActive === 'all' || 
+      (filterActive === 'active' && position.isActive) ||
+      (filterActive === 'inactive' && !position.isActive);
     
-    return matchesSearch && matchesType && matchesStatus;
+    const matchesGlobal = filterGlobal === 'all' || 
+      (filterGlobal === 'global' && position.isGlobal) ||
+      (filterGlobal === 'local' && !position.isGlobal);
+    
+    return matchesSearch && matchesActive && matchesGlobal;
   });
 
-  const getStatusColor = (status) => {
-    switch (status) {
-      case 'active':
-        return 'bg-green-100 text-green-800';
-      case 'inactive':
-        return 'bg-gray-100 text-gray-800';
-      case 'filled':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+  const getActiveColor = (isActive) => {
+    return isActive 
+      ? 'bg-green-100 text-green-800'
+      : 'bg-gray-100 text-gray-800';
   };
 
-  const getTypeColor = (type) => {
-    switch (type) {
-      case 'full-time':
-        return 'bg-purple-100 text-purple-800';
-      case 'part-time':
-        return 'bg-orange-100 text-orange-800';
-      case 'volunteer':
-        return 'bg-green-100 text-green-800';
-      case 'internship':
-        return 'bg-blue-100 text-blue-800';
-      default:
-        return 'bg-gray-100 text-gray-800';
-    }
+  const getScopeColor = (isGlobal) => {
+    return isGlobal 
+      ? 'bg-blue-100 text-blue-800'
+      : 'bg-purple-100 text-purple-800';
   };
 
   return (
@@ -178,14 +163,14 @@ const PositionsManagement = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Position Title
+                  Position Name
                 </label>
                 <Input
-                  {...register('title')}
-                  placeholder="Enter position title"
+                  {...register('name')}
+                  placeholder="Enter position name"
                 />
-                {errors.title && (
-                  <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
                 )}
               </div>
 
@@ -196,7 +181,7 @@ const PositionsManagement = () => {
                 <textarea
                   {...register('description')}
                   className="w-full min-h-[100px] p-2 border border-gray-300 rounded-md"
-                  placeholder="Enter position description"
+                  placeholder="Enter position description (optional)"
                 />
                 {errors.description && (
                   <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
@@ -205,81 +190,39 @@ const PositionsManagement = () => {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Department
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      {...register('isActive')}
+                      className="rounded border-gray-300"
+                    />
+                    <span className="text-sm font-medium text-gray-700">Active Position</span>
                   </label>
-                  <Input
-                    {...register('department')}
-                    placeholder="Enter department"
-                  />
-                  {errors.department && (
-                    <p className="text-red-500 text-sm mt-1">{errors.department.message}</p>
-                  )}
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Location
+                  <label className="flex items-center space-x-2">
+                    <input
+                      type="checkbox"
+                      {...register('isGlobal')}
+                      className="rounded border-gray-300"
+                    />
+                    <span className="text-sm font-medium text-gray-700">Global Position</span>
                   </label>
-                  <Input
-                    {...register('location')}
-                    placeholder="Enter location"
-                  />
-                  {errors.location && (
-                    <p className="text-red-500 text-sm mt-1">{errors.location.message}</p>
-                  )}
                 </div>
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Requirements
+                  Governorate
                 </label>
-                <textarea
-                  {...register('requirements')}
-                  className="w-full min-h-[80px] p-2 border border-gray-300 rounded-md"
-                  placeholder="Enter position requirements"
+                <Input
+                  {...register('governorate')}
+                  placeholder="Enter governorate (leave empty for global positions)"
                 />
-                {errors.requirements && (
-                  <p className="text-red-500 text-sm mt-1">{errors.requirements.message}</p>
+                {errors.governorate && (
+                  <p className="text-red-500 text-sm mt-1">{errors.governorate.message}</p>
                 )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Position Type
-                  </label>
-                  <select
-                    {...register('type')}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  >
-                    <option value="full-time">Full-time</option>
-                    <option value="part-time">Part-time</option>
-                    <option value="volunteer">Volunteer</option>
-                    <option value="internship">Internship</option>
-                  </select>
-                  {errors.type && (
-                    <p className="text-red-500 text-sm mt-1">{errors.type.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Status
-                  </label>
-                  <select
-                    {...register('status')}
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                    <option value="filled">Filled</option>
-                  </select>
-                  {errors.status && (
-                    <p className="text-red-500 text-sm mt-1">{errors.status.message}</p>
-                  )}
-                </div>
               </div>
 
               <div className="flex justify-end gap-2 pt-4">
@@ -312,25 +255,22 @@ const PositionsManagement = () => {
             </div>
             <div className="flex gap-2">
               <select
-                value={filterType}
-                onChange={(e) => setFilterType(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-md"
-              >
-                <option value="all">All Types</option>
-                <option value="full-time">Full-time</option>
-                <option value="part-time">Part-time</option>
-                <option value="volunteer">Volunteer</option>
-                <option value="internship">Internship</option>
-              </select>
-              <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
+                value={filterActive}
+                onChange={(e) => setFilterActive(e.target.value)}
                 className="px-3 py-2 border border-gray-300 rounded-md"
               >
                 <option value="all">All Status</option>
                 <option value="active">Active</option>
                 <option value="inactive">Inactive</option>
-                <option value="filled">Filled</option>
+              </select>
+              <select
+                value={filterGlobal}
+                onChange={(e) => setFilterGlobal(e.target.value)}
+                className="px-3 py-2 border border-gray-300 rounded-md"
+              >
+                <option value="all">All Scope</option>
+                <option value="global">Global</option>
+                <option value="local">Local</option>
               </select>
             </div>
           </div>
@@ -352,7 +292,7 @@ const PositionsManagement = () => {
             <Card key={position._id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-lg">{position.title}</CardTitle>
+                  <CardTitle className="text-lg">{position.name}</CardTitle>
                   <div className="flex gap-1">
                     <Button
                       variant="ghost"
@@ -371,31 +311,37 @@ const PositionsManagement = () => {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <span className={`px-2 py-1 rounded-full text-xs ${getTypeColor(position.type)}`}>
-                    {position.type}
+                  <span className={`px-2 py-1 rounded-full text-xs ${getActiveColor(position.isActive)}`}>
+                    {position.isActive ? 'Active' : 'Inactive'}
                   </span>
-                  <span className={`px-2 py-1 rounded-full text-xs ${getStatusColor(position.status)}`}>
-                    {position.status}
+                  <span className={`px-2 py-1 rounded-full text-xs ${getScopeColor(position.isGlobal)}`}>
+                    {position.isGlobal ? 'Global' : 'Local'}
                   </span>
                 </div>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                  {position.description}
-                </p>
+                {position.description && (
+                  <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+                    {position.description}
+                  </p>
+                )}
                 <div className="space-y-2 text-sm text-gray-500">
-                  <div className="flex items-center gap-2">
-                    <Building className="h-4 w-4" />
-                    <span>{position.department}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <MapPin className="h-4 w-4" />
-                    <span>{position.location}</span>
-                  </div>
+                  {position.governorate && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="h-4 w-4" />
+                      <span>{position.governorate}</span>
+                    </div>
+                  )}
                   <div className="flex items-center gap-2">
                     <Users className="h-4 w-4" />
                     <span>Created {new Date(position.createdAt).toLocaleDateString()}</span>
                   </div>
+                  {position.createdBy && (
+                    <div className="flex items-center gap-2">
+                      <Building className="h-4 w-4" />
+                      <span>By {position.createdBy.name}</span>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -404,7 +350,7 @@ const PositionsManagement = () => {
       </div>
 
       {/* Pagination */}
-      {Math.ceil(pagination.total / pagination.limit) > 1 && (
+      {filteredPositions.length > 10 && (
         <div className="flex justify-center gap-2">
           <Button
             variant="outline"
@@ -414,12 +360,12 @@ const PositionsManagement = () => {
             Previous
           </Button>
           <span className="px-4 py-2 text-sm">
-            Page {pagination.page} of {Math.ceil(pagination.total / pagination.limit)}
+            Showing {filteredPositions.length} positions
           </span>
           <Button
             variant="outline"
             onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
-            disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit)}
+            disabled={filteredPositions.length < pagination.limit}
           >
             Next
           </Button>
