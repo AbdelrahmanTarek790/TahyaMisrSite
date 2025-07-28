@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -12,13 +12,11 @@ const eventSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
   description: z.string().min(10, 'Description must be at least 10 characters'),
   date: z.string().min(1, 'Date is required'),
-  time: z.string().min(1, 'Time is required'),
   location: z.string().min(3, 'Location must be at least 3 characters'),
-  capacity: z.string().min(1, 'Capacity is required'),
   image: z.any().optional(),
 });
 
-const CreateEventSheet = ({ isOpen, onClose, onSuccess }) => {
+const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) => {
   const [isLoading, setIsLoading] = useState(false);
   const { addError } = useError();
 
@@ -31,6 +29,20 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess }) => {
     resolver: zodResolver(eventSchema),
   });
 
+  // Reset form when editingEvent changes
+  useEffect(() => {
+    if (editingEvent) {
+      reset({
+        title: editingEvent.title,
+        description: editingEvent.description,
+        date: new Date(editingEvent.date).toISOString().split('T')[0],
+        location: editingEvent.location,
+      });
+    } else {
+      reset({ title: '', description: '', date: '', location: '' });
+    }
+  }, [editingEvent, reset]);
+
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
@@ -38,20 +50,24 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess }) => {
       formData.append('title', data.title);
       formData.append('description', data.description);
       formData.append('date', data.date);
-      formData.append('time', data.time);
       formData.append('location', data.location);
-      formData.append('capacity', data.capacity);
       if (data.image && data.image[0]) {
         formData.append('image', data.image[0]);
       }
 
-      await eventsAPI.create(formData);
-      addError('Event created successfully!', 'success');
+      if (editingEvent) {
+        await eventsAPI.update(editingEvent._id, formData);
+        addError('Event updated successfully!', 'success');
+      } else {
+        await eventsAPI.create(formData);
+        addError('Event created successfully!', 'success');
+      }
+      
       reset();
       onClose();
       if (onSuccess) onSuccess();
     } catch (error) {
-      addError(error?.error || 'Failed to create event');
+      addError(error?.error || `Failed to ${editingEvent ? 'update' : 'create'} event`);
     } finally {
       setIsLoading(false);
     }
@@ -66,7 +82,7 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess }) => {
     <Sheet open={isOpen} onOpenChange={handleClose}>
       <SheetContent className="w-[600px] sm:max-w-[600px]">
         <SheetHeader>
-          <SheetTitle>Create Event</SheetTitle>
+          <SheetTitle>{editingEvent ? 'Edit Event' : 'Create Event'}</SheetTitle>
         </SheetHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
           <div>
@@ -99,32 +115,17 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess }) => {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Date
+                Date & Time
               </label>
               <Input
                 {...register('date')}
-                type="date"
+                type="datetime-local"
               />
               {errors.date && (
                 <p className="text-red-500 text-sm mt-1">{errors.date.message}</p>
               )}
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Time
-              </label>
-              <Input
-                {...register('time')}
-                type="time"
-              />
-              {errors.time && (
-                <p className="text-red-500 text-sm mt-1">{errors.time.message}</p>
-              )}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Location
@@ -135,21 +136,6 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess }) => {
               />
               {errors.location && (
                 <p className="text-red-500 text-sm mt-1">{errors.location.message}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Capacity
-              </label>
-              <Input
-                {...register('capacity')}
-                type="number"
-                min="1"
-                placeholder="Maximum attendees"
-              />
-              {errors.capacity && (
-                <p className="text-red-500 text-sm mt-1">{errors.capacity.message}</p>
               )}
             </div>
           </div>
@@ -173,7 +159,7 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess }) => {
               Cancel
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Creating...' : 'Create Event'}
+              {isLoading ? `${editingEvent ? 'Updating...' : 'Creating...'}` : `${editingEvent ? 'Update Event' : 'Create Event'}`}
             </Button>
           </div>
         </form>

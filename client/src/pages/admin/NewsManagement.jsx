@@ -1,36 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { useError } from '../../context/ErrorContext';
 import { newsAPI } from '../../api';
 import { Plus, Edit, Trash2, Eye } from 'lucide-react';
-
-const newsSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  content: z.string().min(10, 'Content must be at least 10 characters'),
-  image: z.any().optional(),
-});
+import CreateNewsSheet from '../../components/forms/CreateNewsSheet';
 
 const NewsManagement = () => {
   const [news, setNews] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingNews, setEditingNews] = useState(null);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
   const { addError } = useError();
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(newsSchema),
-  });
 
   useEffect(() => {
     fetchNews();
@@ -55,42 +37,9 @@ const NewsManagement = () => {
     }
   };
 
-  const onSubmit = async (data) => {
-    try {
-      setIsLoading(true);
-      const formData = new FormData();
-      formData.append('title', data.title);
-      formData.append('content', data.content);
-      if (data.image && data.image[0]) {
-        formData.append('image', data.image[0]);
-      }
-
-      if (editingNews) {
-        await newsAPI.update(editingNews._id, formData);
-        addError('News updated successfully!', 'success');
-      } else {
-        await newsAPI.create(formData);
-        addError('News created successfully!', 'success');
-      }
-
-      reset();
-      setIsModalOpen(false);
-      setEditingNews(null);
-      fetchNews();
-    } catch (error) {
-      addError(error?.error || 'Failed to save news');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const handleEdit = (newsItem) => {
     setEditingNews(newsItem);
-    reset({
-      title: newsItem.title,
-      content: newsItem.content,
-    });
-    setIsModalOpen(true);
+    setIsSheetOpen(true);
   };
 
   const handleDelete = async (newsId) => {
@@ -107,8 +56,16 @@ const NewsManagement = () => {
 
   const handleNewNews = () => {
     setEditingNews(null);
-    reset({ title: '', content: '' });
-    setIsModalOpen(true);
+    setIsSheetOpen(true);
+  };
+
+  const handleSheetClose = () => {
+    setIsSheetOpen(false);
+    setEditingNews(null);
+  };
+
+  const handleSheetSuccess = () => {
+    fetchNews();
   };
 
   return (
@@ -212,84 +169,13 @@ const NewsManagement = () => {
         </div>
       )}
 
-      {/* Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <Card className="w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <CardHeader>
-              <CardTitle>
-                {editingNews ? 'Edit News Article' : 'Create New News Article'}
-              </CardTitle>
-              <CardDescription>
-                {editingNews ? 'Update the news article details' : 'Fill in the details for the new news article'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div>
-                  <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                    Title *
-                  </label>
-                  <Input
-                    id="title"
-                    type="text"
-                    placeholder="Enter news title"
-                    {...register('title')}
-                  />
-                  {errors.title && (
-                    <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
-                    Content *
-                  </label>
-                  <textarea
-                    id="content"
-                    rows={6}
-                    className="flex w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                    placeholder="Enter news content"
-                    {...register('content')}
-                  />
-                  {errors.content && (
-                    <p className="mt-1 text-sm text-red-600">{errors.content.message}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label htmlFor="image" className="block text-sm font-medium text-gray-700 mb-1">
-                    Image (Optional)
-                  </label>
-                  <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    {...register('image')}
-                  />
-                </div>
-
-                <div className="flex justify-end space-x-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => {
-                      setIsModalOpen(false);
-                      setEditingNews(null);
-                      reset();
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                  <Button type="submit" disabled={isLoading}>
-                    {isLoading ? 'Saving...' : editingNews ? 'Update' : 'Create'}
-                  </Button>
-                </div>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      {/* News Creation/Editing Sheet */}
+      <CreateNewsSheet
+        isOpen={isSheetOpen}
+        onClose={handleSheetClose}
+        onSuccess={handleSheetSuccess}
+        editingNews={editingNews}
+      />
     </div>
   );
 };
