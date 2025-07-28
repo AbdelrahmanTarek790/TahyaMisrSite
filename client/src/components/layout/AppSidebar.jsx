@@ -27,6 +27,7 @@ export function AppSidebar(props) {
         { title: "Users", url: "/admin/users", icon: Users, role: ["admin"] },
         { title: "Positions", url: "/admin/positions", icon: Settings, role: ["admin"] },
         { title: "Notifications", url: "/admin/notifications", icon: Bell, role: ["admin"] },
+        { title: "Settings", url: "/settings", icon: UserCircle, role: ["student", "volunteer", "admin"] },
     ]
 
     // Filter navigation items based on user role and authentication status

@@ -1,18 +1,44 @@
 import { useState, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../../components/ui/sheet';
 import { useError } from '../../context/ErrorContext';
 import { usersAPI } from '../../api';
 import { Search, Edit, Trash2, Eye, UserPlus, Shield, User } from 'lucide-react';
 
+const userSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().optional(),
+  university: z.string().min(2, 'University must be at least 2 characters'),
+  governorate: z.string().min(2, 'Governorate must be at least 2 characters'),
+  faculty: z.string().optional(),
+  year: z.string().optional(),
+  role: z.enum(['student', 'volunteer', 'admin']),
+});
+
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
   const { addError } = useError();
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    resolver: zodResolver(userSchema),
+  });
 
   useEffect(() => {
     fetchUsers();
@@ -57,6 +83,43 @@ const UserManagement = () => {
     } catch (error) {
       addError('Failed to update user role');
     }
+  };
+
+  const handleEdit = (user) => {
+    setEditingUser(user);
+    reset({
+      name: user.name,
+      email: user.email,
+      phone: user.phone || '',
+      university: user.university,
+      governorate: user.governorate,
+      faculty: user.faculty || '',
+      year: user.year || '',
+      role: user.role,
+    });
+    setIsSheetOpen(true);
+  };
+
+  const onSubmit = async (data) => {
+    try {
+      setIsLoading(true);
+      await usersAPI.update(editingUser._id, data);
+      addError('User updated successfully!', 'success');
+      setIsSheetOpen(false);
+      setEditingUser(null);
+      reset();
+      fetchUsers();
+    } catch (error) {
+      addError(error.message || 'Failed to update user');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCloseSheet = () => {
+    setIsSheetOpen(false);
+    setEditingUser(null);
+    reset();
   };
 
   const filteredUsers = users.filter(user => {
@@ -192,8 +255,12 @@ const UserManagement = () => {
                       </td>
                       <td className="py-4">
                         <div className="flex space-x-2">
-                          <Button variant="outline" size="sm">
-                            <Eye className="h-4 w-4" />
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleEdit(user)}
+                          >
+                            <Edit className="h-4 w-4" />
                           </Button>
                           <select
                             value={user.role}
@@ -244,6 +311,140 @@ const UserManagement = () => {
           </Button>
         </div>
       )}
+
+      {/* Edit User Sheet */}
+      <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+        <SheetContent className="w-[600px] sm:max-w-[600px]">
+          <SheetHeader>
+            <SheetTitle>Edit User</SheetTitle>
+          </SheetHeader>
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name
+              </label>
+              <Input
+                {...register('name')}
+                placeholder="Enter full name"
+              />
+              {errors.name && (
+                <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
+              <Input
+                {...register('email')}
+                type="email"
+                placeholder="Enter email address"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number
+                </label>
+                <Input
+                  {...register('phone')}
+                  placeholder="Enter phone number"
+                />
+                {errors.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <select
+                  {...register('role')}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="student">Student</option>
+                  <option value="volunteer">Volunteer</option>
+                  <option value="admin">Admin</option>
+                </select>
+                {errors.role && (
+                  <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  University
+                </label>
+                <Input
+                  {...register('university')}
+                  placeholder="Enter university"
+                />
+                {errors.university && (
+                  <p className="text-red-500 text-sm mt-1">{errors.university.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Governorate
+                </label>
+                <Input
+                  {...register('governorate')}
+                  placeholder="Enter governorate"
+                />
+                {errors.governorate && (
+                  <p className="text-red-500 text-sm mt-1">{errors.governorate.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Faculty
+                </label>
+                <Input
+                  {...register('faculty')}
+                  placeholder="Enter faculty"
+                />
+                {errors.faculty && (
+                  <p className="text-red-500 text-sm mt-1">{errors.faculty.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Academic Year
+                </label>
+                <Input
+                  {...register('year')}
+                  placeholder="Enter academic year"
+                />
+                {errors.year && (
+                  <p className="text-red-500 text-sm mt-1">{errors.year.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4">
+              <Button type="button" variant="outline" onClick={handleCloseSheet}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? 'Updating...' : 'Update User'}
+              </Button>
+            </div>
+          </form>
+        </SheetContent>
+      </Sheet>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

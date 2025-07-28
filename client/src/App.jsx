@@ -12,6 +12,9 @@ import MediaPage from "./pages/MediaPage"
 import NewsManagement from "./pages/admin/NewsManagement"
 import EventsManagement from "./pages/admin/EventsManagement"
 import UserManagement from "./pages/admin/UserManagement"
+import PositionsManagement from "./pages/admin/PositionsManagement"
+import Profile from "./pages/Profile"
+import Settings from "./pages/Settings"
 import LandingPage from "./pages/public/LandingPage"
 import AboutPage from "./pages/public/AboutPage"
 import ContactPage from "./pages/public/ContactPage"
@@ -83,6 +86,26 @@ function App() {
                                 </ProtectedRoute>
                             }
                         />
+                        <Route
+                            path="/profile"
+                            element={
+                                <ProtectedRoute>
+                                    <DashboardLayout>
+                                        <Profile />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings"
+                            element={
+                                <ProtectedRoute>
+                                    <DashboardLayout>
+                                        <Settings />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
 
                         {/* Admin Routes */}
                         <Route
@@ -111,6 +134,16 @@ function App() {
                                 <ProtectedRoute roles={["admin"]}>
                                     <DashboardLayout>
                                         <UserManagement />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/positions"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <DashboardLayout>
+                                        <PositionsManagement />
                                     </DashboardLayout>
                                 </ProtectedRoute>
                             }

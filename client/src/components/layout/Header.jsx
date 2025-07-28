@@ -1,5 +1,5 @@
-import React from "react"
-import { Bell, Menu, Search, User } from "lucide-react"
+import React, { useState } from "react"
+import { Bell, Menu, Search, User, Plus, FileText, Calendar, Image } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -15,10 +15,16 @@ import { getInitials } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { SidebarTrigger } from "../ui/sidebar"
 import { useAuth } from "@/context/AuthContext"
+import CreateNewsSheet from "../forms/CreateNewsSheet"
+import CreateEventSheet from "../forms/CreateEventSheet"
+import CreateMediaSheet from "../forms/CreateMediaSheet"
 
 export function Header({ sidebarOpen, setSidebarOpen }) {
     const { user, logout } = useAuth()
     const navigate = useNavigate()
+    const [newsSheetOpen, setNewsSheetOpen] = useState(false)
+    const [eventSheetOpen, setEventSheetOpen] = useState(false)
+    const [mediaSheetOpen, setMediaSheetOpen] = useState(false)
 
     const handleLogout = async () => {
         await logout()
@@ -32,6 +38,33 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
             </div>
 
             <div className="flex items-center gap-2">
+                {/* Quick Create Dropdown - Only for admin users */}
+                {user?.role === 'admin' && (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                                <Plus size={18} />
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48">
+                            <DropdownMenuLabel>Quick Create</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => setNewsSheetOpen(true)}>
+                                <FileText className="mr-2 h-4 w-4" />
+                                Create News
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setEventSheetOpen(true)}>
+                                <Calendar className="mr-2 h-4 w-4" />
+                                Create Event
+                            </DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => setMediaSheetOpen(true)}>
+                                <Image className="mr-2 h-4 w-4" />
+                                Upload Media
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                )}
+
                 <Button variant="ghost" size="icon" className="relative">
                     <Bell size={18} />
                     <span className="absolute top-2 right-2 w-2 h-2 bg-destructive rounded-full"></span>
@@ -66,6 +99,20 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
+
+            {/* Creation Sheets */}
+            <CreateNewsSheet 
+                isOpen={newsSheetOpen} 
+                onClose={() => setNewsSheetOpen(false)} 
+            />
+            <CreateEventSheet 
+                isOpen={eventSheetOpen} 
+                onClose={() => setEventSheetOpen(false)} 
+            />
+            <CreateMediaSheet 
+                isOpen={mediaSheetOpen} 
+                onClose={() => setMediaSheetOpen(false)} 
+            />
         </header>
     )
 }
