@@ -3,8 +3,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/button'
 import { Input } from '../components/ui/input'
 import { useError } from '../context/ErrorContext'
+import { useAuth } from '../context/AuthContext'
 import { mediaAPI } from '../api'
-import { Search, Download, Eye, Calendar, Image as ImageIcon, Video, FileText, Upload } from 'lucide-react'
+import { Search, Download, Eye, Calendar, Image as ImageIcon, Video, FileText, Upload, Plus } from 'lucide-react'
+import CreateMediaSheet from '../components/forms/CreateMediaSheet'
 
 const MediaPage = () => {
   const [media, setMedia] = useState([])
@@ -12,7 +14,9 @@ const MediaPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterType, setFilterType] = useState('all')
   const [pagination, setPagination] = useState({ page: 1, limit: 12, total: 0 })
+  const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false)
   const { addError } = useError()
+  const { user } = useAuth()
 
   useEffect(() => {
     fetchMedia()
@@ -122,10 +126,12 @@ const MediaPage = () => {
           <h1 className="text-3xl font-bold text-gray-900">Media Library</h1>
           <p className="text-gray-600">Manage and access media files, documents, and resources</p>
         </div>
-        <Button className="flex items-center">
-          <Upload className="h-4 w-4 mr-2" />
-          Upload Media
-        </Button>
+        {user?.role === 'admin' && (
+          <Button onClick={() => setIsCreateSheetOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Upload Media
+          </Button>
+        )}
       </div>
 
       {/* Filters and Search */}
@@ -338,6 +344,16 @@ const MediaPage = () => {
           </CardContent>
         </Card>
       </div>
+      
+      {/* Create Media Sheet */}
+      <CreateMediaSheet
+        isOpen={isCreateSheetOpen}
+        onClose={() => setIsCreateSheetOpen(false)}
+        onSuccess={() => {
+          fetchMedia();
+          setPagination(prev => ({ ...prev, page: 1 }));
+        }}
+      />
     </div>
   )
 }

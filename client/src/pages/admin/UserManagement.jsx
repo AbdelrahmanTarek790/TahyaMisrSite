@@ -13,6 +13,19 @@ import { Search, Edit, Trash2, Eye, UserPlus, Shield, User } from 'lucide-react'
 const userSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters').optional(),
+  phone: z.string().optional(),
+  university: z.string().min(2, 'University must be at least 2 characters'),
+  governorate: z.string().min(2, 'Governorate must be at least 2 characters'),
+  faculty: z.string().optional(),
+  year: z.string().optional(),
+  role: z.enum(['student', 'volunteer', 'admin']),
+});
+
+const createUserSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address'),
+  password: z.string().min(6, 'Password must be at least 6 characters'),
   phone: z.string().optional(),
   university: z.string().min(2, 'University must be at least 2 characters'),
   governorate: z.string().min(2, 'Governorate must be at least 2 characters'),
@@ -25,6 +38,7 @@ const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterRole, setFilterRole] = useState('all');
@@ -38,6 +52,15 @@ const UserManagement = () => {
     formState: { errors },
   } = useForm({
     resolver: zodResolver(userSchema),
+  });
+
+  const {
+    register: registerCreate,
+    handleSubmit: handleSubmitCreate,
+    reset: resetCreate,
+    formState: { errors: errorsCreate },
+  } = useForm({
+    resolver: zodResolver(createUserSchema),
   });
 
   useEffect(() => {
@@ -116,10 +139,30 @@ const UserManagement = () => {
     }
   };
 
+  const onCreateSubmit = async (data) => {
+    try {
+      setIsLoading(true);
+      await usersAPI.create(data);
+      addError('User created successfully!', 'success');
+      setIsCreateSheetOpen(false);
+      resetCreate();
+      fetchUsers();
+    } catch (error) {
+      addError(error.message || 'Failed to create user');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleCloseSheet = () => {
     setIsSheetOpen(false);
     setEditingUser(null);
     reset();
+  };
+
+  const handleCloseCreateSheet = () => {
+    setIsCreateSheetOpen(false);
+    resetCreate();
   };
 
   const filteredUsers = users.filter(user => {
@@ -159,9 +202,15 @@ const UserManagement = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-        <p className="text-gray-600">Manage users and their roles</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
+          <p className="text-gray-600">Manage users and their roles</p>
+        </div>
+        <Button onClick={() => setIsCreateSheetOpen(true)}>
+          <UserPlus className="h-4 w-4 mr-2" />
+          Create User
+        </Button>
       </div>
 
       {/* Filters */}
@@ -440,6 +489,154 @@ const UserManagement = () => {
               </Button>
               <Button type="submit" disabled={isLoading}>
                 {isLoading ? 'Updating...' : 'Update User'}
+              </Button>
+            </div>
+          </form>
+        </SheetContent>
+      </Sheet>
+
+      {/* Create User Sheet */}
+      <Sheet open={isCreateSheetOpen} onOpenChange={setIsCreateSheetOpen}>
+        <SheetContent className="w-[600px] sm:max-w-[600px]">
+          <SheetHeader>
+            <SheetTitle>Create New User</SheetTitle>
+          </SheetHeader>
+          <form onSubmit={handleSubmitCreate(onCreateSubmit)} className="space-y-4 mt-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Full Name
+              </label>
+              <Input
+                {...registerCreate('name')}
+                placeholder="Enter full name"
+              />
+              {errorsCreate.name && (
+                <p className="text-red-500 text-sm mt-1">{errorsCreate.name.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Email
+              </label>
+              <Input
+                {...registerCreate('email')}
+                type="email"
+                placeholder="Enter email address"
+              />
+              {errorsCreate.email && (
+                <p className="text-red-500 text-sm mt-1">{errorsCreate.email.message}</p>
+              )}
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <Input
+                {...registerCreate('password')}
+                type="password"
+                placeholder="Enter password"
+              />
+              {errorsCreate.password && (
+                <p className="text-red-500 text-sm mt-1">{errorsCreate.password.message}</p>
+              )}
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Phone Number
+                </label>
+                <Input
+                  {...registerCreate('phone')}
+                  placeholder="Enter phone number"
+                />
+                {errorsCreate.phone && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.phone.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Role
+                </label>
+                <select
+                  {...registerCreate('role')}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                >
+                  <option value="student">Student</option>
+                  <option value="volunteer">Volunteer</option>
+                  <option value="admin">Admin</option>
+                </select>
+                {errorsCreate.role && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.role.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  University
+                </label>
+                <Input
+                  {...registerCreate('university')}
+                  placeholder="Enter university"
+                />
+                {errorsCreate.university && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.university.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Governorate
+                </label>
+                <Input
+                  {...registerCreate('governorate')}
+                  placeholder="Enter governorate"
+                />
+                {errorsCreate.governorate && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.governorate.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Faculty
+                </label>
+                <Input
+                  {...registerCreate('faculty')}
+                  placeholder="Enter faculty"
+                />
+                {errorsCreate.faculty && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.faculty.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Academic Year
+                </label>
+                <Input
+                  {...registerCreate('year')}
+                  placeholder="Enter academic year"
+                />
+                {errorsCreate.year && (
+                  <p className="text-red-500 text-sm mt-1">{errorsCreate.year.message}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-2 pt-4">
+              <Button type="button" variant="outline" onClick={handleCloseCreateSheet}>
+                Cancel
+              </Button>
+              <Button type="submit" disabled={isLoading}>
+                {isLoading ? 'Creating...' : 'Create User'}
               </Button>
             </div>
           </form>
