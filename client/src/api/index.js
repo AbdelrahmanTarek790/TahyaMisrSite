@@ -54,6 +54,7 @@ export const usersAPI = {
   updateMe: (userData) => api.put('/users/me', userData),
   getAll: (params) => api.get('/users', { params }),
   getById: (id) => api.get(`/users/${id}`),
+  create: (userData) => api.post('/auth/register', userData), // Admin can create users through registration
   update: (id, userData) => api.put(`/users/${id}`, userData),
   delete: (id) => api.delete(`/users/${id}`),
 };

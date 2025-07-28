@@ -3,15 +3,19 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../co
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
 import { useError } from '../context/ErrorContext';
+import { useAuth } from '../context/AuthContext';
 import { eventsAPI } from '../api';
-import { Search, Calendar, MapPin, Users } from 'lucide-react';
+import { Search, Calendar, MapPin, Users, Plus } from 'lucide-react';
+import CreateEventSheet from '../components/forms/CreateEventSheet';
 
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [pagination, setPagination] = useState({ page: 1, limit: 6, total: 0 });
+  const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false);
   const { addError } = useError();
+  const { user } = useAuth();
 
   useEffect(() => {
     fetchEvents();
@@ -76,9 +80,17 @@ const Events = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold text-gray-900">Events</h1>
-        <p className="text-gray-600">Discover and register for upcoming events</p>
+      <div className="flex justify-between items-center">
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Events</h1>
+          <p className="text-gray-600">Discover and register for upcoming events</p>
+        </div>
+        {user?.role === 'admin' && (
+          <Button onClick={() => setIsCreateSheetOpen(true)}>
+            <Plus className="h-4 w-4 mr-2" />
+            Create Event
+          </Button>
+        )}
       </div>
 
       {/* Search */}
@@ -212,6 +224,16 @@ const Events = () => {
           </Button>
         </div>
       )}
+      
+      {/* Create Event Sheet */}
+      <CreateEventSheet
+        isOpen={isCreateSheetOpen}
+        onClose={() => setIsCreateSheetOpen(false)}
+        onSuccess={() => {
+          fetchEvents();
+          setPagination(prev => ({ ...prev, page: 1 }));
+        }}
+      />
     </div>
   );
 };

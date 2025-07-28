@@ -13,6 +13,7 @@ import NewsManagement from "./pages/admin/NewsManagement"
 import EventsManagement from "./pages/admin/EventsManagement"
 import UserManagement from "./pages/admin/UserManagement"
 import PositionsManagement from "./pages/admin/PositionsManagement"
+import NotificationsManagement from "./pages/admin/NotificationsManagement"
 import Profile from "./pages/Profile"
 import Settings from "./pages/Settings"
 import LandingPage from "./pages/public/LandingPage"
@@ -144,6 +145,16 @@ function App() {
                                 <ProtectedRoute roles={["admin"]}>
                                     <DashboardLayout>
                                         <PositionsManagement />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/notifications"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <DashboardLayout>
+                                        <NotificationsManagement />
                                     </DashboardLayout>
                                 </ProtectedRoute>
                             }
