@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../.
 import { useError } from '../../context/ErrorContext';
 import { positionsAPI } from '../../api';
 import { Plus, Edit, Trash2, Users, MapPin, Building, Search } from 'lucide-react';
+import { EGYPT_GOVERNORATES } from '../../constants/governorates';
 
 const positionSchema = z.object({
   name: z.string().min(3, 'Position name must be at least 3 characters'),
@@ -216,10 +217,17 @@ const PositionsManagement = () => {
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Governorate
                 </label>
-                <Input
+                <select
                   {...register('governorate')}
-                  placeholder="Enter governorate (leave empty for global positions)"
-                />
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                  <option value="">Select Governorate (leave empty for global positions)</option>
+                  {EGYPT_GOVERNORATES.map((governorate) => (
+                    <option key={governorate} value={governorate}>
+                      {governorate}
+                    </option>
+                  ))}
+                </select>
                 {errors.governorate && (
                   <p className="text-red-500 text-sm mt-1">{errors.governorate.message}</p>
                 )}
