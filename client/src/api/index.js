@@ -93,6 +93,7 @@ export const eventsAPI = {
   }),
   delete: (id) => api.delete(`/events/${id}`),
   register: (id) => api.post(`/events/${id}/register`),
+  getRegisteredUsers: (id) => api.get(`/events/${id}/registered-users`),
 };
 
 // Media API

@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../../components/ui/sheet';
 import { useError } from '../../context/ErrorContext';
 import { eventsAPI } from '../../api';
-import { Plus, Edit, Trash2, Eye, Calendar, MapPin } from 'lucide-react';
+import { Plus, Edit, Trash2, Eye, Calendar, MapPin, Download, User, Phone, Mail, IdCard, Briefcase } from 'lucide-react';
 import CreateEventSheet from '../../components/forms/CreateEventSheet';
 
 const EventsManagement = () => {
@@ -12,6 +13,10 @@ const EventsManagement = () => {
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState(null);
   const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 });
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [registeredUsers, setRegisteredUsers] = useState([]);
+  const [isUsersSheetOpen, setIsUsersSheetOpen] = useState(false);
+  const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const { addError } = useError();
 
   useEffect(() => {
@@ -66,6 +71,66 @@ const EventsManagement = () => {
 
   const handleSheetSuccess = () => {
     fetchEvents();
+  };
+
+  const handleViewRegisteredUsers = async (event) => {
+    try {
+      setIsLoadingUsers(true);
+      setSelectedEvent(event);
+      const response = await eventsAPI.getRegisteredUsers(event._id);
+      setRegisteredUsers(response.data?.registeredUsers || []);
+      setIsUsersSheetOpen(true);
+    } catch (error) {
+      addError('Failed to fetch registered users');
+    } finally {
+      setIsLoadingUsers(false);
+    }
+  };
+
+  const handleCloseUsersSheet = () => {
+    setIsUsersSheetOpen(false);
+    setSelectedEvent(null);
+    setRegisteredUsers([]);
+  };
+
+  const handleExportCSV = () => {
+    if (!registeredUsers.length) {
+      addError('No users to export');
+      return;
+    }
+
+    // Create CSV headers
+    const headers = ['Name', 'Phone', 'National ID', 'Email', 'Position', 'University', 'Governorate', 'Registration Date'];
+    
+    // Create CSV rows
+    const rows = registeredUsers.map(user => [
+      user.name || '',
+      user.phone || '',
+      user.nationalId || '',
+      user.email || '',
+      user.position?.name || 'N/A',
+      user.university || '',
+      user.governorate || '',
+      user.createdAt ? new Date(user.createdAt).toLocaleDateString() : ''
+    ]);
+
+    // Combine headers and rows
+    const csvContent = [headers, ...rows]
+      .map(row => row.map(field => `"${field}"`).join(','))
+      .join('\n');
+
+    // Create and download the file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${selectedEvent?.title || 'event'}_registered_users_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    addError('CSV file downloaded successfully!', 'success');
   };
 
   const formatDate = (dateString) => {
@@ -133,7 +198,7 @@ const EventsManagement = () => {
                     </CardDescription>
                   </div>
                   <div className="flex space-x-2">
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => handleViewRegisteredUsers(event)}>
                       <Eye className="h-4 w-4" />
                     </Button>
                     <Button variant="outline" size="sm" onClick={() => handleEdit(event)}>
@@ -197,6 +262,114 @@ const EventsManagement = () => {
         onSuccess={handleSheetSuccess}
         editingEvent={editingEvent}
       />
+
+      {/* Registered Users Sheet */}
+      <Sheet open={isUsersSheetOpen} onOpenChange={setIsUsersSheetOpen}>
+        <SheetContent className="w-full max-w-4xl">
+          <SheetHeader>
+            <SheetTitle>
+              Registered Users - {selectedEvent?.title}
+            </SheetTitle>
+          </SheetHeader>
+          
+          <div className="mt-6 space-y-4">
+            {/* Export Button */}
+            <div className="flex justify-between items-center">
+              <p className="text-sm text-gray-600">
+                {registeredUsers.length} user{registeredUsers.length !== 1 ? 's' : ''} registered
+              </p>
+              <Button 
+                onClick={handleExportCSV} 
+                disabled={!registeredUsers.length}
+                variant="outline"
+              >
+                <Download className="h-4 w-4 mr-2" />
+                Export CSV
+              </Button>
+            </div>
+
+            {/* Loading State */}
+            {isLoadingUsers && (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+              </div>
+            )}
+
+            {/* No Users */}
+            {!isLoadingUsers && registeredUsers.length === 0 && (
+              <div className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <User className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                  <h3 className="text-lg font-medium text-gray-900 mb-2">No registered users</h3>
+                  <p className="text-gray-600">No one has registered for this event yet.</p>
+                </div>
+              </div>
+            )}
+
+            {/* Users Table */}
+            {!isLoadingUsers && registeredUsers.length > 0 && (
+              <div className="overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="border-b">
+                      <th className="text-left pb-3 font-medium">User</th>
+                      <th className="text-left pb-3 font-medium">Contact</th>
+                      <th className="text-left pb-3 font-medium">ID & Position</th>
+                      <th className="text-left pb-3 font-medium">Location</th>
+                      <th className="text-left pb-3 font-medium">Registered</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {registeredUsers.map((user) => (
+                      <tr key={user._id} className="border-b">
+                        <td className="py-4">
+                          <div className="flex items-center space-x-3">
+                            <div className="bg-blue-100 rounded-full p-2">
+                              <User className="h-4 w-4 text-blue-600" />
+                            </div>
+                            <div>
+                              <div className="font-medium">{user.name}</div>
+                              <div className="text-sm text-gray-500">{user.university}</div>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4">
+                          <div className="space-y-1">
+                            <div className="flex items-center space-x-2 text-sm">
+                              <Phone className="h-3 w-3 text-gray-400" />
+                              <span>{user.phone}</span>
+                            </div>
+                            <div className="flex items-center space-x-2 text-sm">
+                              <Mail className="h-3 w-3 text-gray-400" />
+                              <span className="text-xs">{user.email}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4">
+                          <div className="space-y-1">
+                            <div className="flex items-center space-x-2 text-sm">
+                              <IdCard className="h-3 w-3 text-gray-400" />
+                              <span className="font-mono">{user.nationalId}</span>
+                            </div>
+                            <div className="flex items-center space-x-2 text-sm">
+                              <Briefcase className="h-3 w-3 text-gray-400" />
+                              <span>{user.position?.name || 'N/A'}</span>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-4 text-sm">{user.governorate}</td>
+                        <td className="py-4 text-sm">
+                          {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'N/A'}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 };
