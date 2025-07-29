@@ -35,7 +35,8 @@ const EventsManagement = () => {
         ...prev,
         total: response.data?.total || 0,
       }));
-    } catch (error) {
+    } catch (err) {
+      console.error('Error fetching events:', err);
       addError('Failed to fetch events');
     } finally {
       setIsLoading(false);
@@ -54,7 +55,8 @@ const EventsManagement = () => {
       await eventsAPI.delete(eventId);
       addError('Event deleted successfully!', 'success');
       fetchEvents();
-    } catch (error) {
+    } catch (err) {
+      console.error('Error deleting event:', err);
       addError('Failed to delete event');
     }
   };
@@ -80,17 +82,12 @@ const EventsManagement = () => {
       const response = await eventsAPI.getRegisteredUsers(event._id);
       setRegisteredUsers(response.data?.registeredUsers || []);
       setIsUsersSheetOpen(true);
-    } catch (error) {
+    } catch (err) {
+      console.error('Error fetching registered users:', err);
       addError('Failed to fetch registered users');
     } finally {
       setIsLoadingUsers(false);
     }
-  };
-
-  const handleCloseUsersSheet = () => {
-    setIsUsersSheetOpen(false);
-    setSelectedEvent(null);
-    setRegisteredUsers([]);
   };
 
   const handleExportCSV = () => {
@@ -264,7 +261,13 @@ const EventsManagement = () => {
       />
 
       {/* Registered Users Sheet */}
-      <Sheet open={isUsersSheetOpen} onOpenChange={setIsUsersSheetOpen}>
+      <Sheet open={isUsersSheetOpen} onOpenChange={(open) => {
+        setIsUsersSheetOpen(open);
+        if (!open) {
+          setSelectedEvent(null);
+          setRegisteredUsers([]);
+        }
+      }}>
         <SheetContent className="w-full max-w-4xl">
           <SheetHeader>
             <SheetTitle>
