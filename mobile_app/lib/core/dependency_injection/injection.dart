@@ -125,6 +125,7 @@ Future<void> configureDependencies() async {
       loginUseCase: getIt<LoginUseCase>(),
       registerUseCase: getIt<RegisterUseCase>(),
       logoutUseCase: getIt<LogoutUseCase>(),
+      authRepository: getIt<AuthRepository>(),
     ),
   );
 

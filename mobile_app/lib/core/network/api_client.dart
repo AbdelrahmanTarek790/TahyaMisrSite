@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
+import 'dart:io';
 
 import '../../features/auth/data/models/login_request.dart';
 import '../../features/auth/data/models/login_response.dart';
