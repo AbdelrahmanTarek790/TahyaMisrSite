@@ -39,7 +39,7 @@ lib/
 
 ## Tech Stack
 
-- **Flutter**: 3.32.8+
+- **Flutter**: 3.16.0+ (Compatible stable version)
 - **State Management**: flutter_bloc + freezed
 - **Networking**: dio + retrofit
 - **Local Storage**: hive + flutter_secure_storage
@@ -47,6 +47,8 @@ lib/
 - **UI**: Material 3 + flutter_animate
 - **DI**: get_it + injectable
 - **Code Generation**: build_runner + json_serializable
+
+> **📋 Package Compatibility Update**: All packages have been updated to ensure compatibility. See [COMPATIBILITY_UPDATE.md](COMPATIBILITY_UPDATE.md) for details.
 
 ## Dependencies
 
@@ -76,8 +78,8 @@ lib/
 ## Getting Started
 
 ### Prerequisites
-- Flutter SDK 3.32.8 or higher
-- Dart SDK 3.5.0 or higher
+- Flutter SDK 3.16.0 or higher (stable version)
+- Dart SDK 3.0.0 or higher
 - Android Studio / VS Code
 - Android SDK / Xcode (for iOS)
 
@@ -103,6 +105,16 @@ lib/
    ```bash
    flutter run
    ```
+
+### 🔧 Package Compatibility 
+
+All packages have been updated to ensure compatibility between dependencies. The major changes include:
+
+- **Stable package versions**: All packages now use stable, widely-supported versions
+- **API compatibility**: Fixed breaking changes (e.g., Skeletonizer `enabled` parameter)
+- **Flutter SDK**: Updated to realistic version (3.16.0+) instead of unrealistic 3.32.8
+
+For detailed information about the compatibility updates, see [COMPATIBILITY_UPDATE.md](COMPATIBILITY_UPDATE.md).
 
 ### Code Generation
 
