@@ -139,6 +139,7 @@ class _NewsListPageState extends State<NewsListPage> {
 
   Widget _buildSkeleton() {
     return Skeletonizer(
+      enabled: true,
       child: ListView.builder(
         itemCount: 5,
         itemBuilder: (context, index) => const NewsCard(
