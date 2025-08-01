@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import { usersAPI } from '../api';
+import { getImageUrl } from '../constants/api';
 
 // Initial state
 const initialState = {

@@ -4,10 +4,11 @@ import { Input } from './ui/input';
 import ImageCropModal from './ImageCropModal';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Camera, Upload } from 'lucide-react';
+import { getImageUrl } from '../constants/api';
 
-const ProfileImageUpload = ({ value, onChange, error }) => {
+const ProfileImageUpload = ({ value, onChange, error, existingImage = null }) => {
   const [imageSrc, setImageSrc] = useState(null);
-  const [croppedImage, setCroppedImage] = useState(value || null);
+  const [croppedImage, setCroppedImage] = useState(value || getImageUrl(existingImage));
   const [isCropModalOpen, setIsCropModalOpen] = useState(false);
   const fileInputRef = useRef(null);
 
