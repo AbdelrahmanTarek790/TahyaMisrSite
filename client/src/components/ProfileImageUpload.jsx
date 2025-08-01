@@ -14,7 +14,25 @@ const ProfileImageUpload = ({ value, onChange, error, existingImage = null }) =>
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith('image/')) {
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        if (error) {
+          // Clear any existing error first, then set new error
+          onChange(null);
+        }
+        return;
+      }
+      
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        if (error) {
+          // Clear any existing error first, then set new error
+          onChange(null);
+        }
+        return;
+      }
+      
       const reader = new FileReader();
       reader.onload = () => {
         setImageSrc(reader.result);
@@ -56,7 +74,7 @@ const ProfileImageUpload = ({ value, onChange, error, existingImage = null }) =>
     <div className="space-y-4">
       <div className="flex flex-col items-center space-y-4">
         <div className="relative">
-          <Avatar className="h-24 w-24">
+          <Avatar className={`h-24 w-24 ${!croppedImage && error ? 'ring-2 ring-red-500' : ''}`}>
             <AvatarImage src={croppedImage} alt="Profile" />
             <AvatarFallback className="text-2xl">
               <Camera className="h-8 w-8" />
@@ -77,7 +95,7 @@ const ProfileImageUpload = ({ value, onChange, error, existingImage = null }) =>
         <div className="flex flex-col items-center space-y-2">
           <Button
             type="button"
-            variant="outline"
+            variant={!croppedImage && error ? "destructive" : "outline"}
             onClick={handleUploadClick}
             className="flex items-center space-x-2"
           >
@@ -90,7 +108,7 @@ const ProfileImageUpload = ({ value, onChange, error, existingImage = null }) =>
             <br />
             Supported formats: JPG, PNG (Max 5MB)
             <br />
-            <span className="text-red-600">* Required for registration</span>
+            <span className="text-red-600 font-semibold">* Required for registration</span>
           </p>
         </div>
       </div>
@@ -104,7 +122,7 @@ const ProfileImageUpload = ({ value, onChange, error, existingImage = null }) =>
       />
 
       {error && (
-        <p className="text-sm text-red-600 text-center">{error}</p>
+        <p className="text-sm text-red-600 text-center font-medium">{error}</p>
       )}
 
       <ImageCropModal

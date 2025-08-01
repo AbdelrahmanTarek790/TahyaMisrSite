@@ -70,8 +70,8 @@ const ImageCropModal = ({
 
     const data = ctx.getImageData(0, 0, safeArea, safeArea);
 
-    canvas.width = pixelCrop.width;
-    canvas.height = pixelCrop.height;
+    canvas.width = Math.max(pixelCrop.width, 200);
+    canvas.height = Math.max(pixelCrop.height, 200);
 
     ctx.putImageData(
       data,
@@ -80,7 +80,7 @@ const ImageCropModal = ({
     );
 
     return new Promise((resolve) => {
-      canvas.toBlob(resolve, 'image/jpeg', 1);
+      canvas.toBlob(resolve, 'image/jpeg', 0.9);
     });
   };
 
