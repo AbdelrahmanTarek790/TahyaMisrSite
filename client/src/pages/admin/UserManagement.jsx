@@ -8,8 +8,11 @@ import { Input } from "../../components/ui/input"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../../components/ui/sheet"
 import { useError } from "../../context/ErrorContext"
 import { usersAPI, positionsAPI } from "../../api"
-import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter } from "lucide-react"
+import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter, Download } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { EGYPT_GOVERNORATES } from "../../constants/governorates"
+import { getImageUrl } from "../../constants/api"
+import { getInitials } from "../../lib/utils"
 
 // Backend User model validation schema
 const userSchema = z.object({
@@ -246,6 +249,60 @@ const UserManagement = () => {
         setFilterUniversity("all")
     }
 
+    // Export CSV function
+    const exportCSV = () => {
+        // Use filtered users for export
+        const dataToExport = filteredUsers.map(user => ({
+            'Full Name': user.name,
+            'Email': user.email,
+            'Phone': user.phone || 'N/A',
+            'National ID': user.nationalId || 'N/A',
+            'University': user.university,
+            'Governorate': user.governorate,
+            'Role': user.role,
+            'Position': user.position?.name || 'N/A',
+            'Membership Number': user.membershipNumber || 'N/A',
+            'Membership Expiry': user.membershipExpiry 
+                ? new Date(user.membershipExpiry).toLocaleDateString() 
+                : 'N/A',
+            'Joined Date': new Date(user.createdAt).toLocaleDateString()
+        }))
+
+        // Convert to CSV
+        const headers = Object.keys(dataToExport[0] || {})
+        const csvContent = [
+            headers.join(','),
+            ...dataToExport.map(row => 
+                headers.map(header => 
+                    `"${(row[header] || '').toString().replace(/"/g, '""')}"`
+                ).join(',')
+            )
+        ].join('\n')
+
+        // Download CSV
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' })
+        const link = document.createElement('a')
+        const url = URL.createObjectURL(blob)
+        link.setAttribute('href', url)
+        
+        // Generate filename with current date and filter info
+        const today = new Date().toISOString().split('T')[0]
+        let filename = `users_export_${today}`
+        
+        if (filterRole !== 'all') filename += `_${filterRole}`
+        if (filterGovernorate !== 'all') filename += `_${filterGovernorate.replace(/\s+/g, '_')}`
+        if (searchTerm) filename += '_filtered'
+        
+        link.setAttribute('download', `${filename}.csv`)
+        link.style.visibility = 'hidden'
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+        URL.revokeObjectURL(url)
+
+        addError(`Exported ${filteredUsers.length} users to CSV`, 'success')
+    }
+
     const getRoleIcon = (role) => {
         switch (role) {
             case "admin":
@@ -276,10 +333,21 @@ const UserManagement = () => {
                     <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
                     <p className="text-gray-600">Manage users and their roles</p>
                 </div>
-                <Button onClick={() => setIsCreateSheetOpen(true)}>
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Create User
-                </Button>
+                <div className="flex gap-2">
+                    <Button 
+                        onClick={exportCSV} 
+                        variant="outline" 
+                        disabled={filteredUsers.length === 0}
+                        className="flex items-center gap-2"
+                    >
+                        <Download className="h-4 w-4" />
+                        Export CSV ({filteredUsers.length})
+                    </Button>
+                    <Button onClick={() => setIsCreateSheetOpen(true)}>
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        Create User
+                    </Button>
+                </div>
             </div>
 
             {/* Filters */}
@@ -384,10 +452,21 @@ const UserManagement = () => {
                                     {filteredUsers.map((user) => (
                                         <tr key={user._id} className="border-b">
                                             <td className="py-4">
-                                                <div>
-                                                    <div className="font-medium">{user.name}</div>
-                                                    <div className="text-sm text-gray-500">{user.email}</div>
-                                                    <div className="text-xs text-gray-400">{user.phone}</div>
+                                                <div className="flex items-center space-x-3">
+                                                    <Avatar className="h-10 w-10">
+                                                        <AvatarImage 
+                                                            src={getImageUrl(user?.profileImage)} 
+                                                            alt={user?.name || "User"} 
+                                                        />
+                                                        <AvatarFallback>
+                                                            {user?.name ? getInitials(user.name) : "U"}
+                                                        </AvatarFallback>
+                                                    </Avatar>
+                                                    <div>
+                                                        <div className="font-medium">{user.name}</div>
+                                                        <div className="text-sm text-gray-500">{user.email}</div>
+                                                        <div className="text-xs text-gray-400">{user.phone}</div>
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td className="py-4">

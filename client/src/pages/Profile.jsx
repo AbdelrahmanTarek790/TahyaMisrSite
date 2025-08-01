@@ -12,6 +12,7 @@ import { usersAPI } from '../api';
 import { User, Mail, University, MapPin, Phone, Calendar, Edit } from 'lucide-react';
 import { getInitials } from '../lib/utils';
 import { EGYPT_GOVERNORATES } from '../constants/governorates';
+import { getImageUrl } from '../constants/api';
 
 const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -93,7 +94,10 @@ const Profile = () => {
         <Card>
           <CardHeader className="text-center">
             <Avatar className="h-24 w-24 mx-auto">
-              <AvatarImage src={user?.photo} alt={user?.name || "User"} />
+              <AvatarImage 
+                src={getImageUrl(user?.profileImage)} 
+                alt={user?.name || "User"} 
+              />
               <AvatarFallback className="text-2xl">
                 {user?.name ? getInitials(user.name) : "U"}
               </AvatarFallback>

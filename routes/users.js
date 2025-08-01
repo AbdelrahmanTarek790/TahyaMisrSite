@@ -2,12 +2,13 @@ const express = require('express');
 const { getUsers, getUser, updateUser, deleteUser } = require('../controllers/userController');
 const { getMe, updateMe } = require('../controllers/authController');
 const { protect, admin } = require('../middleware/auth');
+const upload = require('../utils/upload');
 
 const router = express.Router();
 
 // Current user routes (require authentication)
 router.get('/me', protect, getMe);
-router.put('/me', protect, updateMe);
+router.put('/me', protect, upload.single('profileImage'), updateMe);
 
 // Admin routes (require admin role)
 router.get('/', protect, admin, getUsers);

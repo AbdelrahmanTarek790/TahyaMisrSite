@@ -42,7 +42,14 @@ api.interceptors.response.use(
 // Auth API
 export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
-  register: (userData) => api.post('/auth/register', userData),
+  register: (userData) => {
+    // Handle both FormData and regular object
+    const headers = userData instanceof FormData 
+      ? { 'Content-Type': 'multipart/form-data' }
+      : { 'Content-Type': 'application/json' };
+    
+    return api.post('/auth/register', userData, { headers });
+  },
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
   resetPassword: (token, password) => api.post('/auth/reset-password', { token, password }),
   changePassword: (passwords) => api.put('/auth/change-password', passwords),
@@ -51,7 +58,14 @@ export const authAPI = {
 // Users API
 export const usersAPI = {
   getMe: () => api.get('/users/me'),
-  updateMe: (userData) => api.put('/users/me', userData),
+  updateMe: (userData) => {
+    // Handle both FormData and regular object
+    const headers = userData instanceof FormData 
+      ? { 'Content-Type': 'multipart/form-data' }
+      : { 'Content-Type': 'application/json' };
+    
+    return api.put('/users/me', userData, { headers });
+  },
   getAll: (params) => api.get('/users', { params }),
   getById: (id) => api.get(`/users/${id}`),
   create: (userData) => api.post('/auth/register', userData), // Admin can create users through registration
@@ -93,6 +107,7 @@ export const eventsAPI = {
   }),
   delete: (id) => api.delete(`/events/${id}`),
   register: (id) => api.post(`/events/${id}/register`),
+  getRegisteredUsers: (id) => api.get(`/events/${id}/registered-users`),
 };
 
 // Media API

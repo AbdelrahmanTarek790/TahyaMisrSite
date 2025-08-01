@@ -10,6 +10,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useError } from '../../context/ErrorContext';
 import { positionsAPI } from '../../api';
 import { EGYPT_GOVERNORATES } from '../../constants/governorates';
+import ProfileImageUpload from '../../components/ProfileImageUpload';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -30,6 +31,8 @@ const registerSchema = z.object({
 const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [positions, setPositions] = useState([]);
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileImageError, setProfileImageError] = useState('');
   const { register: registerUser } = useAuth();
   const { addError } = useError();
   const navigate = useNavigate();
@@ -43,30 +46,34 @@ const Register = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  const watchGovernorate = watch('governorate');
-
-  useEffect(() => {
-    const fetchPositions = async () => {
-      try {
-        const response = await positionsAPI.getAll({ 
-          governorate: watchGovernorate 
-        });
-        setPositions(response.data || []);
-      } catch (error) {
-        console.error('Failed to fetch positions:', error);
-      }
-    };
-
-    if (watchGovernorate) {
-      fetchPositions();
-    }
-  }, [watchGovernorate]);
 
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
+      setProfileImageError('');
+      
+      // Validate profile image is required
+      if (!profileImage) {
+        setProfileImageError('Profile image is required');
+        return;
+      }
+      
       const { confirmPassword, ...userData } = data;
-      await registerUser(userData);
+      
+      // Create FormData to handle file upload
+      const formData = new FormData();
+      
+      // Append all form fields
+      Object.keys(userData).forEach(key => {
+        if (userData[key]) {
+          formData.append(key, userData[key]);
+        }
+      });
+      
+      // Append profile image (it's now required)
+      formData.append('profileImage', profileImage);
+      
+      await registerUser(formData);
       addError('Registration successful! Welcome to Tahya Misr.', 'success');
       navigate('/dashboard');
     } catch (error) {
@@ -95,6 +102,18 @@ const Register = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              {/* Profile Image Upload */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-3 text-center">
+                  Profile Picture *
+                </label>
+                <ProfileImageUpload
+                  value={profileImage}
+                  onChange={setProfileImage}
+                  error={profileImageError}
+                />
+              </div>
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -220,7 +239,7 @@ const Register = () => {
                   )}
                 </div>
 
-                {positions.length > 0 && (
+                {/* {positions.length > 0 && (
                   <div>
                     <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
                       Position (Optional)
@@ -238,7 +257,7 @@ const Register = () => {
                       ))}
                     </select>
                   </div>
-                )}
+                )} */}
 
                 <div>
                   <label htmlFor="membershipNumber" className="block text-sm font-medium text-gray-700 mb-1">

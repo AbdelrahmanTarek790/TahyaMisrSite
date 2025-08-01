@@ -1,14 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { Input } from '../components/ui/input';
+import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/avatar';
+import ProfileImageUpload from '../components/ProfileImageUpload';
 import { useAuth } from '../context/AuthContext';
 import { useError } from '../context/ErrorContext';
-import { authAPI } from '../api';
-import { Lock, Shield, Bell, Palette, Globe, Save } from 'lucide-react';
+import { authAPI, usersAPI } from '../api';
+import { Lock, Shield, Bell, Palette, Globe, Save, User as UserIcon, Edit } from 'lucide-react';
+import { getInitials } from '../lib/utils';
+import { getImageUrl } from '../constants/api';
+import { EGYPT_GOVERNORATES } from '../constants/governorates';
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(1, 'Current password is required'),
@@ -19,11 +24,24 @@ const passwordSchema = z.object({
   path: ["confirmPassword"],
 });
 
+const profileSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Invalid email address'),
+  phone: z.string().optional(),
+  university: z.string().min(2, 'University must be at least 2 characters'),
+  governorate: z.string().min(2, 'Governorate must be at least 2 characters'),
+  faculty: z.string().optional(),
+  year: z.string().optional(),
+});
+
 const Settings = () => {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const { addError } = useError();
   const [isLoading, setIsLoading] = useState(false);
-  const [activeSection, setActiveSection] = useState('security');
+  const [activeSection, setActiveSection] = useState('profile');
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [profileImageError, setProfileImageError] = useState('');
 
   const {
     register,
@@ -33,6 +51,38 @@ const Settings = () => {
   } = useForm({
     resolver: zodResolver(passwordSchema),
   });
+
+  const {
+    register: registerProfile,
+    handleSubmit: handleSubmitProfile,
+    reset: resetProfile,
+    formState: { errors: errorsProfile, isDirty: isDirtyProfile },
+  } = useForm({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: user?.name || '',
+      email: user?.email || '',
+      phone: user?.phone || '',
+      university: user?.university || '',
+      governorate: user?.governorate || '',
+      faculty: user?.faculty || '',
+      year: user?.year || '',
+    },
+  });
+
+  useEffect(() => {
+    if (user) {
+      resetProfile({
+        name: user.name || '',
+        email: user.email || '',
+        phone: user.phone || '',
+        university: user.university || '',
+        governorate: user.governorate || '',
+        faculty: user.faculty || '',
+        year: user.year || '',
+      });
+    }
+  }, [user, resetProfile]);
 
   const onSubmitPassword = async (data) => {
     try {
@@ -50,7 +100,45 @@ const Settings = () => {
     }
   };
 
+  const onSubmitProfile = async (data) => {
+    try {
+      setIsLoading(true);
+      
+      // If profile image was changed, create FormData
+      if (profileImage) {
+        const formData = new FormData();
+        Object.keys(data).forEach(key => {
+          if (data[key]) formData.append(key, data[key]);
+        });
+        formData.append('profileImage', profileImage);
+        
+        const response = await usersAPI.updateMe(formData);
+        updateUser(response.data.user);
+      } else {
+        // Regular JSON update
+        const response = await usersAPI.updateMe(data);
+        updateUser(response.data.user);
+      }
+      
+      addError('Profile updated successfully!', 'success');
+      setIsEditingProfile(false);
+      setProfileImage(null);
+    } catch (error) {
+      addError(error.message || 'Failed to update profile');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCancelProfile = () => {
+    resetProfile();
+    setIsEditingProfile(false);
+    setProfileImage(null);
+    setProfileImageError('');
+  };
+
   const settingsSections = [
+    { id: 'profile', label: 'Profile', icon: UserIcon },
     { id: 'security', label: 'Security', icon: Shield },
     { id: 'notifications', label: 'Notifications', icon: Bell },
     { id: 'appearance', label: 'Appearance', icon: Palette },
@@ -96,6 +184,205 @@ const Settings = () => {
 
         {/* Settings Content */}
         <div className="lg:col-span-3 space-y-6">
+          {/* Profile Settings */}
+          {activeSection === 'profile' && (
+            <div className="space-y-6">
+              {/* Profile Overview Card */}
+              <Card>
+                <CardHeader className="text-center">
+                  <div className="flex justify-center">
+                    <Avatar className="h-24 w-24">
+                      <AvatarImage 
+                        src={getImageUrl(user?.profileImage)} 
+                        alt={user?.name || "User"} 
+                      />
+                      <AvatarFallback className="text-2xl">
+                        {user?.name ? getInitials(user.name) : "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  <CardTitle>{user?.name}</CardTitle>
+                  <CardDescription className="flex items-center justify-center gap-1">
+                    {user?.role === 'admin' && <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">Admin</span>}
+                    {user?.role === 'volunteer' && <span className="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">Volunteer</span>}
+                    {user?.role === 'student' && <span className="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Student</span>}
+                  </CardDescription>
+                </CardHeader>
+              </Card>
+
+              {/* Profile Edit Card */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <UserIcon className="h-5 w-5" />
+                      Profile Information
+                    </CardTitle>
+                    <CardDescription>
+                      Update your personal information and profile image
+                    </CardDescription>
+                  </div>
+                  {!isEditingProfile && (
+                    <Button onClick={() => setIsEditingProfile(true)}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Edit Profile
+                    </Button>
+                  )}
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleSubmitProfile(onSubmitProfile)} className="space-y-4">
+                    {/* Profile Image Upload */}
+                    {isEditingProfile && (
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Profile Image
+                        </label>
+                        <ProfileImageUpload
+                          value={profileImage}
+                          onChange={setProfileImage}
+                          error={profileImageError}
+                          existingImage={user?.profileImage}
+                        />
+                        {profileImageError && (
+                          <p className="text-red-500 text-sm mt-1">{profileImageError}</p>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Full Name
+                        </label>
+                        <Input
+                          {...registerProfile('name')}
+                          disabled={!isEditingProfile}
+                          placeholder="Enter your full name"
+                        />
+                        {errorsProfile.name && (
+                          <p className="text-red-500 text-sm mt-1">{errorsProfile.name.message}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Email
+                        </label>
+                        <Input
+                          {...registerProfile('email')}
+                          disabled={!isEditingProfile}
+                          type="email"
+                          placeholder="Enter your email"
+                        />
+                        {errorsProfile.email && (
+                          <p className="text-red-500 text-sm mt-1">{errorsProfile.email.message}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Phone Number
+                        </label>
+                        <Input
+                          {...registerProfile('phone')}
+                          disabled={!isEditingProfile}
+                          placeholder="Enter your phone number"
+                        />
+                        {errorsProfile.phone && (
+                          <p className="text-red-500 text-sm mt-1">{errorsProfile.phone.message}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          University
+                        </label>
+                        <Input
+                          {...registerProfile('university')}
+                          disabled={!isEditingProfile}
+                          placeholder="Enter your university"
+                        />
+                        {errorsProfile.university && (
+                          <p className="text-red-500 text-sm mt-1">{errorsProfile.university.message}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Governorate
+                        </label>
+                        {isEditingProfile ? (
+                          <select
+                            {...registerProfile('governorate')}
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                          >
+                            <option value="">Select Governorate</option>
+                            {EGYPT_GOVERNORATES.map((governorate) => (
+                              <option key={governorate} value={governorate}>
+                                {governorate}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <Input
+                            {...registerProfile('governorate')}
+                            disabled={!isEditingProfile}
+                            placeholder="Enter your governorate"
+                          />
+                        )}
+                        {errorsProfile.governorate && (
+                          <p className="text-red-500 text-sm mt-1">{errorsProfile.governorate.message}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Faculty
+                        </label>
+                        <Input
+                          {...registerProfile('faculty')}
+                          disabled={!isEditingProfile}
+                          placeholder="Enter your faculty"
+                        />
+                        {errorsProfile.faculty && (
+                          <p className="text-red-500 text-sm mt-1">{errorsProfile.faculty.message}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Academic Year
+                        </label>
+                        <Input
+                          {...registerProfile('year')}
+                          disabled={!isEditingProfile}
+                          placeholder="Enter your academic year"
+                        />
+                        {errorsProfile.year && (
+                          <p className="text-red-500 text-sm mt-1">{errorsProfile.year.message}</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {isEditingProfile && (
+                      <div className="flex justify-end gap-2 pt-4">
+                        <Button type="button" variant="outline" onClick={handleCancelProfile}>
+                          Cancel
+                        </Button>
+                        <Button 
+                          type="submit" 
+                          disabled={isLoading || (!isDirtyProfile && !profileImage)}
+                        >
+                          {isLoading ? 'Saving...' : 'Save Changes'}
+                        </Button>
+                      </div>
+                    )}
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           {/* Security Settings */}
           {activeSection === 'security' && (
             <Card>

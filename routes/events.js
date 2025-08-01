@@ -5,7 +5,8 @@ const {
   createEvent,
   updateEvent,
   deleteEvent,
-  registerForEvent
+  registerForEvent,
+  getEventRegisteredUsers
 } = require('../controllers/eventController');
 const { protect, admin } = require('../middleware/auth');
 const upload = require('../utils/upload');
@@ -19,6 +20,7 @@ router.get('/:id', getEventById);
 router.post('/:id/register', protect, registerForEvent);
 
 // Admin only routes
+router.get('/:id/registered-users', protect, admin, getEventRegisteredUsers);
 router.post('/', protect, admin, upload.single('image'), createEvent);
 router.put('/:id', protect, admin, upload.single('image'), updateEvent);
 router.delete('/:id', protect, admin, deleteEvent);
