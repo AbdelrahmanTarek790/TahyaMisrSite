@@ -58,7 +58,14 @@ export const authAPI = {
 // Users API
 export const usersAPI = {
   getMe: () => api.get('/users/me'),
-  updateMe: (userData) => api.put('/users/me', userData),
+  updateMe: (userData) => {
+    // Handle both FormData and regular object
+    const headers = userData instanceof FormData 
+      ? { 'Content-Type': 'multipart/form-data' }
+      : { 'Content-Type': 'application/json' };
+    
+    return api.put('/users/me', userData, { headers });
+  },
   getAll: (params) => api.get('/users', { params }),
   getById: (id) => api.get(`/users/${id}`),
   create: (userData) => api.post('/auth/register', userData), // Admin can create users through registration

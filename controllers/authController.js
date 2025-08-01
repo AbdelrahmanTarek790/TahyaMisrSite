@@ -200,17 +200,20 @@ const getMe = async (req, res, next) => {
 // @access  Private
 const updateMe = async (req, res, next) => {
   try {
-    // Import validation schema here to avoid circular dependency
-    const { updateUserSchema } = require('../utils/validation');
+    // Check if this is a file upload (FormData)
+    const isFormData = req.headers['content-type']?.includes('multipart/form-data');
     
-    // Validate input
-    const { error } = updateUserSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        error: error.details[0].message,
-        data: null
-      });
+    if (!isFormData) {
+      // Regular JSON update - validate input
+      const { updateUserSchema } = require('../utils/validation');
+      const { error } = updateUserSchema.validate(req.body);
+      if (error) {
+        return res.status(400).json({
+          success: false,
+          error: error.details[0].message,
+          data: null
+        });
+      }
     }
 
     // Validate position if provided
@@ -225,9 +228,17 @@ const updateMe = async (req, res, next) => {
       }
     }
 
+    // Prepare update data
+    const updateData = { ...req.body };
+    
+    // Handle profile image upload if provided
+    if (req.file) {
+      updateData.profileImage = req.file.filename;
+    }
+
     const user = await User.findByIdAndUpdate(
       req.user.id,
-      req.body,
+      updateData,
       {
         new: true,
         runValidators: true
@@ -236,7 +247,7 @@ const updateMe = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: user,
+      data: { user },
       error: null
     });
   } catch (error) {
