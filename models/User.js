@@ -45,6 +45,10 @@ const userSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Position'
   },
+  profileImage: {
+    type: String,
+    default: null
+  },
   membershipNumber: {
     type: String,
     unique: true,

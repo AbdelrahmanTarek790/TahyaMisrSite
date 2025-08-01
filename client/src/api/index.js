@@ -42,7 +42,14 @@ api.interceptors.response.use(
 // Auth API
 export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
-  register: (userData) => api.post('/auth/register', userData),
+  register: (userData) => {
+    // Handle both FormData and regular object
+    const headers = userData instanceof FormData 
+      ? { 'Content-Type': 'multipart/form-data' }
+      : { 'Content-Type': 'application/json' };
+    
+    return api.post('/auth/register', userData, { headers });
+  },
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
   resetPassword: (token, password) => api.post('/auth/reset-password', { token, password }),
   changePassword: (passwords) => api.put('/auth/change-password', passwords),

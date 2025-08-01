@@ -3,21 +3,40 @@ const Position = require('../models/Position');
 const { generateToken } = require('../middleware/auth');
 const { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema } = require('../utils/validation');
 const { sendResetPasswordEmail } = require('../utils/email');
+const upload = require('../utils/upload');
 const crypto = require('crypto');
+const path = require('path');
 
 // @desc    Register user
 // @route   POST /api/v1/auth/register
 // @access  Public
 const register = async (req, res, next) => {
   try {
-    // Validate input
-    const { error } = registerSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({
-        success: false,
-        error: error.details[0].message,
-        data: null
-      });
+    // Only validate with Joi if not a file upload (FormData)
+    const isFormData = req.headers['content-type']?.includes('multipart/form-data');
+    
+    if (!isFormData) {
+      // Validate input for regular JSON
+      const { error } = registerSchema.validate(req.body);
+      if (error) {
+        return res.status(400).json({
+          success: false,
+          error: error.details[0].message,
+          data: null
+        });
+      }
+    } else {
+      // Basic validation for FormData
+      const requiredFields = ['name', 'email', 'password', 'phone', 'university', 'nationalId', 'governorate'];
+      for (const field of requiredFields) {
+        if (!req.body[field] || req.body[field].trim() === '') {
+          return res.status(400).json({
+            success: false,
+            error: `${field} is required`,
+            data: null
+          });
+        }
+      }
     }
 
     const {
@@ -32,6 +51,12 @@ const register = async (req, res, next) => {
       membershipNumber,
       membershipExpiry
     } = req.body;
+
+    // Handle profile image upload if provided
+    let profileImagePath = null;
+    if (req.file) {
+      profileImagePath = req.file.filename;
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({
@@ -69,7 +94,8 @@ const register = async (req, res, next) => {
       governorate,
       position,
       membershipNumber,
-      membershipExpiry
+      membershipExpiry,
+      profileImage: profileImagePath
     });
 
     // Generate token
