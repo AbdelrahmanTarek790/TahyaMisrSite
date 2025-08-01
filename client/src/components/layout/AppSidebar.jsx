@@ -11,7 +11,7 @@ import { NavMain } from "../ui/nav-main"
 import { useNavigate } from "react-router-dom"
 // import { DirectionSwitcher } from "../DirectionSwitcher"
 import { useAuth } from "@/context/AuthContext"
-import { Avatar } from "../ui/avatar"
+import { Avatar, AvatarImage } from "../ui/avatar"
 import { API_BASE_URL } from "@/constants/api"
 
 export function AppSidebar(props) {
@@ -87,7 +87,9 @@ export function AppSidebar(props) {
                 {isAuthenticated && user && (
                     <div className="p-3 border-t">
                         <div className="flex items-center gap-2">
-                            <Avatar src={API_BASE_URL + "/uploads/" + user.profileImage} alt={user.name} />
+                            <Avatar src={API_BASE_URL + "/uploads/" + user.profileImage} alt={user.name}>
+                                <AvatarImage src={API_BASE_URL + "/uploads/" + user.profileImage} alt={user.name} />
+                            </Avatar>
                             <div>
                                 <p className="text-sm font-medium">{user.name}</p>
                                 <p className="text-xs text-muted-foreground">{user.role}</p>

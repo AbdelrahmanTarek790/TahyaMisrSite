@@ -46,24 +46,6 @@ const Register = () => {
     resolver: zodResolver(registerSchema),
   });
 
-  const watchGovernorate = watch('governorate');
-
-  useEffect(() => {
-    const fetchPositions = async () => {
-      try {
-        const response = await positionsAPI.getAll({ 
-          governorate: watchGovernorate 
-        });
-        setPositions(response.data || []);
-      } catch (error) {
-        console.error('Failed to fetch positions:', error);
-      }
-    };
-
-    if (watchGovernorate) {
-      fetchPositions();
-    }
-  }, [watchGovernorate]);
 
   const onSubmit = async (data) => {
     try {
@@ -257,7 +239,7 @@ const Register = () => {
                   )}
                 </div>
 
-                {positions.length > 0 && (
+                {/* {positions.length > 0 && (
                   <div>
                     <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
                       Position (Optional)
@@ -275,7 +257,7 @@ const Register = () => {
                       ))}
                     </select>
                   </div>
-                )}
+                )} */}
 
                 <div>
                   <label htmlFor="membershipNumber" className="block text-sm font-medium text-gray-700 mb-1">
