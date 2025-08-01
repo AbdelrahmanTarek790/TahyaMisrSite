@@ -103,7 +103,7 @@ const ImageCropModal = ({
               onCropChange={onCropChange}
               onCropComplete={onCropCompleteCallback}
               onZoomChange={onZoomChange}
-              cropShape="round"
+              cropShape="rect"
               showGrid={false}
             />
           )}
