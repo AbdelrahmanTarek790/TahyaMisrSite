@@ -32,6 +32,7 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [positions, setPositions] = useState([]);
   const [profileImage, setProfileImage] = useState(null);
+  const [profileImageError, setProfileImageError] = useState('');
   const { register: registerUser } = useAuth();
   const { addError } = useError();
   const navigate = useNavigate();
@@ -67,6 +68,14 @@ const Register = () => {
   const onSubmit = async (data) => {
     try {
       setIsLoading(true);
+      setProfileImageError('');
+      
+      // Validate profile image is required
+      if (!profileImage) {
+        setProfileImageError('Profile image is required');
+        return;
+      }
+      
       const { confirmPassword, ...userData } = data;
       
       // Create FormData to handle file upload
@@ -79,10 +88,8 @@ const Register = () => {
         }
       });
       
-      // Append profile image if selected
-      if (profileImage) {
-        formData.append('profileImage', profileImage);
-      }
+      // Append profile image (it's now required)
+      formData.append('profileImage', profileImage);
       
       await registerUser(formData);
       addError('Registration successful! Welcome to Tahya Misr.', 'success');
@@ -116,11 +123,12 @@ const Register = () => {
               {/* Profile Image Upload */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-3 text-center">
-                  Profile Picture (Optional)
+                  Profile Picture *
                 </label>
                 <ProfileImageUpload
                   value={profileImage}
                   onChange={setProfileImage}
+                  error={profileImageError}
                 />
               </div>
 

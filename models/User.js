@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema({
   },
   profileImage: {
     type: String,
-    default: null
+    required: [true, 'Profile image is required']
   },
   membershipNumber: {
     type: String,

@@ -37,6 +37,15 @@ const register = async (req, res, next) => {
           });
         }
       }
+      
+      // Check if profile image is provided
+      if (!req.file) {
+        return res.status(400).json({
+          success: false,
+          error: 'Profile image is required',
+          data: null
+        });
+      }
     }
 
     const {

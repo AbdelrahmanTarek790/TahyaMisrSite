@@ -29,8 +29,14 @@ const ProfileImageUpload = ({ value, onChange, error, existingImage = null }) =>
     const previewUrl = URL.createObjectURL(croppedImageBlob);
     setCroppedImage(previewUrl);
     
-    // Pass the blob to the parent component
-    onChange(croppedImageBlob);
+    // Create a file object from the blob with proper name and type
+    const file = new File([croppedImageBlob], `profile-${Date.now()}.jpg`, {
+      type: 'image/jpeg',
+      lastModified: Date.now(),
+    });
+    
+    // Pass the file to the parent component
+    onChange(file);
     setIsCropModalOpen(false);
   };
 
@@ -83,6 +89,8 @@ const ProfileImageUpload = ({ value, onChange, error, existingImage = null }) =>
             Recommended: Square image, at least 200x200px
             <br />
             Supported formats: JPG, PNG (Max 5MB)
+            <br />
+            <span className="text-red-600">* Required for registration</span>
           </p>
         </div>
       </div>
