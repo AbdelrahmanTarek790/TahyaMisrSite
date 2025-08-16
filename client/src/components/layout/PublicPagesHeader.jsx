@@ -173,7 +173,7 @@ export default function PublicPagesHeader() {
         <>
             <header
                 className={cn(
-                    "sticky top-0 z-40 w-full transition-all duration-200",
+                    "sticky top-0 z-40 w-full transition-all duration-200 px-4 sm:px-6 lg:px-8"  ,
                     isScrolled ? "bg-background/95 backdrop-blur-sm shadow-sm" : "bg-background"
                 )}
             >
