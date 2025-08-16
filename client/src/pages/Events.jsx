@@ -145,7 +145,7 @@ const Events = () => {
                                 <div className="aspect-video overflow-hidden relative">
                                     <img
                                         crossOrigin="anonymous"
-                                        src={`http://localhost:5000/uploads/${event.image}`}
+                                        src={`https://form.codepeak.software/uploads/${event.image}`}
                                         alt={event.title}
                                         className="w-full h-full object-cover hover:scale-105 transition-transform"
                                     />

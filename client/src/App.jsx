@@ -25,6 +25,7 @@ import NewsDetailPage from "./pages/public/NewsDetailPage"
 import "./index.css"
 import { DashboardLayout } from "./components/layout/DashboardLayout"
 import PublicLayout from "./components/layout/PublicPagesLayout"
+import Home from "./pages/Home"
 
 function App() {
     const { isAuthenticated, user } = useAuth()
@@ -32,9 +33,11 @@ function App() {
         <ErrorProvider>
             <Router>
                 <Routes>
+
+
                     <Route element={<PublicLayout />}>
                         {/* Public Routes */}
-                        <Route path="/" element={<LandingPage />} />
+                        <Route path="/" element={<Home />} />
                         <Route path="/about" element={<AboutPage />} />
                         <Route path="/contact" element={<ContactPage />} />
                         <Route path="/public/news" element={<PublicNewsPage />} />

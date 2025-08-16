@@ -120,7 +120,7 @@ const News = () => {
                                 <div className="aspect-video overflow-hidden">
                                     <img
                                         crossOrigin="anonymous"
-                                        src={`http://localhost:5000/uploads/${newsItem.image}`}
+                                        src={`https://form.codepeak.software/uploads/${newsItem.image}`}
                                         alt={newsItem.title}
                                         className="w-full h-full object-cover hover:scale-105 transition-transform"
                                     />

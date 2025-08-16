@@ -39,6 +39,16 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-egypt-red: var(--egypt-red);
+  --color-egypt-gold: var(--egypt-gold);
+  --color-egypt-black: var(--egypt-black);
+  --color-egypt-white: var(--egypt-white);
+  --gradient-hero: var(--gradient-hero);
+  --gradient-section: var(--gradient-section);
+  --gradient-card: var(--gradient-card);
+  --shadow-elegant: var(--shadow-elegant);
+  --shadow-card: var(--shadow-card);
+  --shadow-glow: var(--shadow-glow);
 }
 
 :root {
@@ -53,7 +63,7 @@
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
+  --muted: oklch(97.015% 0.00011 271.152);
   --muted-foreground: oklch(0.556 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
@@ -74,6 +84,26 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Egyptian-inspired color palette */
+  --egypt-red: oklch(0.55 0.22 29.23);
+  --egypt-gold: oklch(0.83 0.17 93.73);
+  --egypt-black: oklch(0.28 0 0);
+  --egypt-white: oklch(0.98 0 0);
+
+  /* Gradients - keeping for potential future use */
+  --gradient-hero: oklch(0.55 0.22 29.23);  
+  --gradient-section: linear-gradient(180deg, oklch(0.145 0 0), oklch(0.97 0 0));
+  --gradient-card: linear-gradient(145deg, #171717, #f5f5f5);
+
+  /* Shadows */
+  --shadow-elegant: 0 10px 30px -10px oklch(var(--egypt-red) / 0.3);
+  --shadow-card: 0 4px 20px -4px oklch(var(--egypt-black) / 0.1);
+  --shadow-glow: 0 0 40px oklch(var(--egypt-gold) / 0.2);
+
+  /* Animations */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
 .dark {
@@ -108,12 +138,18 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  /* Dark mode gradients - keeping for potential future use */
+  --gradient-hero: linear-gradient(135deg, oklch(0.55 0.22 29.23), oklch(0.83 0.17 93.73));
+  --gradient-section: linear-gradient(180deg, oklch(0.145 0 0), oklch(0.97 0 0));
+  --gradient-card: linear-gradient(145deg, oklch(0.205 0 0), oklch(0.97 0 0));
 }
 
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

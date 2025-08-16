@@ -20,7 +20,7 @@ const PublicNewsPage = () => {
         try {
             setIsLoading(true)
             // For public access, we'll make a request without authentication headers
-            const response = await fetch(`http://localhost:5000/api/v1/news?page=${pagination.page}&limit=${pagination.limit}`)
+            const response = await fetch(`https://form.codepeak.software/api/v1/news?page=${pagination.page}&limit=${pagination.limit}`)
             if (response.ok) {
                 const data = await response.json()
                 setNews(data.data.news || [])
@@ -113,39 +113,38 @@ const PublicNewsPage = () => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {filteredNews.map((newsItem) => (
-                              <Link to={`/news/${newsItem._id}`} key={newsItem._id}>
-                                <Card key={newsItem._id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                                    {newsItem.image && (
-                                        <div className="aspect-video overflow-hidden">
-
-                                            <img
-                                                crossOrigin="anonymous"
-                                                src={`http://localhost:5000/uploads/${newsItem.image}`}
-                                                alt={newsItem.title}
-                                                className="w-full h-full object-cover hover:scale-105 transition-transform"
-                                            />
-                                        </div>
-                                    )}
-                                    <CardHeader>
-                                        <CardTitle className="text-lg line-clamp-2">{newsItem.title}</CardTitle>
-                                        <CardDescription className="flex items-center text-sm text-gray-500">
-                                            <Calendar className="mr-1 h-3 w-3" />
-                                            {formatDate(newsItem.createdAt)}
-                                        </CardDescription>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <p className="text-gray-600 line-clamp-3 mb-4">{newsItem.content}</p>
-                                        <div className="flex justify-between items-center">
-                                            <Link to={`/news/${newsItem._id}`}>
-                                                <Button variant="outline" size="sm">
-                                                    Read More
-                                                </Button>
-                                            </Link>
-                                            <span className="text-xs text-gray-500">By {newsItem.author?.name || "Admin"}</span>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                              </Link>
+                                <Link to={`/news/${newsItem._id}`} key={newsItem._id}>
+                                    <Card key={newsItem._id} className="overflow-hidden hover:shadow-lg transition-shadow">
+                                        {newsItem.image && (
+                                            <div className="aspect-video overflow-hidden">
+                                                <img
+                                                    crossOrigin="anonymous"
+                                                    src={`https://form.codepeak.software/uploads/${newsItem.image}`}
+                                                    alt={newsItem.title}
+                                                    className="w-full h-full object-cover hover:scale-105 transition-transform"
+                                                />
+                                            </div>
+                                        )}
+                                        <CardHeader>
+                                            <CardTitle className="text-lg line-clamp-2">{newsItem.title}</CardTitle>
+                                            <CardDescription className="flex items-center text-sm text-gray-500">
+                                                <Calendar className="mr-1 h-3 w-3" />
+                                                {formatDate(newsItem.createdAt)}
+                                            </CardDescription>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <p className="text-gray-600 line-clamp-3 mb-4">{newsItem.content}</p>
+                                            <div className="flex justify-between items-center">
+                                                <Link to={`/news/${newsItem._id}`}>
+                                                    <Button variant="outline" size="sm">
+                                                        Read More
+                                                    </Button>
+                                                </Link>
+                                                <span className="text-xs text-gray-500">By {newsItem.author?.name || "Admin"}</span>
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </Link>
                             ))}
                         </div>
                     )}

@@ -22,7 +22,7 @@ const NewsDetailPage = () => {
         try {
             setIsLoading(true)
             // For public access, make direct fetch request
-            const response = await fetch(`http://localhost:5000/api/v1/news/${id}`)
+            const response = await fetch(`https://form.codepeak.software/api/v1/news/${id}`)
             if (response.ok) {
                 const data = await response.json()
                 setNewsItem(data.news || data.data)
@@ -39,7 +39,7 @@ const NewsDetailPage = () => {
 
     const fetchRelatedNews = async () => {
         try {
-            const response = await fetch(`http://localhost:5000/api/v1/news?limit=3`)
+            const response = await fetch(`https://form.codepeak.software/api/v1/news?limit=3`)
             if (response.ok) {
                 const data = await response.json()
                 setRelatedNews((data.news || data.data || []).filter((item) => item._id !== id).slice(0, 3))
@@ -137,7 +137,12 @@ const NewsDetailPage = () => {
                 {/* Hero Image */}
                 {newsItem.image && (
                     <div className="mb-8 rounded-lg overflow-hidden shadow-lg">
-                        <img src={`http://localhost:5000/uploads/${newsItem.image}`} crossOrigin="anonymous" alt={newsItem.title} className="w-full h-64 md:h-96 object-cover" />
+                        <img
+                            src={`https://form.codepeak.software/uploads/${newsItem.image}`}
+                            crossOrigin="anonymous"
+                            alt={newsItem.title}
+                            className="w-full h-64 md:h-96 object-cover"
+                        />
                     </div>
                 )}
 
@@ -199,7 +204,7 @@ const NewsDetailPage = () => {
                                             <div className="aspect-video overflow-hidden rounded-t-lg">
                                                 <img
                                                     crossOrigin="anonymous"
-                                                    src={`http://localhost:5000/uploads/${article.image}`}
+                                                    src={`https://form.codepeak.software/uploads/${article.image}`}
                                                     alt={article.title}
                                                     className="w-full h-full object-cover hover:scale-105 transition-transform"
                                                 />
