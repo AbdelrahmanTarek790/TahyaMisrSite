@@ -1,37 +1,33 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import Icon from "../AppIcon"
-
+import { timelineAPI } from "../../api"
 
 const Journy = () => {
     const [activeTimeline, setActiveTimeline] = useState(0)
+    const [timelineEvents, setTimelineEvents] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
-    const pillars = [
-        {
-            icon: "Award",
-            title: "Leadership Development",
-            description: "Comprehensive training programs, mentorship from government officials, and hands-on experience in real policy initiatives.",
-            features: ["Monthly leadership workshops", "Government mentorship program", "Policy research projects", "Public speaking training"],
-        },
-        {
-            icon: "Network",
-            title: "Nationwide Networking",
-            description: "Connect with like-minded students across all 27 governorates, building relationships that last beyond university.",
-            features: ["Cross-governorate events", "Alumni network access", "Industry connections", "Peer collaboration projects"],
-        },
-        {
-            icon: "Target",
-            title: "Direct Impact Opportunities",
-            description: "Work on real initiatives that shape Egypt's future, from local community projects to national policy recommendations.",
-            features: [
-                "Community development projects",
-                "Policy recommendation committees",
-                "Youth representation in government",
-                "Social impact campaigns",
-            ],
-        },
-    ]
+    useEffect(() => {
+        fetchTimeline()
+    }, [])
 
-    const timelineEvents = [
+    const fetchTimeline = async () => {
+        try {
+            setIsLoading(true)
+            const response = await timelineAPI.getAll()
+            const events = response.data?.timeline || []
+            setTimelineEvents(events)
+        } catch (error) {
+            console.error("Failed to fetch timeline:", error)
+            // Fallback to hardcoded data if API fails
+            setTimelineEvents(fallbackTimelineEvents)
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    // Fallback timeline events in case API fails
+    const fallbackTimelineEvents = [
         {
             year: "2019",
             title: "Union Founded",
@@ -67,6 +63,32 @@ const Journy = () => {
             title: "Future Leaders",
             description: "50,000+ active members shaping Egypt's tomorrow",
             achievement: "Direct influence on 3 major national initiatives",
+        },
+    ]
+
+    const pillars = [
+        {
+            icon: "Award",
+            title: "Leadership Development",
+            description: "Comprehensive training programs, mentorship from government officials, and hands-on experience in real policy initiatives.",
+            features: ["Monthly leadership workshops", "Government mentorship program", "Policy research projects", "Public speaking training"],
+        },
+        {
+            icon: "Network",
+            title: "Nationwide Networking",
+            description: "Connect with like-minded students across all 27 governorates, building relationships that last beyond university.",
+            features: ["Cross-governorate events", "Alumni network access", "Industry connections", "Peer collaboration projects"],
+        },
+        {
+            icon: "Target",
+            title: "Direct Impact Opportunities",
+            description: "Work on real initiatives that shape Egypt's future, from local community projects to national policy recommendations.",
+            features: [
+                "Community development projects",
+                "Policy recommendation committees",
+                "Youth representation in government",
+                "Social impact campaigns",
+            ],
         },
     ]
 
@@ -117,52 +139,88 @@ const Journy = () => {
                 <div className="bg-muted rounded-3xl p-8 lg:p-12">
                     <h3 className="text-3xl font-bold text-foreground mb-12 text-center">Our Journey of Impact</h3>
 
-                    <div className="flex flex-col lg:flex-row gap-12">
-                        {/* Timeline Navigation */}
-                        <div className="lg:w-1/3">
-                            <div className="space-y-4">
-                                {timelineEvents?.map((event, index) => (
-                                    <button
-                                        key={index}
-                                        onClick={() => setActiveTimeline(index)}
-                                        className={`w-full text-left p-4 rounded-xl transition-smooth ${
-                                            activeTimeline === index
-                                                ? "bg-egypt-gold text-primary-foreground"
-                                                : "bg-background hover:bg-background/80"
-                                        }`}
-                                    >
-                                        <div className="font-bold text-lg">{event?.year}</div>
-                                        <div className={`text-sm ${activeTimeline === index ? "text-primary-foreground/80" : "text-text-secondary"}`}>
-                                            {event?.title}
+                    {isLoading ? (
+                        <div className="flex flex-col lg:flex-row gap-12">
+                            {/* Loading skeleton */}
+                            <div className="lg:w-1/3">
+                                <div className="space-y-4">
+                                    {[1, 2, 3, 4].map((i) => (
+                                        <div key={i} className="w-full p-4 rounded-xl bg-gray-300 animate-pulse">
+                                            <div className="h-6 bg-gray-400 rounded mb-2"></div>
+                                            <div className="h-4 bg-gray-400 rounded"></div>
                                         </div>
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Timeline Content */}
-                        <div className="lg:w-2/3">
-                            <div className="bg-background rounded-2xl p-8 shadow-card">
-                                <div className="flex items-center gap-4 mb-6">
-                                    <div className="w-12 h-12 bg-egypt-gold rounded-full flex items-center justify-center text-primary-foreground font-bold">
-                                        {timelineEvents?.[activeTimeline]?.year?.slice(-2)}
-                                    </div>
-                                    <div>
-                                        <h4 className="text-2xl font-bold text-foreground">{timelineEvents?.[activeTimeline]?.title}</h4>
-                                        <p className="text-text-secondary">{timelineEvents?.[activeTimeline]?.description}</p>
-                                    </div>
+                                    ))}
                                 </div>
-
-                                <div className="bg-success/10 rounded-xl p-6 border-l-4 border-success">
-                                    <div className="flex items-center gap-2 mb-2">
-                                        <Icon name="Trophy" size={20} color="var(--color-success)" />
-                                        <span className="font-semibold text-success">Key Achievement</span>
+                            </div>
+                            <div className="lg:w-2/3">
+                                <div className="bg-background rounded-2xl p-8 shadow-card animate-pulse">
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="w-12 h-12 bg-gray-300 rounded-full"></div>
+                                        <div>
+                                            <div className="h-6 bg-gray-300 rounded mb-2"></div>
+                                            <div className="h-4 bg-gray-300 rounded"></div>
+                                        </div>
                                     </div>
-                                    <p className="text-foreground">{timelineEvents?.[activeTimeline]?.achievement}</p>
+                                    <div className="space-y-3">
+                                        <div className="h-4 bg-gray-300 rounded"></div>
+                                        <div className="h-4 bg-gray-300 rounded"></div>
+                                        <div className="h-4 bg-gray-300 rounded"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    ) : timelineEvents.length > 0 ? (
+                        <div className="flex flex-col lg:flex-row gap-12">
+                            {/* Timeline Navigation */}
+                            <div className="lg:w-1/3">
+                                <div className="space-y-4">
+                                    {timelineEvents?.map((event, index) => (
+                                        <button
+                                            key={index}
+                                            onClick={() => setActiveTimeline(index)}
+                                            className={`w-full text-left p-4 rounded-xl transition-smooth ${
+                                                activeTimeline === index
+                                                    ? "bg-egypt-gold text-primary-foreground"
+                                                    : "bg-background hover:bg-background/80"
+                                            }`}
+                                        >
+                                            <div className="font-bold text-lg">{event?.year}</div>
+                                            <div className={`text-sm ${activeTimeline === index ? "text-primary-foreground/80" : "text-text-secondary"}`}>
+                                                {event?.title}
+                                            </div>
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Timeline Content */}
+                            <div className="lg:w-2/3">
+                                <div className="bg-background rounded-2xl p-8 shadow-card">
+                                    <div className="flex items-center gap-4 mb-6">
+                                        <div className="w-12 h-12 bg-egypt-gold rounded-full flex items-center justify-center text-primary-foreground font-bold">
+                                            {timelineEvents?.[activeTimeline]?.year?.slice(-2)}
+                                        </div>
+                                        <div>
+                                            <h4 className="text-2xl font-bold text-foreground">{timelineEvents?.[activeTimeline]?.title}</h4>
+                                            <p className="text-text-secondary">{timelineEvents?.[activeTimeline]?.description}</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-success/10 rounded-xl p-6 border-l-4 border-success">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Icon name="Trophy" size={20} color="var(--color-success)" />
+                                            <span className="font-semibold text-success">Key Achievement</span>
+                                        </div>
+                                        <p className="text-foreground">{timelineEvents?.[activeTimeline]?.achievement}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-center py-12">
+                            <p className="text-text-secondary text-lg">No timeline events available at the moment.</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Success Metrics */}
