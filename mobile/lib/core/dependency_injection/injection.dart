@@ -17,6 +17,12 @@ import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/register_usecase.dart';
 import '../../features/auth/domain/usecases/logout_usecase.dart';
 import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/dashboard/data/datasources/dashboard_remote_data_source.dart';
+import '../../features/dashboard/data/repositories/dashboard_repository_impl.dart';
+import '../../features/dashboard/domain/repositories/dashboard_repository.dart';
+import '../../features/dashboard/domain/usecases/get_dashboard_stats_usecase.dart';
+import '../../features/dashboard/domain/usecases/get_recent_activity_usecase.dart';
+import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 
 import 'injection.config.dart';
 
@@ -129,6 +135,40 @@ Future<void> configureDependencies() async {
     ),
   );
 
+  // Dashboard dependencies
+  _configureDashboardDependencies();
+
   // Router
   getIt.registerLazySingleton<AppRouter>(() => AppRouter());
+}
+
+void _configureDashboardDependencies() {
+  // Dashboard data source
+  getIt.registerLazySingleton<DashboardRemoteDataSource>(
+    () => DashboardRemoteDataSourceImpl(getIt<ApiClient>()),
+  );
+
+  // Dashboard repository
+  getIt.registerLazySingleton<DashboardRepository>(
+    () => DashboardRepositoryImpl(
+      remoteDataSource: getIt<DashboardRemoteDataSource>(),
+    ),
+  );
+
+  // Dashboard use cases
+  getIt.registerLazySingleton<GetDashboardStatsUseCase>(
+    () => GetDashboardStatsUseCase(getIt<DashboardRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetRecentActivityUseCase>(
+    () => GetRecentActivityUseCase(getIt<DashboardRepository>()),
+  );
+
+  // Dashboard bloc
+  getIt.registerFactory<DashboardBloc>(
+    () => DashboardBloc(
+      getDashboardStatsUseCase: getIt<GetDashboardStatsUseCase>(),
+      getRecentActivityUseCase: getIt<GetRecentActivityUseCase>(),
+    ),
+  );
 }
