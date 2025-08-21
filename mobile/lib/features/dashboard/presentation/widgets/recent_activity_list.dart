@@ -115,7 +115,7 @@ class _ActivityItem extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 _formatTime(activity.timestamp),
-                style: Theme.of(context).textTheme.caption?.copyWith(
+                style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
                     ),
               ),
