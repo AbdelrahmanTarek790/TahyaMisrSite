@@ -28,6 +28,9 @@ abstract class ApiClient {
   @GET('/users/me')
   Future<UserModel> getCurrentUser();
 
+  @PUT('/users/me')
+  Future<UserModel> updateProfile(@Body() Map<String, dynamic> data);
+
   // News endpoints
   @GET('/news')
   Future<List<NewsModel>> getNews(

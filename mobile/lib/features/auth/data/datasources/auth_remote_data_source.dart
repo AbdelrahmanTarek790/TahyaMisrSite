@@ -8,6 +8,7 @@ abstract class AuthRemoteDataSource {
   Future<LoginResponse> login(LoginRequest request);
   Future<UserModel> register(RegisterRequest request);
   Future<UserModel> getCurrentUser();
+  Future<UserModel> updateProfile(Map<String, dynamic> data);
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
@@ -28,5 +29,10 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> getCurrentUser() async {
     return await apiClient.getCurrentUser();
+  }
+
+  @override
+  Future<UserModel> updateProfile(Map<String, dynamic> data) async {
+    return await apiClient.updateProfile(data);
   }
 }

@@ -18,7 +18,7 @@ class AppRouter {
 
   AppRouter() {
     router = GoRouter(
-      initialLocation: '/dashboard',
+      initialLocation: '/splash',
       routes: [
         // Splash screen
         GoRoute(

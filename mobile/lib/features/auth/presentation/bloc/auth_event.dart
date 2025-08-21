@@ -26,4 +26,8 @@ class AuthEvent with _$AuthEvent {
   const factory AuthEvent.checkAuthStatus() = CheckAuthStatus;
 
   const factory AuthEvent.getCurrentUser() = GetCurrentUser;
+
+  const factory AuthEvent.updateProfile({
+    required Map<String, dynamic> data,
+  }) = UpdateProfile;
 }

@@ -5,6 +5,7 @@ import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
+import '../../domain/usecases/update_profile_usecase.dart';
 import '../../domain/repositories/auth_repository.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
@@ -14,12 +15,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
   final LogoutUseCase logoutUseCase;
+  final UpdateProfileUseCase updateProfileUseCase;
   final AuthRepository authRepository;
 
   AuthBloc({
     required this.loginUseCase,
     required this.registerUseCase,
     required this.logoutUseCase,
+    required this.updateProfileUseCase,
     required this.authRepository,
   }) : super(const AuthState.initial()) {
     on<LoginRequested>(_onLoginRequested);
@@ -27,6 +30,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutRequested>(_onLogoutRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
     on<GetCurrentUser>(_onGetCurrentUser);
+    on<UpdateProfile>(_onUpdateProfile);
   }
 
   Future<void> _onLoginRequested(
@@ -137,6 +141,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     userResult.fold(
       (failure) => emit(AuthState.error(message: failure.message)),
       (user) {
+        tokenResult.fold(
+          (failure) => emit(AuthState.error(message: failure.message)),
+          (token) {
+            if (token != null) {
+              emit(AuthState.authenticated(user: user, token: token));
+            } else {
+              emit(const AuthState.unauthenticated());
+            }
+          },
+        );
+      },
+    );
+  }
+
+  Future<void> _onUpdateProfile(
+    UpdateProfile event,
+    Emitter<AuthState> emit,
+  ) async {
+    emit(const AuthState.loading());
+
+    final result = await updateProfileUseCase(
+      UpdateProfileParams(data: event.data),
+    );
+
+    result.fold(
+      (failure) => emit(AuthState.error(message: failure.message)),
+      (user) async {
+        final tokenResult = await authRepository.getStoredToken();
         tokenResult.fold(
           (failure) => emit(AuthState.error(message: failure.message)),
           (token) {

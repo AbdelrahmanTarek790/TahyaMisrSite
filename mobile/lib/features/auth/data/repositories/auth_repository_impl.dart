@@ -113,6 +113,25 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, User>> updateProfile(Map<String, dynamic> data) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final user = await remoteDataSource.updateProfile(data);
+        await localDataSource.cacheUser(user);
+        return Right(user);
+      } on DioException catch (e) {
+        return Left(_handleDioError(e));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(ServerFailure('Unexpected error occurred: $e'));
+      }
+    } else {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> logout() async {
     try {
       await localDataSource.clearToken();

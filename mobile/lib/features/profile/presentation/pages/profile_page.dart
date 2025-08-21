@@ -4,9 +4,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../../../core/error/failures.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
+import 'edit_profile_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -146,7 +148,11 @@ class ProfilePage extends StatelessWidget {
                           'تعديل الملف الشخصي',
                           Icons.edit,
                           () {
-                            // TODO: Navigate to edit profile
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => EditProfilePage(user: user),
+                              ),
+                            );
                           },
                         ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3, end: 0),
                         
