@@ -8,11 +8,15 @@ abstract class UserManagementRepository {
     int limit = 10,
     String? search,
     String? role,
+    String? governorate,
+    String? university,
   });
 
   Future<Either<Failure, User>> getUserById(String id);
 
-  Future<Either<Failure, User>> updateUser(User user);
+  Future<Either<Failure, User>> createUser(Map<String, dynamic> userData);
+
+  Future<Either<Failure, User>> updateUser(String id, Map<String, dynamic> userData);
 
   Future<Either<Failure, void>> deleteUser(String id);
 

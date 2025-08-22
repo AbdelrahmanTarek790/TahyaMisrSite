@@ -73,6 +73,65 @@ abstract class ApiClient {
       @Part() String caption,
       );
 
+  // User Management endpoints (Admin only)
+  @GET('/users')
+  Future<ApiResponse<dynamic>> getUsers(
+    @Query('page') int page,
+    @Query('limit') int limit,
+    @Query('role') String? role,
+    @Query('search') String? search,
+  );
+
+  @GET('/users/{id}')
+  Future<ApiResponse<UserModel>> getUserById(@Path('id') String id);
+
+  @POST('/users')
+  Future<ApiResponse<UserModel>> createUser(@Body() Map<String, dynamic> userData);
+
+  @PUT('/users/{id}')
+  Future<ApiResponse<UserModel>> updateUser(@Path('id') String id, @Body() Map<String, dynamic> userData);
+
+  @DELETE('/users/{id}')
+  Future<ApiResponse<dynamic>> deleteUser(@Path('id') String id);
+
+  // Position Management endpoints
+  @GET('/positions')
+  Future<ApiResponse<dynamic>> getPositions(@Query('governorate') String? governorate);
+
+  @GET('/positions/{id}')
+  Future<ApiResponse<dynamic>> getPositionById(@Path('id') String id);
+
+  @POST('/positions')
+  Future<ApiResponse<dynamic>> createPosition(@Body() Map<String, dynamic> positionData);
+
+  @PUT('/positions/{id}')
+  Future<ApiResponse<dynamic>> updatePosition(@Path('id') String id, @Body() Map<String, dynamic> positionData);
+
+  @DELETE('/positions/{id}')
+  Future<ApiResponse<dynamic>> deletePosition(@Path('id') String id);
+
+  // Content Creation endpoints (Admin only)
+  @POST('/news')
+  Future<ApiResponse<NewsModel>> createNews(@Body() Map<String, dynamic> newsData);
+
+  @PUT('/news/{id}')
+  Future<ApiResponse<NewsModel>> updateNews(@Path('id') String id, @Body() Map<String, dynamic> newsData);
+
+  @DELETE('/news/{id}')
+  Future<ApiResponse<dynamic>> deleteNews(@Path('id') String id);
+
+  @POST('/events')
+  Future<ApiResponse<EventModel>> createEvent(@Body() Map<String, dynamic> eventData);
+
+  @PUT('/events/{id}')
+  Future<ApiResponse<EventModel>> updateEvent(@Path('id') String id, @Body() Map<String, dynamic> eventData);
+
+  @DELETE('/events/{id}')
+  Future<ApiResponse<dynamic>> deleteEvent(@Path('id') String id);
+
+  @DELETE('/media/{id}')
+  Future<ApiResponse<dynamic>> deleteMedia(@Path('id') String id);
+
   // Dashboard data will be aggregated from other endpoints
   // No dedicated dashboard endpoints since dashboard.js was deleted
 }

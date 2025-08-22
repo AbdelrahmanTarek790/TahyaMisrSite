@@ -191,10 +191,11 @@ class AdminDashboardView extends StatelessWidget {
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: () {
-                    // Navigate to analytics
+                    // Navigate to position management
+                    context.push('/position-management');
                   },
-                  icon: const Icon(Icons.analytics),
-                  label: const Text('التقارير'),
+                  icon: const Icon(Icons.work),
+                  label: const Text('إدارة المناصب'),
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(16),
                   ),
@@ -202,6 +203,20 @@ class AdminDashboardView extends StatelessWidget {
               ),
             ],
           ).animate(delay: 800.ms).slideY(begin: 0.2),
+
+          const SizedBox(height: 16),
+
+          ElevatedButton.icon(
+            onPressed: () {
+              // Navigate to analytics
+            },
+            icon: const Icon(Icons.analytics),
+            label: const Text('التقارير والتحليلات'),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.all(16),
+              minimumSize: const Size(double.infinity, 48),
+            ),
+          ).animate(delay: 900.ms).slideY(begin: 0.2),
 
           const SizedBox(height: 24),
 

@@ -438,15 +438,88 @@ class ContentManagementPage extends StatelessWidget {
   }
 
   void _showAddNewsForm(BuildContext context) {
+    final titleController = TextEditingController();
+    final excerptController = TextEditingController();
+    final contentController = TextEditingController();
+    final imageUrlController = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('إضافة خبر جديد'),
-        content: const Text('سيتم إضافة نموذج إضافة الأخبار في التحديث القادم.'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(
+                  labelText: 'عنوان الخبر *',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: excerptController,
+                decoration: const InputDecoration(
+                  labelText: 'مقتطف الخبر *',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 2,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: contentController,
+                decoration: const InputDecoration(
+                  labelText: 'محتوى الخبر *',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 5,
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: imageUrlController,
+                decoration: const InputDecoration(
+                  labelText: 'رابط الصورة',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('حسناً'),
+            child: const Text('إلغاء'),
+          ),
+          TextButton(
+            onPressed: () {
+              if (titleController.text.isNotEmpty && 
+                  excerptController.text.isNotEmpty &&
+                  contentController.text.isNotEmpty) {
+                
+                final newsData = {
+                  'title': titleController.text,
+                  'excerpt': excerptController.text,
+                  'content': contentController.text,
+                  'image': imageUrlController.text.isNotEmpty ? imageUrlController.text : null,
+                };
+                
+                // TODO: Call create news API
+                Navigator.of(context).pop();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('تم إنشاء الخبر بنجاح')),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('يرجى ملء جميع الحقول المطلوبة'),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+            child: const Text('إنشاء'),
           ),
         ],
       ),
@@ -454,31 +527,198 @@ class ContentManagementPage extends StatelessWidget {
   }
 
   void _showAddEventForm(BuildContext context) {
+    final titleController = TextEditingController();
+    final descriptionController = TextEditingController();
+    final locationController = TextEditingController();
+    final imageUrlController = TextEditingController();
+    DateTime? selectedDate;
+    TimeOfDay? selectedTime;
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('إضافة فعالية جديدة'),
-        content: const Text('سيتم إضافة نموذج إضافة الفعاليات في التحديث القادم.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('حسناً'),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          title: const Text('إضافة فعالية جديدة'),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: titleController,
+                  decoration: const InputDecoration(
+                    labelText: 'عنوان الفعالية *',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: descriptionController,
+                  decoration: const InputDecoration(
+                    labelText: 'وصف الفعالية *',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: locationController,
+                  decoration: const InputDecoration(
+                    labelText: 'المكان *',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ListTile(
+                  title: const Text('تاريخ الفعالية'),
+                  subtitle: Text(
+                    selectedDate != null 
+                        ? '${selectedDate!.day}/${selectedDate!.month}/${selectedDate!.year}'
+                        : 'اختر التاريخ',
+                  ),
+                  trailing: const Icon(Icons.calendar_today),
+                  onTap: () async {
+                    final date = await showDatePicker(
+                      context: context,
+                      initialDate: DateTime.now(),
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime.now().add(const Duration(days: 365)),
+                    );
+                    if (date != null) {
+                      setState(() {
+                        selectedDate = date;
+                      });
+                    }
+                  },
+                ),
+                ListTile(
+                  title: const Text('وقت الفعالية'),
+                  subtitle: Text(
+                    selectedTime != null 
+                        ? '${selectedTime!.hour}:${selectedTime!.minute.toString().padLeft(2, '0')}'
+                        : 'اختر الوقت',
+                  ),
+                  trailing: const Icon(Icons.access_time),
+                  onTap: () async {
+                    final time = await showTimePicker(
+                      context: context,
+                      initialTime: TimeOfDay.now(),
+                    );
+                    if (time != null) {
+                      setState(() {
+                        selectedTime = time;
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: imageUrlController,
+                  decoration: const InputDecoration(
+                    labelText: 'رابط الصورة',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+              ],
+            ),
           ),
-        ],
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: const Text('إلغاء'),
+            ),
+            TextButton(
+              onPressed: () {
+                if (titleController.text.isNotEmpty && 
+                    descriptionController.text.isNotEmpty &&
+                    locationController.text.isNotEmpty &&
+                    selectedDate != null &&
+                    selectedTime != null) {
+                  
+                  final eventDateTime = DateTime(
+                    selectedDate!.year,
+                    selectedDate!.month,
+                    selectedDate!.day,
+                    selectedTime!.hour,
+                    selectedTime!.minute,
+                  );
+                  
+                  final eventData = {
+                    'title': titleController.text,
+                    'description': descriptionController.text,
+                    'location': locationController.text,
+                    'date': eventDateTime.toIso8601String(),
+                    'image': imageUrlController.text.isNotEmpty ? imageUrlController.text : null,
+                  };
+                  
+                  // TODO: Call create event API
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('تم إنشاء الفعالية بنجاح')),
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('يرجى ملء جميع الحقول المطلوبة'),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
+              },
+              child: const Text('إنشاء'),
+            ),
+          ],
+        ),
       ),
     );
   }
 
   void _showAddMediaForm(BuildContext context) {
+    final captionController = TextEditingController();
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('إضافة وسائط جديدة'),
-        content: const Text('سيتم إضافة نموذج رفع الوسائط في التحديث القادم.'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('اختر ملف الصورة أو الفيديو:'),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: () {
+                // TODO: Implement file picker
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('سيتم إضافة اختيار الملفات قريباً')),
+                );
+              },
+              icon: const Icon(Icons.upload_file),
+              label: const Text('اختيار ملف'),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: captionController,
+              decoration: const InputDecoration(
+                labelText: 'وصف الوسائط',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 3,
+            ),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('حسناً'),
+            child: const Text('إلغاء'),
+          ),
+          TextButton(
+            onPressed: () {
+              // TODO: Upload media via API
+              Navigator.of(context).pop();
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('سيتم إضافة رفع الملفات قريباً')),
+              );
+            },
+            child: const Text('رفع'),
           ),
         ],
       ),

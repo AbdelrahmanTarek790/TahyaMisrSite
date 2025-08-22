@@ -15,6 +15,7 @@ import '../../features/media/presentation/pages/media_gallery_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../features/user_management/presentation/pages/user_management_page.dart';
 import '../../features/content_management/presentation/pages/content_management_page.dart';
+import '../../features/positions/presentation/pages/position_management_page.dart';
 import '../../shared/widgets/main_navigation.dart';
 
 class AppRouter {
@@ -103,6 +104,12 @@ class AppRouter {
         GoRoute(
           path: '/content-management',
           builder: (context, state) => const ContentManagementPage(),
+        ),
+
+        // Position Management (Admin only)
+        GoRoute(
+          path: '/position-management',
+          builder: (context, state) => const PositionManagementPage(),
         ),
       ],
       errorBuilder: (context, state) => Scaffold(
