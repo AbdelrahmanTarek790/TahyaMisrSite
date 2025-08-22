@@ -3,24 +3,19 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/event.dart';
-import '../../data/datasources/events_remote_data_source.dart';
+import '../repositories/event_repository.dart';
 
 class GetEventsUseCase implements UseCase<List<Event>, EventsParams> {
-  final EventsRemoteDataSource dataSource;
+  final EventRepository repository;
 
-  GetEventsUseCase(this.dataSource);
+  GetEventsUseCase(this.repository);
 
   @override
   Future<Either<Failure, List<Event>>> call(EventsParams params) async {
-    try {
-      final result = await dataSource.getEvents(
-        page: params.page,
-        limit: params.limit,
-      );
-      return Right(result);
-    } catch (e) {
-      return Left(ServerFailure('Failed to fetch events: ${e.toString()}'));
-    }
+    return await repository.getEvents(
+      page: params.page,
+      limit: params.limit,
+    );
   }
 }
 

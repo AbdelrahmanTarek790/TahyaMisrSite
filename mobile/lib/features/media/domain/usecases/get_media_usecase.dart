@@ -3,24 +3,19 @@ import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/media.dart';
-import '../../data/datasources/media_remote_data_source.dart';
+import '../repositories/media_repository.dart';
 
 class GetMediaUseCase implements UseCase<List<Media>, MediaParams> {
-  final MediaRemoteDataSource dataSource;
+  final MediaRepository repository;
 
-  GetMediaUseCase(this.dataSource);
+  GetMediaUseCase(this.repository);
 
   @override
   Future<Either<Failure, List<Media>>> call(MediaParams params) async {
-    try {
-      final result = await dataSource.getMedia(
-        page: params.page,
-        limit: params.limit,
-      );
-      return Right(result);
-    } catch (e) {
-      return Left(ServerFailure('Failed to fetch media: ${e.toString()}'));
-    }
+    return await repository.getMedia(
+      page: params.page,
+      limit: params.limit,
+    );
   }
 }
 
