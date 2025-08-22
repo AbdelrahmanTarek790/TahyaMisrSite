@@ -21,7 +21,7 @@ const newsRoutes = require('./routes/news');
 const eventRoutes = require('./routes/events');
 const mediaRoutes = require('./routes/media');
 const notificationRoutes = require('./routes/notifications');
-const dashboardRoutes = require('./routes/dashboard');
+
 
 // Security middleware
 app.use(helmet());
@@ -60,7 +60,7 @@ app.use('/api/v1/news', newsRoutes);
 app.use('/api/v1/events', eventRoutes);
 app.use('/api/v1/media', mediaRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
-app.use('/api/v1/dashboard', dashboardRoutes);
+
 
 // 404 handler
 app.use('*', (req, res) => {
