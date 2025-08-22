@@ -73,13 +73,6 @@ abstract class ApiClient {
       @Part() String caption,
       );
 
-  // Dashboard endpoints
-  @GET('/dashboard/stats')
-  Future<ApiResponse<DashboardStatsModel>> getDashboardStats();
-
-  @GET('/dashboard/activity')
-  Future<ApiResponse<List<RecentActivityModel>>> getRecentActivity(
-      @Query('page') int page,
-      @Query('limit') int limit,
-      );
+  // Dashboard data will be aggregated from other endpoints
+  // No dedicated dashboard endpoints since dashboard.js was deleted
 }

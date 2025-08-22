@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../domain/entities/news.dart';
+import '../bloc/news_bloc.dart';
+import '../bloc/news_state.dart';
+import '../bloc/news_event.dart';
 
 class NewsListPage extends StatefulWidget {
   const NewsListPage({super.key});
@@ -13,41 +18,206 @@ class NewsListPage extends StatefulWidget {
 }
 
 class _NewsListPageState extends State<NewsListPage> {
-  final PagingController<int, News> _pagingController =
-      PagingController(firstPageKey: 1);
+  late NewsBloc _newsBloc;
 
   @override
   void initState() {
     super.initState();
-    _pagingController.addPageRequestListener((pageKey) {
-      _fetchPage(pageKey);
-    });
+    _newsBloc = GetIt.instance<NewsBloc>();
+    _newsBloc.add(const NewsEvent.getNews());
   }
 
   @override
   void dispose() {
-    _pagingController.dispose();
     super.dispose();
   }
 
-  Future<void> _fetchPage(int pageKey) async {
-    try {
-      // TODO: Implement actual API call
-      // For now, we'll simulate loading with dummy data
-      await Future.delayed(const Duration(seconds: 2));
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('الأخبار'),
+        backgroundColor: Theme.of(context).colorScheme.surface,
+        elevation: 0,
+      ),
+      body: BlocProvider.value(
+        value: _newsBloc,
+        child: BlocBuilder<NewsBloc, NewsState>(
+          builder: (context, state) {
+            return state.when(
+              initial: () => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              loading: () => const Center(
+                child: CircularProgressIndicator(),
+              ),
+              loaded: (newsList) => newsList.isEmpty
+                  ? const Center(
+                      child: Text('لا توجد أخبار متاحة'),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        _newsBloc.add(const NewsEvent.refreshNews());
+                      },
+                      child: ListView.builder(
+                        padding: const EdgeInsets.all(16),
+                        itemCount: newsList.length,
+                        itemBuilder: (context, index) {
+                          final news = newsList[index];
+                          return _NewsCard(news: news)
+                              .animate(delay: (index * 100).ms)
+                              .slideX(begin: 0.1)
+                              .fadeIn();
+                        },
+                      ),
+                    ),
+              error: (message) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      size: 64,
+                      color: Colors.red,
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      'حدث خطأ',
+                      style: Theme.of(context).textTheme.headlineSmall,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      message,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    ElevatedButton(
+                      onPressed: () {
+                        _newsBloc.add(const NewsEvent.refreshNews());
+                      },
+                      child: const Text('إعادة المحاولة'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
 
-      final List<News> dummyNews = List.generate(10, (index) {
-        return News(
-          id: '${pageKey}_$index',
-          title: 'عنوان الخبر رقم $index في الصفحة $pageKey',
-          content:
-              'محتوى الخبر رقم $index في الصفحة $pageKey. هذا نص تجريبي لتوضيح كيفية عرض الأخبار في التطبيق.',
-          imageUrl: 'https://picsum.photos/400/300?random=$index',
-          createdAt: DateTime.now().subtract(Duration(days: index)),
-          updatedAt: DateTime.now().subtract(Duration(days: index)),
-          author: 'كاتب الخبر',
-        );
-      });
+class _NewsCard extends StatelessWidget {
+  final News news;
+
+  const _NewsCard({required this.news});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 16),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: () {
+          // Navigate to news detail
+          Navigator.of(context).pushNamed('/news-detail', arguments: news.id);
+        },
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (news.imageUrl != null)
+              AspectRatio(
+                aspectRatio: 16 / 9,
+                child: Image.network(
+                  news.imageUrl!,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => Container(
+                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    child: Icon(
+                      Icons.image_not_supported,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      size: 48,
+                    ),
+                  ),
+                ),
+              ),
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    news.title,
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                        ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    news.content,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                    maxLines: 3,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 12),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.access_time,
+                        size: 16,
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _formatDate(news.createdAt),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                            ),
+                      ),
+                      if (news.author.isNotEmpty) ...[
+                        const SizedBox(width: 16),
+                        Icon(
+                          Icons.person,
+                          size: 16,
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          news.author,
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _formatDate(DateTime date) {
+    final now = DateTime.now();
+    final difference = now.difference(date);
+
+    if (difference.inDays > 0) {
+      return 'منذ ${difference.inDays} يوم';
+    } else if (difference.inHours > 0) {
+      return 'منذ ${difference.inHours} ساعة';
+    } else if (difference.inMinutes > 0) {
+      return 'منذ ${difference.inMinutes} دقيقة';
+    } else {
+      return 'الآن';
+    }
+  }
 
       final isLastPage = pageKey >= 3; // Simulate only 3 pages
 
