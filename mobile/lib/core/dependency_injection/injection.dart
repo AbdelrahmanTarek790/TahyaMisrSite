@@ -71,7 +71,7 @@ Future<void> configureDependencies() async {
   // Dio configuration
   getIt.registerLazySingleton<Dio>(() {
     final dio = Dio();
-    dio.options.baseUrl = 'http://localhost:5000/api/v1';
+    dio.options.baseUrl = 'https://form.codepeak.software/api/v1';
     dio.options.connectTimeout = const Duration(seconds: 30);
     dio.options.receiveTimeout = const Duration(seconds: 30);
     dio.options.headers = {
