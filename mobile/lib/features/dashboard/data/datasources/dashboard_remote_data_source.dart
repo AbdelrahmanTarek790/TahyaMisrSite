@@ -1,4 +1,5 @@
 import '../../../../core/network/api_client.dart';
+import '../../../../core/error/exceptions.dart';
 import '../models/dashboard_stats_model.dart';
 import '../models/recent_activity_model.dart';
 
@@ -17,7 +18,24 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
 
   @override
   Future<DashboardStatsModel> getDashboardStats() async {
-    return await apiClient.getDashboardStats();
+    try {
+      final response = await apiClient.getDashboardStats();
+      
+      if (response.success && response.data != null) {
+        return response.data!;
+      } else {
+        throw ServerException(
+          message: response.error ?? 'Failed to fetch dashboard stats',
+        );
+      }
+    } catch (e) {
+      if (e is ServerException) {
+        rethrow;
+      }
+      throw ServerException(
+        message: 'Unexpected error occurred: ${e.toString()}',
+      );
+    }
   }
 
   @override
@@ -25,6 +43,23 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
     int page = 1,
     int limit = 10,
   }) async {
-    return await apiClient.getRecentActivity(page, limit);
+    try {
+      final response = await apiClient.getRecentActivity(page, limit);
+      
+      if (response.success && response.data != null) {
+        return response.data!;
+      } else {
+        throw ServerException(
+          message: response.error ?? 'Failed to fetch recent activity',
+        );
+      }
+    } catch (e) {
+      if (e is ServerException) {
+        rethrow;
+      }
+      throw ServerException(
+        message: 'Unexpected error occurred: ${e.toString()}',
+      );
+    }
   }
 }

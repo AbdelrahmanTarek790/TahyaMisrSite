@@ -386,13 +386,13 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<DashboardStatsModel> getDashboardStats() async {
+  Future<ApiResponse<DashboardStatsModel>> getDashboardStats() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<DashboardStatsModel>(Options(
+        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<DashboardStatsModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -408,12 +408,13 @@ class _ApiClient implements ApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = DashboardStatsModel.fromJson(_result.data!);
+    final value = ApiResponse<DashboardStatsModel>.fromJson(
+        _result.data!, (json) => DashboardStatsModel.fromJson(json as Map<String, dynamic>));
     return value;
   }
 
   @override
-  Future<List<RecentActivityModel>> getRecentActivity(
+  Future<ApiResponse<List<RecentActivityModel>>> getRecentActivity(
     int page,
     int limit,
   ) async {
@@ -425,7 +426,7 @@ class _ApiClient implements ApiClient {
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio
-        .fetch<List<dynamic>>(_setStreamType<List<RecentActivityModel>>(Options(
+        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<List<RecentActivityModel>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -441,9 +442,12 @@ class _ApiClient implements ApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    var value = _result.data!
-        .map((dynamic i) => RecentActivityModel.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final value = ApiResponse<List<RecentActivityModel>>.fromJson(
+        _result.data!, 
+        (json) => (json as List<dynamic>)
+            .map((dynamic i) => RecentActivityModel.fromJson(i as Map<String, dynamic>))
+            .toList()
+    );
     return value;
   }
 
