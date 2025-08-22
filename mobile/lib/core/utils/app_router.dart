@@ -9,7 +9,9 @@ import '../../features/news/presentation/pages/news_detail_page.dart';
 import '../../features/events/presentation/pages/events_list_page.dart';
 import '../../features/events/presentation/pages/event_detail_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/profile/presentation/pages/settings_page.dart';
 import '../../features/media/presentation/pages/media_gallery_page.dart';
+import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../shared/widgets/main_navigation.dart';
 
 class AppRouter {
@@ -17,7 +19,7 @@ class AppRouter {
 
   AppRouter() {
     router = GoRouter(
-      initialLocation: '/news',
+      initialLocation: '/splash',
       routes: [
         // Splash screen
         GoRoute(
@@ -39,6 +41,10 @@ class AppRouter {
         ShellRoute(
           builder: (context, state, child) => MainNavigation(child: child),
           routes: [
+            GoRoute(
+              path: '/dashboard',
+              builder: (context, state) => const DashboardPage(),
+            ),
             GoRoute(
               path: '/news',
               builder: (context, state) => const NewsListPage(),
@@ -70,6 +76,12 @@ class AppRouter {
             GoRoute(
               path: '/profile',
               builder: (context, state) => const ProfilePage(),
+              routes: [
+                GoRoute(
+                  path: 'settings',
+                  builder: (context, state) => const SettingsPage(),
+                ),
+              ],
             ),
           ],
         ),
@@ -96,7 +108,7 @@ class AppRouter {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () => context.go('/news'),
+                onPressed: () => context.go('/dashboard'),
                 child: const Text('العودة للرئيسية'),
               ),
             ],

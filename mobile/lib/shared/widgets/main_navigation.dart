@@ -19,6 +19,12 @@ class _MainNavigationState extends State<MainNavigation> {
 
   final List<NavigationItem> _navigationItems = [
     NavigationItem(
+      icon: Icons.dashboard_outlined,
+      activeIcon: Icons.dashboard,
+      label: 'لوحة التحكم',
+      route: '/dashboard',
+    ),
+    NavigationItem(
       icon: Icons.article_outlined,
       activeIcon: Icons.article,
       label: 'الأخبار',

@@ -1,6 +1,6 @@
 class AppConstants {
   // API
-  static const String baseUrl = 'http://localhost:5000/api/v1';
+  static const String baseUrl = 'https://form.codepeak.software/api/v1';
   static const int connectTimeout = 30000;
   static const int receiveTimeout = 30000;
   
