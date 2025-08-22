@@ -9,6 +9,7 @@ import '../../features/news/presentation/pages/news_detail_page.dart';
 import '../../features/events/presentation/pages/events_list_page.dart';
 import '../../features/events/presentation/pages/event_detail_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/profile/presentation/pages/settings_page.dart';
 import '../../features/media/presentation/pages/media_gallery_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../shared/widgets/main_navigation.dart';
@@ -75,6 +76,12 @@ class AppRouter {
             GoRoute(
               path: '/profile',
               builder: (context, state) => const ProfilePage(),
+              routes: [
+                GoRoute(
+                  path: 'settings',
+                  builder: (context, state) => const SettingsPage(),
+                ),
+              ],
             ),
           ],
         ),

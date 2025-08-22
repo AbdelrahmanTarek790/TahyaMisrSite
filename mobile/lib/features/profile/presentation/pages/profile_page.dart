@@ -172,7 +172,7 @@ class ProfilePage extends StatelessWidget {
                           'الإعدادات',
                           Icons.settings,
                           () {
-                            // TODO: Navigate to settings
+                            context.push('/profile/settings');
                           },
                         ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.3, end: 0),
                         

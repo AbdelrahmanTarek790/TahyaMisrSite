@@ -34,51 +34,51 @@ abstract class ApiClient {
 
   // News endpoints
   @GET('/news')
-  Future<List<NewsModel>> getNews(
+  Future<ApiResponse<Map<String, dynamic>>> getNews(
     @Query('page') int page,
     @Query('limit') int limit,
   );
 
   @GET('/news/{id}')
-  Future<NewsModel> getNewsById(@Path('id') String id);
+  Future<ApiResponse<NewsModel>> getNewsById(@Path('id') String id);
 
   // Events endpoints
   @GET('/events')
-  Future<List<EventModel>> getEvents(
+  Future<ApiResponse<Map<String, dynamic>>> getEvents(
     @Query('page') int page,
     @Query('limit') int limit,
   );
 
   @GET('/events/{id}')
-  Future<EventModel> getEventById(@Path('id') String id);
+  Future<ApiResponse<EventModel>> getEventById(@Path('id') String id);
 
   @POST('/events/{id}/register')
-  Future<void> registerForEvent(@Path('id') String id);
+  Future<ApiResponse<void>> registerForEvent(@Path('id') String id);
 
   // Media endpoints
   @GET('/media')
-  Future<List<MediaModel>> getMedia(
+  Future<ApiResponse<Map<String, dynamic>>> getMedia(
     @Query('page') int page,
     @Query('limit') int limit,
   );
 
   @GET('/media/{id}')
-  Future<MediaModel> getMediaById(@Path('id') String id);
+  Future<ApiResponse<MediaModel>> getMediaById(@Path('id') String id);
 
   // Upload endpoints
   @POST('/media')
   @MultiPart()
-  Future<MediaModel> uploadMedia(
+  Future<ApiResponse<MediaModel>> uploadMedia(
     @Part() File file,
     @Part() String caption,
   );
 
   // Dashboard endpoints
   @GET('/dashboard/stats')
-  Future<DashboardStatsModel> getDashboardStats();
+  Future<ApiResponse<DashboardStatsModel>> getDashboardStats();
 
   @GET('/dashboard/activity')
-  Future<List<RecentActivityModel>> getRecentActivity(
+  Future<ApiResponse<List<RecentActivityModel>>> getRecentActivity(
     @Query('page') int page,
     @Query('limit') int limit,
   );
