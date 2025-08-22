@@ -23,19 +23,32 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
     try {
       final response = await apiClient.getNews(page, limit);
       
+      print('News API Response: ${response.toJson()}'); // Debug logging
+      
       if (response.success && response.data != null) {
         final data = response.data as Map<String, dynamic>;
-        final newsList = data['news'] as List<dynamic>;
+        final newsList = data['news'] as List<dynamic>? ?? [];
         
-        return newsList
-            .map((json) => NewsModel.fromJson(json as Map<String, dynamic>))
-            .toList();
+        print('News list length: ${newsList.length}'); // Debug logging
+        
+        final newsModels = <NewsModel>[];
+        for (final newsJson in newsList) {
+          try {
+            final newsModel = NewsModel.fromJson(newsJson as Map<String, dynamic>);
+            newsModels.add(newsModel);
+          } catch (e) {
+            print('Error parsing news item: $e, Data: $newsJson'); // Debug logging
+          }
+        }
+        
+        return newsModels;
       } else {
         throw ServerException(
           response.error ?? 'Failed to fetch news',
         );
       }
     } catch (e) {
+      print('News fetch error: $e'); // Debug logging
       if (e is ServerException) {
         rethrow;
       }
@@ -50,14 +63,17 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
     try {
       final response = await apiClient.getNewsById(id);
       
+      print('News by ID API Response: ${response.toJson()}'); // Debug logging
+      
       if (response.success && response.data != null) {
-        return response.data!;
+        return NewsModel.fromJson(response.data as Map<String, dynamic>);
       } else {
         throw ServerException(
           response.error ?? 'Failed to fetch news',
         );
       }
     } catch (e) {
+      print('News by ID fetch error: $e'); // Debug logging
       if (e is ServerException) {
         rethrow;
       }

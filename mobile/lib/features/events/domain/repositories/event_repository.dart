@@ -5,8 +5,8 @@ import '../entities/event.dart';
 
 abstract class EventRepository {
   Future<Either<Failure, List<Event>>> getEvents({
-    required int page,
-    required int limit,
+    int page = 1,
+    int limit = 10,
   });
 
   Future<Either<Failure, Event>> getEventById(String id);

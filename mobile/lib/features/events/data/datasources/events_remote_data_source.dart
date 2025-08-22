@@ -24,19 +24,32 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
     try {
       final response = await apiClient.getEvents(page, limit);
       
+      print('Events API Response: ${response.toJson()}'); // Debug logging
+      
       if (response.success && response.data != null) {
         final data = response.data as Map<String, dynamic>;
-        final eventsList = data['events'] as List<dynamic>;
+        final eventsList = data['events'] as List<dynamic>? ?? [];
         
-        return eventsList
-            .map((json) => EventModel.fromJson(json as Map<String, dynamic>))
-            .toList();
+        print('Events list length: ${eventsList.length}'); // Debug logging
+        
+        final eventModels = <EventModel>[];
+        for (final eventJson in eventsList) {
+          try {
+            final eventModel = EventModel.fromJson(eventJson as Map<String, dynamic>);
+            eventModels.add(eventModel);
+          } catch (e) {
+            print('Error parsing event item: $e, Data: $eventJson'); // Debug logging
+          }
+        }
+        
+        return eventModels;
       } else {
         throw ServerException(
           response.error ?? 'Failed to fetch events',
         );
       }
     } catch (e) {
+      print('Events fetch error: $e'); // Debug logging
       if (e is ServerException) {
         rethrow;
       }
@@ -51,14 +64,17 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
     try {
       final response = await apiClient.getEventById(id);
       
+      print('Event by ID API Response: ${response.toJson()}'); // Debug logging
+      
       if (response.success && response.data != null) {
-        return response.data!;
+        return EventModel.fromJson(response.data as Map<String, dynamic>);
       } else {
         throw ServerException(
           response.error ?? 'Failed to fetch event',
         );
       }
     } catch (e) {
+      print('Event by ID fetch error: $e'); // Debug logging
       if (e is ServerException) {
         rethrow;
       }
@@ -73,14 +89,17 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
     try {
       final response = await apiClient.registerForEvent(eventId);
       
-      if (response.success && response.data != null) {
-        return response.data!;
+      print('Event registration API Response: ${response.toJson()}'); // Debug logging
+      
+      if (response.success) {
+        return response.data?.toString() ?? 'Registration successful';
       } else {
         throw ServerException(
           response.error ?? 'Failed to register for event',
         );
       }
     } catch (e) {
+      print('Event registration error: $e'); // Debug logging
       if (e is ServerException) {
         rethrow;
       }

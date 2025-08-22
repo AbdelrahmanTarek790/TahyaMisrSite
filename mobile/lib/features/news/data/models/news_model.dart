@@ -1,9 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import '../../domain/entities/news.dart';
 
-part 'news_model.g.dart';
-
-@JsonSerializable()
 class NewsModel extends News {
   const NewsModel({
     required super.id,
@@ -15,10 +11,70 @@ class NewsModel extends News {
     required super.author,
   });
 
-  factory NewsModel.fromJson(Map<String, dynamic> json) =>
-      _$NewsModelFromJson(json);
+  factory NewsModel.fromJson(Map<String, dynamic> json) {
+    try {
+      // Handle the backend response format
+      final id = json['_id'] as String? ?? json['id'] as String? ?? '';
+      final title = json['title'] as String? ?? '';
+      final content = json['content'] as String? ?? '';
+      
+      // Handle image field - backend uses 'image', mobile expects 'imageUrl'
+      final imageUrl = json['image'] as String? ?? json['imageUrl'] as String?;
+      
+      // Handle createdBy field - extract name from populated object or use fallback
+      String author = '';
+      if (json['createdBy'] != null) {
+        if (json['createdBy'] is Map<String, dynamic>) {
+          author = (json['createdBy'] as Map<String, dynamic>)['name'] as String? ?? 'Unknown Author';
+        } else {
+          author = json['createdBy'].toString();
+        }
+      } else if (json['author'] != null) {
+        author = json['author'] as String? ?? 'Unknown Author';
+      } else {
+        author = 'Unknown Author';
+      }
+      
+      // Handle dates with fallback
+      final createdAt = json['createdAt'] != null 
+          ? DateTime.tryParse(json['createdAt'] as String) ?? DateTime.now()
+          : DateTime.now();
+      final updatedAt = json['updatedAt'] != null 
+          ? DateTime.tryParse(json['updatedAt'] as String) ?? DateTime.now()
+          : DateTime.now();
 
-  Map<String, dynamic> toJson() => _$NewsModelToJson(this);
+      return NewsModel(
+        id: id,
+        title: title,
+        content: content,
+        imageUrl: imageUrl,
+        createdAt: createdAt,
+        updatedAt: updatedAt,
+        author: author,
+      );
+    } catch (e) {
+      // Fallback to prevent null casting errors
+      return NewsModel(
+        id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+        title: json['title']?.toString() ?? '',
+        content: json['content']?.toString() ?? '',
+        imageUrl: json['image']?.toString() ?? json['imageUrl']?.toString(),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+        author: 'Unknown Author',
+      );
+    }
+  }
+
+  Map<String, dynamic> toJson() => {
+    'id': id,
+    'title': title,
+    'content': content,
+    'imageUrl': imageUrl,
+    'createdAt': createdAt.toIso8601String(),
+    'updatedAt': updatedAt.toIso8601String(),
+    'author': author,
+  };
 
   factory NewsModel.fromEntity(News news) {
     return NewsModel(
