@@ -85,8 +85,8 @@ abstract class ApiClient {
   @GET('/users/{id}')
   Future<ApiResponse<UserModel>> getUserById(@Path('id') String id);
 
-  @POST('/users')
-  Future<ApiResponse<UserModel>> createUser(@Body() Map<String, dynamic> userData);
+  // User creation by admin uses register endpoint
+  // @POST('/users') - No direct user creation endpoint, use register
 
   @PUT('/users/{id}')
   Future<ApiResponse<UserModel>> updateUser(@Path('id') String id, @Body() Map<String, dynamic> userData);

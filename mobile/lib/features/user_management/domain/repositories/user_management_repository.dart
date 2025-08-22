@@ -1,24 +1,18 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
-import '../entities/user.dart';
+import '../../../auth/data/models/user_model.dart';
+import '../usecases/get_users.dart';
 
 abstract class UserManagementRepository {
-  Future<Either<Failure, List<User>>> getUsers({
-    int page = 1,
-    int limit = 10,
+  Future<Either<Failure, GetUsersResponse>> getUsers({
+    required int page,
+    required int limit,
     String? search,
     String? role,
-    String? governorate,
-    String? university,
   });
-
-  Future<Either<Failure, User>> getUserById(String id);
-
-  Future<Either<Failure, User>> createUser(Map<String, dynamic> userData);
-
-  Future<Either<Failure, User>> updateUser(String id, Map<String, dynamic> userData);
-
-  Future<Either<Failure, void>> deleteUser(String id);
-
-  Future<Either<Failure, User>> updateUserRole(String id, String role);
+  
+  Future<Either<Failure, UserModel>> getUserById(String id);
+  Future<Either<Failure, UserModel>> createUser(Map<String, dynamic> userData);
+  Future<Either<Failure, UserModel>> updateUser(String id, Map<String, dynamic> userData);
+  Future<Either<Failure, bool>> deleteUser(String id);
 }

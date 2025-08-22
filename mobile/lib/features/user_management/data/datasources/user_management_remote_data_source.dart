@@ -1,5 +1,6 @@
 import '../../../../core/network/api_client.dart';
 import '../../../auth/data/models/user_model.dart';
+import '../../../auth/data/models/register_request.dart';
 
 abstract class UserManagementRemoteDataSource {
   Future<List<UserModel>> getUsers({
@@ -72,7 +73,23 @@ class UserManagementRemoteDataSourceImpl implements UserManagementRemoteDataSour
   @override
   Future<UserModel> createUser(Map<String, dynamic> userData) async {
     try {
-      final response = await apiClient.createUser(userData);
+      // For admin user creation, use the register endpoint
+      final registerRequest = RegisterRequest(
+        name: userData['name'] ?? '',
+        email: userData['email'] ?? '',
+        password: userData['password'] ?? 'TempPassword123!', // Temporary password
+        phone: userData['phone'] ?? '',
+        university: userData['university'] ?? '',
+        nationalId: userData['nationalId'] ?? '',
+        governorate: userData['governorate'] ?? '',
+        position: userData['position'],
+        membershipNumber: userData['membershipNumber'],
+        membershipExpiry: userData['membershipExpiry'] != null 
+            ? DateTime.parse(userData['membershipExpiry']) 
+            : null,
+      );
+      
+      final response = await apiClient.register(registerRequest);
       
       if (response.success && response.data != null) {
         return response.data!;

@@ -10,6 +10,23 @@ import '../../features/events/data/repositories/event_repository_impl.dart';
 import '../../features/events/domain/repositories/event_repository.dart';
 import '../../features/media/data/repositories/media_repository_impl.dart';
 import '../../features/media/domain/repositories/media_repository.dart';
+import '../../features/user_management/data/datasources/user_management_remote_data_source.dart';
+import '../../features/user_management/data/repositories/user_management_repository_impl.dart';
+import '../../features/user_management/domain/repositories/user_management_repository.dart';
+import '../../features/user_management/domain/usecases/get_users.dart';
+import '../../features/user_management/domain/usecases/get_user_by_id.dart';
+import '../../features/user_management/domain/usecases/create_user.dart';
+import '../../features/user_management/domain/usecases/update_user.dart';
+import '../../features/user_management/domain/usecases/delete_user.dart';
+import '../../features/user_management/presentation/bloc/user_management_bloc.dart';
+import '../../features/positions/domain/usecases/get_positions_usecase.dart';
+import '../../features/positions/domain/usecases/create_position_usecase.dart';
+import '../../features/positions/domain/usecases/update_position_usecase.dart';
+import '../../features/positions/domain/usecases/delete_position_usecase.dart';
+import '../../features/positions/domain/repositories/position_repository.dart';
+import '../../features/positions/data/repositories/position_repository_impl.dart';
+import '../../features/positions/data/datasources/position_remote_data_source.dart';
+import '../../features/positions/presentation/bloc/positions_bloc.dart';
 import '../network/api_client.dart';
 import '../network/network_info.dart';
 import '../utils/app_router.dart';
@@ -194,6 +211,12 @@ Future<void> configureDependencies() async {
   // Media dependencies
   _configureMediaDependencies();
 
+  // User Management dependencies
+  _configureUserManagementDependencies();
+
+  // Positions dependencies
+  _configurePositionsDependencies();
+
   // Router
   getIt.registerLazySingleton<AppRouter>(() => AppRouter());
 
@@ -306,6 +329,95 @@ void _configureMediaDependencies() {
   getIt.registerFactory<MediaBloc>(
         () => MediaBloc(
       getMediaUseCase: getIt<GetMediaUseCase>(),
+    ),
+  );
+}
+
+void _configureUserManagementDependencies() {
+  // User Management data source
+  getIt.registerLazySingleton<UserManagementRemoteDataSource>(
+    () => UserManagementRemoteDataSourceImpl(apiClient: getIt<ApiClient>()),
+  );
+
+  // User Management repository
+  getIt.registerLazySingleton<UserManagementRepository>(
+    () => UserManagementRepositoryImpl(
+      remoteDataSource: getIt<UserManagementRemoteDataSource>(),
+      networkInfo: getIt<NetworkInfo>(),
+    ),
+  );
+
+  // User Management use cases
+  getIt.registerLazySingleton<GetUsers>(
+    () => GetUsers(getIt<UserManagementRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetUserById>(
+    () => GetUserById(getIt<UserManagementRepository>()),
+  );
+
+  getIt.registerLazySingleton<CreateUser>(
+    () => CreateUser(getIt<UserManagementRepository>()),
+  );
+
+  getIt.registerLazySingleton<UpdateUser>(
+    () => UpdateUser(getIt<UserManagementRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeleteUser>(
+    () => DeleteUser(getIt<UserManagementRepository>()),
+  );
+
+  // User Management bloc
+  getIt.registerFactory<UserManagementBloc>(
+    () => UserManagementBloc(
+      getUsers: getIt<GetUsers>(),
+      getUserById: getIt<GetUserById>(),
+      createUser: getIt<CreateUser>(),
+      updateUser: getIt<UpdateUser>(),
+      deleteUser: getIt<DeleteUser>(),
+    ),
+  );
+}
+
+void _configurePositionsDependencies() {
+  // Positions data source
+  getIt.registerLazySingleton<PositionRemoteDataSource>(
+    () => PositionRemoteDataSourceImpl(apiClient: getIt<ApiClient>()),
+  );
+
+  // Positions repository
+  getIt.registerLazySingleton<PositionRepository>(
+    () => PositionRepositoryImpl(
+      remoteDataSource: getIt<PositionRemoteDataSource>(),
+      networkInfo: getIt<NetworkInfo>(),
+    ),
+  );
+
+  // Positions use cases
+  getIt.registerLazySingleton<GetPositionsUseCase>(
+    () => GetPositionsUseCase(getIt<PositionRepository>()),
+  );
+
+  getIt.registerLazySingleton<CreatePositionUseCase>(
+    () => CreatePositionUseCase(getIt<PositionRepository>()),
+  );
+
+  getIt.registerLazySingleton<UpdatePositionUseCase>(
+    () => UpdatePositionUseCase(getIt<PositionRepository>()),
+  );
+
+  getIt.registerLazySingleton<DeletePositionUseCase>(
+    () => DeletePositionUseCase(getIt<PositionRepository>()),
+  );
+
+  // Positions bloc
+  getIt.registerFactory<PositionsBloc>(
+    () => PositionsBloc(
+      getPositionsUseCase: getIt<GetPositionsUseCase>(),
+      createPositionUseCase: getIt<CreatePositionUseCase>(),
+      updatePositionUseCase: getIt<UpdatePositionUseCase>(),
+      deletePositionUseCase: getIt<DeletePositionUseCase>(),
     ),
   );
 }
