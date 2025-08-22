@@ -11,6 +11,7 @@ import '../../features/events/data/models/event_model.dart';
 import '../../features/media/data/models/media_model.dart';
 import '../../features/dashboard/data/models/dashboard_stats_model.dart';
 import '../../features/dashboard/data/models/recent_activity_model.dart';
+import 'api_response.dart';
 
 part 'api_client.g.dart';
 
@@ -26,10 +27,10 @@ abstract class ApiClient {
   Future<UserModel> register(@Body() RegisterRequest request);
 
   @GET('/users/me')
-  Future<UserModel> getCurrentUser();
+  Future<ApiResponse<UserModel>> getCurrentUser();
 
   @PUT('/users/me')
-  Future<UserModel> updateProfile(@Body() Map<String, dynamic> data);
+  Future<ApiResponse<UserModel>> updateProfile(@Body() Map<String, dynamic> data);
 
   // News endpoints
   @GET('/news')

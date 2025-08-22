@@ -125,9 +125,18 @@ class ProfilePage extends StatelessWidget {
                     _buildInfoCard(
                       context,
                       'رقم الهاتف',
-                      user.phoneNumber ?? 'غير محدد',
+                      user.phone ?? 'غير محدد',
                       Icons.phone,
                     ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.3, end: 0),
+                    
+                    const SizedBox(height: 16),
+                    
+                    _buildInfoCard(
+                      context,
+                      'الجامعة',
+                      user.university ?? 'غير محدد',
+                      Icons.school,
+                    ).animate().fadeIn(delay: 500.ms).slideX(begin: -0.3, end: 0),
                     
                     const SizedBox(height: 16),
                     

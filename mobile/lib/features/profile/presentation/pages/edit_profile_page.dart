@@ -24,6 +24,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
   late final TextEditingController _governorateController;
+  late final TextEditingController _universityController;
   bool _isLoading = false;
 
   @override
@@ -31,8 +32,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
     super.initState();
     _nameController = TextEditingController(text: widget.user.name);
     _emailController = TextEditingController(text: widget.user.email);
-    _phoneController = TextEditingController(text: widget.user.phoneNumber ?? '');
+    _phoneController = TextEditingController(text: widget.user.phone ?? '');
     _governorateController = TextEditingController(text: widget.user.governorate ?? '');
+    _universityController = TextEditingController(text: widget.user.university ?? '');
   }
 
   @override
@@ -41,6 +43,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _emailController.dispose();
     _phoneController.dispose();
     _governorateController.dispose();
+    _universityController.dispose();
     super.dispose();
   }
 
@@ -187,6 +190,16 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                   const SizedBox(height: 16),
 
+                  // University Field
+                  _buildTextField(
+                    controller: _universityController,
+                    label: 'الجامعة',
+                    icon: Icons.school_outlined,
+                    validator: (value) => null, // Optional field
+                  ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
+
+                  const SizedBox(height: 16),
+
                   // Phone Field
                   _buildTextField(
                     controller: _phoneController,
@@ -201,7 +214,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       }
                       return null;
                     },
-                  ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
+                  ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.3, end: 0),
 
                   const SizedBox(height: 16),
 
@@ -211,7 +224,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     label: 'المحافظة',
                     icon: Icons.location_on_outlined,
                     validator: (value) => null, // Optional field
-                  ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.3, end: 0),
+                  ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
 
                   const SizedBox(height: 32),
 
@@ -340,6 +353,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       if (_governorateController.text.trim().isNotEmpty) {
         data['governorate'] = _governorateController.text.trim();
+      }
+
+      if (_universityController.text.trim().isNotEmpty) {
+        data['university'] = _universityController.text.trim();
       }
 
       context.read<AuthBloc>().add(AuthEvent.updateProfile(data: data));

@@ -1,4 +1,5 @@
 import '../../../../core/network/api_client.dart';
+import '../../../../core/network/api_response.dart';
 import '../models/login_request.dart';
 import '../models/login_response.dart';
 import '../models/register_request.dart';
@@ -28,11 +29,21 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<UserModel> getCurrentUser() async {
-    return await apiClient.getCurrentUser();
+    final response = await apiClient.getCurrentUser();
+    if (response.success && response.data != null) {
+      return response.data!;
+    } else {
+      throw Exception(response.error ?? 'Failed to get current user');
+    }
   }
 
   @override
   Future<UserModel> updateProfile(Map<String, dynamic> data) async {
-    return await apiClient.updateProfile(data);
+    final response = await apiClient.updateProfile(data);
+    if (response.success && response.data != null) {
+      return response.data!;
+    } else {
+      throw Exception(response.error ?? 'Failed to update profile');
+    }
   }
 }

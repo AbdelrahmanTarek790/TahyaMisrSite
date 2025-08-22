@@ -66,7 +66,7 @@ class AuthRepositoryImpl implements AuthRepository {
           name: name,
           role: role,
           governorate: governorate,
-          phoneNumber: phoneNumber,
+          phone: phoneNumber,
         );
         final user = await remoteDataSource.register(registerRequest);
 

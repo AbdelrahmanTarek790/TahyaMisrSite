@@ -86,6 +86,31 @@ Future<void> configureDependencies() async {
       logPrint: (object) => getIt<Logger>().d(object),
     ));
 
+    // Add token interceptor
+    dio.interceptors.add(InterceptorsWrapper(
+      onRequest: (options, handler) async {
+        // Add Authorization header if token exists
+        try {
+          final storage = getIt<FlutterSecureStorage>();
+          final token = await storage.read(key: 'auth_token');
+          if (token != null) {
+            options.headers['Authorization'] = 'Bearer $token';
+          }
+        } catch (e) {
+          getIt<Logger>().e('Error getting token: $e');
+        }
+        handler.next(options);
+      },
+      onError: (error, handler) {
+        // Handle 401 errors (unauthorized)
+        if (error.response?.statusCode == 401) {
+          // Token might be expired, could trigger logout here
+          getIt<Logger>().w('Unauthorized request: ${error.response?.data}');
+        }
+        handler.next(error);
+      },
+    ));
+
     return dio;
   });
 
