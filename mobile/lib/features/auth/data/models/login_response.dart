@@ -14,11 +14,19 @@ class LoginResponse {
   });
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
-    // The response is already unwrapped by ApiResponse wrapper
-    return LoginResponse(
-      token: json['token']?.toString() ?? '',
-      user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
-    );
+    try {
+      // The response is already unwrapped by ApiResponse wrapper
+      return LoginResponse(
+        token: json['token']?.toString() ?? '',
+        user: UserModel.fromJson(json['user'] as Map<String, dynamic>? ?? {}),
+      );
+    } catch (e) {
+      // If parsing fails, return empty response to prevent crashes
+      return LoginResponse(
+        token: '',
+        user: UserModel.fromJson({}),
+      );
+    }
   }
 
   Map<String, dynamic> toJson() => _$LoginResponseToJson(this);

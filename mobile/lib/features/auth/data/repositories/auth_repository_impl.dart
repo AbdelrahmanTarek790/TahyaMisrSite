@@ -174,7 +174,15 @@ class AuthRepositoryImpl implements AuthRepository {
         return const NetworkFailure('Connection timeout');
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
-        final message = e.response?.data?['message'] ?? 'Server error';
+        final responseData = e.response?.data;
+        
+        // Handle backend error format {success: false, error: "message", data: null}
+        String message = 'Server error';
+        if (responseData is Map<String, dynamic>) {
+          message = responseData['error']?.toString() ?? 
+                    responseData['message']?.toString() ?? 
+                    'Server error';
+        }
 
         switch (statusCode) {
           case 400:

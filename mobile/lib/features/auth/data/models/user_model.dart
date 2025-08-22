@@ -21,28 +21,40 @@ class UserModel extends User {
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
-    // Handle backend response format
-    final position = json['position'];
-    final role = position is Map<String, dynamic> 
-        ? position['name'] as String? ?? 'Student'
-        : position?.toString() ?? 'Student';
+    try {
+      // Handle backend response format
+      final position = json['position'];
+      final role = position is Map<String, dynamic> 
+          ? position['name'] as String? ?? 'Student'
+          : position?.toString() ?? 'Student';
 
-    return UserModel(
-      id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
-      email: json['email']?.toString() ?? '',
-      name: json['name']?.toString() ?? '',
-      role: role,
-      governorate: json['governorate']?.toString(),
-      phone: json['phone']?.toString(),
-      university: json['university']?.toString(),
-      nationalId: json['nationalId']?.toString(),
-      membershipNumber: json['membershipNumber']?.toString(),
-      membershipExpiry: json['membershipExpiry'] != null 
-          ? DateTime.tryParse(json['membershipExpiry'].toString()) 
-          : null,
-      createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
-      updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
-    );
+      return UserModel(
+        id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+        email: json['email']?.toString() ?? '',
+        name: json['name']?.toString() ?? '',
+        role: role,
+        governorate: json['governorate']?.toString(),
+        phone: json['phone']?.toString(),
+        university: json['university']?.toString(),
+        nationalId: json['nationalId']?.toString(),
+        membershipNumber: json['membershipNumber']?.toString(),
+        membershipExpiry: json['membershipExpiry'] != null 
+            ? DateTime.tryParse(json['membershipExpiry'].toString()) 
+            : null,
+        createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
+        updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
+      );
+    } catch (e) {
+      // If parsing fails, return a basic user object to prevent crashes
+      return UserModel(
+        id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+        email: json['email']?.toString() ?? '',
+        name: json['name']?.toString() ?? '',
+        role: 'Student',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+    }
   }
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
