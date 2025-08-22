@@ -27,15 +27,15 @@ class HomePage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => GetIt.instance<NewsBloc>()
-            ..add(const NewsEvent.getNews(page: 1, limit: 3)),
+            ..add(const NewsEvent.getNews()),
         ),
         BlocProvider(
           create: (context) => GetIt.instance<EventsBloc>()
-            ..add(const EventsEvent.getEvents(page: 1, limit: 3)),
+            ..add(const EventsEvent.getEvents()),
         ),
         BlocProvider(
           create: (context) => GetIt.instance<MediaBloc>()
-            ..add(const MediaEvent.getMedia(page: 1, limit: 6)),
+            ..add(const MediaEvent.getMedia()),
         ),
       ],
       child: const HomeView(),
@@ -58,9 +58,9 @@ class HomeView extends StatelessWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<NewsBloc>().add(const NewsEvent.getNews(page: 1, limit: 3));
-          context.read<EventsBloc>().add(const EventsEvent.getEvents(page: 1, limit: 3));
-          context.read<MediaBloc>().add(const MediaEvent.getMedia(page: 1, limit: 6));
+          context.read<NewsBloc>().add(const NewsEvent.getNews());
+          context.read<EventsBloc>().add(const EventsEvent.getEvents());
+          context.read<MediaBloc>().add(const MediaEvent.getMedia());
         },
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -111,13 +111,15 @@ class HomeView extends StatelessWidget {
                 title: l10n.latestNews,
                 onViewAll: () => context.push('/news'),
               ),
+
               const SizedBox(height: 16),
               BlocBuilder<NewsBloc, NewsState>(
                 builder: (context, state) {
                   return state.when(
                     initial: () => const SizedBox.shrink(),
                     loading: () => _buildLoadingCards(3),
-                    loaded: (newsList, hasReachedMax) => _buildNewsSection(context, newsList.take(3).toList()),
+                    loaded: (newsList) =>
+                        _buildNewsSection(context, newsList.take(3).toList()),
                     error: (message) => _buildErrorCard(context, message),
                   );
                 },
@@ -137,7 +139,7 @@ class HomeView extends StatelessWidget {
                   return state.when(
                     initial: () => const SizedBox.shrink(),
                     loading: () => _buildLoadingCards(3),
-                    loaded: (eventsList, hasReachedMax) => _buildEventsSection(context, eventsList.take(3).toList()),
+                    loaded: (eventsList, ) => _buildEventsSection(context, eventsList.take(3).toList()),
                     error: (message) => _buildErrorCard(context, message),
                   );
                 },
@@ -157,7 +159,7 @@ class HomeView extends StatelessWidget {
                   return state.when(
                     initial: () => const SizedBox.shrink(),
                     loading: () => _buildLoadingGrid(),
-                    loaded: (mediaList, hasReachedMax) => _buildMediaSection(context, mediaList.take(6).toList()),
+                    loaded: (mediaList) => _buildMediaSection(context, mediaList.take(6).toList()),
                     error: (message) => _buildErrorCard(context, message),
                   );
                 },
@@ -241,11 +243,11 @@ class HomeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (news.imageUrl.isNotEmpty)
+              if (news.imageUrl!.isNotEmpty)
                 ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(
-                    news.imageUrl,
+                    news.imageUrl ?? '',
                     width: double.infinity,
                     height: 150,
                     fit: BoxFit.cover,
@@ -316,11 +318,11 @@ class HomeView extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (event.imageUrl.isNotEmpty)
-                ClipRRect(
+              if (event.imageUrl != null && event.imageUrl!.isNotEmpty)
+               /* ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(
-                    event.imageUrl,
+                    event.imageUrl ?? '',
                     width: double.infinity,
                     height: 150,
                     fit: BoxFit.cover,
@@ -331,7 +333,7 @@ class HomeView extends StatelessWidget {
                       child: const Icon(Icons.event),
                     ),
                   ),
-                ),
+                ),*/
               const SizedBox(height: 12),
               Text(
                 event.title,
@@ -418,24 +420,13 @@ class HomeView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 120,
+                  height: 100,
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
                 const SizedBox(height: 12),
-                Container(
-                  height: 16,
-                  width: double.infinity,
-                  color: Colors.grey[300],
-                ),
-                const SizedBox(height: 8),
-                Container(
-                  height: 14,
-                  width: 200,
-                  color: Colors.grey[300],
-                ),
               ],
             ),
           ),
