@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/entities/dashboard_stats.dart';
 import '../../domain/entities/recent_activity.dart';
@@ -144,6 +145,7 @@ class AdminDashboardView extends StatelessWidget {
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Navigate to user management
+                    context.push('/user-management');
                   },
                   icon: const Icon(Icons.manage_accounts),
                   label: const Text('إدارة المستخدمين'),
@@ -156,6 +158,26 @@ class AdminDashboardView extends StatelessWidget {
               Expanded(
                 child: ElevatedButton.icon(
                   onPressed: () {
+                    // Navigate to content management
+                    context.push('/content-management');
+                  },
+                  icon: const Icon(Icons.edit_note),
+                  label: const Text('إدارة المحتوى'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
+                  ),
+                ),
+              ),
+            ],
+          ).animate(delay: 700.ms).slideY(begin: 0.2),
+
+          const SizedBox(height: 16),
+
+          Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
                     // Navigate to send notifications
                   },
                   icon: const Icon(Icons.notifications_active),
@@ -165,8 +187,21 @@ class AdminDashboardView extends StatelessWidget {
                   ),
                 ),
               ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    // Navigate to analytics
+                  },
+                  icon: const Icon(Icons.analytics),
+                  label: const Text('التقارير'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.all(16),
+                  ),
+                ),
+              ),
             ],
-          ).animate(delay: 700.ms).slideY(begin: 0.2),
+          ).animate(delay: 800.ms).slideY(begin: 0.2),
 
           const SizedBox(height: 24),
 

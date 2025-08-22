@@ -4,6 +4,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 
+import '../../../../gen_l10n/app_localizations.dart';
+import '../../../../core/utils/settings_cubit.dart';
+import '../../../../core/utils/app_settings.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
@@ -14,9 +17,11 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الإعدادات'),
+        title: Text(l10n.settings),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
@@ -120,12 +125,12 @@ class SettingsPage extends StatelessWidget {
                       // Account Settings Section
                       _buildSectionCard(
                         context,
-                        'إعدادات الحساب',
+                        l10n.accountSettings,
                         Icons.account_circle,
                         [
                           _buildSettingsTile(
                             context,
-                            'تعديل الملف الشخصي',
+                            l10n.editProfile,
                             'تحديث البيانات الشخصية والمعلومات',
                             Icons.edit,
                             () {
@@ -154,7 +159,7 @@ class SettingsPage extends StatelessWidget {
                       // App Settings Section
                       _buildSectionCard(
                         context,
-                        'إعدادات التطبيق',
+                        l10n.appPreferences,
                         Icons.settings,
                         [
                           _buildSettingsTile(
@@ -166,22 +171,43 @@ class SettingsPage extends StatelessWidget {
                               _showNotificationSettings(context);
                             },
                           ),
-                          _buildSettingsTile(
-                            context,
-                            'اللغة',
-                            'العربية (الافتراضي)',
-                            Icons.language,
-                            () {
-                              _showLanguageSettings(context);
+                          BlocBuilder<SettingsCubit, AppSettings>(
+                            builder: (context, settings) {
+                              return _buildSettingsTile(
+                                context,
+                                l10n.language,
+                                settings.language == AppLanguage.arabic ? l10n.arabic : l10n.english,
+                                Icons.language,
+                                () {
+                                  _showLanguageSettings(context, settings);
+                                },
+                              );
                             },
                           ),
-                          _buildSettingsTile(
-                            context,
-                            'المظهر',
-                            'فاتح / داكن / تلقائي',
-                            Icons.palette,
-                            () {
-                              _showThemeSettings(context);
+                          BlocBuilder<SettingsCubit, AppSettings>(
+                            builder: (context, settings) {
+                              String themeText;
+                              switch (settings.themeMode) {
+                                case AppThemeMode.light:
+                                  themeText = l10n.lightTheme;
+                                  break;
+                                case AppThemeMode.dark:
+                                  themeText = l10n.darkTheme;
+                                  break;
+                                case AppThemeMode.system:
+                                  themeText = l10n.systemTheme;
+                                  break;
+                              }
+                              
+                              return _buildSettingsTile(
+                                context,
+                                l10n.theme,
+                                themeText,
+                                Icons.palette,
+                                () {
+                                  _showThemeSettings(context, settings);
+                                },
+                              );
                             },
                           ),
                         ],
@@ -235,7 +261,7 @@ class SettingsPage extends StatelessWidget {
                             color: Theme.of(context).colorScheme.error,
                           ),
                           title: Text(
-                            'تسجيل الخروج',
+                            l10n.logout,
                             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                               color: Theme.of(context).colorScheme.error,
                               fontWeight: FontWeight.w600,
@@ -370,15 +396,17 @@ class SettingsPage extends StatelessWidget {
   }
 
   void _showLogoutDialog(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('تسجيل الخروج'),
-        content: const Text('هل أنت متأكد من رغبتك في تسجيل الخروج؟'),
+        title: Text(l10n.logout),
+        content: Text(l10n.confirmLogout),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('إلغاء'),
+            child: Text(l10n.cancel),
           ),
           TextButton(
             onPressed: () {
@@ -386,7 +414,7 @@ class SettingsPage extends StatelessWidget {
               context.read<AuthBloc>().add(const AuthEvent.logoutRequested());
             },
             child: Text(
-              'تسجيل الخروج',
+              l10n.logout,
               style: TextStyle(color: Theme.of(context).colorScheme.error),
             ),
           ),
@@ -458,32 +486,99 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  void _showLanguageSettings(BuildContext context) {
+  void _showLanguageSettings(BuildContext context, AppSettings currentSettings) {
+    final l10n = AppLocalizations.of(context)!;
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('إعدادات اللغة'),
-        content: const Text('اللغة العربية هي اللغة الافتراضية والوحيدة المدعومة حالياً.'),
+        title: Text(l10n.language),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<AppLanguage>(
+              title: Text(l10n.arabic),
+              value: AppLanguage.arabic,
+              groupValue: currentSettings.language,
+              onChanged: (AppLanguage? value) {
+                if (value != null) {
+                  context.read<SettingsCubit>().changeLanguage(value);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+            RadioListTile<AppLanguage>(
+              title: Text(l10n.english),
+              value: AppLanguage.english,
+              groupValue: currentSettings.language,
+              onChanged: (AppLanguage? value) {
+                if (value != null) {
+                  context.read<SettingsCubit>().changeLanguage(value);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('حسناً'),
+            child: Text(l10n.cancel),
           ),
         ],
       ),
     );
   }
 
-  void _showThemeSettings(BuildContext context) {
+  void _showThemeSettings(BuildContext context, AppSettings currentSettings) {
+    final l10n = AppLocalizations.of(context)!;
+    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('إعدادات المظهر'),
-        content: const Text('يتم تحديد المظهر تلقائياً حسب إعدادات النظام.'),
+        title: Text(l10n.theme),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            RadioListTile<AppThemeMode>(
+              title: Text(l10n.lightTheme),
+              value: AppThemeMode.light,
+              groupValue: currentSettings.themeMode,
+              onChanged: (AppThemeMode? value) {
+                if (value != null) {
+                  context.read<SettingsCubit>().changeThemeMode(value);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+            RadioListTile<AppThemeMode>(
+              title: Text(l10n.darkTheme),
+              value: AppThemeMode.dark,
+              groupValue: currentSettings.themeMode,
+              onChanged: (AppThemeMode? value) {
+                if (value != null) {
+                  context.read<SettingsCubit>().changeThemeMode(value);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+            RadioListTile<AppThemeMode>(
+              title: Text(l10n.systemTheme),
+              value: AppThemeMode.system,
+              groupValue: currentSettings.themeMode,
+              onChanged: (AppThemeMode? value) {
+                if (value != null) {
+                  context.read<SettingsCubit>().changeThemeMode(value);
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('حسناً'),
+            child: Text(l10n.cancel),
           ),
         ],
       ),

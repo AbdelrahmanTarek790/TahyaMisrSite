@@ -36,7 +36,7 @@ class _SplashPageState extends State<SplashPage> {
             initial: () {},
             loading: () {},
             authenticated: (user, token) {
-              context.go('/dashboard');
+              context.go('/home');
             },
             unauthenticated: () {
               context.go('/login');

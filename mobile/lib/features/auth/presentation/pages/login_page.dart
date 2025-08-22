@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
           initial: () {},
           loading: () {},
           authenticated: (user, token) {
-            context.go('/dashboard');
+            context.go('/home');
           },
           unauthenticated: () {},
           error: (message) {

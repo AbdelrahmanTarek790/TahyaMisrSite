@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/auth/presentation/pages/splash_page.dart';
+import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/news/presentation/pages/news_list_page.dart';
 import '../../features/news/presentation/pages/news_detail_page.dart';
 import '../../features/events/presentation/pages/events_list_page.dart';
@@ -12,6 +13,8 @@ import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/settings_page.dart';
 import '../../features/media/presentation/pages/media_gallery_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/user_management/presentation/pages/user_management_page.dart';
+import '../../features/content_management/presentation/pages/content_management_page.dart';
 import '../../shared/widgets/main_navigation.dart';
 
 class AppRouter {
@@ -41,6 +44,10 @@ class AppRouter {
         ShellRoute(
           builder: (context, state, child) => MainNavigation(child: child),
           routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => const HomePage(),
+            ),
             GoRoute(
               path: '/dashboard',
               builder: (context, state) => const DashboardPage(),
@@ -84,6 +91,18 @@ class AppRouter {
               ],
             ),
           ],
+        ),
+
+        // User Management (Admin only)
+        GoRoute(
+          path: '/user-management',
+          builder: (context, state) => const UserManagementPage(),
+        ),
+
+        // Content Management (Admin only)
+        GoRoute(
+          path: '/content-management',
+          builder: (context, state) => const ContentManagementPage(),
         ),
       ],
       errorBuilder: (context, state) => Scaffold(

@@ -39,6 +39,7 @@ import '../../features/events/presentation/bloc/events_bloc.dart';
 import '../../features/media/data/datasources/media_remote_data_source.dart';
 import '../../features/media/domain/usecases/get_media_usecase.dart';
 import '../../features/media/presentation/bloc/media_bloc.dart';
+import '../utils/settings_cubit.dart';
 
 import 'injection.config.dart';
 
@@ -195,6 +196,9 @@ Future<void> configureDependencies() async {
 
   // Router
   getIt.registerLazySingleton<AppRouter>(() => AppRouter());
+
+  // Settings
+  getIt.registerLazySingleton<SettingsCubit>(() => SettingsCubit());
 }
 
 void _configureDashboardDependencies() {
