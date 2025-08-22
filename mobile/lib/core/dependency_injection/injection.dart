@@ -6,6 +6,10 @@ import 'package:hive/hive.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:logger/logger.dart';
 
+import '../../features/events/data/repositories/event_repository_impl.dart';
+import '../../features/events/domain/repositories/event_repository.dart';
+import '../../features/media/data/repositories/media_repository_impl.dart';
+import '../../features/media/domain/repositories/media_repository.dart';
 import '../network/api_client.dart';
 import '../network/network_info.dart';
 import '../utils/app_router.dart';
@@ -253,17 +257,24 @@ void _configureNewsDependencies() {
 void _configureEventsDependencies() {
   // Events data source
   getIt.registerLazySingleton<EventsRemoteDataSource>(
-    () => EventsRemoteDataSourceImpl(getIt<ApiClient>()),
+        () => EventsRemoteDataSourceImpl(getIt<ApiClient>()),
   );
 
-  // Events use cases (repository will need to be created)
+  // Events repository
+  getIt.registerLazySingleton<EventRepository>(
+        () => EventRepositoryImpl(
+      remoteDataSource: getIt<EventsRemoteDataSource>(),
+    ),
+  );
+
+  // Events use case
   getIt.registerLazySingleton<GetEventsUseCase>(
-    () => GetEventsUseCase(getIt<EventsRemoteDataSource>()),
+        () => GetEventsUseCase(getIt<EventRepository>()),
   );
 
   // Events bloc
   getIt.registerFactory<EventsBloc>(
-    () => EventsBloc(
+        () => EventsBloc(
       getEventsUseCase: getIt<GetEventsUseCase>(),
     ),
   );
@@ -272,18 +283,26 @@ void _configureEventsDependencies() {
 void _configureMediaDependencies() {
   // Media data source
   getIt.registerLazySingleton<MediaRemoteDataSource>(
-    () => MediaRemoteDataSourceImpl(getIt<ApiClient>()),
+        () => MediaRemoteDataSourceImpl(getIt<ApiClient>()),
   );
 
-  // Media use cases
+  // Media repository
+  getIt.registerLazySingleton<MediaRepository>(
+        () => MediaRepositoryImpl(
+      remoteDataSource: getIt<MediaRemoteDataSource>(),
+    ),
+  );
+
+  // Media use case
   getIt.registerLazySingleton<GetMediaUseCase>(
-    () => GetMediaUseCase(getIt<MediaRemoteDataSource>()),
+        () => GetMediaUseCase(getIt<MediaRepository>()),
   );
 
   // Media bloc
   getIt.registerFactory<MediaBloc>(
-    () => MediaBloc(
+        () => MediaBloc(
       getMediaUseCase: getIt<GetMediaUseCase>(),
     ),
   );
 }
+
