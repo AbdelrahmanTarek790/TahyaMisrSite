@@ -24,6 +24,17 @@ import '../../features/dashboard/domain/repositories/dashboard_repository.dart';
 import '../../features/dashboard/domain/usecases/get_dashboard_stats_usecase.dart';
 import '../../features/dashboard/domain/usecases/get_recent_activity_usecase.dart';
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import '../../features/news/data/datasources/news_remote_data_source.dart';
+import '../../features/news/data/repositories/news_repository_impl.dart';
+import '../../features/news/domain/repositories/news_repository.dart';
+import '../../features/news/domain/usecases/get_news_usecase.dart';
+import '../../features/news/presentation/bloc/news_bloc.dart';
+import '../../features/events/data/datasources/events_remote_data_source.dart';
+import '../../features/events/domain/usecases/get_events_usecase.dart';
+import '../../features/events/presentation/bloc/events_bloc.dart';
+import '../../features/media/data/datasources/media_remote_data_source.dart';
+import '../../features/media/domain/usecases/get_media_usecase.dart';
+import '../../features/media/presentation/bloc/media_bloc.dart';
 
 import 'injection.config.dart';
 
@@ -169,6 +180,15 @@ Future<void> configureDependencies() async {
   // Dashboard dependencies
   _configureDashboardDependencies();
 
+  // News dependencies
+  _configureNewsDependencies();
+
+  // Events dependencies
+  _configureEventsDependencies();
+
+  // Media dependencies
+  _configureMediaDependencies();
+
   // Router
   getIt.registerLazySingleton<AppRouter>(() => AppRouter());
 }
@@ -200,6 +220,70 @@ void _configureDashboardDependencies() {
     () => DashboardBloc(
       getDashboardStatsUseCase: getIt<GetDashboardStatsUseCase>(),
       getRecentActivityUseCase: getIt<GetRecentActivityUseCase>(),
+    ),
+  );
+}
+
+void _configureNewsDependencies() {
+  // News data source
+  getIt.registerLazySingleton<NewsRemoteDataSource>(
+    () => NewsRemoteDataSourceImpl(getIt<ApiClient>()),
+  );
+
+  // News repository
+  getIt.registerLazySingleton<NewsRepository>(
+    () => NewsRepositoryImpl(
+      remoteDataSource: getIt<NewsRemoteDataSource>(),
+    ),
+  );
+
+  // News use cases
+  getIt.registerLazySingleton<GetNewsUseCase>(
+    () => GetNewsUseCase(getIt<NewsRepository>()),
+  );
+
+  // News bloc
+  getIt.registerFactory<NewsBloc>(
+    () => NewsBloc(
+      getNewsUseCase: getIt<GetNewsUseCase>(),
+    ),
+  );
+}
+
+void _configureEventsDependencies() {
+  // Events data source
+  getIt.registerLazySingleton<EventsRemoteDataSource>(
+    () => EventsRemoteDataSourceImpl(getIt<ApiClient>()),
+  );
+
+  // Events use cases (repository will need to be created)
+  getIt.registerLazySingleton<GetEventsUseCase>(
+    () => GetEventsUseCase(getIt<EventsRemoteDataSource>()),
+  );
+
+  // Events bloc
+  getIt.registerFactory<EventsBloc>(
+    () => EventsBloc(
+      getEventsUseCase: getIt<GetEventsUseCase>(),
+    ),
+  );
+}
+
+void _configureMediaDependencies() {
+  // Media data source
+  getIt.registerLazySingleton<MediaRemoteDataSource>(
+    () => MediaRemoteDataSourceImpl(getIt<ApiClient>()),
+  );
+
+  // Media use cases
+  getIt.registerLazySingleton<GetMediaUseCase>(
+    () => GetMediaUseCase(getIt<MediaRemoteDataSource>()),
+  );
+
+  // Media bloc
+  getIt.registerFactory<MediaBloc>(
+    () => MediaBloc(
+      getMediaUseCase: getIt<GetMediaUseCase>(),
     ),
   );
 }
