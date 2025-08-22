@@ -1,3 +1,4 @@
+import '../../../../core/constants/app_constants.dart';
 import '../../domain/entities/news.dart';
 
 class NewsModel extends News {
@@ -19,7 +20,7 @@ class NewsModel extends News {
       final content = json['content'] as String? ?? '';
       
       // Handle image field - backend uses 'image', mobile expects 'imageUrl'
-      final imageUrl = json['image'] as String? ?? json['imageUrl'] as String?;
+      final imageUrl ='https://form.codepeak.software/uploads/'+json['image'] as String? ??'https://form.codepeak.software/uploads/'+json['image']  as String?;
       
       // Handle createdBy field - extract name from populated object or use fallback
       String author = '';
@@ -58,7 +59,7 @@ class NewsModel extends News {
         id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
         title: json['title']?.toString() ?? '',
         content: json['content']?.toString() ?? '',
-        imageUrl: json['image']?.toString() ?? json['imageUrl']?.toString(),
+        imageUrl: 'https://form.codepeak.software/uploads/'+json['image'],
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
         author: 'Unknown Author',

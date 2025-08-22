@@ -24,15 +24,17 @@ class UserModel extends User {
     try {
       // Handle backend response format
       final position = json['position'];
-      final role = position is Map<String, dynamic> 
+/*
+      final role = position is Map<String, dynamic>
           ? position['name'] as String? ?? 'Student'
           : position?.toString() ?? 'Student';
+*/
 
       return UserModel(
         id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
         email: json['email']?.toString() ?? '',
         name: json['name']?.toString() ?? '',
-        role: role,
+        role: json['role']?.toString() ?? '',
         governorate: json['governorate']?.toString(),
         phone: json['phone']?.toString(),
         university: json['university']?.toString(),
@@ -50,7 +52,7 @@ class UserModel extends User {
         id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
         email: json['email']?.toString() ?? '',
         name: json['name']?.toString() ?? '',
-        role: 'Student',
+        role: json['role']?.toString() ?? '',
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );

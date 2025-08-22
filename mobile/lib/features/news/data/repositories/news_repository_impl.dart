@@ -48,4 +48,16 @@ class NewsRepositoryImpl implements NewsRepository {
       return const Left(ServerFailure('An unexpected error occurred'));
     }
   }
+
+  @override
+  Future<Either<Failure, void>> cacheNews(List<News> newsList) {
+    // TODO: implement cacheNews
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Either<Failure, List<News>>> getCachedNews() {
+    // TODO: implement getCachedNews
+    throw UnimplementedError();
+  }
 }

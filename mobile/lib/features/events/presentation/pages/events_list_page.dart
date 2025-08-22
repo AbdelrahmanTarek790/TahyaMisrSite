@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/entities/event.dart';
 import '../bloc/events_bloc.dart';
@@ -123,7 +124,8 @@ class _EventCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           // Navigate to event detail
-          Navigator.of(context).pushNamed('/event-detail', arguments: event.id);
+          context.go('/events/detail/${event.id}');
+          // Navigator.of(context).pushNamed('/event-detail', arguments: event.id);
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,13 +176,13 @@ class _EventCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        _formatDate(event.date),
+                        _formatDate(event.eventDate),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               color: Theme.of(context).colorScheme.onSurfaceVariant,
                             ),
                       ),
                       const Spacer(),
-                      if (_isUpcomingEvent(event.date))
+                      if (_isUpcomingEvent(event.eventDate))
                         Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 8,
@@ -356,4 +358,3 @@ class _EventCard extends StatelessWidget {
       ),
     );
   }
-}

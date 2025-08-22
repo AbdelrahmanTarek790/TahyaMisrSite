@@ -24,8 +24,7 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
     try {
       final response = await apiClient.getEvents(page, limit);
       
-      print('Events API Response: ${response.toJson()}'); // Debug logging
-      
+
       if (response.success && response.data != null) {
         final data = response.data as Map<String, dynamic>;
         final eventsList = data['events'] as List<dynamic>? ?? [];
@@ -64,8 +63,7 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
     try {
       final response = await apiClient.getEventById(id);
       
-      print('Event by ID API Response: ${response.toJson()}'); // Debug logging
-      
+
       if (response.success && response.data != null) {
         return EventModel.fromJson(response.data as Map<String, dynamic>);
       } else {
@@ -89,8 +87,7 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
     try {
       final response = await apiClient.registerForEvent(eventId);
       
-      print('Event registration API Response: ${response.toJson()}'); // Debug logging
-      
+
       if (response.success) {
         return response.data?.toString() ?? 'Registration successful';
       } else {

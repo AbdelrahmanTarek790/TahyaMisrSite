@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../domain/entities/dashboard_stats.dart';
 import '../../domain/entities/recent_activity.dart';
@@ -120,7 +121,7 @@ class StudentDashboardView extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // Navigate to news
+                       context.go('/news');
                       },
                       icon: const Icon(Icons.article),
                       label: const Text('الأخبار'),
@@ -133,7 +134,7 @@ class StudentDashboardView extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // Navigate to events
+                        context.go('/events');
                       },
                       icon: const Icon(Icons.event),
                       label: const Text('الفعاليات'),
@@ -150,7 +151,7 @@ class StudentDashboardView extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // Navigate to media
+                        context.go('/media');
                       },
                       icon: const Icon(Icons.photo_library),
                       label: const Text('المعرض'),
@@ -163,7 +164,7 @@ class StudentDashboardView extends StatelessWidget {
                   Expanded(
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // Navigate to profile
+                        context.go('/profile');
                       },
                       icon: const Icon(Icons.person),
                       label: const Text('الملف الشخصي'),

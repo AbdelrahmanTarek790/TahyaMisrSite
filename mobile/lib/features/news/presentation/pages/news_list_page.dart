@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -18,294 +19,123 @@ class NewsListPage extends StatefulWidget {
 }
 
 class _NewsListPageState extends State<NewsListPage> {
+  final PagingController<int, News> _pagingController =
+  PagingController(firstPageKey: 0);
+
   late NewsBloc _newsBloc;
 
   @override
   void initState() {
     super.initState();
     _newsBloc = GetIt.instance<NewsBloc>();
-    _newsBloc.add(const NewsEvent.getNews());
+
+    _pagingController.addPageRequestListener((pageKey) {
+      _newsBloc.add(const NewsEvent.getNews());
+    });
   }
 
   @override
   void dispose() {
+    _pagingController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('الأخبار'),
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        elevation: 0,
-      ),
-      body: BlocProvider.value(
-        value: _newsBloc,
-        child: BlocBuilder<NewsBloc, NewsState>(
-          builder: (context, state) {
-            return state.when(
-              initial: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              loaded: (newsList) => newsList.isEmpty
-                  ? const Center(
-                      child: Text('لا توجد أخبار متاحة'),
-                    )
-                  : RefreshIndicator(
-                      onRefresh: () async {
-                        _newsBloc.add(const NewsEvent.refreshNews());
-                      },
-                      child: ListView.builder(
-                        padding: const EdgeInsets.all(16),
-                        itemCount: newsList.length,
-                        itemBuilder: (context, index) {
-                          final news = newsList[index];
-                          return _NewsCard(news: news)
-                              .animate(delay: (index * 100).ms)
-                              .slideX(begin: 0.1)
-                              .fadeIn();
-                        },
-                      ),
-                    ),
-              error: (message) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Colors.red,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'حدث خطأ',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      message,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () {
-                        _newsBloc.add(const NewsEvent.refreshNews());
-                      },
-                      child: const Text('إعادة المحاولة'),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class _NewsCard extends StatelessWidget {
-  final News news;
-
-  const _NewsCard({required this.news});
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 16),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        onTap: () {
-          // Navigate to news detail
-          Navigator.of(context).pushNamed('/news-detail', arguments: news.id);
+    return BlocProvider.value(
+      value: _newsBloc,
+      child: BlocListener<NewsBloc, NewsState>(
+        listener: (context, state) {
+          state.whenOrNull(
+            loaded: (news) {
+              final isLastPage = news.length < 10;
+              if (isLastPage) {
+                _pagingController.appendLastPage(news);
+              } else {
+                final nextPageKey = _pagingController.nextPageKey! + 1;
+                _pagingController.appendPage(news, nextPageKey);
+              }
+            },
+            error: (message) {
+              _pagingController.error = message;
+            },
+          );
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (news.imageUrl != null)
-              AspectRatio(
-                aspectRatio: 16 / 9,
-                child: Image.network(
-                  news.imageUrl!,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) => Container(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
-                    child: Icon(
-                      Icons.image_not_supported,
-                      color: Theme.of(context).colorScheme.onSurfaceVariant,
-                      size: 48,
-                    ),
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('الأخبار'),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: () => _pagingController.refresh(),
+              ),
+            ],
+          ),
+          body: RefreshIndicator(
+            onRefresh: () => Future.sync(() => _pagingController.refresh()),
+            child: PagedListView<int, News>(
+              pagingController: _pagingController,
+              builderDelegate: PagedChildBuilderDelegate<News>(
+                itemBuilder: (context, news, index) => NewsCard(
+                  news: news,
+                  index: index,
+                ),
+                firstPageProgressIndicatorBuilder: (context) => _buildSkeleton(),
+                newPageProgressIndicatorBuilder: (context) => const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
                   ),
                 ),
-              ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    news.title,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    news.content,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 12),
-                  Row(
+                noItemsFoundIndicatorBuilder: (context) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(
-                        Icons.access_time,
-                        size: 16,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        Icons.article_outlined,
+                        size: 64,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.5),
                       ),
-                      const SizedBox(width: 4),
+                      const SizedBox(height: 16),
                       Text(
-                        _formatDate(news.createdAt),
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
-                            ),
-                      ),
-                      if (news.author.isNotEmpty) ...[
-                        const SizedBox(width: 16),
-                        Icon(
-                          Icons.person,
-                          size: 16,
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                        const SizedBox(width: 4),
-                        Text(
-                          news.author,
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurfaceVariant,
-                              ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
-
-    if (difference.inDays > 0) {
-      return 'منذ ${difference.inDays} يوم';
-    } else if (difference.inHours > 0) {
-      return 'منذ ${difference.inHours} ساعة';
-    } else if (difference.inMinutes > 0) {
-      return 'منذ ${difference.inMinutes} دقيقة';
-    } else {
-      return 'الآن';
-    }
-  }
-
-      final isLastPage = pageKey >= 3; // Simulate only 3 pages
-
-      if (isLastPage) {
-        _pagingController.appendLastPage(dummyNews);
-      } else {
-        _pagingController.appendPage(dummyNews, pageKey + 1);
-      }
-    } catch (error) {
-      _pagingController.error = error;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('الأخبار'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => _pagingController.refresh(),
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: () => Future.sync(() => _pagingController.refresh()),
-        child: PagedListView<int, News>(
-          pagingController: _pagingController,
-          builderDelegate: PagedChildBuilderDelegate<News>(
-            itemBuilder: (context, news, index) => NewsCard(
-              news: news,
-              index: index,
-            ),
-            firstPageProgressIndicatorBuilder: (context) => _buildSkeleton(),
-            newPageProgressIndicatorBuilder: (context) => const Center(
-              child: Padding(
-                padding: EdgeInsets.all(16.0),
-                child: CircularProgressIndicator(),
-              ),
-            ),
-            noItemsFoundIndicatorBuilder: (context) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.article_outlined,
-                    size: 64,
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withOpacity(0.5),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'لا توجد أخبار متاحة',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        'لا توجد أخبار متاحة',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: Theme.of(context)
                               .colorScheme
                               .onSurface
                               .withOpacity(0.7),
                         ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ),
-            firstPageErrorIndicatorBuilder: (context) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'حدث خطأ في تحميل الأخبار',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                ),
+                firstPageErrorIndicatorBuilder: (context) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'حدث خطأ في تحميل الأخبار',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           color: Theme.of(context).colorScheme.error,
                         ),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => _pagingController.refresh(),
+                        child: const Text('إعادة المحاولة'),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => _pagingController.refresh(),
-                    child: const Text('إعادة المحاولة'),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -328,7 +158,7 @@ class _NewsCard extends StatelessWidget {
             updatedAt: DateTime.now(),
             author: 'كاتب تجريبي',
           ),
-          index: 0,
+          index: index,
         ),
       ),
     );
@@ -351,13 +181,13 @@ class NewsCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: InkWell(
         onTap: () {
-          // TODO: Navigate to news detail
+          context.go('/news/detail/${news.id}');
+          // Navigator.of(context).pushNamed('detail', arguments: news.id);
         },
         borderRadius: BorderRadius.circular(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Image
             if (news.imageUrl != null)
               ClipRRect(
                 borderRadius: const BorderRadius.only(
@@ -380,41 +210,32 @@ class NewsCard extends StatelessWidget {
                   ),
                 ),
               ),
-
-            // Content
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
                   Text(
                     news.title,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
+                      fontWeight: FontWeight.bold,
+                    ),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
-
                   const SizedBox(height: 8),
-
-                  // Content Preview
                   Text(
                     news.content,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .onSurface
-                              .withOpacity(0.7),
-                        ),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .onSurface
+                          .withOpacity(0.7),
+                    ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
                   ),
-
                   const SizedBox(height: 12),
-
-                  // Meta Info
                   Row(
                     children: [
                       Icon(
@@ -429,34 +250,31 @@ class NewsCard extends StatelessWidget {
                       Text(
                         news.author,
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurface
-                                  .withOpacity(0.5),
-                            ),
-                      ),
-                      const Spacer(),
-                      if (news.createdAt != null) ...[
-                        Icon(
-                          Icons.access_time,
-                          size: 16,
                           color: Theme.of(context)
                               .colorScheme
                               .onSurface
                               .withOpacity(0.5),
                         ),
-                        const SizedBox(width: 4),
-                        Text(
-                          _formatDate(news.createdAt!),
-                          style:
-                              Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurface
-                                        .withOpacity(0.5),
-                                  ),
+                      ),
+                      const Spacer(),
+                      Icon(
+                        Icons.access_time,
+                        size: 16,
+                        color: Theme.of(context)
+                            .colorScheme
+                            .onSurface
+                            .withOpacity(0.5),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        _formatDate(news.createdAt),
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.5),
                         ),
-                      ],
+                      ),
                     ],
                   ),
                 ],
@@ -473,11 +291,11 @@ class NewsCard extends StatelessWidget {
     final difference = now.difference(date);
 
     if (difference.inDays > 0) {
-      return 'منذ ${difference.inDays} أيام';
+      return 'منذ ${difference.inDays} يوم';
     } else if (difference.inHours > 0) {
-      return 'منذ ${difference.inHours} ساعات';
+      return 'منذ ${difference.inHours} ساعة';
     } else if (difference.inMinutes > 0) {
-      return 'منذ ${difference.inMinutes} دقائق';
+      return 'منذ ${difference.inMinutes} دقيقة';
     } else {
       return 'الآن';
     }

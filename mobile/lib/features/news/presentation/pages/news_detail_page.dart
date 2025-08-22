@@ -45,9 +45,9 @@ class NewsDetailPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ).animate().fadeIn().slideY(begin: 0.3, end: 0),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Meta Info
                   Row(
                     children: [
@@ -93,9 +93,9 @@ class NewsDetailPage extends StatelessWidget {
                       ),
                     ],
                   ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3, end: 0),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Content
                   Text(
                     _getDummyContent(),
@@ -103,9 +103,9 @@ class NewsDetailPage extends StatelessWidget {
                       height: 1.6,
                     ),
                   ).animate().fadeIn(delay: 400.ms),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Tags
                   Wrap(
                     spacing: 8,
@@ -120,9 +120,9 @@ class NewsDetailPage extends StatelessWidget {
                       );
                     }).toList(),
                   ).animate().fadeIn(delay: 600.ms).slideY(begin: 0.3, end: 0),
-                  
+
                   const SizedBox(height: 32),
-                  
+
                   // Related News Section
                   Text(
                     'أخبار ذات صلة',
@@ -130,9 +130,9 @@ class NewsDetailPage extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ).animate().fadeIn(delay: 800.ms),
-                  
+
                   const SizedBox(height: 16),
-                  
+
                   // Related News List
                   ListView.builder(
                     shrinkWrap: true,

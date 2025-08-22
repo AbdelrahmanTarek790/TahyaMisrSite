@@ -134,9 +134,9 @@ class _MediaCard extends StatelessWidget {
         child: Stack(
           fit: StackFit.expand,
           children: [
-            media.fileUrl.isNotEmpty
+            media.url.isNotEmpty
                 ? Image.network(
-                    media.fileUrl,
+                    media.url,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Theme.of(context).colorScheme.surfaceVariant,
@@ -172,7 +172,7 @@ class _MediaCard extends StatelessWidget {
                 ),
                 padding: const EdgeInsets.all(8),
                 child: Text(
-                  media.caption.isNotEmpty ? media.caption : 'صورة',
+                  media.caption ?? 'صورة',
                   style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w600,
@@ -203,9 +203,9 @@ class _MediaCard extends StatelessWidget {
                 height: double.infinity,
                 color: Colors.black.withOpacity(0.8),
                 child: Center(
-                  child: media.fileUrl.isNotEmpty
+                  child: media.url.isNotEmpty
                       ? Image.network(
-                          media.fileUrl,
+                          media.url,
                           fit: BoxFit.contain,
                         )
                       : Icon(
@@ -228,7 +228,7 @@ class _MediaCard extends StatelessWidget {
                 onPressed: () => Navigator.of(context).pop(),
               ),
             ),
-            if (media.caption.isNotEmpty)
+            if (media.caption != null && media.caption!.isNotEmpty)
               Positioned(
                 bottom: 40,
                 left: 20,
@@ -240,7 +240,7 @@ class _MediaCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                    media.caption,
+                    media.caption ?? 'صورة',
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 16,
@@ -334,4 +334,3 @@ class _MediaCard extends StatelessWidget {
       ),
     );
   }
-}

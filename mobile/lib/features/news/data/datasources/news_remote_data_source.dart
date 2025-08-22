@@ -23,7 +23,7 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
     try {
       final response = await apiClient.getNews(page, limit);
       
-      print('News API Response: ${response.toJson()}'); // Debug logging
+      // print('News API Response: ${response.toJson()}'); // Debug logging
       
       if (response.success && response.data != null) {
         final data = response.data as Map<String, dynamic>;
@@ -63,7 +63,7 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
     try {
       final response = await apiClient.getNewsById(id);
       
-      print('News by ID API Response: ${response.toJson()}'); // Debug logging
+      // print('News by ID API Response: ${response.toJson()}'); // Debug logging
       
       if (response.success && response.data != null) {
         return NewsModel.fromJson(response.data as Map<String, dynamic>);

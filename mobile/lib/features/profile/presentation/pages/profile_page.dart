@@ -47,6 +47,7 @@ class ProfilePage extends StatelessWidget {
           );
         },
         builder: (context, state) {
+
           return state.when(
             initial: () => const Center(child: CircularProgressIndicator()),
             loading: () => const Center(child: CircularProgressIndicator()),
@@ -96,7 +97,7 @@ class ProfilePage extends StatelessWidget {
                         const SizedBox(height: 8),
                         Chip(
                           label: Text(
-                            user.role == 'student' ? 'طالب' : 'متطوع',
+                            user.role/* == 'student' ? 'طالب' : 'متطوع'*/,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.w600,
