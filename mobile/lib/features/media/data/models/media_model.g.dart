@@ -14,7 +14,7 @@ MediaModel _$MediaModelFromJson(Map<String, dynamic> json) => MediaModel(
       thumbnailUrl: json['thumbnailUrl'] as String?,
       createdAt: DateTime.parse(json['createdAt'] as String),
       updatedAt: DateTime.parse(json['updatedAt'] as String),
-      uploadedBy: json['uploadedBy'] as String,
+      uploadedBy: json['uploadedBy'] as String?,
     );
 
 Map<String, dynamic> _$MediaModelToJson(MediaModel instance) =>

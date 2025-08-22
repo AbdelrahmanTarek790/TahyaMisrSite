@@ -6,7 +6,11 @@ class User extends Equatable {
   final String name;
   final String role;
   final String? governorate;
-  final String? phoneNumber;
+  final String? phone;
+  final String? university;
+  final String? nationalId;
+  final String? membershipNumber;
+  final DateTime? membershipExpiry;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -16,7 +20,11 @@ class User extends Equatable {
     required this.name,
     required this.role,
     this.governorate,
-    this.phoneNumber,
+    this.phone,
+    this.university,
+    this.nationalId,
+    this.membershipNumber,
+    this.membershipExpiry,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -28,7 +36,11 @@ class User extends Equatable {
     name,
     role,
     governorate,
-    phoneNumber,
+    phone,
+    university,
+    nationalId,
+    membershipNumber,
+    membershipExpiry,
     createdAt,
     updatedAt,
   ];

@@ -5,6 +5,7 @@ import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecases/login_usecase.dart';
 import '../../domain/usecases/register_usecase.dart';
 import '../../domain/usecases/logout_usecase.dart';
+import '../../domain/usecases/update_profile_usecase.dart';
 import '../../domain/repositories/auth_repository.dart';
 import 'auth_event.dart';
 import 'auth_state.dart';
@@ -14,12 +15,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase loginUseCase;
   final RegisterUseCase registerUseCase;
   final LogoutUseCase logoutUseCase;
+  final UpdateProfileUseCase updateProfileUseCase;
   final AuthRepository authRepository;
 
   AuthBloc({
     required this.loginUseCase,
     required this.registerUseCase,
     required this.logoutUseCase,
+    required this.updateProfileUseCase,
     required this.authRepository,
   }) : super(const AuthState.initial()) {
     on<LoginRequested>(_onLoginRequested);
@@ -27,30 +30,38 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LogoutRequested>(_onLogoutRequested);
     on<CheckAuthStatus>(_onCheckAuthStatus);
     on<GetCurrentUser>(_onGetCurrentUser);
+    on<UpdateProfile>(_onUpdateProfile);
   }
 
   Future<void> _onLoginRequested(
-    LoginRequested event,
-    Emitter<AuthState> emit,
-  ) async {
+      LoginRequested event,
+      Emitter<AuthState> emit,
+      ) async {
     emit(const AuthState.loading());
 
     final result = await loginUseCase(
       LoginParams(email: event.email, password: event.password),
     );
 
-    result.fold(
-      (failure) => emit(AuthState.error(message: failure.message)),
-      (token) async {
-        // Get user data after successful login
-        final userResult = await authRepository.getCurrentUser();
-        userResult.fold(
-          (failure) => emit(AuthState.error(message: failure.message)),
-          (user) => emit(AuthState.authenticated(user: user, token: token)),
-        );
-      },
-    );
+    if (result.isLeft()) {
+      final failure = result.swap().getOrElse(() => throw Exception());
+      emit(AuthState.error(message: failure.message));
+      return;
+    }
+
+    final token = result.getOrElse(() => '');
+    final userResult = await authRepository.getCurrentUser();
+
+    if (userResult.isLeft()) {
+      final failure = userResult.swap().getOrElse(() => throw Exception());
+      emit(AuthState.error(message: failure.message));
+      return;
+    }
+
+    final user = userResult.getOrElse(() => throw Exception());
+    emit(AuthState.authenticated(user: user, token: token));
   }
+
 
   Future<void> _onRegisterRequested(
     RegisterRequested event,
@@ -85,7 +96,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     emit(const AuthState.loading());
 
     final result = await logoutUseCase(NoParams());
-
     result.fold(
       (failure) => emit(AuthState.error(message: failure.message)),
       (_) => emit(const AuthState.unauthenticated()),
@@ -93,39 +103,52 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onCheckAuthStatus(
-    CheckAuthStatus event,
-    Emitter<AuthState> emit,
-  ) async {
+      CheckAuthStatus event,
+      Emitter<AuthState> emit,
+      ) async
+  {
     emit(const AuthState.loading());
 
     final isLoggedInResult = await authRepository.isLoggedIn();
 
-    isLoggedInResult.fold(
-      (failure) => emit(const AuthState.unauthenticated()),
-      (isLoggedIn) async {
-        if (isLoggedIn) {
-          final tokenResult = await authRepository.getStoredToken();
-          tokenResult.fold(
-            (failure) => emit(const AuthState.unauthenticated()),
-            (token) async {
-              if (token != null) {
-                final userResult = await authRepository.getCurrentUser();
-                userResult.fold(
-                  (failure) => emit(const AuthState.unauthenticated()),
-                  (user) =>
-                      emit(AuthState.authenticated(user: user, token: token)),
-                );
-              } else {
-                emit(const AuthState.unauthenticated());
-              }
-            },
-          );
-        } else {
+    await isLoggedInResult.fold<Future<void>>(
+          (failure) async {
+        emit(const AuthState.unauthenticated());
+      },
+          (isLoggedIn) async {
+        if (!isLoggedIn) {
           emit(const AuthState.unauthenticated());
+          return;
         }
+
+        final tokenResult = await authRepository.getStoredToken();
+
+        await tokenResult.fold<Future<void>>(
+              (failure) async {
+            emit(const AuthState.unauthenticated());
+          },
+              (token) async {
+            if (token == null) {
+              emit(const AuthState.unauthenticated());
+              return;
+            }
+
+            final userResult = await authRepository.getCurrentUser();
+
+            await userResult.fold<Future<void>>(
+                  (failure) async {
+                emit(const AuthState.unauthenticated());
+              },
+                  (user) async {
+                emit(AuthState.authenticated(user: user, token: token));
+              },
+            );
+          },
+        );
       },
     );
   }
+
 
   Future<void> _onGetCurrentUser(
     GetCurrentUser event,
@@ -149,5 +172,37 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
       },
     );
+  }
+
+  Future<void> _onUpdateProfile(
+    UpdateProfile event,
+    Emitter<AuthState> emit,
+  ) async
+  {
+    emit(const AuthState.loading());
+
+    final result = await updateProfileUseCase(
+      UpdateProfileParams(data: event.data),
+    );
+
+    await result.fold(
+          (failure) async {
+        emit(AuthState.error(message: failure.message));
+      },
+          (user) async {
+        final tokenResult = await authRepository.getStoredToken();
+        tokenResult.fold(
+              (failure) => emit(AuthState.error(message: failure.message)),
+              (token) {
+            if (token != null) {
+              emit(AuthState.authenticated(user: user, token: token));
+            } else {
+              emit(const AuthState.unauthenticated());
+            }
+          },
+        );
+      },
+    );
+
   }
 }

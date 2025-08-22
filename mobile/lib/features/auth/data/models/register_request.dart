@@ -9,7 +9,7 @@ class RegisterRequest {
   final String name;
   final String role;
   final String? governorate;
-  final String? phoneNumber;
+  final String? phone;
 
   RegisterRequest({
     required this.email,
@@ -17,7 +17,7 @@ class RegisterRequest {
     required this.name,
     required this.role,
     this.governorate,
-    this.phoneNumber,
+    this.phone,
   });
 
   factory RegisterRequest.fromJson(Map<String, dynamic> json) =>

@@ -11,13 +11,53 @@ class UserModel extends User {
     required super.name,
     required super.role,
     super.governorate,
-    super.phoneNumber,
+    super.phone,
+    super.university,
+    super.nationalId,
+    super.membershipNumber,
+    super.membershipExpiry,
     required super.createdAt,
     required super.updatedAt,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) {
+    try {
+      // Handle backend response format
+      final position = json['position'];
+/*
+      final role = position is Map<String, dynamic>
+          ? position['name'] as String? ?? 'Student'
+          : position?.toString() ?? 'Student';
+*/
+
+      return UserModel(
+        id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+        email: json['email']?.toString() ?? '',
+        name: json['name']?.toString() ?? '',
+        role: json['role']?.toString() ?? '',
+        governorate: json['governorate']?.toString(),
+        phone: json['phone']?.toString(),
+        university: json['university']?.toString(),
+        nationalId: json['nationalId']?.toString(),
+        membershipNumber: json['membershipNumber']?.toString(),
+        membershipExpiry: json['membershipExpiry'] != null 
+            ? DateTime.tryParse(json['membershipExpiry'].toString()) 
+            : null,
+        createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
+        updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
+      );
+    } catch (e) {
+      // If parsing fails, return a basic user object to prevent crashes
+      return UserModel(
+        id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+        email: json['email']?.toString() ?? '',
+        name: json['name']?.toString() ?? '',
+        role: json['role']?.toString() ?? '',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+    }
+  }
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
 
@@ -28,7 +68,11 @@ class UserModel extends User {
       name: user.name,
       role: user.role,
       governorate: user.governorate,
-      phoneNumber: user.phoneNumber,
+      phone: user.phone,
+      university: user.university,
+      nationalId: user.nationalId,
+      membershipNumber: user.membershipNumber,
+      membershipExpiry: user.membershipExpiry,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     );

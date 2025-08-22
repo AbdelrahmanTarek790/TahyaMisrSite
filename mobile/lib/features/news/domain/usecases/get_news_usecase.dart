@@ -5,13 +5,13 @@ import '../../../../core/usecases/usecase.dart';
 import '../entities/news.dart';
 import '../repositories/news_repository.dart';
 
-class GetNewsUseCase implements UseCase<List<News>, GetNewsParams> {
+class GetNewsUseCase implements UseCase<List<News>, NewsParams> {
   final NewsRepository repository;
 
   GetNewsUseCase(this.repository);
 
   @override
-  Future<Either<Failure, List<News>>> call(GetNewsParams params) async {
+  Future<Either<Failure, List<News>>> call(NewsParams params) async {
     return await repository.getNews(
       page: params.page,
       limit: params.limit,
@@ -19,12 +19,12 @@ class GetNewsUseCase implements UseCase<List<News>, GetNewsParams> {
   }
 }
 
-class GetNewsParams {
+class NewsParams {
   final int page;
   final int limit;
 
-  GetNewsParams({
-    required this.page,
-    required this.limit,
+  const NewsParams({
+    this.page = 1,
+    this.limit = 10,
   });
 }
