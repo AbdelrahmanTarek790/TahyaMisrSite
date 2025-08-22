@@ -19,12 +19,22 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
   @override
   Future<LoginResponse> login(LoginRequest request) async {
-    return await apiClient.login(request);
+    final response = await apiClient.login(request);
+    if (response.success && response.data != null) {
+      return response.data!;
+    } else {
+      throw Exception(response.error ?? 'Login failed');
+    }
   }
 
   @override
   Future<UserModel> register(RegisterRequest request) async {
-    return await apiClient.register(request);
+    final response = await apiClient.register(request);
+    if (response.success && response.data != null) {
+      return response.data!;
+    } else {
+      throw Exception(response.error ?? 'Registration failed');
+    }
   }
 
   @override

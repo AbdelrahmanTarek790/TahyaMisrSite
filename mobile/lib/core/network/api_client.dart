@@ -21,10 +21,10 @@ abstract class ApiClient {
 
   // Authentication endpoints
   @POST('/auth/login')
-  Future<LoginResponse> login(@Body() LoginRequest request);
+  Future<ApiResponse<LoginResponse>> login(@Body() LoginRequest request);
 
   @POST('/auth/register')
-  Future<UserModel> register(@Body() RegisterRequest request);
+  Future<ApiResponse<UserModel>> register(@Body() RegisterRequest request);
 
   @GET('/users/me')
   Future<ApiResponse<UserModel>> getCurrentUser();

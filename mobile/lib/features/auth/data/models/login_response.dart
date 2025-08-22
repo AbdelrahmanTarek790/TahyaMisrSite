@@ -13,8 +13,13 @@ class LoginResponse {
     required this.user,
   });
 
-  factory LoginResponse.fromJson(Map<String, dynamic> json) =>
-      _$LoginResponseFromJson(json);
+  factory LoginResponse.fromJson(Map<String, dynamic> json) {
+    // The response is already unwrapped by ApiResponse wrapper
+    return LoginResponse(
+      token: json['token']?.toString() ?? '',
+      user: UserModel.fromJson(json['user'] as Map<String, dynamic>),
+    );
+  }
 
   Map<String, dynamic> toJson() => _$LoginResponseToJson(this);
 }
