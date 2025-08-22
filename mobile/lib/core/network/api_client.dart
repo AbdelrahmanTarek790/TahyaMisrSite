@@ -65,12 +65,12 @@ abstract class ApiClient {
   @GET('/media/{id}')
   Future<ApiResponse<MediaModel>> getMediaById(@Path('id') String id);
 
-  // Upload endpoints
+  // Upload endpoints  
   @POST('/media')
   @MultiPart()
   Future<ApiResponse<MediaModel>> uploadMedia(
-    @Part() File file,
-    @Part() String caption,
+    @Part(name: "file") File file,
+    @Part(name: "caption") String caption,
   );
 
   // Dashboard endpoints
