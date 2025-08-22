@@ -25,8 +25,8 @@ class _ApiClient implements ApiClient {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<LoginResponse>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<LoginResponse>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -43,7 +43,9 @@ class _ApiClient implements ApiClient {
               baseUrl,
             ))));
     final value = ApiResponse<LoginResponse>.fromJson(
-        _result.data!, (json) => LoginResponse.fromJson(json as Map<String, dynamic>));
+      _result.data!,
+      (json) => LoginResponse.fromJson(json as Map<String, dynamic>),
+    );
     return value;
   }
 
@@ -54,8 +56,8 @@ class _ApiClient implements ApiClient {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(request.toJson());
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<UserModel>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<UserModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -72,7 +74,9 @@ class _ApiClient implements ApiClient {
               baseUrl,
             ))));
     final value = ApiResponse<UserModel>.fromJson(
-        _result.data!, (json) => UserModel.fromJson(json as Map<String, dynamic>));
+      _result.data!,
+      (json) => UserModel.fromJson(json as Map<String, dynamic>),
+    );
     return value;
   }
 
@@ -82,8 +86,8 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<UserModel>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<UserModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -100,19 +104,22 @@ class _ApiClient implements ApiClient {
               baseUrl,
             ))));
     final value = ApiResponse<UserModel>.fromJson(
-        _result.data!, (json) => UserModel.fromJson(json as Map<String, dynamic>));
+      _result.data!,
+      (json) => UserModel.fromJson(json as Map<String, dynamic>),
+    );
     return value;
   }
 
   @override
-  Future<ApiResponse<UserModel>> updateProfile(Map<String, dynamic> data) async {
+  Future<ApiResponse<UserModel>> updateProfile(
+      Map<String, dynamic> data) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(data);
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<UserModel>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<UserModel>>(Options(
       method: 'PUT',
       headers: _headers,
       extra: _extra,
@@ -129,12 +136,14 @@ class _ApiClient implements ApiClient {
               baseUrl,
             ))));
     final value = ApiResponse<UserModel>.fromJson(
-        _result.data!, (json) => UserModel.fromJson(json as Map<String, dynamic>));
+      _result.data!,
+      (json) => UserModel.fromJson(json as Map<String, dynamic>),
+    );
     return value;
   }
 
   @override
-  Future<ApiResponse<Map<String, dynamic>>> getNews(
+  Future<ApiResponse<dynamic>> getNews(
     int page,
     int limit,
   ) async {
@@ -145,8 +154,8 @@ class _ApiClient implements ApiClient {
     };
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<Map<String, dynamic>>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<dynamic>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -162,8 +171,10 @@ class _ApiClient implements ApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = ApiResponse<Map<String, dynamic>>.fromJson(
-        _result.data!, (json) => json as Map<String, dynamic>);
+    final value = ApiResponse<dynamic>.fromJson(
+      _result.data!,
+      (json) => json as dynamic,
+    );
     return value;
   }
 
@@ -173,8 +184,8 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<NewsModel>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<NewsModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -191,12 +202,14 @@ class _ApiClient implements ApiClient {
               baseUrl,
             ))));
     final value = ApiResponse<NewsModel>.fromJson(
-        _result.data!, (json) => NewsModel.fromJson(json as Map<String, dynamic>));
+      _result.data!,
+      (json) => NewsModel.fromJson(json as Map<String, dynamic>),
+    );
     return value;
   }
 
   @override
-  Future<ApiResponse<Map<String, dynamic>>> getEvents(
+  Future<ApiResponse<dynamic>> getEvents(
     int page,
     int limit,
   ) async {
@@ -207,8 +220,8 @@ class _ApiClient implements ApiClient {
     };
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<Map<String, dynamic>>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<dynamic>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -224,8 +237,10 @@ class _ApiClient implements ApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = ApiResponse<Map<String, dynamic>>.fromJson(
-        _result.data!, (json) => json as Map<String, dynamic>);
+    final value = ApiResponse<dynamic>.fromJson(
+      _result.data!,
+      (json) => json as dynamic,
+    );
     return value;
   }
 
@@ -235,8 +250,8 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<EventModel>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<EventModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -253,18 +268,20 @@ class _ApiClient implements ApiClient {
               baseUrl,
             ))));
     final value = ApiResponse<EventModel>.fromJson(
-        _result.data!, (json) => EventModel.fromJson(json as Map<String, dynamic>));
+      _result.data!,
+      (json) => EventModel.fromJson(json as Map<String, dynamic>),
+    );
     return value;
   }
 
   @override
-  Future<ApiResponse<void>> registerForEvent(String id) async {
+  Future<ApiResponse<String>> registerForEvent(String id) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<void>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<String>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -280,13 +297,15 @@ class _ApiClient implements ApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = ApiResponse<void>.fromJson(
-        _result.data!, (json) => null);
+    final value = ApiResponse<String>.fromJson(
+      _result.data!,
+      (json) => json as String,
+    );
     return value;
   }
 
   @override
-  Future<ApiResponse<Map<String, dynamic>>> getMedia(
+  Future<ApiResponse<dynamic>> getMedia(
     int page,
     int limit,
   ) async {
@@ -297,8 +316,8 @@ class _ApiClient implements ApiClient {
     };
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<Map<String, dynamic>>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<dynamic>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -314,8 +333,10 @@ class _ApiClient implements ApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = ApiResponse<Map<String, dynamic>>.fromJson(
-        _result.data!, (json) => json as Map<String, dynamic>);
+    final value = ApiResponse<dynamic>.fromJson(
+      _result.data!,
+      (json) => json as dynamic,
+    );
     return value;
   }
 
@@ -325,8 +346,8 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<MediaModel>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<MediaModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -343,7 +364,9 @@ class _ApiClient implements ApiClient {
               baseUrl,
             ))));
     final value = ApiResponse<MediaModel>.fromJson(
-        _result.data!, (json) => MediaModel.fromJson(json as Map<String, dynamic>));
+      _result.data!,
+      (json) => MediaModel.fromJson(json as Map<String, dynamic>),
+    );
     return value;
   }
 
@@ -367,8 +390,8 @@ class _ApiClient implements ApiClient {
       'caption',
       caption,
     ));
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<MediaModel>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<MediaModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -386,7 +409,9 @@ class _ApiClient implements ApiClient {
               baseUrl,
             ))));
     final value = ApiResponse<MediaModel>.fromJson(
-        _result.data!, (json) => MediaModel.fromJson(json as Map<String, dynamic>));
+      _result.data!,
+      (json) => MediaModel.fromJson(json as Map<String, dynamic>),
+    );
     return value;
   }
 
@@ -396,8 +421,8 @@ class _ApiClient implements ApiClient {
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<DashboardStatsModel>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<DashboardStatsModel>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -414,7 +439,9 @@ class _ApiClient implements ApiClient {
               baseUrl,
             ))));
     final value = ApiResponse<DashboardStatsModel>.fromJson(
-        _result.data!, (json) => DashboardStatsModel.fromJson(json as Map<String, dynamic>));
+      _result.data!,
+      (json) => DashboardStatsModel.fromJson(json as Map<String, dynamic>),
+    );
     return value;
   }
 
@@ -430,8 +457,8 @@ class _ApiClient implements ApiClient {
     };
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<ApiResponse<List<RecentActivityModel>>>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<ApiResponse<List<RecentActivityModel>>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -448,10 +475,13 @@ class _ApiClient implements ApiClient {
               baseUrl,
             ))));
     final value = ApiResponse<List<RecentActivityModel>>.fromJson(
-        _result.data!, 
-        (json) => (json as List<dynamic>)
-            .map((dynamic i) => RecentActivityModel.fromJson(i as Map<String, dynamic>))
-            .toList()
+      _result.data!,
+      (json) => json is List<dynamic>
+          ? json
+              .map<RecentActivityModel>((i) =>
+                  RecentActivityModel.fromJson(i as Map<String, dynamic>))
+              .toList()
+          : List.empty(),
     );
     return value;
   }

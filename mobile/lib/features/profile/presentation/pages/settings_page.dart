@@ -7,6 +7,7 @@ import 'package:get_it/get_it.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
+import 'edit_profile_page.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -19,268 +20,269 @@ class SettingsPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      body: BlocProvider(
-        create: (context) => GetIt.instance<AuthBloc>()..add(const AuthEvent.getCurrentUser()),
-        child: BlocConsumer<AuthBloc, AuthState>(
-          listener: (context, state) {
-            state.when(
-              initial: () {},
-              loading: () {},
-              authenticated: (user, token) {},
-              unauthenticated: () {
-                context.go('/login');
-              },
-              error: (message) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(message),
-                    backgroundColor: Theme.of(context).colorScheme.error,
-                  ),
-                );
-              },
-            );
-          },
-          builder: (context, state) {
-            return state.when(
-              initial: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              authenticated: (user, token) => SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    // Profile Summary Card
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Theme.of(context).colorScheme.primary,
-                            Theme.of(context).colorScheme.primary.withOpacity(0.8),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 30,
-                            backgroundColor: Colors.white,
-                            child: Icon(
-                              Icons.person,
-                              size: 40,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+      body: BlocConsumer<AuthBloc, AuthState>(
+            listener: (context, state) {
+              print('SettingsPage listener: $state');
+              state.when(
+                initial: () {},
+                loading: () {},
+                authenticated: (user, token) {},
+                unauthenticated: () {
+                    context.go('/splash');
+                },
+                error: (message) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(message),
+                      backgroundColor: Theme.of(context).colorScheme.error,
+                    ),
+                  );
+                },
+              );
+            },
+            builder: (context, state) {
+              return state.when(
+                initial: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                loading: () => const Center(
+                  child: CircularProgressIndicator(),
+                ),
+                authenticated: (user, token) => SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      // Profile Summary Card
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Theme.of(context).colorScheme.primary,
+                              Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                            ],
                           ),
-                          const SizedBox(width: 16),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  user.name,
-                                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  user.email,
-                                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: Colors.white.withOpacity(0.9),
-                                  ),
-                                ),
-                                Chip(
-                                  label: Text(
-                                    _getRoleDisplayName(user.role),
-                                    style: TextStyle(
-                                      color: Theme.of(context).colorScheme.primary,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 12,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 30,
+                              backgroundColor: Colors.white,
+                              child: Icon(
+                                Icons.person,
+                                size: 40,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    user.name,
+                                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  backgroundColor: Colors.white,
-                                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                                ),
-                              ],
+                                  Text(
+                                    user.email,
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                      color: Colors.white.withOpacity(0.9),
+                                    ),
+                                  ),
+                                  Chip(
+                                    label: Text(
+                                      _getRoleDisplayName(user.role),
+                                      style: TextStyle(
+                                        color: Theme.of(context).colorScheme.primary,
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                    backgroundColor: Colors.white,
+                                    materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                  ),
+                                ],
+                              ),
                             ),
+                          ],
+                        ),
+                      ).animate().fadeIn().slideY(begin: -0.3, end: 0),
+
+                      const SizedBox(height: 24),
+
+                      // Account Settings Section
+                      _buildSectionCard(
+                        context,
+                        'إعدادات الحساب',
+                        Icons.account_circle,
+                        [
+                          _buildSettingsTile(
+                            context,
+                            'تعديل الملف الشخصي',
+                            'تحديث البيانات الشخصية والمعلومات',
+                            Icons.edit,
+                            () {
+                              Navigator.of(context).pop();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => EditProfilePage(user: user),
+                                ),
+                              );
+                            },
+                          ),
+                          _buildSettingsTile(
+                            context,
+                            'معلومات الحساب',
+                            'عرض تفاصيل الحساب والإحصائيات',
+                            Icons.info,
+                            () {
+                              _showAccountInfoDialog(context, user);
+                            },
                           ),
                         ],
-                      ),
-                    ).animate().fadeIn().slideY(begin: -0.3, end: 0),
-                    
-                    const SizedBox(height: 24),
-                    
-                    // Account Settings Section
-                    _buildSectionCard(
-                      context,
-                      'إعدادات الحساب',
-                      Icons.account_circle,
-                      [
-                        _buildSettingsTile(
-                          context,
-                          'تعديل الملف الشخصي',
-                          'تحديث البيانات الشخصية والمعلومات',
-                          Icons.edit,
-                          () {
-                            Navigator.of(context).pop();
-                            // Navigate back to profile and then to edit
-                            context.push('/profile/edit');
-                          },
-                        ),
-                        _buildSettingsTile(
-                          context,
-                          'معلومات الحساب',
-                          'عرض تفاصيل الحساب والإحصائيات',
-                          Icons.info,
-                          () {
-                            _showAccountInfoDialog(context, user);
-                          },
-                        ),
-                      ],
-                    ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3, end: 0),
-                    
-                    const SizedBox(height: 16),
-                    
-                    // App Settings Section
-                    _buildSectionCard(
-                      context,
-                      'إعدادات التطبيق',
-                      Icons.settings,
-                      [
-                        _buildSettingsTile(
-                          context,
-                          'الإشعارات',
-                          'إدارة إعدادات الإشعارات',
-                          Icons.notifications,
-                          () {
-                            _showNotificationSettings(context);
-                          },
-                        ),
-                        _buildSettingsTile(
-                          context,
-                          'اللغة',
-                          'العربية (الافتراضي)',
-                          Icons.language,
-                          () {
-                            _showLanguageSettings(context);
-                          },
-                        ),
-                        _buildSettingsTile(
-                          context,
-                          'المظهر',
-                          'فاتح / داكن / تلقائي',
-                          Icons.palette,
-                          () {
-                            _showThemeSettings(context);
-                          },
-                        ),
-                      ],
-                    ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.3, end: 0),
-                    
-                    const SizedBox(height: 16),
-                    
-                    // Support Section
-                    _buildSectionCard(
-                      context,
-                      'الدعم والمساعدة',
-                      Icons.help,
-                      [
-                        _buildSettingsTile(
-                          context,
-                          'الأسئلة الشائعة',
-                          'الحصول على إجابات للأسئلة الشائعة',
-                          Icons.quiz,
-                          () {
-                            _showFAQ(context);
-                          },
-                        ),
-                        _buildSettingsTile(
-                          context,
-                          'تواصل معنا',
-                          'إرسال ملاحظات أو طلب المساعدة',
-                          Icons.contact_support,
-                          () {
-                            _showContactSupport(context);
-                          },
-                        ),
-                        _buildSettingsTile(
-                          context,
-                          'حول التطبيق',
-                          'معلومات حول تطبيق تحيا مصر',
-                          Icons.info_outline,
-                          () {
-                            _showAboutDialog(context);
-                          },
-                        ),
-                      ],
-                    ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
-                    
-                    const SizedBox(height: 32),
-                    
-                    // Logout Button
-                    Card(
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.logout,
-                          color: Theme.of(context).colorScheme.error,
-                        ),
-                        title: Text(
-                          'تسجيل الخروج',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.error,
-                            fontWeight: FontWeight.w600,
+                      ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3, end: 0),
+
+                      const SizedBox(height: 16),
+
+                      // App Settings Section
+                      _buildSectionCard(
+                        context,
+                        'إعدادات التطبيق',
+                        Icons.settings,
+                        [
+                          _buildSettingsTile(
+                            context,
+                            'الإشعارات',
+                            'إدارة إعدادات الإشعارات',
+                            Icons.notifications,
+                            () {
+                              _showNotificationSettings(context);
+                            },
                           ),
+                          _buildSettingsTile(
+                            context,
+                            'اللغة',
+                            'العربية (الافتراضي)',
+                            Icons.language,
+                            () {
+                              _showLanguageSettings(context);
+                            },
+                          ),
+                          _buildSettingsTile(
+                            context,
+                            'المظهر',
+                            'فاتح / داكن / تلقائي',
+                            Icons.palette,
+                            () {
+                              _showThemeSettings(context);
+                            },
+                          ),
+                        ],
+                      ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.3, end: 0),
+
+                      const SizedBox(height: 16),
+
+                      // Support Section
+                      _buildSectionCard(
+                        context,
+                        'الدعم والمساعدة',
+                        Icons.help,
+                        [
+                          _buildSettingsTile(
+                            context,
+                            'الأسئلة الشائعة',
+                            'الحصول على إجابات للأسئلة الشائعة',
+                            Icons.quiz,
+                            () {
+                              _showFAQ(context);
+                            },
+                          ),
+                          _buildSettingsTile(
+                            context,
+                            'تواصل معنا',
+                            'إرسال ملاحظات أو طلب المساعدة',
+                            Icons.contact_support,
+                            () {
+                              _showContactSupport(context);
+                            },
+                          ),
+                          _buildSettingsTile(
+                            context,
+                            'حول التطبيق',
+                            'معلومات حول تطبيق تحيا مصر',
+                            Icons.info_outline,
+                            () {
+                              _showAboutDialog(context);
+                            },
+                          ),
+                        ],
+                      ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
+
+                      const SizedBox(height: 32),
+
+                      // Logout Button
+                      Card(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.logout,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          title: Text(
+                            'تسجيل الخروج',
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.error,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          subtitle: const Text('الخروج من الحساب الحالي'),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.error.withOpacity(0.7),
+                          ),
+                          onTap: () => _showLogoutDialog(context),
                         ),
-                        subtitle: const Text('الخروج من الحساب الحالي'),
-                        trailing: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 16,
-                          color: Theme.of(context).colorScheme.error.withOpacity(0.7),
-                        ),
-                        onTap: () => _showLogoutDialog(context),
+                      ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3, end: 0),
+
+                      const SizedBox(height: 32),
+                    ],
+                  ),
+                ),
+                unauthenticated: () => const SizedBox.shrink(),
+                error: (message) => Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: Theme.of(context).colorScheme.error,
                       ),
-                    ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3, end: 0),
-                    
-                    const SizedBox(height: 32),
-                  ],
+                      const SizedBox(height: 16),
+                      Text(
+                        'حدث خطأ في تحميل الإعدادات',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          context.read<AuthBloc>().add(const AuthEvent.getCurrentUser());
+                        },
+                        child: const Text('إعادة المحاولة'),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              unauthenticated: () => const SizedBox.shrink(),
-              error: (message) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.error_outline,
-                      size: 64,
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'حدث خطأ في تحميل الإعدادات',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        context.read<AuthBloc>().add(const AuthEvent.getCurrentUser());
-                      },
-                      child: const Text('إعادة المحاولة'),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          },
-        ),
-      ),
+              );
+            },
+          ),
     );
   }
 

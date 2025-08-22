@@ -25,6 +25,7 @@ mixin _$AuthEvent {
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
     required TResult Function() getCurrentUser,
+    required TResult Function(Map<String, dynamic> data) updateProfile,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -36,6 +37,7 @@ mixin _$AuthEvent {
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
     TResult? Function()? getCurrentUser,
+    TResult? Function(Map<String, dynamic> data)? updateProfile,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -47,6 +49,7 @@ mixin _$AuthEvent {
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
     TResult Function()? getCurrentUser,
+    TResult Function(Map<String, dynamic> data)? updateProfile,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -57,6 +60,7 @@ mixin _$AuthEvent {
     required TResult Function(LogoutRequested value) logoutRequested,
     required TResult Function(CheckAuthStatus value) checkAuthStatus,
     required TResult Function(GetCurrentUser value) getCurrentUser,
+    required TResult Function(UpdateProfile value) updateProfile,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -66,6 +70,7 @@ mixin _$AuthEvent {
     TResult? Function(LogoutRequested value)? logoutRequested,
     TResult? Function(CheckAuthStatus value)? checkAuthStatus,
     TResult? Function(GetCurrentUser value)? getCurrentUser,
+    TResult? Function(UpdateProfile value)? updateProfile,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -75,6 +80,7 @@ mixin _$AuthEvent {
     TResult Function(LogoutRequested value)? logoutRequested,
     TResult Function(CheckAuthStatus value)? checkAuthStatus,
     TResult Function(GetCurrentUser value)? getCurrentUser,
+    TResult Function(UpdateProfile value)? updateProfile,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -95,9 +101,6 @@ class _$AuthEventCopyWithImpl<$Res, $Val extends AuthEvent>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
-
-  /// Create a copy of AuthEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -117,8 +120,6 @@ class __$$LoginRequestedImplCopyWithImpl<$Res>
       _$LoginRequestedImpl _value, $Res Function(_$LoginRequestedImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of AuthEvent
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -166,9 +167,7 @@ class _$LoginRequestedImpl implements LoginRequested {
   @override
   int get hashCode => Object.hash(runtimeType, email, password);
 
-  /// Create a copy of AuthEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$LoginRequestedImplCopyWith<_$LoginRequestedImpl> get copyWith =>
@@ -185,6 +184,7 @@ class _$LoginRequestedImpl implements LoginRequested {
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
     required TResult Function() getCurrentUser,
+    required TResult Function(Map<String, dynamic> data) updateProfile,
   }) {
     return loginRequested(email, password);
   }
@@ -199,6 +199,7 @@ class _$LoginRequestedImpl implements LoginRequested {
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
     TResult? Function()? getCurrentUser,
+    TResult? Function(Map<String, dynamic> data)? updateProfile,
   }) {
     return loginRequested?.call(email, password);
   }
@@ -213,6 +214,7 @@ class _$LoginRequestedImpl implements LoginRequested {
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
     TResult Function()? getCurrentUser,
+    TResult Function(Map<String, dynamic> data)? updateProfile,
     required TResult orElse(),
   }) {
     if (loginRequested != null) {
@@ -229,6 +231,7 @@ class _$LoginRequestedImpl implements LoginRequested {
     required TResult Function(LogoutRequested value) logoutRequested,
     required TResult Function(CheckAuthStatus value) checkAuthStatus,
     required TResult Function(GetCurrentUser value) getCurrentUser,
+    required TResult Function(UpdateProfile value) updateProfile,
   }) {
     return loginRequested(this);
   }
@@ -241,6 +244,7 @@ class _$LoginRequestedImpl implements LoginRequested {
     TResult? Function(LogoutRequested value)? logoutRequested,
     TResult? Function(CheckAuthStatus value)? checkAuthStatus,
     TResult? Function(GetCurrentUser value)? getCurrentUser,
+    TResult? Function(UpdateProfile value)? updateProfile,
   }) {
     return loginRequested?.call(this);
   }
@@ -253,6 +257,7 @@ class _$LoginRequestedImpl implements LoginRequested {
     TResult Function(LogoutRequested value)? logoutRequested,
     TResult Function(CheckAuthStatus value)? checkAuthStatus,
     TResult Function(GetCurrentUser value)? getCurrentUser,
+    TResult Function(UpdateProfile value)? updateProfile,
     required TResult orElse(),
   }) {
     if (loginRequested != null) {
@@ -269,10 +274,7 @@ abstract class LoginRequested implements AuthEvent {
 
   String get email;
   String get password;
-
-  /// Create a copy of AuthEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$LoginRequestedImplCopyWith<_$LoginRequestedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -300,8 +302,6 @@ class __$$RegisterRequestedImplCopyWithImpl<$Res>
       $Res Function(_$RegisterRequestedImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of AuthEvent
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -390,9 +390,7 @@ class _$RegisterRequestedImpl implements RegisterRequested {
   int get hashCode => Object.hash(
       runtimeType, email, password, name, role, governorate, phoneNumber);
 
-  /// Create a copy of AuthEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$RegisterRequestedImplCopyWith<_$RegisterRequestedImpl> get copyWith =>
@@ -409,6 +407,7 @@ class _$RegisterRequestedImpl implements RegisterRequested {
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
     required TResult Function() getCurrentUser,
+    required TResult Function(Map<String, dynamic> data) updateProfile,
   }) {
     return registerRequested(
         email, password, name, role, governorate, phoneNumber);
@@ -424,6 +423,7 @@ class _$RegisterRequestedImpl implements RegisterRequested {
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
     TResult? Function()? getCurrentUser,
+    TResult? Function(Map<String, dynamic> data)? updateProfile,
   }) {
     return registerRequested?.call(
         email, password, name, role, governorate, phoneNumber);
@@ -439,6 +439,7 @@ class _$RegisterRequestedImpl implements RegisterRequested {
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
     TResult Function()? getCurrentUser,
+    TResult Function(Map<String, dynamic> data)? updateProfile,
     required TResult orElse(),
   }) {
     if (registerRequested != null) {
@@ -456,6 +457,7 @@ class _$RegisterRequestedImpl implements RegisterRequested {
     required TResult Function(LogoutRequested value) logoutRequested,
     required TResult Function(CheckAuthStatus value) checkAuthStatus,
     required TResult Function(GetCurrentUser value) getCurrentUser,
+    required TResult Function(UpdateProfile value) updateProfile,
   }) {
     return registerRequested(this);
   }
@@ -468,6 +470,7 @@ class _$RegisterRequestedImpl implements RegisterRequested {
     TResult? Function(LogoutRequested value)? logoutRequested,
     TResult? Function(CheckAuthStatus value)? checkAuthStatus,
     TResult? Function(GetCurrentUser value)? getCurrentUser,
+    TResult? Function(UpdateProfile value)? updateProfile,
   }) {
     return registerRequested?.call(this);
   }
@@ -480,6 +483,7 @@ class _$RegisterRequestedImpl implements RegisterRequested {
     TResult Function(LogoutRequested value)? logoutRequested,
     TResult Function(CheckAuthStatus value)? checkAuthStatus,
     TResult Function(GetCurrentUser value)? getCurrentUser,
+    TResult Function(UpdateProfile value)? updateProfile,
     required TResult orElse(),
   }) {
     if (registerRequested != null) {
@@ -504,10 +508,7 @@ abstract class RegisterRequested implements AuthEvent {
   String get role;
   String? get governorate;
   String? get phoneNumber;
-
-  /// Create a copy of AuthEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @JsonKey(ignore: true)
   _$$RegisterRequestedImplCopyWith<_$RegisterRequestedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -526,9 +527,6 @@ class __$$LogoutRequestedImplCopyWithImpl<$Res>
   __$$LogoutRequestedImplCopyWithImpl(
       _$LogoutRequestedImpl _value, $Res Function(_$LogoutRequestedImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of AuthEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -560,6 +558,7 @@ class _$LogoutRequestedImpl implements LogoutRequested {
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
     required TResult Function() getCurrentUser,
+    required TResult Function(Map<String, dynamic> data) updateProfile,
   }) {
     return logoutRequested();
   }
@@ -574,6 +573,7 @@ class _$LogoutRequestedImpl implements LogoutRequested {
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
     TResult? Function()? getCurrentUser,
+    TResult? Function(Map<String, dynamic> data)? updateProfile,
   }) {
     return logoutRequested?.call();
   }
@@ -588,6 +588,7 @@ class _$LogoutRequestedImpl implements LogoutRequested {
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
     TResult Function()? getCurrentUser,
+    TResult Function(Map<String, dynamic> data)? updateProfile,
     required TResult orElse(),
   }) {
     if (logoutRequested != null) {
@@ -604,6 +605,7 @@ class _$LogoutRequestedImpl implements LogoutRequested {
     required TResult Function(LogoutRequested value) logoutRequested,
     required TResult Function(CheckAuthStatus value) checkAuthStatus,
     required TResult Function(GetCurrentUser value) getCurrentUser,
+    required TResult Function(UpdateProfile value) updateProfile,
   }) {
     return logoutRequested(this);
   }
@@ -616,6 +618,7 @@ class _$LogoutRequestedImpl implements LogoutRequested {
     TResult? Function(LogoutRequested value)? logoutRequested,
     TResult? Function(CheckAuthStatus value)? checkAuthStatus,
     TResult? Function(GetCurrentUser value)? getCurrentUser,
+    TResult? Function(UpdateProfile value)? updateProfile,
   }) {
     return logoutRequested?.call(this);
   }
@@ -628,6 +631,7 @@ class _$LogoutRequestedImpl implements LogoutRequested {
     TResult Function(LogoutRequested value)? logoutRequested,
     TResult Function(CheckAuthStatus value)? checkAuthStatus,
     TResult Function(GetCurrentUser value)? getCurrentUser,
+    TResult Function(UpdateProfile value)? updateProfile,
     required TResult orElse(),
   }) {
     if (logoutRequested != null) {
@@ -655,9 +659,6 @@ class __$$CheckAuthStatusImplCopyWithImpl<$Res>
   __$$CheckAuthStatusImplCopyWithImpl(
       _$CheckAuthStatusImpl _value, $Res Function(_$CheckAuthStatusImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of AuthEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -689,6 +690,7 @@ class _$CheckAuthStatusImpl implements CheckAuthStatus {
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
     required TResult Function() getCurrentUser,
+    required TResult Function(Map<String, dynamic> data) updateProfile,
   }) {
     return checkAuthStatus();
   }
@@ -703,6 +705,7 @@ class _$CheckAuthStatusImpl implements CheckAuthStatus {
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
     TResult? Function()? getCurrentUser,
+    TResult? Function(Map<String, dynamic> data)? updateProfile,
   }) {
     return checkAuthStatus?.call();
   }
@@ -717,6 +720,7 @@ class _$CheckAuthStatusImpl implements CheckAuthStatus {
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
     TResult Function()? getCurrentUser,
+    TResult Function(Map<String, dynamic> data)? updateProfile,
     required TResult orElse(),
   }) {
     if (checkAuthStatus != null) {
@@ -733,6 +737,7 @@ class _$CheckAuthStatusImpl implements CheckAuthStatus {
     required TResult Function(LogoutRequested value) logoutRequested,
     required TResult Function(CheckAuthStatus value) checkAuthStatus,
     required TResult Function(GetCurrentUser value) getCurrentUser,
+    required TResult Function(UpdateProfile value) updateProfile,
   }) {
     return checkAuthStatus(this);
   }
@@ -745,6 +750,7 @@ class _$CheckAuthStatusImpl implements CheckAuthStatus {
     TResult? Function(LogoutRequested value)? logoutRequested,
     TResult? Function(CheckAuthStatus value)? checkAuthStatus,
     TResult? Function(GetCurrentUser value)? getCurrentUser,
+    TResult? Function(UpdateProfile value)? updateProfile,
   }) {
     return checkAuthStatus?.call(this);
   }
@@ -757,6 +763,7 @@ class _$CheckAuthStatusImpl implements CheckAuthStatus {
     TResult Function(LogoutRequested value)? logoutRequested,
     TResult Function(CheckAuthStatus value)? checkAuthStatus,
     TResult Function(GetCurrentUser value)? getCurrentUser,
+    TResult Function(UpdateProfile value)? updateProfile,
     required TResult orElse(),
   }) {
     if (checkAuthStatus != null) {
@@ -784,9 +791,6 @@ class __$$GetCurrentUserImplCopyWithImpl<$Res>
   __$$GetCurrentUserImplCopyWithImpl(
       _$GetCurrentUserImpl _value, $Res Function(_$GetCurrentUserImpl) _then)
       : super(_value, _then);
-
-  /// Create a copy of AuthEvent
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -818,6 +822,7 @@ class _$GetCurrentUserImpl implements GetCurrentUser {
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
     required TResult Function() getCurrentUser,
+    required TResult Function(Map<String, dynamic> data) updateProfile,
   }) {
     return getCurrentUser();
   }
@@ -832,6 +837,7 @@ class _$GetCurrentUserImpl implements GetCurrentUser {
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
     TResult? Function()? getCurrentUser,
+    TResult? Function(Map<String, dynamic> data)? updateProfile,
   }) {
     return getCurrentUser?.call();
   }
@@ -846,6 +852,7 @@ class _$GetCurrentUserImpl implements GetCurrentUser {
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
     TResult Function()? getCurrentUser,
+    TResult Function(Map<String, dynamic> data)? updateProfile,
     required TResult orElse(),
   }) {
     if (getCurrentUser != null) {
@@ -862,6 +869,7 @@ class _$GetCurrentUserImpl implements GetCurrentUser {
     required TResult Function(LogoutRequested value) logoutRequested,
     required TResult Function(CheckAuthStatus value) checkAuthStatus,
     required TResult Function(GetCurrentUser value) getCurrentUser,
+    required TResult Function(UpdateProfile value) updateProfile,
   }) {
     return getCurrentUser(this);
   }
@@ -874,6 +882,7 @@ class _$GetCurrentUserImpl implements GetCurrentUser {
     TResult? Function(LogoutRequested value)? logoutRequested,
     TResult? Function(CheckAuthStatus value)? checkAuthStatus,
     TResult? Function(GetCurrentUser value)? getCurrentUser,
+    TResult? Function(UpdateProfile value)? updateProfile,
   }) {
     return getCurrentUser?.call(this);
   }
@@ -886,6 +895,7 @@ class _$GetCurrentUserImpl implements GetCurrentUser {
     TResult Function(LogoutRequested value)? logoutRequested,
     TResult Function(CheckAuthStatus value)? checkAuthStatus,
     TResult Function(GetCurrentUser value)? getCurrentUser,
+    TResult Function(UpdateProfile value)? updateProfile,
     required TResult orElse(),
   }) {
     if (getCurrentUser != null) {
@@ -897,4 +907,175 @@ class _$GetCurrentUserImpl implements GetCurrentUser {
 
 abstract class GetCurrentUser implements AuthEvent {
   const factory GetCurrentUser() = _$GetCurrentUserImpl;
+}
+
+/// @nodoc
+abstract class _$$UpdateProfileImplCopyWith<$Res> {
+  factory _$$UpdateProfileImplCopyWith(
+          _$UpdateProfileImpl value, $Res Function(_$UpdateProfileImpl) then) =
+      __$$UpdateProfileImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Map<String, dynamic> data});
+}
+
+/// @nodoc
+class __$$UpdateProfileImplCopyWithImpl<$Res>
+    extends _$AuthEventCopyWithImpl<$Res, _$UpdateProfileImpl>
+    implements _$$UpdateProfileImplCopyWith<$Res> {
+  __$$UpdateProfileImplCopyWithImpl(
+      _$UpdateProfileImpl _value, $Res Function(_$UpdateProfileImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? data = null,
+  }) {
+    return _then(_$UpdateProfileImpl(
+      data: null == data
+          ? _value._data
+          : data // ignore: cast_nullable_to_non_nullable
+              as Map<String, dynamic>,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$UpdateProfileImpl implements UpdateProfile {
+  const _$UpdateProfileImpl({required final Map<String, dynamic> data})
+      : _data = data;
+
+  final Map<String, dynamic> _data;
+  @override
+  Map<String, dynamic> get data {
+    if (_data is EqualUnmodifiableMapView) return _data;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableMapView(_data);
+  }
+
+  @override
+  String toString() {
+    return 'AuthEvent.updateProfile(data: $data)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$UpdateProfileImpl &&
+            const DeepCollectionEquality().equals(other._data, _data));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_data));
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$UpdateProfileImplCopyWith<_$UpdateProfileImpl> get copyWith =>
+      __$$UpdateProfileImplCopyWithImpl<_$UpdateProfileImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function(String email, String password) loginRequested,
+    required TResult Function(String email, String password, String name,
+            String role, String? governorate, String? phoneNumber)
+        registerRequested,
+    required TResult Function() logoutRequested,
+    required TResult Function() checkAuthStatus,
+    required TResult Function() getCurrentUser,
+    required TResult Function(Map<String, dynamic> data) updateProfile,
+  }) {
+    return updateProfile(data);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function(String email, String password)? loginRequested,
+    TResult? Function(String email, String password, String name, String role,
+            String? governorate, String? phoneNumber)?
+        registerRequested,
+    TResult? Function()? logoutRequested,
+    TResult? Function()? checkAuthStatus,
+    TResult? Function()? getCurrentUser,
+    TResult? Function(Map<String, dynamic> data)? updateProfile,
+  }) {
+    return updateProfile?.call(data);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function(String email, String password)? loginRequested,
+    TResult Function(String email, String password, String name, String role,
+            String? governorate, String? phoneNumber)?
+        registerRequested,
+    TResult Function()? logoutRequested,
+    TResult Function()? checkAuthStatus,
+    TResult Function()? getCurrentUser,
+    TResult Function(Map<String, dynamic> data)? updateProfile,
+    required TResult orElse(),
+  }) {
+    if (updateProfile != null) {
+      return updateProfile(data);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(LoginRequested value) loginRequested,
+    required TResult Function(RegisterRequested value) registerRequested,
+    required TResult Function(LogoutRequested value) logoutRequested,
+    required TResult Function(CheckAuthStatus value) checkAuthStatus,
+    required TResult Function(GetCurrentUser value) getCurrentUser,
+    required TResult Function(UpdateProfile value) updateProfile,
+  }) {
+    return updateProfile(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(LoginRequested value)? loginRequested,
+    TResult? Function(RegisterRequested value)? registerRequested,
+    TResult? Function(LogoutRequested value)? logoutRequested,
+    TResult? Function(CheckAuthStatus value)? checkAuthStatus,
+    TResult? Function(GetCurrentUser value)? getCurrentUser,
+    TResult? Function(UpdateProfile value)? updateProfile,
+  }) {
+    return updateProfile?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(LoginRequested value)? loginRequested,
+    TResult Function(RegisterRequested value)? registerRequested,
+    TResult Function(LogoutRequested value)? logoutRequested,
+    TResult Function(CheckAuthStatus value)? checkAuthStatus,
+    TResult Function(GetCurrentUser value)? getCurrentUser,
+    TResult Function(UpdateProfile value)? updateProfile,
+    required TResult orElse(),
+  }) {
+    if (updateProfile != null) {
+      return updateProfile(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class UpdateProfile implements AuthEvent {
+  const factory UpdateProfile({required final Map<String, dynamic> data}) =
+      _$UpdateProfileImpl;
+
+  Map<String, dynamic> get data;
+  @JsonKey(ignore: true)
+  _$$UpdateProfileImplCopyWith<_$UpdateProfileImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

@@ -25,7 +25,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
         return response.data!;
       } else {
         throw ServerException(
-          message: response.error ?? 'Failed to fetch dashboard stats',
+           response.error ?? 'Failed to fetch dashboard stats',
         );
       }
     } catch (e) {
@@ -33,7 +33,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
         rethrow;
       }
       throw ServerException(
-        message: 'Unexpected error occurred: ${e.toString()}',
+       'Unexpected error occurred: ${e.toString()}',
       );
     }
   }
@@ -47,10 +47,10 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       final response = await apiClient.getRecentActivity(page, limit);
       
       if (response.success && response.data != null) {
-        return response.data!;
+        return response.data as List<RecentActivityModel>;
       } else {
         throw ServerException(
-          message: response.error ?? 'Failed to fetch recent activity',
+          response.error ?? 'Failed to fetch recent activity',
         );
       }
     } catch (e) {
@@ -58,7 +58,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
         rethrow;
       }
       throw ServerException(
-        message: 'Unexpected error occurred: ${e.toString()}',
+        'Unexpected error occurred: ${e.toString()}',
       );
     }
   }

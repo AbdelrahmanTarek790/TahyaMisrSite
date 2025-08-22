@@ -22,11 +22,11 @@ class DashboardRepositoryImpl implements DashboardRepository {
       final result = await remoteDataSource.getDashboardStats();
       return Right(result);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
+      return Left(ServerFailure( e.message));
     } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+      return Left(NetworkFailure( e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'An unexpected error occurred'));
+      return const Left(ServerFailure( 'An unexpected error occurred'));
     }
   }
 
@@ -42,11 +42,11 @@ class DashboardRepositoryImpl implements DashboardRepository {
       );
       return Right(result);
     } on ServerException catch (e) {
-      return Left(ServerFailure(message: e.message));
+      return Left(ServerFailure( e.message));
     } on NetworkException catch (e) {
-      return Left(NetworkFailure(message: e.message));
+      return Left(NetworkFailure( e.message));
     } catch (e) {
-      return Left(ServerFailure(message: 'An unexpected error occurred'));
+      return const Left(ServerFailure( 'An unexpected error occurred'));
     }
   }
 }

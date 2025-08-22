@@ -68,229 +68,226 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ],
       ),
-      body: BlocProvider(
-        create: (context) => GetIt.instance<AuthBloc>(),
-        child: BlocListener<AuthBloc, AuthState>(
-          listener: (context, state) {
-            state.when(
-              initial: () {},
-              loading: () {
-                setState(() {
-                  _isLoading = true;
-                });
-              },
-              authenticated: (user, token) {
-                setState(() {
-                  _isLoading = false;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: const Text('تم تحديث الملف الشخصي بنجاح'),
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                  ),
-                );
-                context.pop();
-              },
-              unauthenticated: () {
-                setState(() {
-                  _isLoading = false;
-                });
-                context.go('/login');
-              },
-              error: (message) {
-                setState(() {
-                  _isLoading = false;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(message),
-                    backgroundColor: Theme.of(context).colorScheme.error,
-                  ),
-                );
-              },
-            );
-          },
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // Profile Avatar
-                  Center(
-                    child: Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 60,
-                          backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          state.when(
+            initial: () {},
+            loading: () {
+              setState(() {
+                _isLoading = true;
+              });
+            },
+            authenticated: (user, token) {
+              setState(() {
+                _isLoading = false;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('تم تحديث الملف الشخصي بنجاح'),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                ),
+              );
+              context.pop();
+            },
+            unauthenticated: () {
+              setState(() {
+                _isLoading = false;
+              });
+              context.go('/login');
+            },
+            error: (message) {
+              setState(() {
+                _isLoading = false;
+              });
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(message),
+                  backgroundColor: Theme.of(context).colorScheme.error,
+                ),
+              );
+            },
+          );
+        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Profile Avatar
+                Center(
+                  child: Stack(
+                    children: [
+                      CircleAvatar(
+                        radius: 60,
+                        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        child: Icon(
+                          Icons.person,
+                          size: 60,
+                          color: Theme.of(context).colorScheme.primary,
+                        ),
+                      ).animate().scale(duration: 600.ms),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.primary,
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.surface,
+                              width: 2,
+                            ),
+                          ),
                           child: Icon(
-                            Icons.person,
-                            size: 60,
-                            color: Theme.of(context).colorScheme.primary,
+                            Icons.camera_alt,
+                            size: 20,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
-                        ).animate().scale(duration: 600.ms),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Theme.of(context).colorScheme.surface,
-                                width: 2,
-                              ),
-                            ),
-                            child: Icon(
-                              Icons.camera_alt,
-                              size: 20,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          ),
-                        ).animate().fadeIn(delay: 400.ms).scale(delay: 400.ms),
-                      ],
+                        ),
+                      ).animate().fadeIn(delay: 400.ms).scale(delay: 400.ms),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 32),
+
+                // Name Field
+                _buildTextField(
+                  controller: _nameController,
+                  label: 'الاسم',
+                  icon: Icons.person_outline,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'يرجى إدخال الاسم';
+                    }
+                    return null;
+                  },
+                ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3, end: 0),
+
+                const SizedBox(height: 16),
+
+                // Email Field
+                _buildTextField(
+                  controller: _emailController,
+                  label: 'البريد الإلكتروني',
+                  icon: Icons.email_outlined,
+                  keyboardType: TextInputType.emailAddress,
+                  validator: (value) {
+                    if (value == null || value.trim().isEmpty) {
+                      return 'يرجى إدخال البريد الإلكتروني';
+                    }
+                    if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                      return 'يرجى إدخال بريد إلكتروني صحيح';
+                    }
+                    return null;
+                  },
+                ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.3, end: 0),
+
+                const SizedBox(height: 16),
+
+                // University Field
+                _buildTextField(
+                  controller: _universityController,
+                  label: 'الجامعة',
+                  icon: Icons.school_outlined,
+                  validator: (value) => null, // Optional field
+                ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
+
+                const SizedBox(height: 16),
+
+                // Phone Field
+                _buildTextField(
+                  controller: _phoneController,
+                  label: 'رقم الهاتف',
+                  icon: Icons.phone_outlined,
+                  keyboardType: TextInputType.phone,
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      if (!RegExp(r'^01[0-9]{9}$').hasMatch(value)) {
+                        return 'يرجى إدخال رقم هاتف صحيح';
+                      }
+                    }
+                    return null;
+                  },
+                ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.3, end: 0),
+
+                const SizedBox(height: 16),
+
+                // Governorate Field
+                _buildTextField(
+                  controller: _governorateController,
+                  label: 'المحافظة',
+                  icon: Icons.location_on_outlined,
+                  validator: (value) => null, // Optional field
+                ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
+
+                const SizedBox(height: 32),
+
+                // Role Display (Read-only)
+                Card(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.admin_panel_settings_outlined,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                    title: const Text('الدور'),
+                    subtitle: Text(
+                      widget.user.role == 'admin'
+                          ? 'مدير'
+                          : widget.user.role == 'volunteer'
+                              ? 'متطوع'
+                              : 'طالب',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    trailing: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Text(
+                        'غير قابل للتعديل',
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ),
+                ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.3, end: 0),
 
-                  const SizedBox(height: 32),
+                const SizedBox(height: 32),
 
-                  // Name Field
-                  _buildTextField(
-                    controller: _nameController,
-                    label: 'الاسم',
-                    icon: Icons.person_outline,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'يرجى إدخال الاسم';
-                      }
-                      return null;
-                    },
-                  ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3, end: 0),
-
-                  const SizedBox(height: 16),
-
-                  // Email Field
-                  _buildTextField(
-                    controller: _emailController,
-                    label: 'البريد الإلكتروني',
-                    icon: Icons.email_outlined,
-                    keyboardType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'يرجى إدخال البريد الإلكتروني';
-                      }
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-                        return 'يرجى إدخال بريد إلكتروني صحيح';
-                      }
-                      return null;
-                    },
-                  ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.3, end: 0),
-
-                  const SizedBox(height: 16),
-
-                  // University Field
-                  _buildTextField(
-                    controller: _universityController,
-                    label: 'الجامعة',
-                    icon: Icons.school_outlined,
-                    validator: (value) => null, // Optional field
-                  ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
-
-                  const SizedBox(height: 16),
-
-                  // Phone Field
-                  _buildTextField(
-                    controller: _phoneController,
-                    label: 'رقم الهاتف',
-                    icon: Icons.phone_outlined,
-                    keyboardType: TextInputType.phone,
-                    validator: (value) {
-                      if (value != null && value.isNotEmpty) {
-                        if (!RegExp(r'^01[0-9]{9}$').hasMatch(value)) {
-                          return 'يرجى إدخال رقم هاتف صحيح';
-                        }
-                      }
-                      return null;
-                    },
-                  ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.3, end: 0),
-
-                  const SizedBox(height: 16),
-
-                  // Governorate Field
-                  _buildTextField(
-                    controller: _governorateController,
-                    label: 'المحافظة',
-                    icon: Icons.location_on_outlined,
-                    validator: (value) => null, // Optional field
-                  ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
-
-                  const SizedBox(height: 32),
-
-                  // Role Display (Read-only)
-                  Card(
-                    child: ListTile(
-                      leading: Icon(
-                        Icons.admin_panel_settings_outlined,
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      title: const Text('الدور'),
-                      subtitle: Text(
-                        widget.user.role == 'admin' 
-                            ? 'مدير' 
-                            : widget.user.role == 'volunteer' 
-                                ? 'متطوع' 
-                                : 'طالب',
-                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      trailing: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          'غير قابل للتعديل',
+                // Save Button
+                ElevatedButton(
+                  onPressed: _isLoading ? null : _saveProfile,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text(
+                          'حفظ التغييرات',
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                    ),
-                  ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.3, end: 0),
-
-                  const SizedBox(height: 32),
-
-                  // Save Button
-                  ElevatedButton(
-                    onPressed: _isLoading ? null : _saveProfile,
-                    style: ElevatedButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                    child: _isLoading
-                        ? const SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Text(
-                            'حفظ التغييرات',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                  ).animate().fadeIn(delay: 1200.ms).slideY(begin: 0.3, end: 0),
-                ],
-              ),
+                ).animate().fadeIn(delay: 1200.ms).slideY(begin: 0.3, end: 0),
+              ],
             ),
           ),
         ),

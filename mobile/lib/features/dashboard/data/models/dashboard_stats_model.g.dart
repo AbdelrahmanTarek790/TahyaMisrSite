@@ -8,12 +8,12 @@ part of 'dashboard_stats_model.dart';
 
 DashboardStatsModel _$DashboardStatsModelFromJson(Map<String, dynamic> json) =>
     DashboardStatsModel(
-      totalUsers: json['totalUsers'] as int,
-      totalNews: json['totalNews'] as int,
-      totalEvents: json['totalEvents'] as int,
-      totalMedia: json['totalMedia'] as int,
-      activeUsers: json['activeUsers'] as int,
-      pendingEvents: json['pendingEvents'] as int,
+      totalUsers: (json['totalUsers'] as num).toInt(),
+      totalNews: (json['totalNews'] as num).toInt(),
+      totalEvents: (json['totalEvents'] as num).toInt(),
+      totalMedia: (json['totalMedia'] as num).toInt(),
+      activeUsers: (json['activeUsers'] as num).toInt(),
+      pendingEvents: (json['pendingEvents'] as num).toInt(),
     );
 
 Map<String, dynamic> _$DashboardStatsModelToJson(
