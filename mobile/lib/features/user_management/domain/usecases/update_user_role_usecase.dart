@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:tahya_misr_app/features/auth/data/models/user_model.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/user.dart';
@@ -14,13 +15,13 @@ class UpdateUserRoleParams {
   });
 }
 
-class UpdateUserRoleUseCase implements UseCase<User, UpdateUserRoleParams> {
+class UpdateUserRoleUseCase implements UseCase<UserModel, UpdateUserRoleParams> {
   final UserManagementRepository repository;
 
   UpdateUserRoleUseCase(this.repository);
 
   @override
-  Future<Either<Failure, User>> call(UpdateUserRoleParams params) async {
-    return await repository.updateUserRole(params.userId, params.role);
+  Future<Either<Failure, UserModel>> call(UpdateUserRoleParams params) async {
+    return await repository.updateUser(params.userId,{'role': params.role});
   }
 }

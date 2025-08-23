@@ -24,7 +24,7 @@ class PositionRepositoryImpl implements PositionRepository {
         return Left(ServerFailure(e.toString()));
       }
     } else {
-      return Left(NetworkFailure());
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 
@@ -38,7 +38,7 @@ class PositionRepositoryImpl implements PositionRepository {
         return Left(ServerFailure(e.toString()));
       }
     } else {
-      return Left(NetworkFailure());
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 
@@ -52,7 +52,7 @@ class PositionRepositoryImpl implements PositionRepository {
         return Left(ServerFailure(e.toString()));
       }
     } else {
-      return Left(NetworkFailure());
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 
@@ -66,7 +66,7 @@ class PositionRepositoryImpl implements PositionRepository {
         return Left(ServerFailure(e.toString()));
       }
     } else {
-      return Left(NetworkFailure());
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 
@@ -80,7 +80,7 @@ class PositionRepositoryImpl implements PositionRepository {
         return Left(ServerFailure(e.toString()));
       }
     } else {
-      return Left(NetworkFailure());
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 }

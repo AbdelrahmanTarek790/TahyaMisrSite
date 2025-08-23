@@ -1,16 +1,16 @@
 import 'package:dartz/dartz.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entities/user.dart';
+import '../../../auth/data/models/user_model.dart';
 import '../repositories/user_management_repository.dart';
 
-class UpdateUserUseCase implements UseCase<User, UpdateUserParams> {
+class UpdateUserUseCase implements UseCase<UserModel, UpdateUserParams> {
   final UserManagementRepository repository;
 
   UpdateUserUseCase(this.repository);
 
   @override
-  Future<Either<Failure, User>> call(UpdateUserParams params) async {
+  Future<Either<Failure, UserModel>> call(UpdateUserParams params) async {
     return await repository.updateUser(params.id, params.userData);
   }
 }

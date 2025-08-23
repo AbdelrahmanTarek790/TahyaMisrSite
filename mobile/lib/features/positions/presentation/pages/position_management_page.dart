@@ -270,7 +270,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                   _buildStatItem('Global', '${state.positions.where((p) => p.isGlobal).length}', Icons.public),
                 ],
               ),
-            ).animate().slideInUp(duration: 300.ms);
+            ).animate();
           }
 
           final position = state.positions[index - 1];
@@ -417,10 +417,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
           ),
         ),
       ),
-    ).animate().slideInLeft(
-      duration: 400.ms,
-      delay: (index * 100).ms,
-    );
+    ).animate();
   }
 
   void _handlePositionAction(BuildContext context, String action, PositionModel position, AppLocalizations l10n) {

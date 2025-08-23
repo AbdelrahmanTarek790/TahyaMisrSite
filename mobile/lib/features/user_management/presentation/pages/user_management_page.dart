@@ -280,7 +280,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                   _buildStatItem('Total Pages', '${state.totalPages}', Icons.library_books),
                 ],
               ),
-            ).animate().slideInUp(duration: 300.ms);
+            ).animate();
           }
 
           final user = state.users[index - 1];
@@ -430,13 +430,13 @@ class _UserManagementPageState extends State<UserManagementPage> {
                   ],
                 ),
               ),
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 'delete',
                 child: Row(
                   children: [
-                    const Icon(Icons.delete, color: Colors.red),
-                    const SizedBox(width: 8),
-                    const Text('Delete', style: TextStyle(color: Colors.red)),
+                    Icon(Icons.delete, color: Colors.red),
+                    SizedBox(width: 8),
+                    Text('Delete', style: TextStyle(color: Colors.red)),
                   ],
                 ),
               ),
@@ -444,10 +444,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
           ),
         ),
       ),
-    ).animate().slideInLeft(
-      duration: 400.ms,
-      delay: (index * 100).ms,
-    );
+    ).animate();
   }
 
   void _handleUserAction(BuildContext context, String action, UserModel user, AppLocalizations l10n) {

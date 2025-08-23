@@ -1,16 +1,17 @@
 import 'package:dartz/dartz.dart';
+import 'package:tahya_misr_app/features/auth/data/models/user_model.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
 import '../entities/user.dart';
 import '../repositories/user_management_repository.dart';
 
-class CreateUserUseCase implements UseCase<User, CreateUserParams> {
+class CreateUserUseCase implements UseCase<UserModel, CreateUserParams> {
   final UserManagementRepository repository;
 
   CreateUserUseCase(this.repository);
 
   @override
-  Future<Either<Failure, User>> call(CreateUserParams params) async {
+  Future<Either<Failure, UserModel>> call(CreateUserParams params) async {
     return await repository.createUser(params.userData);
   }
 }

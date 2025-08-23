@@ -41,12 +41,12 @@ class UserManagementRepositoryImpl implements UserManagementRepository {
           total: totalUsers,
           currentPage: page,
           totalPages: totalPages,
-        ));
+        ),);
       } catch (e) {
         return Left(ServerFailure(e.toString()));
       }
     } else {
-      return Left(NetworkFailure());
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 
@@ -60,7 +60,7 @@ class UserManagementRepositoryImpl implements UserManagementRepository {
         return Left(ServerFailure(e.toString()));
       }
     } else {
-      return Left(NetworkFailure());
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 
@@ -74,7 +74,7 @@ class UserManagementRepositoryImpl implements UserManagementRepository {
         return Left(ServerFailure(e.toString()));
       }
     } else {
-      return Left(NetworkFailure());
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 
@@ -88,7 +88,7 @@ class UserManagementRepositoryImpl implements UserManagementRepository {
         return Left(ServerFailure(e.toString()));
       }
     } else {
-      return Left(NetworkFailure());
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 
@@ -102,7 +102,7 @@ class UserManagementRepositoryImpl implements UserManagementRepository {
         return Left(ServerFailure(e.toString()));
       }
     } else {
-      return Left(NetworkFailure());
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 }

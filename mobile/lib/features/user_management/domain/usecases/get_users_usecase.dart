@@ -18,13 +18,13 @@ class GetUsersParams {
   });
 }
 
-class GetUsersUseCase implements UseCase<List<User>, GetUsersParams> {
+class GetUsersUseCase implements UseCase<dynamic, GetUsersParams> {
   final UserManagementRepository repository;
 
   GetUsersUseCase(this.repository);
 
   @override
-  Future<Either<Failure, List<User>>> call(GetUsersParams params) async {
+  Future<Either<Failure, dynamic>> call(GetUsersParams params) async {
     return await repository.getUsers(
       page: params.page,
       limit: params.limit,
