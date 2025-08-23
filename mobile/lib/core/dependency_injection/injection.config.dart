@@ -10,18 +10,6 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:tahya_misr_app/dashboard/data/datasources/dashboard_remote_data_source.dart'
-    as _i875;
-import 'package:tahya_misr_app/dashboard/data/repositories/dashboard_repository_impl.dart'
-    as _i655;
-import 'package:tahya_misr_app/dashboard/domain/repositories/dashboard_repository.dart'
-    as _i385;
-import 'package:tahya_misr_app/dashboard/domain/usecases/get_dashboard_stats_usecase.dart'
-    as _i920;
-import 'package:tahya_misr_app/dashboard/domain/usecases/get_recent_activity_usecase.dart'
-    as _i52;
-import 'package:tahya_misr_app/dashboard/presentation/bloc/dashboard_bloc.dart'
-    as _i371;
 import 'package:tahya_misr_app/features/auth/domain/repositories/auth_repository.dart'
     as _i631;
 import 'package:tahya_misr_app/features/auth/domain/usecases/login_usecase.dart'
@@ -118,9 +106,6 @@ extension GetItInjectableX on _i174.GetIt {
         ));
     gh.factory<_i1051.MediaBloc>(
         () => _i1051.MediaBloc(getMediaUseCase: gh<_i821.GetMediaUseCase>()));
-    gh.lazySingleton<_i385.DashboardRepository>(() =>
-        _i655.DashboardRepositoryImpl(
-            remoteDataSource: gh<_i875.DashboardRemoteDataSource>()));
     gh.factory<_i994.GetDashboardStatsUseCase>(
         () => _i994.GetDashboardStatsUseCase(gh<_i332.DashboardRepository>()));
     gh.factory<_i178.GetRecentActivityUseCase>(
@@ -128,14 +113,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i891.DashboardBloc>(() => _i891.DashboardBloc(
           getDashboardStatsUseCase: gh<_i994.GetDashboardStatsUseCase>(),
           getRecentActivityUseCase: gh<_i178.GetRecentActivityUseCase>(),
-        ));
-    gh.factory<_i920.GetDashboardStatsUseCase>(
-        () => _i920.GetDashboardStatsUseCase(gh<_i385.DashboardRepository>()));
-    gh.factory<_i52.GetRecentActivityUseCase>(
-        () => _i52.GetRecentActivityUseCase(gh<_i385.DashboardRepository>()));
-    gh.factory<_i371.DashboardBloc>(() => _i371.DashboardBloc(
-          getDashboardStatsUseCase: gh<_i920.GetDashboardStatsUseCase>(),
-          getRecentActivityUseCase: gh<_i52.GetRecentActivityUseCase>(),
         ));
     return this;
   }
