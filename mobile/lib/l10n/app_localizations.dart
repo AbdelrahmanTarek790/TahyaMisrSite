@@ -535,6 +535,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Updated At'**
   String get updatedAt;
+
+  /// No description provided for @positionManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Position Management'**
+  String get positionManagement;
+
+  /// No description provided for @createEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Event'**
+  String get createEvent;
+
+  /// No description provided for @uploadMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Media'**
+  String get uploadMedia;
+
+  /// No description provided for @caption.
+  ///
+  /// In en, this message translates to:
+  /// **'Caption'**
+  String get caption;
+
+  /// No description provided for @upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
+  String get upload;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
+  String get location;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
+  String get date;
 }
 
 class _AppLocalizationsDelegate
