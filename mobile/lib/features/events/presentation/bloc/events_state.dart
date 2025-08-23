@@ -13,4 +13,9 @@ class EventsState with _$EventsState {
   const factory EventsState.error({
     required String message,
   }) = _Error;
+  const factory EventsState.registering() = _Registering;
+  const factory EventsState.registrationSuccess() = _RegistrationSuccess;
+  const factory EventsState.registrationError({
+    required String message,
+  }) = _RegistrationError;
 }

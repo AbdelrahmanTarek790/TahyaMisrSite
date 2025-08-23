@@ -8,6 +8,8 @@ import 'package:logger/logger.dart';
 import 'package:tahya_misr_app/features/events/domain/usecases/get_events_detail_usecase.dart';
 
 import '../../features/events/data/repositories/event_repository_impl.dart';
+import '../../features/events/data/datasources/events_local_data_source.dart';
+import '../../features/events/domain/usecases/register_for_event_usecase.dart';
 import '../../features/events/domain/repositories/event_repository.dart';
 import '../../features/media/data/repositories/media_repository_impl.dart';
 import '../../features/media/domain/repositories/media_repository.dart';
@@ -48,6 +50,7 @@ import '../../features/dashboard/domain/usecases/get_dashboard_stats_usecase.dar
 import '../../features/dashboard/domain/usecases/get_recent_activity_usecase.dart';
 import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/news/data/datasources/news_remote_data_source.dart';
+import '../../features/news/data/datasources/news_local_data_source.dart';
 import '../../features/news/data/repositories/news_repository_impl.dart';
 import '../../features/news/domain/repositories/news_repository.dart';
 import '../../features/news/domain/usecases/get_news_usecase.dart';
@@ -99,9 +102,13 @@ Future<void> configureDependencies() async {
   // Hive boxes
   final authBox = await Hive.openBox('auth');
   final cacheBox = await Hive.openBox('cache');
+  final eventsBox = await Hive.openBox('events');
+  final newsBox = await Hive.openBox('news');
 
   getIt.registerLazySingleton<Box>(() => authBox, instanceName: 'authBox');
   getIt.registerLazySingleton<Box>(() => cacheBox, instanceName: 'cacheBox');
+  getIt.registerLazySingleton<Box>(() => eventsBox, instanceName: 'eventsBox');
+  getIt.registerLazySingleton<Box>(() => newsBox, instanceName: 'newsBox');
 
   // Dio configuration
   getIt.registerLazySingleton<Dio>(() {
@@ -263,10 +270,17 @@ void _configureNewsDependencies() {
     () => NewsRemoteDataSourceImpl(getIt<ApiClient>()),
   );
 
+  // News local data source
+  getIt.registerLazySingleton<NewsLocalDataSource>(
+    () => NewsLocalDataSourceImpl(getIt<Box>(instanceName: 'newsBox')),
+  );
+
   // News repository
   getIt.registerLazySingleton<NewsRepository>(
     () => NewsRepositoryImpl(
       remoteDataSource: getIt<NewsRemoteDataSource>(),
+      localDataSource: getIt<NewsLocalDataSource>(),
+      networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
@@ -295,10 +309,17 @@ void _configureEventsDependencies() {
     () => EventsRemoteDataSourceImpl(getIt<ApiClient>()),
   );
 
+  // Events local data source
+  getIt.registerLazySingleton<EventsLocalDataSource>(
+    () => EventsLocalDataSourceImpl(getIt<Box>(instanceName: 'eventsBox')),
+  );
+
   // Events repository
   getIt.registerLazySingleton<EventRepository>(
     () => EventRepositoryImpl(
       remoteDataSource: getIt<EventsRemoteDataSource>(),
+      localDataSource: getIt<EventsLocalDataSource>(),
+      networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
@@ -311,11 +332,18 @@ void _configureEventsDependencies() {
   getIt.registerLazySingleton<GetEventsDetailUseCase>(
     () => GetEventsDetailUseCase(getIt<EventRepository>()),
   );
+
+  // Register for event use case
+  getIt.registerLazySingleton<RegisterForEventUseCase>(
+    () => RegisterForEventUseCase(getIt<EventRepository>()),
+  );
+
   // Events bloc
   getIt.registerFactory<EventsBloc>(
     () => EventsBloc(
       getEventsUseCase: getIt<GetEventsUseCase>(),
       getEventsDetailUseCase: getIt<GetEventsDetailUseCase>(),
+      registerForEventUseCase: getIt<RegisterForEventUseCase>(),
     ),
   );
 }

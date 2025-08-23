@@ -55,6 +55,22 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 });
               }
             },
+            registrationSuccess: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Successfully registered for event!'),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            },
+            registrationError: (message) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('Registration failed: $message'),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            },
             error: (message) {},
           );
         },
@@ -66,6 +82,36 @@ class _EventDetailPageState extends State<EventDetailPage> {
             body: state.when(
               initial: () => const Center(child: CircularProgressIndicator()),
               loading: () => const Center(child: CircularProgressIndicator()),
+              registering: () => const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text('Registering for event...'),
+                  ],
+                ),
+              ),
+              registrationSuccess: () => const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.check_circle, color: Colors.green, size: 64),
+                    SizedBox(height: 16),
+                    Text('Registration successful!'),
+                  ],
+                ),
+              ),
+              registrationError: (message) => Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.error, color: Colors.red, size: 64),
+                    SizedBox(height: 16),
+                    Text('Registration failed: $message'),
+                  ],
+                ),
+              ),
               loaded: (event) {
                 if (event.isEmpty) {
                   return const Center(child: Text('No event found'));
@@ -180,6 +226,27 @@ class _EventDetailPageState extends State<EventDetailPage> {
                                         ),
                                       ),
                                     ],
+                                  ),
+                                ),
+                              ),
+
+                              const SizedBox(height: 24),
+                              
+                              // Register Button
+                              Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: ElevatedButton.icon(
+                                  onPressed: () {
+                                    _eventsBloc.add(EventsEvent.registerForEvent(widget.eventId));
+                                  },
+                                  icon: const Icon(Icons.event_available),
+                                  label: const Text('Register for Event'),
+                                  style: ElevatedButton.styleFrom(
+                                    padding: const EdgeInsets.symmetric(vertical: 16),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
                                   ),
                                 ),
                               ),
