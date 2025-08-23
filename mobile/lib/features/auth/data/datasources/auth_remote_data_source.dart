@@ -19,16 +19,24 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<LoginResponse> login(LoginRequest request) async {
     try {
+      print('Making login request with: ${request.toJson()}');
       final response = await apiClient.login(request);
+      print('Raw API response type: ${response.runtimeType}');
       print('Login API response: success=${response.success}, data=${response.data}, error=${response.error}');
       
       if (response.success && response.data != null) {
+        print('Login successful, returning data: ${response.data}');
         return response.data!;
       } else {
-        throw Exception(response.error ?? 'Login failed');
+        final errorMessage = response.error ?? 'Login failed - no error details provided';
+        print('Login failed: $errorMessage');
+        throw Exception(errorMessage);
       }
     } catch (e) {
-      print('Login error: $e');
+      print('Login error (${e.runtimeType}): $e');
+      if (e is Exception) {
+        rethrow;
+      }
       throw Exception('Login failed: $e');
     }
   }

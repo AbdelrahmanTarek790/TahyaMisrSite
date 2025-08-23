@@ -15,12 +15,18 @@ class LoginResponse {
 
   factory LoginResponse.fromJson(Map<String, dynamic> json) {
     try {
-      // The response is already unwrapped by ApiResponse wrapper
+      // Handle null and missing values safely
+      final token = json['token'];
+      final userData = json['user'];
+      
       return LoginResponse(
-        token: json['token']?.toString() ?? '',
-        user: UserModel.fromJson(json['user'] as Map<String, dynamic>? ?? {}),
+        token: token?.toString() ?? '',
+        user: userData != null && userData is Map<String, dynamic>
+            ? UserModel.fromJson(userData)
+            : UserModel.fromJson({}),
       );
     } catch (e) {
+      print('LoginResponse.fromJson error: $e');
       // If parsing fails, return empty response to prevent crashes
       return LoginResponse(
         token: '',

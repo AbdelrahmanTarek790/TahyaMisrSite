@@ -22,19 +22,25 @@ class UserModel extends User {
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     try {
-      // Handle backend response format
+      print('Parsing UserModel from: $json');
+      
+      // Handle backend response format - backend uses position object for role
       final position = json['position'];
-/*
-      final role = position is Map<String, dynamic>
-          ? position['name'] as String? ?? 'Student'
-          : position?.toString() ?? 'Student';
-*/
+      String role = 'Student'; // Default role
+      
+      if (position is Map<String, dynamic>) {
+        role = position['name']?.toString() ?? 'Student';
+      } else if (position is String) {
+        role = position;
+      } else if (json['role'] != null) {
+        role = json['role'].toString();
+      }
 
-      return UserModel(
-        id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
+      final userModel = UserModel(
+        id: json['_id']?.toString() ?? json['id']?.toString() ?? 'unknown_id',
         email: json['email']?.toString() ?? '',
         name: json['name']?.toString() ?? '',
-        role: json['role']?.toString() ?? '',
+        role: role,
         governorate: json['governorate']?.toString(),
         phone: json['phone']?.toString(),
         university: json['university']?.toString(),
@@ -43,19 +49,33 @@ class UserModel extends User {
         membershipExpiry: json['membershipExpiry'] != null 
             ? DateTime.tryParse(json['membershipExpiry'].toString()) 
             : null,
-        createdAt: DateTime.tryParse(json['createdAt']?.toString() ?? '') ?? DateTime.now(),
-        updatedAt: DateTime.tryParse(json['updatedAt']?.toString() ?? '') ?? DateTime.now(),
+        createdAt: _parseDateTime(json['createdAt']) ?? DateTime.now(),
+        updatedAt: _parseDateTime(json['updatedAt']) ?? DateTime.now(),
       );
+      
+      print('Successfully parsed UserModel: id=${userModel.id}, email=${userModel.email}, role=${userModel.role}');
+      return userModel;
     } catch (e) {
+      print('Error parsing UserModel: $e');
+      print('Fallback UserModel creation from json: $json');
       // If parsing fails, return a basic user object to prevent crashes
       return UserModel(
-        id: json['_id']?.toString() ?? json['id']?.toString() ?? '',
-        email: json['email']?.toString() ?? '',
-        name: json['name']?.toString() ?? '',
-        role: json['role']?.toString() ?? '',
+        id: json['_id']?.toString() ?? json['id']?.toString() ?? 'fallback_id',
+        email: json['email']?.toString() ?? 'unknown@email.com',
+        name: json['name']?.toString() ?? 'Unknown User',
+        role: json['role']?.toString() ?? 'Student',
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
+    }
+  }
+
+  static DateTime? _parseDateTime(dynamic value) {
+    if (value == null) return null;
+    try {
+      return DateTime.parse(value.toString());
+    } catch (e) {
+      return null;
     }
   }
 
