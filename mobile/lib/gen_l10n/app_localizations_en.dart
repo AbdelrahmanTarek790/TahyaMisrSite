@@ -243,4 +243,28 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get date => 'Date';
+
+  @override
+  String get createNews => 'Create News';
+
+  @override
+  String get excerpt => 'Excerpt';
+
+  @override
+  String get excerptRequired => 'Excerpt is required';
+
+  @override
+  String get imagePickerComingSoon => 'Image picker coming soon';
+
+  @override
+  String get imageUrl => 'Image URL';
+
+  @override
+  String get invalidImageUrl => 'Invalid image URL';
+
+  @override
+  String get titleRequired => 'Title is required';
+
+  @override
+  String get contentRequired => 'Content is required';
 }

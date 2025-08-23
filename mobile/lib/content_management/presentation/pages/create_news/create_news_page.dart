@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../../core/dependency_injection/injection.dart';
-import '../../../../../gen_l10n/app_localizations.dart';
-import '../../../../news/presentation/bloc/news_bloc.dart';
 
 class CreateNewsPage extends StatefulWidget {
   const CreateNewsPage({super.key});

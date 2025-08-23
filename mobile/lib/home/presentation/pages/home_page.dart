@@ -5,18 +5,20 @@ import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../news/presentation/bloc/news_bloc.dart';
-import '../../../news/presentation/bloc/news_state.dart';
-import '../../../news/presentation/bloc/news_event.dart';
+
 import '../../../events/presentation/bloc/events_bloc.dart';
 import '../../../events/presentation/bloc/events_state.dart';
 import '../../../events/presentation/bloc/events_event.dart';
-import '../../../media/presentation/bloc/media_bloc.dart';
-import '../../../media/presentation/bloc/media_state.dart';
-import '../../../media/presentation/bloc/media_event.dart';
-import '../../../news/domain/entities/news.dart';
+
 import '../../../events/domain/entities/event.dart';
-import '../../../media/domain/entities/media.dart';
+import '../../../features/media/domain/entities/media.dart';
+import '../../../features/media/presentation/bloc/media_bloc.dart';
+import '../../../features/media/presentation/bloc/media_event.dart';
+import '../../../features/media/presentation/bloc/media_state.dart';
+import '../../../features/news/domain/entities/news.dart';
+import '../../../features/news/presentation/bloc/news_bloc.dart';
+import '../../../features/news/presentation/bloc/news_event.dart';
+import '../../../features/news/presentation/bloc/news_state.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -115,7 +117,7 @@ class HomeView extends StatelessWidget {
               const SizedBox(height: 16),
               BlocBuilder<NewsBloc, NewsState>(
                 builder: (context, state) {
-                  return state.when(
+                  return state!.when(
                     initial: () => const SizedBox.shrink(),
                     loading: () => _buildLoadingCards(3),
                     loaded: (newsList) =>

@@ -10,6 +10,28 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:tahya_misr_app/dashboard/data/datasources/dashboard_remote_data_source.dart'
+    as _i875;
+import 'package:tahya_misr_app/dashboard/data/repositories/dashboard_repository_impl.dart'
+    as _i655;
+import 'package:tahya_misr_app/dashboard/domain/repositories/dashboard_repository.dart'
+    as _i385;
+import 'package:tahya_misr_app/dashboard/domain/usecases/get_dashboard_stats_usecase.dart'
+    as _i920;
+import 'package:tahya_misr_app/dashboard/domain/usecases/get_recent_activity_usecase.dart'
+    as _i52;
+import 'package:tahya_misr_app/dashboard/presentation/bloc/dashboard_bloc.dart'
+    as _i371;
+import 'package:tahya_misr_app/events/data/datasources/events_remote_data_source.dart'
+    as _i577;
+import 'package:tahya_misr_app/events/data/repositories/event_repository_impl.dart'
+    as _i775;
+import 'package:tahya_misr_app/events/domain/repositories/event_repository.dart'
+    as _i988;
+import 'package:tahya_misr_app/events/domain/usecases/get_events_usecase.dart'
+    as _i64;
+import 'package:tahya_misr_app/events/presentation/bloc/events_bloc.dart'
+    as _i840;
 import 'package:tahya_misr_app/features/auth/domain/repositories/auth_repository.dart'
     as _i631;
 import 'package:tahya_misr_app/features/auth/domain/usecases/login_usecase.dart'
@@ -80,6 +102,8 @@ extension GetItInjectableX on _i174.GetIt {
         remoteDataSource: gh<_i561.EventsRemoteDataSource>()));
     gh.factory<_i658.NewsBloc>(
         () => _i658.NewsBloc(getNewsUseCase: gh<_i619.GetNewsUseCase>()));
+    gh.lazySingleton<_i988.EventRepository>(() => _i775.EventRepositoryImpl(
+        remoteDataSource: gh<_i577.EventsRemoteDataSource>()));
     gh.lazySingleton<_i592.NewsRepository>(() => _i931.NewsRepositoryImpl(
         remoteDataSource: gh<_i864.NewsRemoteDataSource>()));
     gh.lazySingleton<_i332.DashboardRepository>(() =>
@@ -98,6 +122,11 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i525.EventsBloc(getEventsUseCase: gh<_i492.GetEventsUseCase>()));
     gh.factory<_i1051.MediaBloc>(
         () => _i1051.MediaBloc(getMediaUseCase: gh<_i821.GetMediaUseCase>()));
+    gh.factory<_i840.EventsBloc>(
+        () => _i840.EventsBloc(getEventsUseCase: gh<_i64.GetEventsUseCase>()));
+    gh.lazySingleton<_i385.DashboardRepository>(() =>
+        _i655.DashboardRepositoryImpl(
+            remoteDataSource: gh<_i875.DashboardRemoteDataSource>()));
     gh.factory<_i994.GetDashboardStatsUseCase>(
         () => _i994.GetDashboardStatsUseCase(gh<_i332.DashboardRepository>()));
     gh.factory<_i178.GetRecentActivityUseCase>(
@@ -105,6 +134,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i891.DashboardBloc>(() => _i891.DashboardBloc(
           getDashboardStatsUseCase: gh<_i994.GetDashboardStatsUseCase>(),
           getRecentActivityUseCase: gh<_i178.GetRecentActivityUseCase>(),
+        ));
+    gh.factory<_i920.GetDashboardStatsUseCase>(
+        () => _i920.GetDashboardStatsUseCase(gh<_i385.DashboardRepository>()));
+    gh.factory<_i52.GetRecentActivityUseCase>(
+        () => _i52.GetRecentActivityUseCase(gh<_i385.DashboardRepository>()));
+    gh.factory<_i371.DashboardBloc>(() => _i371.DashboardBloc(
+          getDashboardStatsUseCase: gh<_i920.GetDashboardStatsUseCase>(),
+          getRecentActivityUseCase: gh<_i52.GetRecentActivityUseCase>(),
         ));
     return this;
   }

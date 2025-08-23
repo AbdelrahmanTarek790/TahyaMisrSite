@@ -243,4 +243,22 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get date => 'التاريخ';
+
+  @override
+  String get createNews => 'إنشاء خبر';
+
+  @override
+  String get titleRequired => 'العنوان مطلوب';
+  @override
+  String get excerpt => 'المقتطف';
+  @override
+  String get excerptRequired => 'المقتطف مطلوب';
+  @override
+  String get contentRequired => 'المحتوى مطلوب';
+  @override
+  String get imageUrl => 'رابط الصورة';
+  @override
+  String get imagePickerComingSoon => 'التقاط الصور قادم قريباً';
+  @override
+  String get invalidImageUrl => 'رابط صورة غير صالح';
 }

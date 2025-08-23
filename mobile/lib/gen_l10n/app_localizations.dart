@@ -173,6 +173,24 @@ abstract class AppLocalizations {
   String get upload;
   String get location;
   String get date;
+
+  String get createNews ;
+
+  String get titleRequired ;
+
+  String get excerpt ;
+
+  String get excerptRequired;
+
+  String get contentRequired ;
+
+  String get imageUrl;
+
+  String get imagePickerComingSoon ;
+
+  String get invalidImageUrl ;
+
+
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
