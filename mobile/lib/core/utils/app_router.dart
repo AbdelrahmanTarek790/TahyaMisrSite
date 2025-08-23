@@ -4,12 +4,18 @@ import 'package:go_router/go_router.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/auth/presentation/pages/splash_page.dart';
+import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/news/presentation/pages/news_list_page.dart';
 import '../../features/news/presentation/pages/news_detail_page.dart';
 import '../../features/events/presentation/pages/events_list_page.dart';
 import '../../features/events/presentation/pages/event_detail_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
+import '../../features/profile/presentation/pages/settings_page.dart';
 import '../../features/media/presentation/pages/media_gallery_page.dart';
+import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/user_management/presentation/pages/user_management_page.dart';
+import '../../features/content_management/presentation/pages/content_management_page.dart';
+import '../../features/positions/presentation/pages/position_management_page.dart';
 import '../../shared/widgets/main_navigation.dart';
 
 class AppRouter {
@@ -17,7 +23,7 @@ class AppRouter {
 
   AppRouter() {
     router = GoRouter(
-      initialLocation: '/news',
+      initialLocation: '/splash',
       routes: [
         // Splash screen
         GoRoute(
@@ -39,6 +45,14 @@ class AppRouter {
         ShellRoute(
           builder: (context, state, child) => MainNavigation(child: child),
           routes: [
+            GoRoute(
+              path: '/home',
+              builder: (context, state) => const HomePage(),
+            ),
+            GoRoute(
+              path: '/dashboard',
+              builder: (context, state) => const DashboardPage(),
+            ),
             GoRoute(
               path: '/news',
               builder: (context, state) => const NewsListPage(),
@@ -70,8 +84,32 @@ class AppRouter {
             GoRoute(
               path: '/profile',
               builder: (context, state) => const ProfilePage(),
+              routes: [
+                GoRoute(
+                  path: 'settings',
+                  builder: (context, state) => const SettingsPage(),
+                ),
+              ],
             ),
           ],
+        ),
+
+        // User Management (Admin only)
+        GoRoute(
+          path: '/user-management',
+          builder: (context, state) => const UserManagementPage(),
+        ),
+
+        // Content Management (Admin only)
+        GoRoute(
+          path: '/content-management',
+          builder: (context, state) => const ContentManagementPage(),
+        ),
+
+        // Position Management (Admin only)
+        GoRoute(
+          path: '/position-management',
+          builder: (context, state) => const PositionManagementPage(),
         ),
       ],
       errorBuilder: (context, state) => Scaffold(
@@ -96,7 +134,7 @@ class AppRouter {
               ),
               const SizedBox(height: 24),
               ElevatedButton(
-                onPressed: () => context.go('/news'),
+                onPressed: () => context.go('/dashboard'),
                 child: const Text('العودة للرئيسية'),
               ),
             ],

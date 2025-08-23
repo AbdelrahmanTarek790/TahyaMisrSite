@@ -66,7 +66,7 @@ class AuthRepositoryImpl implements AuthRepository {
           name: name,
           role: role,
           governorate: governorate,
-          phoneNumber: phoneNumber,
+          phone: phoneNumber,
         );
         final user = await remoteDataSource.register(registerRequest);
 
@@ -113,6 +113,25 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Failure, User>> updateProfile(Map<String, dynamic> data) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final user = await remoteDataSource.updateProfile(data);
+        await localDataSource.cacheUser(user);
+        return Right(user);
+      } on DioException catch (e) {
+        return Left(_handleDioError(e));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(ServerFailure('Unexpected error occurred: $e'));
+      }
+    } else {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+  }
+
+  @override
   Future<Either<Failure, void>> logout() async {
     try {
       await localDataSource.clearToken();
@@ -155,7 +174,15 @@ class AuthRepositoryImpl implements AuthRepository {
         return const NetworkFailure('Connection timeout');
       case DioExceptionType.badResponse:
         final statusCode = e.response?.statusCode;
-        final message = e.response?.data?['message'] ?? 'Server error';
+        final responseData = e.response?.data;
+        
+        // Handle backend error format {success: false, error: "message", data: null}
+        String message = 'Server error';
+        if (responseData is Map<String, dynamic>) {
+          message = responseData['error']?.toString() ?? 
+                    responseData['message']?.toString() ?? 
+                    'Server error';
+        }
 
         switch (statusCode) {
           case 400:

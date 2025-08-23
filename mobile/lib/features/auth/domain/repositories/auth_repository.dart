@@ -20,6 +20,8 @@ abstract class AuthRepository {
 
   Future<Either<Failure, User>> getCurrentUser();
 
+  Future<Either<Failure, User>> updateProfile(Map<String, dynamic> data);
+
   Future<Either<Failure, void>> logout();
 
   Future<Either<Failure, String?>> getStoredToken();
