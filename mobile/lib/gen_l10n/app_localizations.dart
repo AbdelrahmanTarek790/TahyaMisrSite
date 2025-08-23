@@ -166,6 +166,13 @@ abstract class AppLocalizations {
   String get author;
   String get createdAt;
   String get updatedAt;
+  String get positionManagement;
+  String get createEvent;
+  String get uploadMedia;
+  String get caption;
+  String get upload;
+  String get location;
+  String get date;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

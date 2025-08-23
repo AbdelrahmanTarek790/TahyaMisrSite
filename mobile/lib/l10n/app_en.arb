@@ -73,5 +73,12 @@
   "image": "Image",
   "author": "Author",
   "createdAt": "Created At",
-  "updatedAt": "Updated At"
+  "updatedAt": "Updated At",
+  "positionManagement": "Position Management",
+  "createEvent": "Create Event",
+  "uploadMedia": "Upload Media",
+  "caption": "Caption",
+  "upload": "Upload",
+  "location": "Location",
+  "date": "Date"
 }

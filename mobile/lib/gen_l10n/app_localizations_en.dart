@@ -222,4 +222,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updatedAt => 'Updated At';
+
+  @override
+  String get positionManagement => 'Position Management';
+
+  @override
+  String get createEvent => 'Create Event';
+
+  @override
+  String get uploadMedia => 'Upload Media';
+
+  @override
+  String get caption => 'Caption';
+
+  @override
+  String get upload => 'Upload';
+
+  @override
+  String get location => 'Location';
+
+  @override
+  String get date => 'Date';
 }

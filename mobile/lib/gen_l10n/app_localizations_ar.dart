@@ -222,4 +222,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get updatedAt => 'تاريخ التحديث';
+
+  @override
+  String get positionManagement => 'إدارة المناصب';
+
+  @override
+  String get createEvent => 'إنشاء فعالية';
+
+  @override
+  String get uploadMedia => 'رفع وسائط';
+
+  @override
+  String get caption => 'التسمية التوضيحية';
+
+  @override
+  String get upload => 'رفع';
+
+  @override
+  String get location => 'الموقع';
+
+  @override
+  String get date => 'التاريخ';
 }
