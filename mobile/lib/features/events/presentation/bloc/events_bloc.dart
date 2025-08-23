@@ -3,18 +3,21 @@ import 'package:injectable/injectable.dart';
 
 import '../../domain/usecases/get_events_detail_usecase.dart';
 import '../../domain/usecases/get_events_usecase.dart';
+import '../../domain/usecases/register_for_event_usecase.dart';
 import 'events_event.dart';
 import 'events_state.dart';
 
 @injectable
 class EventsBloc extends Bloc<EventsEvent, EventsState> {
   final GetEventsUseCase getEventsUseCase;
-
   final GetEventsDetailUseCase getEventsDetailUseCase;
+  final RegisterForEventUseCase registerForEventUseCase;
 
-  EventsBloc(
-      {required this.getEventsUseCase, required this.getEventsDetailUseCase})
-      : super(const EventsState.initial()) {
+  EventsBloc({
+    required this.getEventsUseCase,
+    required this.getEventsDetailUseCase,
+    required this.registerForEventUseCase,
+  }) : super(const EventsState.initial()) {
     on<GetEvents>(_onGetEvents);
     on<RefreshEvents>(_onRefreshEvents);
     on<GetEventById>(_onGetEventById);
@@ -62,7 +65,15 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     RegisterForEvent event,
     Emitter<EventsState> emit,
   ) async {
-    // This would need a separate usecase for event registration
-    // For now, just show success message
+    emit(const EventsState.registering());
+    
+    final result = await registerForEventUseCase(
+      RegisterForEventParams(eventId: event.eventId),
+    );
+
+    result.fold(
+      (failure) => emit(EventsState.registrationError(message: failure.message)),
+      (_) => emit(const EventsState.registrationSuccess()),
+    );
   }
 }
