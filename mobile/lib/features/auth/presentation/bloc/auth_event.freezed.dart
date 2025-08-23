@@ -19,8 +19,15 @@ mixin _$AuthEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String email, String password) loginRequested,
-    required TResult Function(String email, String password, String name,
-            String role, String? governorate, String? phoneNumber)
+    required TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)
         registerRequested,
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
@@ -31,8 +38,15 @@ mixin _$AuthEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? loginRequested,
-    TResult? Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult? Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
@@ -43,8 +57,15 @@ mixin _$AuthEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? loginRequested,
-    TResult Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
@@ -178,8 +199,15 @@ class _$LoginRequestedImpl implements LoginRequested {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String email, String password) loginRequested,
-    required TResult Function(String email, String password, String name,
-            String role, String? governorate, String? phoneNumber)
+    required TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)
         registerRequested,
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
@@ -193,8 +221,15 @@ class _$LoginRequestedImpl implements LoginRequested {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? loginRequested,
-    TResult? Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult? Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
@@ -208,8 +243,15 @@ class _$LoginRequestedImpl implements LoginRequested {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? loginRequested,
-    TResult Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
@@ -286,12 +328,14 @@ abstract class _$$RegisterRequestedImplCopyWith<$Res> {
       __$$RegisterRequestedImplCopyWithImpl<$Res>;
   @useResult
   $Res call(
-      {String email,
+      {String name,
+      String email,
       String password,
-      String name,
-      String role,
-      String? governorate,
-      String? phoneNumber});
+      String phone,
+      String university,
+      String nationalId,
+      String governorate,
+      String membershipNumber});
 }
 
 /// @nodoc
@@ -305,14 +349,20 @@ class __$$RegisterRequestedImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? name = null,
     Object? email = null,
     Object? password = null,
-    Object? name = null,
-    Object? role = null,
-    Object? governorate = freezed,
-    Object? phoneNumber = freezed,
+    Object? phone = null,
+    Object? university = null,
+    Object? nationalId = null,
+    Object? governorate = null,
+    Object? membershipNumber = null,
   }) {
     return _then(_$RegisterRequestedImpl(
+      name: null == name
+          ? _value.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
       email: null == email
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -321,22 +371,26 @@ class __$$RegisterRequestedImplCopyWithImpl<$Res>
           ? _value.password
           : password // ignore: cast_nullable_to_non_nullable
               as String,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+      phone: null == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
               as String,
-      role: null == role
-          ? _value.role
-          : role // ignore: cast_nullable_to_non_nullable
+      university: null == university
+          ? _value.university
+          : university // ignore: cast_nullable_to_non_nullable
               as String,
-      governorate: freezed == governorate
+      nationalId: null == nationalId
+          ? _value.nationalId
+          : nationalId // ignore: cast_nullable_to_non_nullable
+              as String,
+      governorate: null == governorate
           ? _value.governorate
           : governorate // ignore: cast_nullable_to_non_nullable
-              as String?,
-      phoneNumber: freezed == phoneNumber
-          ? _value.phoneNumber
-          : phoneNumber // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
+      membershipNumber: null == membershipNumber
+          ? _value.membershipNumber
+          : membershipNumber // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -345,29 +399,36 @@ class __$$RegisterRequestedImplCopyWithImpl<$Res>
 
 class _$RegisterRequestedImpl implements RegisterRequested {
   const _$RegisterRequestedImpl(
-      {required this.email,
+      {required this.name,
+      required this.email,
       required this.password,
-      required this.name,
-      required this.role,
-      this.governorate,
-      this.phoneNumber});
+      required this.phone,
+      required this.university,
+      required this.nationalId,
+      required this.governorate,
+      required this.membershipNumber});
 
+  @override
+  final String name;
   @override
   final String email;
   @override
   final String password;
   @override
-  final String name;
+  final String phone;
   @override
-  final String role;
+  final String university;
   @override
-  final String? governorate;
+  final String nationalId;
   @override
-  final String? phoneNumber;
+  final String governorate;
+// required String position,
+  @override
+  final String membershipNumber;
 
   @override
   String toString() {
-    return 'AuthEvent.registerRequested(email: $email, password: $password, name: $name, role: $role, governorate: $governorate, phoneNumber: $phoneNumber)';
+    return 'AuthEvent.registerRequested(name: $name, email: $email, password: $password, phone: $phone, university: $university, nationalId: $nationalId, governorate: $governorate, membershipNumber: $membershipNumber)';
   }
 
   @override
@@ -375,20 +436,24 @@ class _$RegisterRequestedImpl implements RegisterRequested {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$RegisterRequestedImpl &&
+            (identical(other.name, name) || other.name == name) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.password, password) ||
                 other.password == password) &&
-            (identical(other.name, name) || other.name == name) &&
-            (identical(other.role, role) || other.role == role) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.university, university) ||
+                other.university == university) &&
+            (identical(other.nationalId, nationalId) ||
+                other.nationalId == nationalId) &&
             (identical(other.governorate, governorate) ||
                 other.governorate == governorate) &&
-            (identical(other.phoneNumber, phoneNumber) ||
-                other.phoneNumber == phoneNumber));
+            (identical(other.membershipNumber, membershipNumber) ||
+                other.membershipNumber == membershipNumber));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, email, password, name, role, governorate, phoneNumber);
+  int get hashCode => Object.hash(runtimeType, name, email, password, phone,
+      university, nationalId, governorate, membershipNumber);
 
   @JsonKey(ignore: true)
   @override
@@ -401,40 +466,61 @@ class _$RegisterRequestedImpl implements RegisterRequested {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String email, String password) loginRequested,
-    required TResult Function(String email, String password, String name,
-            String role, String? governorate, String? phoneNumber)
+    required TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)
         registerRequested,
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
     required TResult Function() getCurrentUser,
     required TResult Function(Map<String, dynamic> data) updateProfile,
   }) {
-    return registerRequested(
-        email, password, name, role, governorate, phoneNumber);
+    return registerRequested(name, email, password, phone, university,
+        nationalId, governorate, membershipNumber);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? loginRequested,
-    TResult? Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult? Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
     TResult? Function()? getCurrentUser,
     TResult? Function(Map<String, dynamic> data)? updateProfile,
   }) {
-    return registerRequested?.call(
-        email, password, name, role, governorate, phoneNumber);
+    return registerRequested?.call(name, email, password, phone, university,
+        nationalId, governorate, membershipNumber);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? loginRequested,
-    TResult Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
@@ -443,8 +529,8 @@ class _$RegisterRequestedImpl implements RegisterRequested {
     required TResult orElse(),
   }) {
     if (registerRequested != null) {
-      return registerRequested(
-          email, password, name, role, governorate, phoneNumber);
+      return registerRequested(name, email, password, phone, university,
+          nationalId, governorate, membershipNumber);
     }
     return orElse();
   }
@@ -495,19 +581,23 @@ class _$RegisterRequestedImpl implements RegisterRequested {
 
 abstract class RegisterRequested implements AuthEvent {
   const factory RegisterRequested(
-      {required final String email,
+      {required final String name,
+      required final String email,
       required final String password,
-      required final String name,
-      required final String role,
-      final String? governorate,
-      final String? phoneNumber}) = _$RegisterRequestedImpl;
+      required final String phone,
+      required final String university,
+      required final String nationalId,
+      required final String governorate,
+      required final String membershipNumber}) = _$RegisterRequestedImpl;
 
+  String get name;
   String get email;
   String get password;
-  String get name;
-  String get role;
-  String? get governorate;
-  String? get phoneNumber;
+  String get phone;
+  String get university;
+  String get nationalId;
+  String get governorate; // required String position,
+  String get membershipNumber;
   @JsonKey(ignore: true)
   _$$RegisterRequestedImplCopyWith<_$RegisterRequestedImpl> get copyWith =>
       throw _privateConstructorUsedError;
@@ -552,8 +642,15 @@ class _$LogoutRequestedImpl implements LogoutRequested {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String email, String password) loginRequested,
-    required TResult Function(String email, String password, String name,
-            String role, String? governorate, String? phoneNumber)
+    required TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)
         registerRequested,
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
@@ -567,8 +664,15 @@ class _$LogoutRequestedImpl implements LogoutRequested {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? loginRequested,
-    TResult? Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult? Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
@@ -582,8 +686,15 @@ class _$LogoutRequestedImpl implements LogoutRequested {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? loginRequested,
-    TResult Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
@@ -684,8 +795,15 @@ class _$CheckAuthStatusImpl implements CheckAuthStatus {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String email, String password) loginRequested,
-    required TResult Function(String email, String password, String name,
-            String role, String? governorate, String? phoneNumber)
+    required TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)
         registerRequested,
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
@@ -699,8 +817,15 @@ class _$CheckAuthStatusImpl implements CheckAuthStatus {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? loginRequested,
-    TResult? Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult? Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
@@ -714,8 +839,15 @@ class _$CheckAuthStatusImpl implements CheckAuthStatus {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? loginRequested,
-    TResult Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
@@ -816,8 +948,15 @@ class _$GetCurrentUserImpl implements GetCurrentUser {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String email, String password) loginRequested,
-    required TResult Function(String email, String password, String name,
-            String role, String? governorate, String? phoneNumber)
+    required TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)
         registerRequested,
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
@@ -831,8 +970,15 @@ class _$GetCurrentUserImpl implements GetCurrentUser {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? loginRequested,
-    TResult? Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult? Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
@@ -846,8 +992,15 @@ class _$GetCurrentUserImpl implements GetCurrentUser {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? loginRequested,
-    TResult Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,
@@ -981,8 +1134,15 @@ class _$UpdateProfileImpl implements UpdateProfile {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String email, String password) loginRequested,
-    required TResult Function(String email, String password, String name,
-            String role, String? governorate, String? phoneNumber)
+    required TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)
         registerRequested,
     required TResult Function() logoutRequested,
     required TResult Function() checkAuthStatus,
@@ -996,8 +1156,15 @@ class _$UpdateProfileImpl implements UpdateProfile {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String email, String password)? loginRequested,
-    TResult? Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult? Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult? Function()? logoutRequested,
     TResult? Function()? checkAuthStatus,
@@ -1011,8 +1178,15 @@ class _$UpdateProfileImpl implements UpdateProfile {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String email, String password)? loginRequested,
-    TResult Function(String email, String password, String name, String role,
-            String? governorate, String? phoneNumber)?
+    TResult Function(
+            String name,
+            String email,
+            String password,
+            String phone,
+            String university,
+            String nationalId,
+            String governorate,
+            String membershipNumber)?
         registerRequested,
     TResult Function()? logoutRequested,
     TResult Function()? checkAuthStatus,

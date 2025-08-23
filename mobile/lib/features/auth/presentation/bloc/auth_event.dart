@@ -13,12 +13,15 @@ class AuthEvent with _$AuthEvent {
   }) = LoginRequested;
 
   const factory AuthEvent.registerRequested({
+    required String name,
     required String email,
     required String password,
-    required String name,
-    required String role,
-    String? governorate,
-    String? phoneNumber,
+    required String phone,
+    required String university,
+    required String nationalId,
+    required String governorate,
+    // required String position,
+    required String membershipNumber,
   }) = RegisterRequested;
 
   const factory AuthEvent.logoutRequested() = LogoutRequested;

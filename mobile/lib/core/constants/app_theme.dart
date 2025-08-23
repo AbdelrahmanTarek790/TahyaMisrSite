@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Brand Colors
-  static const Color primaryColor = Color(0xFF1E3A8A); // Blue
-  static const Color secondaryColor = Color(0xFFDC2626); // Red
-  static const Color accentColor = Color(0xFFFACC15); // Yellow
+  static const Color primaryColor = Color(0xFFF9BC27);     // Gold
+  static const Color secondaryColor = Color(0xFFBE232B);   // Red
+  static const Color background = Color(0xFFFFFFF3);  // Off White
+  static const Color text = Color(0xFF1C1B18);        // Black
+
+  static const Color lightGold = Color(0xFFE6C262);
+  static const Color beige = Color(0xFFFAECB2); // Yellow
 
   // Material 3 Color Scheme
   static const ColorScheme lightColorScheme = ColorScheme(
@@ -13,13 +17,13 @@ class AppTheme {
     onPrimary: Colors.white,
     secondary: secondaryColor,
     onSecondary: Colors.white,
-    tertiary: accentColor,
+    tertiary: text,
     onTertiary: Colors.black,
-    surface: Colors.white,
+    surface: Color(0xFFFFFFFF),
     onSurface: Colors.black87,
-    surfaceVariant: Color(0xFFF5F5F5),
+    surfaceVariant: beige,
     onSurfaceVariant: Colors.black54,
-    background: Color(0xFFFAFAFA),
+    background:background,
     onBackground: Colors.black87,
     error: Color(0xFFB00020),
     onError: Colors.white,
@@ -29,11 +33,11 @@ class AppTheme {
 
   static const ColorScheme darkColorScheme = ColorScheme(
     brightness: Brightness.dark,
-    primary: Color(0xFF3B82F6),
+    primary: primaryColor,
     onPrimary: Colors.black,
-    secondary: Color(0xFFEF4444),
+    secondary: secondaryColor,
     onSecondary: Colors.black,
-    tertiary: accentColor,
+    tertiary: Color(0xFFE6C262),
     onTertiary: Colors.black,
     surface: Color(0xFF1E1E1E),
     onSurface: Colors.white,

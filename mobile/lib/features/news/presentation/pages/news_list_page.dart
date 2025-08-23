@@ -182,7 +182,6 @@ class NewsCard extends StatelessWidget {
       child: InkWell(
         onTap: () {
           context.go('/news/detail/${news.id}');
-          // Navigator.of(context).pushNamed('detail', arguments: news.id);
         },
         borderRadius: BorderRadius.circular(16),
         child: Column(

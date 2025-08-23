@@ -13,30 +13,39 @@ class RegisterUseCase implements UseCase<User, RegisterParams> {
   @override
   Future<Either<Failure, User>> call(RegisterParams params) async {
     return await repository.register(
+      name: params.name,
       email: params.email,
       password: params.password,
-      name: params.name,
-      role: params.role,
+      phone: params.phone,
+      university: params.university,
+      nationalId: params.nationalId,
       governorate: params.governorate,
-      phoneNumber: params.phoneNumber,
+      // position: params.position,
+      membershipNumber: params.membershipNumber,
     );
   }
 }
 
 class RegisterParams {
-  final String email;
-  final String password;
-  final String name;
-  final String role;
-  final String? governorate;
-  final String? phoneNumber;
+  String name;
+  String email;
+  String password;
+  String phone;
+  String university;
+  String nationalId;
+  String governorate;
+  // String position;
+  String membershipNumber;
 
   RegisterParams({
+    required this.name,
     required this.email,
     required this.password,
-    required this.name,
-    required this.role,
-    this.governorate,
-    this.phoneNumber,
+    required this.phone,
+    required this.university,
+    required this.nationalId,
+    required this.governorate,
+    // required this.position,
+    this.membershipNumber = '',
   });
 }

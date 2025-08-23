@@ -5,11 +5,13 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:logger/logger.dart';
+import 'package:tahya_misr_app/features/events/domain/usecases/get_events_detail_usecase.dart';
 
 import '../../features/events/data/repositories/event_repository_impl.dart';
 import '../../features/events/domain/repositories/event_repository.dart';
 import '../../features/media/data/repositories/media_repository_impl.dart';
 import '../../features/media/domain/repositories/media_repository.dart';
+import '../../features/news/domain/usecases/get_news_detail_usecase.dart';
 import '../../features/user_management/data/datasources/user_management_remote_data_source.dart';
 import '../../features/user_management/data/repositories/user_management_repository_impl.dart';
 import '../../features/user_management/domain/repositories/user_management_repository.dart';
@@ -273,10 +275,16 @@ void _configureNewsDependencies() {
     () => GetNewsUseCase(getIt<NewsRepository>()),
   );
 
+  //News detail use case
+  getIt.registerLazySingleton<GetNewsDetailUseCase>(
+    () => GetNewsDetailUseCase(getIt<NewsRepository>()),
+  );
+
   // News bloc
   getIt.registerFactory<NewsBloc>(
     () => NewsBloc(
       getNewsUseCase: getIt<GetNewsUseCase>(),
+      getNewsDetailUseCase: getIt<GetNewsDetailUseCase>(),
     ),
   );
 }
@@ -284,25 +292,30 @@ void _configureNewsDependencies() {
 void _configureEventsDependencies() {
   // Events data source
   getIt.registerLazySingleton<EventsRemoteDataSource>(
-        () => EventsRemoteDataSourceImpl(getIt<ApiClient>()),
+    () => EventsRemoteDataSourceImpl(getIt<ApiClient>()),
   );
 
   // Events repository
   getIt.registerLazySingleton<EventRepository>(
-        () => EventRepositoryImpl(
+    () => EventRepositoryImpl(
       remoteDataSource: getIt<EventsRemoteDataSource>(),
     ),
   );
 
   // Events use case
   getIt.registerLazySingleton<GetEventsUseCase>(
-        () => GetEventsUseCase(getIt<EventRepository>()),
+    () => GetEventsUseCase(getIt<EventRepository>()),
   );
 
+//Events detail use case
+  getIt.registerLazySingleton<GetEventsDetailUseCase>(
+    () => GetEventsDetailUseCase(getIt<EventRepository>()),
+  );
   // Events bloc
   getIt.registerFactory<EventsBloc>(
-        () => EventsBloc(
+    () => EventsBloc(
       getEventsUseCase: getIt<GetEventsUseCase>(),
+      getEventsDetailUseCase: getIt<GetEventsDetailUseCase>(),
     ),
   );
 }
@@ -310,24 +323,24 @@ void _configureEventsDependencies() {
 void _configureMediaDependencies() {
   // Media data source
   getIt.registerLazySingleton<MediaRemoteDataSource>(
-        () => MediaRemoteDataSourceImpl(getIt<ApiClient>()),
+    () => MediaRemoteDataSourceImpl(getIt<ApiClient>()),
   );
 
   // Media repository
   getIt.registerLazySingleton<MediaRepository>(
-        () => MediaRepositoryImpl(
+    () => MediaRepositoryImpl(
       remoteDataSource: getIt<MediaRemoteDataSource>(),
     ),
   );
 
   // Media use case
   getIt.registerLazySingleton<GetMediaUseCase>(
-        () => GetMediaUseCase(getIt<MediaRepository>()),
+    () => GetMediaUseCase(getIt<MediaRepository>()),
   );
 
   // Media bloc
   getIt.registerFactory<MediaBloc>(
-        () => MediaBloc(
+    () => MediaBloc(
       getMediaUseCase: getIt<GetMediaUseCase>(),
     ),
   );
@@ -421,4 +434,3 @@ void _configurePositionsDependencies() {
     ),
   );
 }
-

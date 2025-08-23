@@ -146,6 +146,24 @@ class ProfilePage extends StatelessWidget {
                     Icons.calendar_today,
                   ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
 
+                  const SizedBox(height: 16),
+
+                  _buildInfoCard(
+                    context,
+                    'الرقم القومي',
+                    user.nationalId ?? 'غير محدد',
+                    Icons.badge,
+                  ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
+
+
+                  const SizedBox(height: 16),
+
+                  _buildInfoCard(
+                    context,
+                    'رقم العضوية ',
+                    user.membershipNumber ?? 'غير محدد',
+                    Icons.card_membership,
+                  ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
                   const SizedBox(height: 32),
 
                   // Action Buttons

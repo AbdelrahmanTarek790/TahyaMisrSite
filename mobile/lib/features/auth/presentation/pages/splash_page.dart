@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
+import 'package:tahya_misr_app/core/constants/app_theme.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
@@ -48,13 +49,13 @@ class _SplashPageState extends State<SplashPage> {
         },
         child: Container(
           width: double.infinity,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-                Theme.of(context).colorScheme.primary,
-                Theme.of(context).colorScheme.secondary,
+                Color(0xFFFFFFF3), // Off White
+                Color(0xFFFAECB2), // Beige
               ],
             ),
           ),
@@ -64,11 +65,15 @@ class _SplashPageState extends State<SplashPage> {
               children: [
                 // Logo
                 Container(
-                  width: 150,
-                  height: 150,
+                  width: 250,
+                  height: 250,
                   decoration: BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
+                    image: const DecorationImage(
+                      image: AssetImage('assets/images/Logo.jpg'),
+                      fit: BoxFit.cover,
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: Colors.black.withOpacity(0.2),
@@ -76,11 +81,6 @@ class _SplashPageState extends State<SplashPage> {
                         offset: const Offset(0, 10),
                       ),
                     ],
-                  ),
-                  child: Icon(
-                    Icons.account_balance,
-                    size: 80,
-                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ).animate()
                   .scale(duration: 800.ms, curve: Curves.elasticOut)
@@ -90,13 +90,13 @@ class _SplashPageState extends State<SplashPage> {
 
                 // App Title
                 Text(
-                  'تحيا مصر',
+                  'اتحاد شباب تحيا مصر',
                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.primary, // Gold (Primary),
                     fontWeight: FontWeight.bold,
                     shadows: [
                       Shadow(
-                        color: Colors.black.withOpacity(0.3),
+                        color: Theme.of(context).colorScheme.shadow, // Dynamic shadow
                         offset: const Offset(0, 2),
                         blurRadius: 4,
                       ),
@@ -110,13 +110,13 @@ class _SplashPageState extends State<SplashPage> {
 
                 // Subtitle
                 Text(
-                  'اتحاد طلاب مصر',
+                  'جمهورية مصر العربية وزارة الشباب والرياضة',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Colors.white.withOpacity(0.9),
-                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.9), // Red (Accent)
+                    fontWeight: FontWeight.w100,
                     shadows: [
                       Shadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Theme.of(context).colorScheme.shadow.withOpacity(0.2),
                         offset: const Offset(0, 1),
                         blurRadius: 2,
                       ),
@@ -133,9 +133,9 @@ class _SplashPageState extends State<SplashPage> {
                   width: 40,
                   height: 40,
                   child: CircularProgressIndicator(
-                    strokeWidth: 3,
+                    strokeWidth: 4,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      Colors.white.withOpacity(0.8),
+                      Theme.of(context).colorScheme.secondary.withOpacity(0.8), // Red Accent
                     ),
                   ),
                 ).animate()
@@ -146,10 +146,10 @@ class _SplashPageState extends State<SplashPage> {
 
                 // Loading Text
                 Text(
-                  'جارٍ التحميل...',
+                  'مرحباً بك في اتحاد شباب تحيا مصر ✨',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Colors.white.withOpacity(0.8),
-                    fontWeight: FontWeight.w500,
+                    color: Theme.of(context).colorScheme.onBackground.withOpacity(0.9),
+                    fontWeight: FontWeight.w600,
                   ),
                 ).animate()
                   .fadeIn(delay: 1200.ms)

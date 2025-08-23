@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/usecases/usecase.dart';
+import '../../domain/usecases/get_events_detail_usecase.dart';
 import '../../domain/usecases/get_events_usecase.dart';
 import 'events_event.dart';
 import 'events_state.dart';
@@ -10,9 +10,11 @@ import 'events_state.dart';
 class EventsBloc extends Bloc<EventsEvent, EventsState> {
   final GetEventsUseCase getEventsUseCase;
 
-  EventsBloc({
-    required this.getEventsUseCase,
-  }) : super(const EventsState.initial()) {
+  final GetEventsDetailUseCase getEventsDetailUseCase;
+
+  EventsBloc(
+      {required this.getEventsUseCase, required this.getEventsDetailUseCase})
+      : super(const EventsState.initial()) {
     on<GetEvents>(_onGetEvents);
     on<RefreshEvents>(_onRefreshEvents);
     on<GetEventById>(_onGetEventById);
@@ -44,8 +46,15 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     GetEventById event,
     Emitter<EventsState> emit,
   ) async {
-    // This would need a separate usecase for getting single event
-    // For now, just refresh the list
+    emit(const EventsState.loading());
+    final result =
+        await getEventsDetailUseCase(GetEventsDetailParams(id: event.id));
+
+    result.fold(
+      (failure) => emit(EventsState.error(message: failure.message)),
+      (eventDetails) => emit(EventsState.loaded(events: [eventDetails])),
+    );
+
     add(const EventsEvent.getEvents());
   }
 

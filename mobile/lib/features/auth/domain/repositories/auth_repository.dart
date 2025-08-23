@@ -10,12 +10,15 @@ abstract class AuthRepository {
   });
 
   Future<Either<Failure, User>> register({
+    required String name,
     required String email,
     required String password,
-    required String name,
-    required String role,
-    String? governorate,
-    String? phoneNumber,
+    required String phone,
+    required String university,
+    required String nationalId,
+    required String governorate,
+    // required String position,
+    String membershipNumber,
   });
 
   Future<Either<Failure, User>> getCurrentUser();

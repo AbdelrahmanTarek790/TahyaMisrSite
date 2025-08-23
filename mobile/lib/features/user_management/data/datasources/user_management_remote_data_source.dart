@@ -79,7 +79,10 @@ class UserManagementRemoteDataSourceImpl implements UserManagementRemoteDataSour
         email: userData['email'] ?? '',
         password: userData['password'] ?? 'TempPassword123!', // Temporary password
         phone: userData['phone'] ?? '',
-        role: userData['role'] ?? 'volunteer',
+        university: userData['university'] ?? '',
+        nationalId: userData['nationalId'] ?? '',
+        // position: userData['position'] ?? '',
+        membershipNumber: userData['membershipNumber'] ?? '',
         governorate: userData['governorate'] ?? '',
       );
       

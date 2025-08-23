@@ -25,6 +25,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late final TextEditingController _phoneController;
   late final TextEditingController _governorateController;
   late final TextEditingController _universityController;
+  late final TextEditingController _nationalIdController;
+  late final TextEditingController _membershipNumberController ;
   bool _isLoading = false;
 
   @override
@@ -35,6 +37,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _phoneController = TextEditingController(text: widget.user.phone ?? '');
     _governorateController = TextEditingController(text: widget.user.governorate ?? '');
     _universityController = TextEditingController(text: widget.user.university ?? '');
+    _nationalIdController = TextEditingController(text: widget.user.nationalId ?? '');
+    _membershipNumberController = TextEditingController(text: widget.user.membershipNumber ?? '');
   }
 
   @override
@@ -44,6 +48,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _phoneController.dispose();
     _governorateController.dispose();
     _universityController.dispose();
+    _nationalIdController.dispose();
+    _membershipNumberController.dispose();
     super.dispose();
   }
 
@@ -226,6 +232,36 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
                 const SizedBox(height: 32),
 
+                //National ID Field
+                _buildTextField(
+                  controller: _nationalIdController,
+                  label: 'الرقم القومي',
+                  icon: Icons.badge_outlined,
+                  validator: (value) {
+                    if (value != null && value.isNotEmpty) {
+                      if (!RegExp(r'^[0-9]{14}$').hasMatch(value)) {
+                        return 'يرجى إدخال رقم قومي صحيح';
+                      }else if(value.length != 14){
+                        return 'الرقم القومي يجب أن يكون 14 رقمًا';
+                      }
+                    }
+                    return null;
+                  },
+                ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
+
+                const SizedBox(height: 32),
+
+                // Membership Number Field
+                _buildTextField(
+                  controller: _membershipNumberController,
+                  label: 'رقم العضوية',
+                  icon: Icons.confirmation_number_outlined,
+                  validator: (value) => null, // Optional field
+                ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
+
+                const SizedBox(height: 32),
+
+
                 // Role Display (Read-only)
                 Card(
                   child: ListTile(
@@ -354,6 +390,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
       if (_universityController.text.trim().isNotEmpty) {
         data['university'] = _universityController.text.trim();
+      }
+
+      if (_nationalIdController.text.trim().isNotEmpty) {
+        data['nationalId'] = _nationalIdController.text.trim();
+      }
+      if (_membershipNumberController.text.trim().isNotEmpty) {
+        data['membershipNumber'] = _membershipNumberController.text.trim();
       }
 
       context.read<AuthBloc>().add(AuthEvent.updateProfile(data: data));

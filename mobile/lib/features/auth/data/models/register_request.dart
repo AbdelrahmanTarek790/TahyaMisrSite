@@ -4,20 +4,27 @@ part 'register_request.g.dart';
 
 @JsonSerializable()
 class RegisterRequest {
-  final String email;
-  final String password;
-  final String name;
-  final String role;
-  final String? governorate;
-  final String? phone;
+
+   String name;
+   String email;
+   String password;
+   String phone;
+   String university;
+   String nationalId;
+   String governorate;
+   // String position;
+   String membershipNumber;
 
   RegisterRequest({
+    required this.name,
     required this.email,
     required this.password,
-    required this.name,
-    required this.role,
-    this.governorate,
-    this.phone,
+    required this.phone,
+    required this.university,
+    required this.nationalId,
+    required this.governorate,
+    // required this.position,
+    this.membershipNumber = '',
   });
 
   factory RegisterRequest.fromJson(Map<String, dynamic> json) =>

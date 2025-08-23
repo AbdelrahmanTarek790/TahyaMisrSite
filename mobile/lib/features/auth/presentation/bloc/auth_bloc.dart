@@ -36,7 +36,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onLoginRequested(
       LoginRequested event,
       Emitter<AuthState> emit,
-      ) async {
+      ) async
+  {
     emit(const AuthState.loading());
 
     final result = await loginUseCase(
@@ -71,19 +72,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     final result = await registerUseCase(
       RegisterParams(
+        name: event.name,
         email: event.email,
         password: event.password,
-        name: event.name,
-        role: event.role,
+        phone: event.phone,
+        university: event.university,
+        nationalId: event.nationalId,
         governorate: event.governorate,
-        phoneNumber: event.phoneNumber,
+        // position: event.position,
+        membershipNumber: event.membershipNumber,
       ),
     );
 
     result.fold(
       (failure) => emit(AuthState.error(message: failure.message)),
       (user) {
-        // After registration, user needs to login
         emit(const AuthState.unauthenticated());
       },
     );

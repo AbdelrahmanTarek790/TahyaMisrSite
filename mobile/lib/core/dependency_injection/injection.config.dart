@@ -22,16 +22,6 @@ import 'package:tahya_misr_app/dashboard/domain/usecases/get_recent_activity_use
     as _i52;
 import 'package:tahya_misr_app/dashboard/presentation/bloc/dashboard_bloc.dart'
     as _i371;
-import 'package:tahya_misr_app/events/data/datasources/events_remote_data_source.dart'
-    as _i577;
-import 'package:tahya_misr_app/events/data/repositories/event_repository_impl.dart'
-    as _i775;
-import 'package:tahya_misr_app/events/domain/repositories/event_repository.dart'
-    as _i988;
-import 'package:tahya_misr_app/events/domain/usecases/get_events_usecase.dart'
-    as _i64;
-import 'package:tahya_misr_app/events/presentation/bloc/events_bloc.dart'
-    as _i840;
 import 'package:tahya_misr_app/features/auth/domain/repositories/auth_repository.dart'
     as _i631;
 import 'package:tahya_misr_app/features/auth/domain/usecases/login_usecase.dart'
@@ -62,6 +52,8 @@ import 'package:tahya_misr_app/features/events/data/repositories/event_repositor
     as _i597;
 import 'package:tahya_misr_app/features/events/domain/repositories/event_repository.dart'
     as _i596;
+import 'package:tahya_misr_app/features/events/domain/usecases/get_events_detail_usecase.dart'
+    as _i806;
 import 'package:tahya_misr_app/features/events/domain/usecases/get_events_usecase.dart'
     as _i492;
 import 'package:tahya_misr_app/features/events/presentation/bloc/events_bloc.dart'
@@ -82,6 +74,8 @@ import 'package:tahya_misr_app/features/news/data/repositories/news_repository_i
     as _i931;
 import 'package:tahya_misr_app/features/news/domain/repositories/news_repository.dart'
     as _i592;
+import 'package:tahya_misr_app/features/news/domain/usecases/get_news_detail_usecase.dart'
+    as _i520;
 import 'package:tahya_misr_app/features/news/domain/usecases/get_news_usecase.dart'
     as _i619;
 import 'package:tahya_misr_app/features/news/presentation/bloc/news_bloc.dart'
@@ -100,10 +94,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i596.EventRepository>(() => _i597.EventRepositoryImpl(
         remoteDataSource: gh<_i561.EventsRemoteDataSource>()));
-    gh.factory<_i658.NewsBloc>(
-        () => _i658.NewsBloc(getNewsUseCase: gh<_i619.GetNewsUseCase>()));
-    gh.lazySingleton<_i988.EventRepository>(() => _i775.EventRepositoryImpl(
-        remoteDataSource: gh<_i577.EventsRemoteDataSource>()));
+    gh.factory<_i658.NewsBloc>(() => _i658.NewsBloc(
+          getNewsUseCase: gh<_i619.GetNewsUseCase>(),
+          getNewsDetailUseCase: gh<_i520.GetNewsDetailUseCase>(),
+        ));
     gh.lazySingleton<_i592.NewsRepository>(() => _i931.NewsRepositoryImpl(
         remoteDataSource: gh<_i864.NewsRemoteDataSource>()));
     gh.lazySingleton<_i332.DashboardRepository>(() =>
@@ -118,12 +112,12 @@ extension GetItInjectableX on _i174.GetIt {
           updateProfileUseCase: gh<_i215.UpdateProfileUseCase>(),
           authRepository: gh<_i631.AuthRepository>(),
         ));
-    gh.factory<_i525.EventsBloc>(
-        () => _i525.EventsBloc(getEventsUseCase: gh<_i492.GetEventsUseCase>()));
+    gh.factory<_i525.EventsBloc>(() => _i525.EventsBloc(
+          getEventsUseCase: gh<_i492.GetEventsUseCase>(),
+          getEventsDetailUseCase: gh<_i806.GetEventsDetailUseCase>(),
+        ));
     gh.factory<_i1051.MediaBloc>(
         () => _i1051.MediaBloc(getMediaUseCase: gh<_i821.GetMediaUseCase>()));
-    gh.factory<_i840.EventsBloc>(
-        () => _i840.EventsBloc(getEventsUseCase: gh<_i64.GetEventsUseCase>()));
     gh.lazySingleton<_i385.DashboardRepository>(() =>
         _i655.DashboardRepositoryImpl(
             remoteDataSource: gh<_i875.DashboardRemoteDataSource>()));

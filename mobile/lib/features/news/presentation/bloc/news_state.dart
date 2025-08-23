@@ -13,4 +13,5 @@ class NewsState with _$NewsState {
   const factory NewsState.error({
     required String message,
   }) = _Error;
+
 }

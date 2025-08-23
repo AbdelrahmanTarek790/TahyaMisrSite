@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
+import 'package:tahya_misr_app/core/utils/app_settings.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
@@ -39,14 +40,7 @@ class _LoginPageState extends State<LoginPage> {
             context.go('/home');
           },
           unauthenticated: () {},
-          error: (message) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(message),
-                backgroundColor: Theme.of(context).colorScheme.error,
-              ),
-            );
-          },
+          error: (message) {},
         );
       },
       builder: (context, state) {
@@ -65,21 +59,20 @@ class _LoginPageState extends State<LoginPage> {
                     Column(
                       children: [
                         Container(
-                          width: 120,
-                          height: 120,
+                          width: 150,
+                          height: 150,
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.account_balance,
-                            size: 60,
-                            color: Theme.of(context).colorScheme.onPrimary,
+                            image: const DecorationImage(
+                              image: AssetImage('assets/images/Logo.jpg'),
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ).animate().scale(duration: 800.ms).fadeIn(),
                         const SizedBox(height: 24),
                         Text(
-                          'تحيا مصر',
+                          'اتحاد شباب تحيا مصر',
                           style: Theme.of(context)
                               .textTheme
                               .displayMedium
@@ -93,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                             .slideY(begin: 0.3, end: 0),
                         const SizedBox(height: 8),
                         Text(
-                          'اتحاد طلاب مصر',
+                          'جمهورية مصر العربية وزارة الشباب والرياضة',
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge
@@ -136,7 +129,6 @@ class _LoginPageState extends State<LoginPage> {
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          textDirection: TextDirection.ltr,
                           decoration: const InputDecoration(
                             labelText: 'البريد الإلكتروني',
                             prefixIcon: Icon(Icons.email_outlined),
