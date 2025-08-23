@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/dependency_injection/injection.dart';
+import '../../../../../gen_l10n/app_localizations.dart';
+import '../../../../news/presentation/bloc/news_bloc.dart';
 
 class CreateNewsPage extends StatefulWidget {
   const CreateNewsPage({super.key});
@@ -27,9 +31,11 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: Text('create news'.toUpperCase()),
+        title: Text(l10n.createNews),
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
@@ -48,7 +54,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                       TextFormField(
                         controller: _titleController,
                         decoration: InputDecoration(
-                          labelText:' Title',
+                          labelText: l10n.title,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -57,7 +63,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                         ),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Title is required';
+                            return l10n.titleRequired;
                           }
                           return null;
                         },
@@ -68,7 +74,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                       TextFormField(
                         controller: _excerptController,
                         decoration: InputDecoration(
-                          labelText: ' Excerpt',
+                          labelText: l10n.excerpt,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -78,7 +84,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                         maxLines: 2,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Excerpt is required';
+                            return l10n.excerptRequired;
                           }
                           return null;
                         },
@@ -89,7 +95,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                       TextFormField(
                         controller: _contentController,
                         decoration: InputDecoration(
-                          labelText: ' Content',
+                          labelText: l10n.content,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -99,7 +105,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                         maxLines: 8,
                         validator: (value) {
                           if (value == null || value.isEmpty) {
-                            return 'Content is required';
+                            return l10n.contentRequired;
                           }
                           return null;
                         },
@@ -110,7 +116,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                       TextFormField(
                         controller: _imageUrlController,
                         decoration: InputDecoration(
-                          labelText: ' Image URL',
+                          labelText: l10n.imageUrl,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
@@ -121,8 +127,8 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                             onPressed: () {
                               // TODO: Implement image picker
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Image picker not implemented yet'),
+                                SnackBar(
+                                  content: Text(l10n.imagePickerComingSoon),
                                 ),
                               );
                             },
@@ -160,7 +166,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                                       ),
                                       const SizedBox(height: 8),
                                       Text(
-                                        'Invalid image URL',
+                                        l10n.invalidImageUrl,
                                         style: TextStyle(color: Colors.grey[600]),
                                       ),
                                     ],
@@ -184,7 +190,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: const Text('Cancel'),
+                      child: Text(l10n.cancel),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -196,7 +202,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: Text('Create News'.toUpperCase()),
+                      child: Text(l10n.createNews),
                     ),
                   ),
                 ],

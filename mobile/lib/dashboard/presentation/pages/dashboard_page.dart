@@ -3,9 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-
-import '../../../features/auth/presentation/bloc/auth_bloc.dart';
-import '../../../features/auth/presentation/bloc/auth_state.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
 import '../bloc/dashboard_bloc.dart';
 import '../bloc/dashboard_state.dart';
 import '../bloc/dashboard_event.dart';

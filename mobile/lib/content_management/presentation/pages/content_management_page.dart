@@ -33,7 +33,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
   }
 
   void _loadDashboardStats() {
-    _dashboardBloc.add(const DashboardEvent.getDashboardStats());
+    _dashboardBloc.add(const GetRecentActivity());
   }
 
   @override
@@ -203,7 +203,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
     );
   }
 
-  Widget _buildStatsGrid(BuildContext context, state) {
+  Widget _buildStatsGrid(BuildContext context,state) {
     return Column(
       children: [
         Row(
