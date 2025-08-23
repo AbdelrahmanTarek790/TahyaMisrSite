@@ -8,6 +8,7 @@ import '../../domain/entities/event.dart';
 import '../../domain/repositories/event_repository.dart';
 import '../datasources/events_remote_data_source.dart';
 import '../datasources/events_local_data_source.dart';
+import '../models/event_model.dart';
 
 @LazySingleton(as: EventRepository)
 class EventRepositoryImpl implements EventRepository {
@@ -118,10 +119,8 @@ class EventRepositoryImpl implements EventRepository {
   @override
   Future<Either<Failure, void>> cacheEvents(List<Event> eventsList) async {
     try {
-      final eventModels = eventsList.map((event) {
-        // Convert Event to EventModel
-        return event as dynamic; // This would need proper conversion
-      }).toList();
+      // EventModel extends Event, so we need to convert back to EventModel for caching
+      final eventModels = eventsList.whereType<EventModel>().toList();
       
       await localDataSource.cacheEvents(eventModels);
       return const Right(null);

@@ -236,18 +236,33 @@ class _EventDetailPageState extends State<EventDetailPage> {
                               Container(
                                 width: double.infinity,
                                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: ElevatedButton.icon(
-                                  onPressed: () {
-                                    _eventsBloc.add(EventsEvent.registerForEvent(widget.eventId));
+                                child: BlocBuilder<EventsBloc, EventsState>(
+                                  builder: (context, buttonState) {
+                                    final isRegistering = buttonState.maybeWhen(
+                                      registering: () => true,
+                                      orElse: () => false,
+                                    );
+                                    
+                                    return ElevatedButton.icon(
+                                      onPressed: isRegistering ? null : () {
+                                        _eventsBloc.add(EventsEvent.registerForEvent(widget.eventId));
+                                      },
+                                      icon: isRegistering 
+                                        ? const SizedBox(
+                                            width: 16,
+                                            height: 16,
+                                            child: CircularProgressIndicator(strokeWidth: 2),
+                                          )
+                                        : const Icon(Icons.event_available),
+                                      label: Text(isRegistering ? 'Registering...' : 'Register for Event'),
+                                      style: ElevatedButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(vertical: 16),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                      ),
+                                    );
                                   },
-                                  icon: const Icon(Icons.event_available),
-                                  label: const Text('Register for Event'),
-                                  style: ElevatedButton.styleFrom(
-                                    padding: const EdgeInsets.symmetric(vertical: 16),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                  ),
                                 ),
                               ),
 

@@ -8,6 +8,7 @@ import '../../domain/entities/news.dart';
 import '../../domain/repositories/news_repository.dart';
 import '../datasources/news_remote_data_source.dart';
 import '../datasources/news_local_data_source.dart';
+import '../models/news_model.dart';
 
 @LazySingleton(as: NewsRepository)
 class NewsRepositoryImpl implements NewsRepository {
@@ -94,10 +95,8 @@ class NewsRepositoryImpl implements NewsRepository {
   @override
   Future<Either<Failure, void>> cacheNews(List<News> newsList) async {
     try {
-      final newsModels = newsList.map((news) {
-        // Convert News to NewsModel
-        return news as dynamic; // This would need proper conversion
-      }).toList();
+      // NewsModel extends News, so we need to convert back to NewsModel for caching
+      final newsModels = newsList.whereType<NewsModel>().toList();
       
       await localDataSource.cacheNews(newsModels);
       return const Right(null);
