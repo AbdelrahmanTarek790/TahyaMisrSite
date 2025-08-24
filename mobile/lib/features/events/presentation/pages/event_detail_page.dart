@@ -30,7 +30,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
     location: 'location',
     createdAt: DateTime(2023, 1, 1),
     updatedAt: DateTime(2023, 1, 1),
-    registeredUsers: [],
+    registeredUsers: const [],
   );
 
   @override
@@ -51,7 +51,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
             loaded: (event) {
               if (event.isNotEmpty) {
                 setState(() {
-                  this.news = event.first;
+                  news = event.first;
                 });
               }
             },

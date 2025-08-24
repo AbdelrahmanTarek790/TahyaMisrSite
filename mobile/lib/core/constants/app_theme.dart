@@ -21,10 +21,8 @@ class AppTheme {
     onTertiary: Colors.black,
     surface: Color(0xFFFFFFFF),
     onSurface: Colors.black87,
-    surfaceVariant: beige,
+    surfaceContainerHighest: beige,
     onSurfaceVariant: Colors.black54,
-    background:background,
-    onBackground: Colors.black87,
     error: Color(0xFFB00020),
     onError: Colors.white,
     outline: Color(0xFFBDBDBD),
@@ -41,10 +39,8 @@ class AppTheme {
     onTertiary: Colors.black,
     surface: Color(0xFF1E1E1E),
     onSurface: Colors.white,
-    surfaceVariant: Color(0xFF2A2A2A),
+    surfaceContainerHighest: Color(0xFF2A2A2A),
     onSurfaceVariant: Colors.white70,
-    background: Color(0xFF121212),
-    onBackground: Colors.white,
     error: Color(0xFFCF6679),
     onError: Colors.black,
     outline: Color(0xFF424242),
@@ -176,7 +172,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: lightColorScheme.surfaceVariant,
+        fillColor: lightColorScheme.surfaceContainerHighest,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,
@@ -252,7 +248,7 @@ class AppTheme {
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: darkColorScheme.surfaceVariant,
+        fillColor: darkColorScheme.surfaceContainerHighest,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide.none,

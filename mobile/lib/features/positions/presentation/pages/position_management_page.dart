@@ -69,7 +69,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
   void _loadPositions() {
     _positionsBloc.add(GetPositionsEvent(
       governorate: _selectedGovernorate != 'All' ? _selectedGovernorate : null,
-    ));
+    ),);
   }
 
   @override
@@ -148,13 +148,13 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                     const SizedBox(width: 16),
                     Expanded(
                       child: DropdownButtonFormField<String>(
-                        value: _selectedGovernorate,
+                        initialValue: _selectedGovernorate,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                           filled: true,
-                          fillColor: Theme.of(context).colorScheme.background,
+                          fillColor: Theme.of(context).colorScheme.surface,
                         ),
                         items: _governorates.map((governorate) {
                           return DropdownMenuItem(
@@ -255,7 +255,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                 gradient: LinearGradient(
                   colors: [
                     Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -315,7 +315,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
           gradient: LinearGradient(
             colors: [
               Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.surface.withOpacity(0.8),
+              Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -403,13 +403,13 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                   ],
                 ),
               ),
-              PopupMenuItem(
+              const PopupMenuItem(
                 value: 'delete',
                 child: Row(
                   children: [
-                    const Icon(Icons.delete, color: Colors.red),
-                    const SizedBox(width: 8),
-                    const Text('Delete', style: TextStyle(color: Colors.red)),
+                    Icon(Icons.delete, color: Colors.red),
+                    SizedBox(width: 8),
+                    Text('Delete', style: TextStyle(color: Colors.red)),
                   ],
                 ),
               ),
@@ -474,7 +474,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                 ),
                 if (!isGlobal)
                   DropdownButtonFormField<String>(
-                    value: selectedGovernorate,
+                    initialValue: selectedGovernorate,
                     decoration: const InputDecoration(
                       labelText: 'Governorate',
                       border: OutlineInputBorder(),
@@ -576,7 +576,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                 ),
                 if (!isGlobal)
                   DropdownButtonFormField<String>(
-                    value: selectedGovernorate,
+                    initialValue: selectedGovernorate,
                     decoration: const InputDecoration(
                       labelText: 'Governorate',
                       border: OutlineInputBorder(),
@@ -617,7 +617,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                 _positionsBloc.add(UpdatePositionEvent(
                   positionId: position.id,
                   positionData: positionData,
-                ));
+                ),);
                 Navigator.of(context).pop();
               },
               child: const Text('Save'),

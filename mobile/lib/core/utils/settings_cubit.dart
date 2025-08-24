@@ -5,7 +5,7 @@ class SettingsCubit extends Cubit<AppSettings> {
   SettingsCubit() : super(const AppSettings(
     language: AppLanguage.arabic,
     themeMode: AppThemeMode.system,
-  )) {
+  ),) {
     _loadSettings();
   }
 

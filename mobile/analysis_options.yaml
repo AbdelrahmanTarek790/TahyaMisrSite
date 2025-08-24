@@ -8,6 +8,7 @@ analyzer:
   
   errors:
     invalid_annotation_target: ignore
+    avoid_print: ignore
 
 linter:
   rules:

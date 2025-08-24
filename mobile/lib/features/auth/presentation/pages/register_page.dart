@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import 'package:get_it/get_it.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
@@ -140,7 +139,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     Text(
                       'انضم إلى اتحاد شباب تحيا مصر',
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
+                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                       textAlign: TextAlign.center,
                     ).animate().fadeIn(delay: 200.ms).slideY(begin: -0.3, end: 0),
@@ -273,7 +272,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     // Role Selection
                     DropdownButtonFormField<String>(
-                      value: _selectedRole,
+                      initialValue: _selectedRole,
                       decoration: const InputDecoration(
                         labelText: 'نوع العضوية',
                         prefixIcon: Icon(Icons.group_outlined),
@@ -295,7 +294,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
                     // Governorate Selection
                     DropdownButtonFormField<String>(
-                      value: _selectedGovernorate,
+                      initialValue: _selectedGovernorate,
                       decoration: const InputDecoration(
                         labelText: 'المحافظة',
                         prefixIcon: Icon(Icons.location_on_outlined),

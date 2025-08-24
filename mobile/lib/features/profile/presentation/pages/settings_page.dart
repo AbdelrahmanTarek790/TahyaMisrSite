@@ -1,9 +1,11 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import 'package:get_it/get_it.dart';
 
+import '../../../../core/constants/app_theme.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../../../core/utils/settings_cubit.dart';
 import '../../../../core/utils/app_settings.dart';
@@ -67,7 +69,7 @@ class SettingsPage extends StatelessWidget {
                             end: Alignment.bottomRight,
                             colors: [
                               Theme.of(context).colorScheme.primary,
-                              Theme.of(context).colorScheme.primary.withOpacity(0.8),
+                              Theme.of(context).colorScheme.primary.withValues(alpha: 0.8),
                             ],
                           ),
                           borderRadius: BorderRadius.circular(16),
@@ -98,7 +100,7 @@ class SettingsPage extends StatelessWidget {
                                   Text(
                                     user.email,
                                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                      color: Colors.white.withOpacity(0.9),
+                                      color: Colors.white.withValues(alpha: 0.9),
                                     ),
                                   ),
                                   Chip(
@@ -179,7 +181,33 @@ class SettingsPage extends StatelessWidget {
                                 settings.language == AppLanguage.arabic ? l10n.arabic : l10n.english,
                                 Icons.language,
                                 () {
-                                  _showLanguageSettings(context, settings);
+
+                                  showGlassBottomSheet(
+                                    context: context,
+                                    title: l10n.language,
+                                    options: [
+
+                                      RadioGroup<AppLanguage>(
+                                        groupValue: settings.language,
+                                        onChanged: (value) {
+                                          context.read<SettingsCubit>().changeLanguage(value!);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Column(
+                                          children: [
+                                            RadioListTile<AppLanguage>(
+                                              title: Text(l10n.arabic, style: const TextStyle(color: Colors.white)),
+                                              value: AppLanguage.arabic,
+                                            ),
+                                            RadioListTile<AppLanguage>(
+                                              title: Text(l10n.english, style: const TextStyle(color: Colors.white)),
+                                              value: AppLanguage.english,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  );
                                 },
                               );
                             },
@@ -205,7 +233,36 @@ class SettingsPage extends StatelessWidget {
                                 themeText,
                                 Icons.palette,
                                 () {
-                                  _showThemeSettings(context, settings);
+                                  showGlassBottomSheet(
+                                    context: context,
+                                    title: l10n.theme,
+                                    options: [
+                                      RadioGroup(
+                                        groupValue: settings.themeMode,
+                                        onChanged: (value) {
+                                          context.read<SettingsCubit>().changeThemeMode(value!);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Column(
+                                          children: [
+                                            RadioListTile<AppThemeMode>(
+                                              title: Text(l10n.lightTheme, style: const TextStyle(color: Colors.white)),
+                                              value: AppThemeMode.light,
+                                            ),
+                                            RadioListTile<AppThemeMode>(
+                                              title: Text(l10n.darkTheme, style: const TextStyle(color: Colors.white)),
+                                              value: AppThemeMode.dark,
+                                            ),
+                                            RadioListTile<AppThemeMode>(
+                                              title: Text(l10n.systemTheme, style: const TextStyle(color: Colors.white)),
+                                              value: AppThemeMode.system,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  );
+
                                 },
                               );
                             },
@@ -271,7 +328,7 @@ class SettingsPage extends StatelessWidget {
                           trailing: Icon(
                             Icons.arrow_forward_ios,
                             size: 16,
-                            color: Theme.of(context).colorScheme.error.withOpacity(0.7),
+                            color: Theme.of(context).colorScheme.error.withValues(alpha: 0.7),
                           ),
                           onTap: () => _showLogoutDialog(context),
                         ),
@@ -357,7 +414,7 @@ class SettingsPage extends StatelessWidget {
     return ListTile(
       contentPadding: EdgeInsets.zero,
       leading: CircleAvatar(
-        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
         child: Icon(
           icon,
           color: Theme.of(context).colorScheme.primary,
@@ -486,132 +543,34 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  void _showLanguageSettings(BuildContext context, AppSettings currentSettings) {
-    final l10n = AppLocalizations.of(context)!;
-    
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.language),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<AppLanguage>(
-              title: Text(l10n.arabic),
-              value: AppLanguage.arabic,
-              groupValue: currentSettings.language,
-              onChanged: (AppLanguage? value) {
-                if (value != null) {
-                  context.read<SettingsCubit>().changeLanguage(value);
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-            RadioListTile<AppLanguage>(
-              title: Text(l10n.english),
-              value: AppLanguage.english,
-              groupValue: currentSettings.language,
-              onChanged: (AppLanguage? value) {
-                if (value != null) {
-                  context.read<SettingsCubit>().changeLanguage(value);
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.cancel),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showThemeSettings(BuildContext context, AppSettings currentSettings) {
-    final l10n = AppLocalizations.of(context)!;
-    
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.theme),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<AppThemeMode>(
-              title: Text(l10n.lightTheme),
-              value: AppThemeMode.light,
-              groupValue: currentSettings.themeMode,
-              onChanged: (AppThemeMode? value) {
-                if (value != null) {
-                  context.read<SettingsCubit>().changeThemeMode(value);
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-            RadioListTile<AppThemeMode>(
-              title: Text(l10n.darkTheme),
-              value: AppThemeMode.dark,
-              groupValue: currentSettings.themeMode,
-              onChanged: (AppThemeMode? value) {
-                if (value != null) {
-                  context.read<SettingsCubit>().changeThemeMode(value);
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-            RadioListTile<AppThemeMode>(
-              title: Text(l10n.systemTheme),
-              value: AppThemeMode.system,
-              groupValue: currentSettings.themeMode,
-              onChanged: (AppThemeMode? value) {
-                if (value != null) {
-                  context.read<SettingsCubit>().changeThemeMode(value);
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.cancel),
-          ),
-        ],
-      ),
-    );
-  }
 
   void _showFAQ(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('الأسئلة الشائعة'),
-        content: SingleChildScrollView(
+        content: const SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text(
+              Text(
                 'س: كيف يمكنني تعديل بياناتي الشخصية؟',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              const Text('ج: يمكنك الضغط على "تعديل الملف الشخصي" من الصفحة الرئيسية للملف الشخصي.'),
-              const SizedBox(height: 12),
-              const Text(
+              Text('ج: يمكنك الضغط على "تعديل الملف الشخصي" من الصفحة الرئيسية للملف الشخصي.'),
+              SizedBox(height: 12),
+              Text(
                 'س: كيف يمكنني تسجيل الخروج؟',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              const Text('ج: يمكنك الضغط على "تسجيل الخروج" من الإعدادات أو من الملف الشخصي.'),
-              const SizedBox(height: 12),
-              const Text(
+              Text('ج: يمكنك الضغط على "تسجيل الخروج" من الإعدادات أو من الملف الشخصي.'),
+              SizedBox(height: 12),
+              Text(
                 'س: كيف يمكنني التسجيل في الأحداث؟',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
-              const Text('ج: يمكنك تصفح الأحداث من تبويب الأحداث والضغط على الحدث للتسجيل فيه.'),
+              Text('ج: يمكنك تصفح الأحداث من تبويب الأحداث والضغط على الحدث للتسجيل فيه.'),
             ],
           ),
         ),
@@ -674,4 +633,75 @@ class SettingsPage extends StatelessWidget {
   String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
   }
+
+
+  void showGlassBottomSheet({
+    required BuildContext context,
+    required String title,
+    required List<Widget> options,
+  })
+  {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent, // مهم للشفافية
+      builder: (context) {
+        return ClipRRect(
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15), // الضبابية
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppTheme.primaryColor.withValues(alpha: 0.0), // زجاجي شفاف
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+                border: Border.all(color:AppTheme.primaryColor.withValues(alpha: 0.3)),
+              ),
+              padding: const EdgeInsets.all(16),
+              child: SafeArea(
+                top: false,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Handle bar
+                    Container(
+                      width: 40,
+                      height: 5,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryColor.withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(2.5),
+                      ),
+                    ),
+
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ...options,
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
 }

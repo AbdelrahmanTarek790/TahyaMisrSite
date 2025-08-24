@@ -43,7 +43,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
       limit: 20,
       search: _searchController.text.isNotEmpty ? _searchController.text : null,
       role: _selectedRole != 'All' ? _selectedRole : null,
-    ));
+    ),);
   }
 
   @override
@@ -134,7 +134,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         filled: true,
-                        fillColor: Theme.of(context).colorScheme.background,
+                        fillColor: Theme.of(context).colorScheme.surface,
                       ),
                       onChanged: (value) {
                         // Debounce search
@@ -156,13 +156,13 @@ class _UserManagementPageState extends State<UserManagementPage> {
                         const SizedBox(width: 16),
                         Expanded(
                           child: DropdownButtonFormField<String>(
-                            value: _selectedRole,
+                            initialValue: _selectedRole,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               filled: true,
-                              fillColor: Theme.of(context).colorScheme.background,
+                              fillColor: Theme.of(context).colorScheme.surface,
                             ),
                             items: _roles.map((role) {
                               return DropdownMenuItem(
@@ -265,7 +265,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                 gradient: LinearGradient(
                   colors: [
                     Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -325,7 +325,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
           gradient: LinearGradient(
             colors: [
               Theme.of(context).colorScheme.surface,
-              Theme.of(context).colorScheme.surface.withOpacity(0.8),
+              Theme.of(context).colorScheme.surface.withValues(alpha: 0.8),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -384,7 +384,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
                         BoxShadow(
-                          color: _getRoleColor(user.role).withOpacity(0.3),
+                          color: _getRoleColor(user.role).withValues(alpha: 0.3),
                           blurRadius: 4,
                           offset: const Offset(0, 2),
                         ),
@@ -507,7 +507,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
               Text('Change role for: ${user.name}'),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: selectedRole,
+                initialValue: selectedRole,
                 decoration: const InputDecoration(
                   labelText: 'Select Role',
                   border: OutlineInputBorder(),
@@ -536,7 +536,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                 _userManagementBloc.add(UpdateUserEvent(
                   userId: user.id,
                   userData: {'role': selectedRole},
-                ));
+                ),);
                 Navigator.of(context).pop();
               },
               child: const Text('Save'),

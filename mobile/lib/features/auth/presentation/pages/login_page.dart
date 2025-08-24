@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import 'package:get_it/get_it.dart';
-import 'package:tahya_misr_app/core/utils/app_settings.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
@@ -94,7 +92,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .onSurface
-                                    .withOpacity(0.7),
+                                    .withValues(alpha: 0.7),
                               ),
                         )
                             .animate()
@@ -209,7 +207,7 @@ class _LoginPageState extends State<LoginPage> {
                             orElse: () => const Text(
                               'تسجيل الدخول',
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
+                                  fontSize: 16, fontWeight: FontWeight.w600,),
                             ),
                           ),
                         )

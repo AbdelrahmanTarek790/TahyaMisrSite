@@ -32,7 +32,7 @@ class StudentDashboardView extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [
                   Theme.of(context).colorScheme.tertiary,
-                  Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
+                  Theme.of(context).colorScheme.tertiary.withValues(alpha: 0.7),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -53,7 +53,7 @@ class StudentDashboardView extends StatelessWidget {
                 Text(
                   'اكتشف الأخبار والفعاليات والمحتوى الجديد',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                 ),
               ],

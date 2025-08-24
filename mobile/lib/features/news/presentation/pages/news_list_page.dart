@@ -67,12 +67,12 @@ class _NewsListPageState extends State<NewsListPage> {
             actions: [
               IconButton(
                 icon: const Icon(Icons.refresh),
-                onPressed: () => _pagingController.refresh(),
+                onPressed: _pagingController.refresh,
               ),
             ],
           ),
           body: RefreshIndicator(
-            onRefresh: () => Future.sync(() => _pagingController.refresh()),
+            onRefresh: () => Future.sync(_pagingController.refresh),
             child: PagedListView<int, News>(
               pagingController: _pagingController,
               builderDelegate: PagedChildBuilderDelegate<News>(
@@ -97,7 +97,7 @@ class _NewsListPageState extends State<NewsListPage> {
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.5),
+                            .withValues(alpha: 0.5),
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -106,7 +106,7 @@ class _NewsListPageState extends State<NewsListPage> {
                           color: Theme.of(context)
                               .colorScheme
                               .onSurface
-                              .withOpacity(0.7),
+                              .withValues(alpha: 0.7),
                         ),
                       ),
                     ],
@@ -130,7 +130,7 @@ class _NewsListPageState extends State<NewsListPage> {
                       ),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: () => _pagingController.refresh(),
+                        onPressed: _pagingController.refresh,
                         child: const Text('إعادة المحاولة'),
                       ),
                     ],
@@ -199,7 +199,7 @@ class NewsCard extends StatelessWidget {
                     news.imageUrl!,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
-                      color: Theme.of(context).colorScheme.surfaceVariant,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       child: Icon(
                         Icons.image_not_supported,
                         size: 48,
@@ -229,7 +229,7 @@ class NewsCard extends StatelessWidget {
                       color: Theme.of(context)
                           .colorScheme
                           .onSurface
-                          .withOpacity(0.7),
+                          .withValues(alpha: 0.7),
                     ),
                     maxLines: 3,
                     overflow: TextOverflow.ellipsis,
@@ -243,7 +243,7 @@ class NewsCard extends StatelessWidget {
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.5),
+                            .withValues(alpha: 0.5),
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -252,7 +252,7 @@ class NewsCard extends StatelessWidget {
                           color: Theme.of(context)
                               .colorScheme
                               .onSurface
-                              .withOpacity(0.5),
+                              .withValues(alpha: 0.5),
                         ),
                       ),
                       const Spacer(),
@@ -262,7 +262,7 @@ class NewsCard extends StatelessWidget {
                         color: Theme.of(context)
                             .colorScheme
                             .onSurface
-                            .withOpacity(0.5),
+                            .withValues(alpha: 0.5),
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -271,7 +271,7 @@ class NewsCard extends StatelessWidget {
                           color: Theme.of(context)
                               .colorScheme
                               .onSurface
-                              .withOpacity(0.5),
+                              .withValues(alpha: 0.5),
                         ),
                       ),
                     ],

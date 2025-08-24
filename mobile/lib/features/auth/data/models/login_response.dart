@@ -23,14 +23,14 @@ class LoginResponse {
         token: token?.toString() ?? '',
         user: userData != null && userData is Map<String, dynamic>
             ? UserModel.fromJson(userData)
-            : UserModel.fromJson({}),
+            : UserModel.fromJson(const {}),
       );
     } catch (e) {
       print('LoginResponse.fromJson error: $e');
       // If parsing fails, return empty response to prevent crashes
       return LoginResponse(
         token: '',
-        user: UserModel.fromJson({}),
+        user: UserModel.fromJson(const {}),
       );
     }
   }

@@ -139,7 +139,7 @@ class _MediaCard extends StatelessWidget {
                     media.url,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) => Container(
-                      color: Theme.of(context).colorScheme.surfaceVariant,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       child: Icon(
                         Icons.image_not_supported,
                         color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -148,7 +148,7 @@ class _MediaCard extends StatelessWidget {
                     ),
                   )
                 : Container(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: Icon(
                       Icons.photo_library,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -165,7 +165,7 @@ class _MediaCard extends StatelessWidget {
                     begin: Alignment.bottomCenter,
                     end: Alignment.topCenter,
                     colors: [
-                      Colors.black.withOpacity(0.7),
+                      Colors.black.withValues(alpha: 0.7),
                       Colors.transparent,
                     ],
                   ),
@@ -201,14 +201,14 @@ class _MediaCard extends StatelessWidget {
               child: Container(
                 width: double.infinity,
                 height: double.infinity,
-                color: Colors.black.withOpacity(0.8),
+                color: Colors.black.withValues(alpha: 0.8),
                 child: Center(
                   child: media.url.isNotEmpty
                       ? Image.network(
                           media.url,
                           fit: BoxFit.contain,
                         )
-                      : Icon(
+                      : const Icon(
                           Icons.image_not_supported,
                           color: Colors.white,
                           size: 64,
@@ -236,7 +236,7 @@ class _MediaCard extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.7),
+                    color: Colors.black.withValues(alpha: 0.7),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
@@ -293,7 +293,7 @@ class _MediaCard extends StatelessWidget {
                       'https://picsum.photos/300/300?random=$index',
                       fit: BoxFit.cover,
                       errorBuilder: (context, error, stackTrace) => Container(
-                        color: Theme.of(context).colorScheme.surfaceVariant,
+                        color: Theme.of(context).colorScheme.surfaceContainerHighest,
                         child: Icon(
                           Icons.image_not_supported,
                           color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -310,7 +310,7 @@ class _MediaCard extends StatelessWidget {
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                             colors: [
-                              Colors.black.withOpacity(0.7),
+                              Colors.black.withValues(alpha: 0.7),
                               Colors.transparent,
                             ],
                           ),

@@ -13,7 +13,7 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
   final GetEventsDetailUseCase getEventsDetailUseCase;
 
   EventsBloc(
-      {required this.getEventsUseCase, required this.getEventsDetailUseCase})
+      {required this.getEventsUseCase, required this.getEventsDetailUseCase,})
       : super(const EventsState.initial()) {
     on<GetEvents>(_onGetEvents);
     on<RefreshEvents>(_onRefreshEvents);
@@ -62,7 +62,5 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
     RegisterForEvent event,
     Emitter<EventsState> emit,
   ) async {
-    // This would need a separate usecase for event registration
-    // For now, just show success message
   }
 }

@@ -79,7 +79,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                           fit: BoxFit.fill,
                           errorBuilder: (context, error, stackTrace) =>
                               Container(
-                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            color: Theme.of(context).colorScheme.surfaceContainerHighest,
                             child: Icon(
                               Icons.image_not_supported,
                               size: 64,
@@ -147,7 +147,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                                               color: Theme.of(context)
                                                   .colorScheme
                                                   .onSurface
-                                                  .withOpacity(0.6),
+                                                  .withValues(alpha: 0.6),
                                             ),
                                       ),
                                     ],
@@ -284,7 +284,9 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                   ],
                 );
                 },
-                error: (String message) {  },
+                error: (String message) {
+                  return null;
+                  },
               ),
             ),
           );

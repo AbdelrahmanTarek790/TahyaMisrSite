@@ -32,7 +32,7 @@ class AppBlocObserver extends BlocObserver {
   void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
     super.onError(bloc, error, stackTrace);
     _logger.e('${bloc.runtimeType} error',
-        error: error, stackTrace: stackTrace);
+        error: error, stackTrace: stackTrace,);
   }
 
   @override

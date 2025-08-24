@@ -31,7 +31,7 @@ class VolunteerDashboardView extends StatelessWidget {
               gradient: LinearGradient(
                 colors: [
                   Theme.of(context).colorScheme.secondary,
-                  Theme.of(context).colorScheme.secondary.withOpacity(0.7),
+                  Theme.of(context).colorScheme.secondary.withValues(alpha: 0.7),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -52,7 +52,7 @@ class VolunteerDashboardView extends StatelessWidget {
                 Text(
                   'شكراً لمساهمتك في خدمة المجتمع',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withValues(alpha: 0.9),
                       ),
                 ),
               ],

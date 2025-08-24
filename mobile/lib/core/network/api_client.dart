@@ -9,8 +9,6 @@ import '../../features/auth/data/models/user_model.dart';
 import '../../features/news/data/models/news_model.dart';
 import '../../features/events/data/models/event_model.dart';
 import '../../features/media/data/models/media_model.dart';
-import '../../features/dashboard/data/models/dashboard_stats_model.dart';
-import '../../features/dashboard/data/models/recent_activity_model.dart';
 import 'api_response.dart';
 
 part 'api_client.g.dart';

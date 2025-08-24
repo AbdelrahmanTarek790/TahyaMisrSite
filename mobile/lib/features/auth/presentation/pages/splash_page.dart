@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import 'package:get_it/get_it.dart';
-import 'package:tahya_misr_app/core/constants/app_theme.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
@@ -76,7 +74,7 @@ class _SplashPageState extends State<SplashPage> {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.2),
+                        color: Colors.black.withValues(alpha: 0.2),
                         blurRadius: 20,
                         offset: const Offset(0, 10),
                       ),
@@ -112,11 +110,11 @@ class _SplashPageState extends State<SplashPage> {
                 Text(
                   'جمهورية مصر العربية وزارة الشباب والرياضة',
                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.secondary.withOpacity(0.9), // Red (Accent)
+                    color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.9), // Red (Accent)
                     fontWeight: FontWeight.w100,
                     shadows: [
                       Shadow(
-                        color: Theme.of(context).colorScheme.shadow.withOpacity(0.2),
+                        color: Theme.of(context).colorScheme.shadow.withValues(alpha: 0.2),
                         offset: const Offset(0, 1),
                         blurRadius: 2,
                       ),
@@ -135,7 +133,7 @@ class _SplashPageState extends State<SplashPage> {
                   child: CircularProgressIndicator(
                     strokeWidth: 4,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).colorScheme.secondary.withOpacity(0.8), // Red Accent
+                      Theme.of(context).colorScheme.secondary.withValues(alpha: 0.8), // Red Accent
                     ),
                   ),
                 ).animate()
@@ -148,7 +146,7 @@ class _SplashPageState extends State<SplashPage> {
                 Text(
                   'مرحباً بك في اتحاد شباب تحيا مصر ✨',
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground.withOpacity(0.9),
+                    color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.9),
                     fontWeight: FontWeight.w600,
                   ),
                 ).animate()

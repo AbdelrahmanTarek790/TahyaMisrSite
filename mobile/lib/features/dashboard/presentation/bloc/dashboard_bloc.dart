@@ -40,7 +40,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
           (activity) => emit(DashboardState.loaded(
             stats: stats,
             recentActivity: activity,
-          )),
+          ),),
         );
       },
     );

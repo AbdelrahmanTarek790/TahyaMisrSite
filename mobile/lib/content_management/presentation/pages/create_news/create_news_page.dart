@@ -218,6 +218,7 @@ class _CreateNewsPageState extends State<CreateNewsPage> {
         'image': _imageUrlController.text.isNotEmpty ? _imageUrlController.text : null,
       };
 
+
       // For now, show success message and go back
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

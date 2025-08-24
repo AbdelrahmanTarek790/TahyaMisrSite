@@ -56,7 +56,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       if (newsResponse.success && newsResponse.data != null) {
         final newsList = newsResponse.data['news'] as List?;
         if (newsList != null) {
-          for (var news in newsList) {
+          for (final news in newsList) {
             activities.add(RecentActivityModel(
               id: news['_id'] ?? '',
               type: 'news',
@@ -66,7 +66,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
                 : news['content'] ?? '',
               timestamp: DateTime.tryParse(news['createdAt'] ?? '') ?? DateTime.now(),
               imageUrl: news['image'],
-            ));
+            ),);
           }
         }
       }
@@ -76,7 +76,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       if (eventsResponse.success && eventsResponse.data != null) {
         final eventsList = eventsResponse.data['events'] as List?;
         if (eventsList != null) {
-          for (var event in eventsList) {
+          for (final event in eventsList) {
             activities.add(RecentActivityModel(
               id: event['_id'] ?? '',
               type: 'event',
@@ -86,7 +86,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
                 : event['description'] ?? '',
               timestamp: DateTime.tryParse(event['createdAt'] ?? '') ?? DateTime.now(),
               imageUrl: event['image'],
-            ));
+            ),);
           }
         }
       }
@@ -96,7 +96,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
       if (mediaResponse.success && mediaResponse.data != null) {
         final mediaList = mediaResponse.data['media'] as List?;
         if (mediaList != null) {
-          for (var media in mediaList) {
+          for (final media in mediaList) {
             activities.add(RecentActivityModel(
               id: media['_id'] ?? '',
               type: 'media',
@@ -106,7 +106,7 @@ class DashboardRemoteDataSourceImpl implements DashboardRemoteDataSource {
                 : media['description'] ?? '',
               timestamp: DateTime.tryParse(media['createdAt'] ?? '') ?? DateTime.now(),
               imageUrl: media['file'],
-            ));
+            ),);
           }
         }
       }

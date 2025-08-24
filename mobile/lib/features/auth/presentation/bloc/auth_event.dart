@@ -1,7 +1,5 @@
-import 'package:equatable/equatable.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../domain/entities/user.dart';
 
 part 'auth_event.freezed.dart';
 

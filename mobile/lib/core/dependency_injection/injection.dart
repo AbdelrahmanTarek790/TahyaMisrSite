@@ -60,7 +60,6 @@ import '../../features/media/domain/usecases/get_media_usecase.dart';
 import '../../features/media/presentation/bloc/media_bloc.dart';
 import '../utils/settings_cubit.dart';
 
-import 'injection.config.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -74,9 +73,9 @@ Future<void> configureDependencies() async {
           lineLength: 120,
           colors: true,
           printEmojis: true,
-          printTime: false,
+          dateTimeFormat: DateTimeFormat.none,
         ),
-      ));
+      ),);
 
   getIt.registerLazySingleton<Connectivity>(Connectivity.new);
 
@@ -119,7 +118,7 @@ Future<void> configureDependencies() async {
       requestBody: true,
       responseBody: true,
       logPrint: (object) => getIt<Logger>().d(object),
-    ));
+    ),);
 
     // Add token interceptor
     dio.interceptors.add(InterceptorsWrapper(
@@ -144,7 +143,7 @@ Future<void> configureDependencies() async {
         }
         handler.next(error);
       },
-    ));
+    ),);
 
     return dio;
   });
@@ -220,10 +219,10 @@ Future<void> configureDependencies() async {
   _configurePositionsDependencies();
 
   // Router
-  getIt.registerLazySingleton<AppRouter>(() => AppRouter());
+  getIt.registerLazySingleton<AppRouter>(AppRouter.new);
 
   // Settings
-  getIt.registerLazySingleton<SettingsCubit>(() => SettingsCubit());
+  getIt.registerLazySingleton<SettingsCubit>(SettingsCubit.new);
 }
 
 void _configureDashboardDependencies() {

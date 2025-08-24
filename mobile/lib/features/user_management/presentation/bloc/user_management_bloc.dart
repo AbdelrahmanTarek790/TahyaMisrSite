@@ -40,7 +40,7 @@ class UserManagementBloc extends Bloc<UserManagementEvent, UserManagementState> 
         limit: event.limit,
         search: event.search,
         role: event.role,
-      ));
+      ),);
 
       result.fold(
         (failure) => emit(UserManagementError(message: failure.message)),
@@ -49,7 +49,7 @@ class UserManagementBloc extends Bloc<UserManagementEvent, UserManagementState> 
           totalUsers: response.total,
           currentPage: response.currentPage,
           totalPages: response.totalPages,
-        )),
+        ),),
       );
     } catch (e) {
       emit(UserManagementError(message: 'Unexpected error occurred: ${e.toString()}'));
@@ -102,7 +102,7 @@ class UserManagementBloc extends Bloc<UserManagementEvent, UserManagementState> 
       final result = await updateUser(UpdateUserParams(
         userId: event.userId,
         userData: event.userData,
-      ));
+      ),);
 
       result.fold(
         (failure) => emit(UserManagementError(message: failure.message)),

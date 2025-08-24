@@ -34,7 +34,7 @@ class PositionsBloc extends Bloc<PositionsEvent, PositionsState> {
       
       final result = await getPositionsUseCase(GetPositionsParams(
         governorate: event.governorate,
-      ));
+      ),);
 
       result.fold(
         (failure) => emit(PositionsError(message: failure.message)),
@@ -75,7 +75,7 @@ class PositionsBloc extends Bloc<PositionsEvent, PositionsState> {
       
       final result = await createPositionUseCase(CreatePositionParams(
         positionData: event.positionData,
-      ));
+      ),);
 
       result.fold(
         (failure) => emit(PositionsError(message: failure.message)),
@@ -112,7 +112,7 @@ class PositionsBloc extends Bloc<PositionsEvent, PositionsState> {
       final result = await updatePositionUseCase(UpdatePositionParams(
         id: event.positionId,
         positionData: event.positionData,
-      ));
+      ),);
 
       result.fold(
         (failure) => emit(PositionsError(message: failure.message)),
@@ -148,7 +148,7 @@ class PositionsBloc extends Bloc<PositionsEvent, PositionsState> {
       
       final result = await deletePositionUseCase(DeletePositionParams(
         id: event.positionId,
-      ));
+      ),);
 
       result.fold(
         (failure) => emit(PositionsError(message: failure.message)),

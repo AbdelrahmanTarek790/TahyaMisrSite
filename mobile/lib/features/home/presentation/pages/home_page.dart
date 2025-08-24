@@ -75,7 +75,7 @@ class HomeView extends StatelessWidget {
                   gradient: LinearGradient(
                     colors: [
                       Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.primary.withOpacity(0.7),
+                      Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -96,7 +96,7 @@ class HomeView extends StatelessWidget {
                     Text(
                       l10n.comprehensiveManagement,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Colors.white.withOpacity(0.9),
+                            color: Colors.white.withValues(alpha: 0.9),
                           ),
                     ),
                   ],
@@ -158,7 +158,7 @@ class HomeView extends StatelessWidget {
                 builder: (context, state) {
                   return state.when(
                     initial: () => const SizedBox.shrink(),
-                    loading: () => _buildLoadingGrid(),
+                    loading: _buildLoadingGrid,
                     loaded: (mediaList) => _buildMediaSection(context, mediaList.take(6).toList()),
                     error: (message) => _buildErrorCard(context, message),
                   );
@@ -254,7 +254,7 @@ class HomeView extends StatelessWidget {
                     errorBuilder: (context, error, stackTrace) => Container(
                       width: double.infinity,
                       height: 150,
-                      color: Theme.of(context).colorScheme.surfaceVariant,
+                      color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       child: const Icon(Icons.image_not_supported),
                     ),
                   ),
@@ -306,7 +306,7 @@ class HomeView extends StatelessWidget {
   }
 
   Widget _buildEventCard(BuildContext context, Event event) {
-    final l10n = AppLocalizations.of(context)!;
+    // final l10n = AppLocalizations.of(context)!;
     
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -398,7 +398,7 @@ class HomeView extends StatelessWidget {
             media.url,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => Container(
-              color: Theme.of(context).colorScheme.surfaceVariant,
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
               child: const Icon(Icons.image_not_supported),
             ),
           ),

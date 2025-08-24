@@ -2,7 +2,6 @@ import 'package:dartz/dartz.dart';
 import 'package:tahya_misr_app/features/auth/data/models/user_model.dart';
 import '../../../../core/error/failures.dart';
 import '../../../../core/usecases/usecase.dart';
-import '../entities/user.dart';
 import '../repositories/user_management_repository.dart';
 
 class CreateUserUseCase implements UseCase<UserModel, CreateUserParams> {

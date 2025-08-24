@@ -1,7 +1,6 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/usecases/usecase.dart';
 import '../../domain/usecases/get_news_detail_usecase.dart';
 import '../../domain/usecases/get_news_usecase.dart';
 import 'news_event.dart';
