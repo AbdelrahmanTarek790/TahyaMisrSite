@@ -9,7 +9,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'اتحاد شباب تحيا مصر';
+  String get appTitle => 'تحيا مصر';
 
   @override
   String get dashboard => 'لوحة التحكم';
@@ -36,7 +36,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get login => 'تسجيل الدخول';
 
   @override
-  String get register => 'إنشاء حساب';
+  String get register => 'التسجيل';
 
   @override
   String get logout => 'تسجيل الخروج';
@@ -247,189 +247,4 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get date => 'التاريخ';
-
-  @override
-  String get createNews => 'إنشاء خبر';
-
-  @override
-  String get titleRequired => 'العنوان مطلوب';
-
-  @override
-  String get excerpt => 'المقتطف';
-
-  @override
-  String get excerptRequired => 'المقتطف مطلوب';
-
-  @override
-  String get contentRequired => 'المحتوى مطلوب';
-
-  @override
-  String get imageUrl => 'رابط الصورة';
-
-  @override
-  String get imagePickerComingSoon => 'التقاط الصور قادم قريباً';
-
-  @override
-  String get invalidImageUrl => 'رابط صورة غير صالح';
-
-  @override
-  String get membershipNumber => 'رقم العضوية';
-
-  @override
-  String get nationalId => 'الرقم القومي';
-
-  @override
-  String get notChangeRole => 'غير قابل للتعديل';
-
-  @override
-  String get admin => 'مسؤول';
-
-  @override
-  String get student => 'طالب';
-
-  @override
-  String get volunteer => 'متطوع';
-
-  @override
-  String get saveChanges => 'حفظ التغييرات';
-
-  @override
-  List<String> get governorates => [
-    'القاهرة',
-    'الجيزة',
-    'الإسكندرية',
-    'الدقهلية',
-    'الشرقية',
-    'القليوبية',
-    'كفر الشيخ',
-    'الغربية',
-    'المنوفية',
-    'البحيرة',
-    'الإسماعيلية',
-    'بورسعيد',
-    'السويس',
-    'شمال سيناء',
-    'جنوب سيناء',
-    'دمياط',
-    'الفيوم',
-    'بني سويف',
-    'المنيا',
-    'أسيوط',
-    'سوهاج',
-    'قنا',
-    'الأقصر',
-    'أسوان',
-    'البحر الأحمر',
-    'الوادي الجديد',
-    'مطروح',
-  ];
-
-  @override
-  String get subtitleEditProfile => 'تحديث البيانات الشخصية والمعلومات';
-
-  @override
-  String get appSubTitle => 'جمهورية مصر العربية وزارة الشباب والرياضة';
-
-  @override
-  String get emailValidation => 'يرجى إدخال بريد إلكتروني صحيح';
-
-  @override
-  String get emailValidationEmpty => 'يرجى إدخال البريد الإلكتروني';
-
-  @override
-  String get password => 'كلمة المرور';
-
-  @override
-  String get notHaveAccount => ' ليس لديك حساب؟';
-
-  @override
-  String get passwordValidation => 'يجب أن تكون كلمة المرور 6 أحرف على الأقل';
-
-  @override
-  String get passwordValidationEmpty => 'يرجى إدخال كلمة المرور';
-
-  @override
-  String get welcomeTitle => 'مرحباً بك في اتحاد شباب تحيا مصر';
-
-  @override
-  String get registerTitle => 'تسجيل حساب جديد';
-
-  @override
-  String get registerSuccess => 'تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول';
-
-  @override
-  String get registerHeader => 'إنشاء حساب جديد';
-
-  @override
-  String get registerSubHeader => 'انضم إلى اتحاد شباب تحيا مصر';
-
-  @override
-  String get nameField => 'الاسم الكامل';
-  @override
-  String get nameErrorEmpty => 'يرجى إدخال الاسم الكامل';
-  @override
-  String get nameErrorShort => 'الاسم يجب أن يكون حرفين على الأقل';
-
-  @override
-  String get emailField => 'البريد الإلكتروني';
-  @override
-  String get emailErrorEmpty => 'يرجى إدخال البريد الإلكتروني';
-  @override
-  String get emailErrorInvalid => 'يرجى إدخال بريد إلكتروني صحيح';
-
-  @override
-  String get passwordField => 'كلمة المرور';
-  @override
-  String get passwordErrorEmpty => 'يرجى إدخال كلمة المرور';
-  @override
-  String get passwordErrorShort => 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
-
-  @override
-  String get confirmPasswordField => 'تأكيد كلمة المرور';
-  @override
-  String get confirmPasswordErrorEmpty => 'يرجى تأكيد كلمة المرور';
-  @override
-  String get confirmPasswordErrorMismatch => 'كلمة المرور غير متطابقة';
-
-  @override
-  String get phoneField => 'رقم الهاتف';
-  @override
-  String get phoneErrorInvalid => 'يرجى إدخال رقم هاتف صحيح';
-
-  @override
-  String get roleField => 'نوع العضوية';
-  @override
-  String get studentRole => 'طالب';
-  @override
-  String get volunteerRole => 'متطوع';
-
-  @override
-  String get governorateField => 'المحافظة';
-  @override
-  String get governorateErrorEmpty => 'يرجى اختيار المحافظة';
-
-  @override
-  String get universityField => 'الجامعة';
-  @override
-  String get universityErrorEmpty => 'يرجى إدخال اسم الجامعة';
-
-  @override
-  String get nationalIdField => 'الرقم القومي';
-  @override
-  String get nationalIdErrorInvalid => 'يرجى إدخال رقم قومي صحيح مكون من 14 رقم';
-  @override
-  String get nationalIdErrorLength => 'الرقم القومي يجب أن يكون مكون من 14 رقم';
-  @override
-  String get nationalIdErrorStart => 'الرقم القومي يجب أن يبدأ بـ 2 أو 3';
-
-  @override
-  String get membershipNumberField => 'رقم العضوية (اختياري)';
-
-  @override
-  String get registerButton => 'إنشاء الحساب';
-
-  @override
-  String get alreadyHaveAccount => 'لديك حساب بالفعل؟ ';
-  @override
-  String get loginButton => 'تسجيل الدخول';
 }

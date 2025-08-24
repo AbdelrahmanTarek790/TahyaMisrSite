@@ -95,10 +95,14 @@ class HomeView extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       l10n.comprehensiveManagement,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: Colors.white.withValues(alpha: 0.9),
                           ),
                     ),
+
+
                   ],
                 ),
               ).animate().fadeIn(duration: 500.ms).slideX(begin: -0.2),

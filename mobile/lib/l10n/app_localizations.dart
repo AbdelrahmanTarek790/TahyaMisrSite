@@ -98,175 +98,485 @@ abstract class AppLocalizations {
     Locale('en')
   ];
 
-  String get password;
-  String get passwordValidation;
-  String get passwordValidationEmpty;
-
+  /// No description provided for @appTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Tahya Misr'**
   String get appTitle;
 
-  String get appSubTitle;
-
-  String get welcomeTitle;
+  /// No description provided for @dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
   String get dashboard;
+
+  /// No description provided for @news.
+  ///
+  /// In en, this message translates to:
+  /// **'News'**
   String get news;
+
+  /// No description provided for @events.
+  ///
+  /// In en, this message translates to:
+  /// **'Events'**
   String get events;
+
+  /// No description provided for @media.
+  ///
+  /// In en, this message translates to:
+  /// **'Media'**
   String get media;
+
+  /// No description provided for @profile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
   String get profile;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
   String get settings;
+
+  /// No description provided for @home.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
   String get home;
+
+  /// No description provided for @login.
+  ///
+  /// In en, this message translates to:
+  /// **'Login'**
   String get login;
+
+  /// No description provided for @register.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
   String get register;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
   String get logout;
+
+  /// No description provided for @userManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'User Management'**
   String get userManagement;
+
+  /// No description provided for @contentManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Content Management'**
   String get contentManagement;
+
+  /// No description provided for @manageNews.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage News'**
   String get manageNews;
+
+  /// No description provided for @manageEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Events'**
   String get manageEvents;
+
+  /// No description provided for @manageMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Manage Media'**
   String get manageMedia;
+
+  /// No description provided for @welcomeAdmin.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Admin Dashboard'**
   String get welcomeAdmin;
+
+  /// No description provided for @comprehensiveManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Comprehensive management of Tahya Misr platform'**
   String get comprehensiveManagement;
+
+  /// No description provided for @generalStats.
+  ///
+  /// In en, this message translates to:
+  /// **'General Statistics'**
   String get generalStats;
+
+  /// No description provided for @totalUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Total Users'**
   String get totalUsers;
+
+  /// No description provided for @publishedNews.
+  ///
+  /// In en, this message translates to:
+  /// **'Published News'**
   String get publishedNews;
+
+  /// No description provided for @mediaFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Media Files'**
   String get mediaFiles;
+
+  /// No description provided for @activeUsers.
+  ///
+  /// In en, this message translates to:
+  /// **'Active Users'**
   String get activeUsers;
+
+  /// No description provided for @pendingEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending Events'**
   String get pendingEvents;
+
+  /// No description provided for @quickActions.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Actions'**
   String get quickActions;
+
+  /// No description provided for @sendNotification.
+  ///
+  /// In en, this message translates to:
+  /// **'Send Notification'**
   String get sendNotification;
+
+  /// No description provided for @recentActivity.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Activity'**
   String get recentActivity;
+
+  /// No description provided for @personalProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Profile'**
   String get personalProfile;
+
+  /// No description provided for @editProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Profile'**
   String get editProfile;
+
+  /// No description provided for @accountSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Account Settings'**
   String get accountSettings;
+
+  /// No description provided for @appPreferences.
+  ///
+  /// In en, this message translates to:
+  /// **'App Preferences'**
   String get appPreferences;
+
+  /// No description provided for @language.
+  ///
+  /// In en, this message translates to:
+  /// **'Language'**
   String get language;
+
+  /// No description provided for @theme.
+  ///
+  /// In en, this message translates to:
+  /// **'Theme'**
   String get theme;
+
+  /// No description provided for @lightTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
   String get lightTheme;
+
+  /// No description provided for @darkTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
   String get darkTheme;
+
+  /// No description provided for @systemTheme.
+  ///
+  /// In en, this message translates to:
+  /// **'System'**
   String get systemTheme;
+
+  /// No description provided for @arabic.
+  ///
+  /// In en, this message translates to:
+  /// **'العربية'**
   String get arabic;
+
+  /// No description provided for @english.
+  ///
+  /// In en, this message translates to:
+  /// **'English'**
   String get english;
+
+  /// No description provided for @name.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
   String get name;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
   String get email;
-  String get emailValidation;
-  String get emailValidationEmpty;
+
+  /// No description provided for @phone.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone'**
   String get phone;
+
+  /// No description provided for @university.
+  ///
+  /// In en, this message translates to:
+  /// **'University'**
   String get university;
+
+  /// No description provided for @governorate.
+  ///
+  /// In en, this message translates to:
+  /// **'Governorate'**
   String get governorate;
+
+  /// No description provided for @role.
+  ///
+  /// In en, this message translates to:
+  /// **'Role'**
   String get role;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
   String get save;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
   String get cancel;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
   String get delete;
+
+  /// No description provided for @edit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
   String get edit;
+
+  /// No description provided for @add.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
   String get add;
+
+  /// No description provided for @create.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
   String get create;
+
+  /// No description provided for @update.
+  ///
+  /// In en, this message translates to:
+  /// **'Update'**
   String get update;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
   String get confirm;
+
+  /// No description provided for @confirmLogout.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to logout?'**
   String get confirmLogout;
+
+  /// No description provided for @confirmDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to delete this item?'**
   String get confirmDelete;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
   String get success;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
   String get error;
+
+  /// No description provided for @loading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading...'**
   String get loading;
+
+  /// No description provided for @noData.
+  ///
+  /// In en, this message translates to:
+  /// **'No data available'**
   String get noData;
+
+  /// No description provided for @tryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Try Again'**
   String get tryAgain;
+
+  /// No description provided for @latestNews.
+  ///
+  /// In en, this message translates to:
+  /// **'Latest News'**
   String get latestNews;
+
+  /// No description provided for @upcomingEvents.
+  ///
+  /// In en, this message translates to:
+  /// **'Upcoming Events'**
   String get upcomingEvents;
+
+  /// No description provided for @recentMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Media'**
   String get recentMedia;
+
+  /// No description provided for @viewAll.
+  ///
+  /// In en, this message translates to:
+  /// **'View All'**
   String get viewAll;
+
+  /// No description provided for @readMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Read More'**
   String get readMore;
+
+  /// No description provided for @eventDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Date'**
   String get eventDate;
+
+  /// No description provided for @eventLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Event Location'**
   String get eventLocation;
+
+  /// No description provided for @description.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
   String get description;
+
+  /// No description provided for @title.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
   String get title;
+
+  /// No description provided for @content.
+  ///
+  /// In en, this message translates to:
+  /// **'Content'**
   String get content;
+
+  /// No description provided for @image.
+  ///
+  /// In en, this message translates to:
+  /// **'Image'**
   String get image;
+
+  /// No description provided for @author.
+  ///
+  /// In en, this message translates to:
+  /// **'Author'**
   String get author;
+
+  /// No description provided for @createdAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Created At'**
   String get createdAt;
+
+  /// No description provided for @updatedAt.
+  ///
+  /// In en, this message translates to:
+  /// **'Updated At'**
   String get updatedAt;
+
+  /// No description provided for @positionManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Position Management'**
   String get positionManagement;
+
+  /// No description provided for @createEvent.
+  ///
+  /// In en, this message translates to:
+  /// **'Create Event'**
   String get createEvent;
+
+  /// No description provided for @uploadMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload Media'**
   String get uploadMedia;
+
+  /// No description provided for @caption.
+  ///
+  /// In en, this message translates to:
+  /// **'Caption'**
   String get caption;
+
+  /// No description provided for @upload.
+  ///
+  /// In en, this message translates to:
+  /// **'Upload'**
   String get upload;
+
+  /// No description provided for @location.
+  ///
+  /// In en, this message translates to:
+  /// **'Location'**
   String get location;
+
+  /// No description provided for @date.
+  ///
+  /// In en, this message translates to:
+  /// **'Date'**
   String get date;
-
-  String get createNews ;
-
-  String get titleRequired ;
-
-  String get excerpt ;
-
-  String get excerptRequired;
-
-  String get contentRequired ;
-
-  String get imageUrl;
-
-  String get imagePickerComingSoon ;
-
-  String get invalidImageUrl ;
-
-  String get nationalId;
-  String get membershipNumber;
-
-  String get  notChangeRole;
-
-  String get admin ;
-  String get volunteer ;
-  String get student ;
-
-  String get saveChanges ;
-
-  List<String> get governorates ;
-
-  String get subtitleEditProfile ;
-
-  String get notHaveAccount ;
-
-  String get registerTitle;
-  String get registerSuccess;
-  String get registerHeader;
-  String get registerSubHeader;
-
-  String get nameField;
-  String get nameErrorEmpty;
-  String get nameErrorShort;
-
-  String get emailField;
-  String get emailErrorEmpty;
-  String get emailErrorInvalid;
-
-  String get passwordField;
-  String get passwordErrorEmpty;
-  String get passwordErrorShort;
-
-  String get confirmPasswordField;
-  String get confirmPasswordErrorEmpty;
-  String get confirmPasswordErrorMismatch;
-
-  String get phoneField;
-  String get phoneErrorInvalid;
-
-  String get roleField;
-  String get studentRole;
-  String get volunteerRole;
-
-  String get governorateField;
-  String get governorateErrorEmpty;
-
-  String get universityField;
-  String get universityErrorEmpty;
-
-  String get nationalIdField;
-  String get nationalIdErrorInvalid;
-  String get nationalIdErrorLength;
-  String get nationalIdErrorStart;
-
-  String get membershipNumberField;
-
-  String get registerButton;
-
-  String get alreadyHaveAccount;
-  String get loginButton;
 }
 
 class _AppLocalizationsDelegate

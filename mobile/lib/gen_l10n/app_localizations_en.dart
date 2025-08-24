@@ -56,8 +56,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get welcomeAdmin => 'Welcome to Admin Dashboard';
 
   @override
-  String get comprehensiveManagement =>
-      'Comprehensive management of Tahya Misr platform';
+  String get comprehensiveManagement =>"A youth organization affiliated with the Ministry of Youth and Sports, bringing together various youth trends under one umbrella. It seeks to address vital issues and challenges facing Egyptian society, especially the youth, based on a renewed youth vision to enhance national development and progress towards better horizons.";
+
 
   @override
   String get generalStats => 'General Statistics';
