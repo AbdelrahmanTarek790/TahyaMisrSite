@@ -97,15 +97,17 @@ class SettingsPage extends StatelessWidget {
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
+                                  const SizedBox(height: 4),
                                   Text(
                                     user.email,
                                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                                       color: Colors.white.withValues(alpha: 0.9),
                                     ),
                                   ),
+                                  const SizedBox(height: 8),
                                   Chip(
                                     label: Text(
-                                      _getRoleDisplayName(user.role),
+                                      _getRoleDisplayName(user.role,context),
                                       style: TextStyle(
                                         color: Theme.of(context).colorScheme.primary,
                                         fontWeight: FontWeight.w600,
@@ -133,7 +135,7 @@ class SettingsPage extends StatelessWidget {
                           _buildSettingsTile(
                             context,
                             l10n.editProfile,
-                            'تحديث البيانات الشخصية والمعلومات',
+                            l10n.subtitleEditProfile,
                             Icons.edit,
                             () {
                               Navigator.of(context).pop();
@@ -144,7 +146,7 @@ class SettingsPage extends StatelessWidget {
                               );
                             },
                           ),
-                          _buildSettingsTile(
+                      /*    _buildSettingsTile(
                             context,
                             'معلومات الحساب',
                             'عرض تفاصيل الحساب والإحصائيات',
@@ -152,7 +154,7 @@ class SettingsPage extends StatelessWidget {
                             () {
                               _showAccountInfoDialog(context, user);
                             },
-                          ),
+                          ),*/
                         ],
                       ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3, end: 0),
 
@@ -164,7 +166,7 @@ class SettingsPage extends StatelessWidget {
                         l10n.appPreferences,
                         Icons.settings,
                         [
-                          _buildSettingsTile(
+                        /*  _buildSettingsTile(
                             context,
                             'الإشعارات',
                             'إدارة إعدادات الإشعارات',
@@ -172,7 +174,7 @@ class SettingsPage extends StatelessWidget {
                             () {
                               _showNotificationSettings(context);
                             },
-                          ),
+                          ),*/
                           BlocBuilder<SettingsCubit, AppSettings>(
                             builder: (context, settings) {
                               return _buildSettingsTile(
@@ -324,13 +326,12 @@ class SettingsPage extends StatelessWidget {
                               fontWeight: FontWeight.w600,
                             ),
                           ),
-                          subtitle: const Text('الخروج من الحساب الحالي'),
                           trailing: Icon(
                             Icons.arrow_forward_ios,
                             size: 16,
                             color: Theme.of(context).colorScheme.error.withValues(alpha: 0.7),
                           ),
-                          onTap: () => _showLogoutDialog(context),
+                          onTap: () =>  context.read<AuthBloc>().add(const AuthEvent.logoutRequested()),
                         ),
                       ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3, end: 0),
 
@@ -439,45 +440,18 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  String _getRoleDisplayName(String role) {
+  String _getRoleDisplayName(String role,context) {
+    final l10n = AppLocalizations.of(context)!;
     switch (role.toLowerCase()) {
       case 'admin':
-        return 'مدير';
+        return l10n.admin;
       case 'volunteer':
-        return 'متطوع';
+        return l10n.volunteer;
       case 'student':
-        return 'طالب';
+        return l10n.student;
       default:
         return role;
     }
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-    
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.logout),
-        content: Text(l10n.confirmLogout),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.cancel),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              context.read<AuthBloc>().add(const AuthEvent.logoutRequested());
-            },
-            child: Text(
-              l10n.logout,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ),
-        ],
-      ),
-    );
   }
 
   void _showAccountInfoDialog(BuildContext context, user) {
@@ -494,7 +468,7 @@ class SettingsPage extends StatelessWidget {
             _buildInfoRow('رقم الهاتف:', user.phone ?? 'غير محدد'),
             _buildInfoRow('المحافظة:', user.governorate ?? 'غير محدد'),
             _buildInfoRow('الجامعة:', user.university ?? 'غير محدد'),
-            _buildInfoRow('الدور:', _getRoleDisplayName(user.role)),
+            _buildInfoRow('الدور:', _getRoleDisplayName(user.role,context)),
             _buildInfoRow('تاريخ الانضمام:', _formatDate(user.createdAt)),
           ],
         ),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../gen_l10n/app_localizations.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
@@ -22,19 +23,18 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late final TextEditingController _nameController;
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
-  late final TextEditingController _governorateController;
+  String? _selectedGovernorate;
   late final TextEditingController _universityController;
   late final TextEditingController _nationalIdController;
   late final TextEditingController _membershipNumberController ;
   bool _isLoading = false;
-
   @override
   void initState() {
     super.initState();
     _nameController = TextEditingController(text: widget.user.name);
     _emailController = TextEditingController(text: widget.user.email);
     _phoneController = TextEditingController(text: widget.user.phone ?? '');
-    _governorateController = TextEditingController(text: widget.user.governorate ?? '');
+    _selectedGovernorate = widget.user.governorate ?? '';
     _universityController = TextEditingController(text: widget.user.university ?? '');
     _nationalIdController = TextEditingController(text: widget.user.nationalId ?? '');
     _membershipNumberController = TextEditingController(text: widget.user.membershipNumber ?? '');
@@ -45,7 +45,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
-    _governorateController.dispose();
     _universityController.dispose();
     _nationalIdController.dispose();
     _membershipNumberController.dispose();
@@ -54,9 +53,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('تعديل الملف الشخصي'),
+        title: Text(l10n.editProfile),
         backgroundColor: Theme.of(context).colorScheme.surface,
         foregroundColor: Theme.of(context).colorScheme.onSurface,
         elevation: 0,
@@ -64,7 +64,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           TextButton(
             onPressed: _isLoading ? null : _saveProfile,
             child: Text(
-              'حفظ',
+              l10n.save,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.primary,
                 fontWeight: FontWeight.w600,
@@ -162,7 +162,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 // Name Field
                 _buildTextField(
                   controller: _nameController,
-                  label: 'الاسم',
+                  label: l10n.name,
                   icon: Icons.person_outline,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -177,7 +177,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 // Email Field
                 _buildTextField(
                   controller: _emailController,
-                  label: 'البريد الإلكتروني',
+                  label: l10n.email,
                   icon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
@@ -196,7 +196,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 // University Field
                 _buildTextField(
                   controller: _universityController,
-                  label: 'الجامعة',
+                  label: l10n.university,
                   icon: Icons.school_outlined,
                   validator: (value) => null, // Optional field
                 ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
@@ -206,7 +206,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 // Phone Field
                 _buildTextField(
                   controller: _phoneController,
-                  label: 'رقم الهاتف',
+                  label:l10n.phone,
                   icon: Icons.phone_outlined,
                   keyboardType: TextInputType.phone,
                   validator: (value) {
@@ -222,11 +222,29 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 const SizedBox(height: 16),
 
                 // Governorate Field
-                _buildTextField(
-                  controller: _governorateController,
-                  label: 'المحافظة',
-                  icon: Icons.location_on_outlined,
-                  validator: (value) => null, // Optional field
+                DropdownButtonFormField<String>(
+                  initialValue: _selectedGovernorate,
+                  decoration: const InputDecoration(
+                    labelText: 'المحافظة',
+                    prefixIcon: Icon(Icons.location_on_outlined),
+                  ),
+                  items: l10n.governorates.map((governorate) {
+                    return DropdownMenuItem(
+                      value: governorate,
+                      child: Text(governorate),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedGovernorate = value;
+                    });
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'يرجى اختيار المحافظة';
+                    }
+                    return null;
+                  },
                 ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
 
                 const SizedBox(height: 32),
@@ -234,7 +252,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 //National ID Field
                 _buildTextField(
                   controller: _nationalIdController,
-                  label: 'الرقم القومي',
+                  label: l10n.nationalId,
                   icon: Icons.badge_outlined,
                   validator: (value) {
                     if (value != null && value.isNotEmpty) {
@@ -253,7 +271,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 // Membership Number Field
                 _buildTextField(
                   controller: _membershipNumberController,
-                  label: 'رقم العضوية',
+                  label:l10n.membershipNumber,
                   icon: Icons.confirmation_number_outlined,
                   validator: (value) => null, // Optional field
                 ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
@@ -268,13 +286,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       Icons.admin_panel_settings_outlined,
                       color: Theme.of(context).colorScheme.primary,
                     ),
-                    title: const Text('الدور'),
+                    title:  Text(l10n.role),
                     subtitle: Text(
                       widget.user.role == 'admin'
-                          ? 'مدير'
+                          ? l10n.admin
                           : widget.user.role == 'volunteer'
-                              ? 'متطوع'
-                              : 'طالب',
+                              ? l10n.volunteer
+                              : l10n.student,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                       ),
@@ -286,7 +304,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        'غير قابل للتعديل',
+                        l10n.notChangeRole,
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 12,
@@ -314,9 +332,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text(
-                          'حفظ التغييرات',
-                          style: TextStyle(
+                      :  Text(
+                          l10n.saveChanges,
+                          style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
                           ),
@@ -383,8 +401,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
         data['phone'] = _phoneController.text.trim();
       }
 
-      if (_governorateController.text.trim().isNotEmpty) {
-        data['governorate'] = _governorateController.text.trim();
+      if (_selectedGovernorate!.isNotEmpty) {
+        data['governorate'] = _selectedGovernorate;
       }
 
       if (_universityController.text.trim().isNotEmpty) {

@@ -93,7 +93,15 @@ abstract class AppLocalizations {
     Locale('en'),
   ];
 
+  String get password;
+  String get passwordValidation;
+  String get passwordValidationEmpty;
+
   String get appTitle;
+
+  String get appSubTitle;
+
+  String get welcomeTitle;
   String get dashboard;
   String get news;
   String get events;
@@ -133,6 +141,8 @@ abstract class AppLocalizations {
   String get english;
   String get name;
   String get email;
+  String get emailValidation;
+  String get emailValidationEmpty;
   String get phone;
   String get university;
   String get governorate;
@@ -190,7 +200,68 @@ abstract class AppLocalizations {
 
   String get invalidImageUrl ;
 
+  String get nationalId;
+  String get membershipNumber;
 
+  String get  notChangeRole;
+
+  String get admin ;
+  String get volunteer ;
+  String get student ;
+
+  String get saveChanges ;
+
+   List<String> get governorates ;
+
+   String get subtitleEditProfile ;
+
+   String get notHaveAccount ;
+
+  String get registerTitle;
+  String get registerSuccess;
+  String get registerHeader;
+  String get registerSubHeader;
+
+  String get nameField;
+  String get nameErrorEmpty;
+  String get nameErrorShort;
+
+  String get emailField;
+  String get emailErrorEmpty;
+  String get emailErrorInvalid;
+
+  String get passwordField;
+  String get passwordErrorEmpty;
+  String get passwordErrorShort;
+
+  String get confirmPasswordField;
+  String get confirmPasswordErrorEmpty;
+  String get confirmPasswordErrorMismatch;
+
+  String get phoneField;
+  String get phoneErrorInvalid;
+
+  String get roleField;
+  String get studentRole;
+  String get volunteerRole;
+
+  String get governorateField;
+  String get governorateErrorEmpty;
+
+  String get universityField;
+  String get universityErrorEmpty;
+
+  String get nationalIdField;
+  String get nationalIdErrorInvalid;
+  String get nationalIdErrorLength;
+  String get nationalIdErrorStart;
+
+  String get membershipNumberField;
+
+  String get registerButton;
+
+  String get alreadyHaveAccount;
+  String get loginButton;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {

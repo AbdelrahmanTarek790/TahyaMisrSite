@@ -1,8 +1,11 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../gen_l10n/app_localizations.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import '../bloc/auth_event.dart';
@@ -22,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _confirmPasswordController = TextEditingController();
   final _phoneController = TextEditingController();
 
- final _nationalIdController = TextEditingController();
+  final _nationalIdController = TextEditingController();
   final _universityController = TextEditingController();
 
   final _membershipNumberController = TextEditingController();
@@ -75,6 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -91,7 +95,8 @@ class _RegisterPageState extends State<RegisterPage> {
             authenticated: (user, token) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول'),
+                  content:
+                      Text('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول'),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -100,7 +105,8 @@ class _RegisterPageState extends State<RegisterPage> {
             unauthenticated: () {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول'),
+                  content:
+                      Text('تم إنشاء الحساب بنجاح! يمكنك الآن تسجيل الدخول'),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -127,42 +133,52 @@ class _RegisterPageState extends State<RegisterPage> {
                   children: [
                     // Header
                     Text(
-                      'إنشاء حساب جديد',
-                      style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      l10n.registerTitle,
+                      style:
+                          Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                       textAlign: TextAlign.center,
                     ).animate().fadeIn().slideY(begin: -0.3, end: 0),
 
                     const SizedBox(height: 8),
 
                     Text(
-                      'انضم إلى اتحاد شباب تحيا مصر',
+                      l10n.registerHeader,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7),
-                      ),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .onSurface
+                                .withValues(alpha: 0.7),
+                          ),
                       textAlign: TextAlign.center,
-                    ).animate().fadeIn(delay: 200.ms).slideY(begin: -0.3, end: 0),
+                    )
+                        .animate()
+                        .fadeIn(delay: 200.ms)
+                        .slideY(begin: -0.3, end: 0),
 
                     const SizedBox(height: 32),
 
                     // Name Field
                     TextFormField(
                       controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'الاسم الكامل',
-                        prefixIcon: Icon(Icons.person_outlined),
+                      decoration: InputDecoration(
+                        labelText: l10n.nameField,
+                        prefixIcon: const Icon(Icons.person_outlined),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'يرجى إدخال الاسم الكامل';
+                          return l10n.nameErrorEmpty;
                         }
                         if (value.length < 2) {
-                          return 'الاسم يجب أن يكون حرفين على الأقل';
+                          return l10n.nameErrorShort;
                         }
                         return null;
                       },
-                    ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.3, end: 0),
+                    )
+                        .animate()
+                        .fadeIn(delay: 400.ms)
+                        .slideX(begin: -0.3, end: 0),
 
                     const SizedBox(height: 16),
 
@@ -170,20 +186,23 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'البريد الإلكتروني',
-                        prefixIcon: Icon(Icons.email_outlined),
+                      decoration: InputDecoration(
+                        labelText: l10n.emailField,
+                        prefixIcon: const Icon(Icons.email_outlined),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'يرجى إدخال البريد الإلكتروني';
+                          return l10n.emailErrorEmpty;
                         }
                         if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(value)) {
-                          return 'يرجى إدخال بريد إلكتروني صحيح';
+                          return l10n.emailErrorInvalid;
                         }
                         return null;
                       },
-                    ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
+                    )
+                        .animate()
+                        .fadeIn(delay: 600.ms)
+                        .slideX(begin: -0.3, end: 0),
 
                     const SizedBox(height: 16),
 
@@ -192,11 +211,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _passwordController,
                       obscureText: _obscurePassword,
                       decoration: InputDecoration(
-                        labelText: 'كلمة المرور',
+                        labelText: l10n.passwordField,
                         prefixIcon: const Icon(Icons.lock_outlined),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscurePassword ? Icons.visibility : Icons.visibility_off,
+                            _obscurePassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                           ),
                           onPressed: () {
                             setState(() {
@@ -207,14 +228,17 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'يرجى إدخال كلمة المرور';
+                          return l10n.passwordErrorEmpty;
                         }
                         if (value.length < 6) {
-                          return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                          return l10n.passwordErrorShort;
                         }
                         return null;
                       },
-                    ).animate().fadeIn(delay: 800.ms).slideX(begin: -0.3, end: 0),
+                    )
+                        .animate()
+                        .fadeIn(delay: 800.ms)
+                        .slideX(begin: -0.3, end: 0),
 
                     const SizedBox(height: 16),
 
@@ -223,29 +247,35 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _confirmPasswordController,
                       obscureText: _obscureConfirmPassword,
                       decoration: InputDecoration(
-                        labelText: 'تأكيد كلمة المرور',
+                        labelText: l10n.confirmPasswordField,
                         prefixIcon: const Icon(Icons.lock_outlined),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _obscureConfirmPassword ? Icons.visibility : Icons.visibility_off,
+                            _obscureConfirmPassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                           ),
                           onPressed: () {
                             setState(() {
-                              _obscureConfirmPassword = !_obscureConfirmPassword;
+                              _obscureConfirmPassword =
+                                  !_obscureConfirmPassword;
                             });
                           },
                         ),
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'يرجى تأكيد كلمة المرور';
+                          return l10n.confirmPasswordErrorEmpty;
                         }
                         if (value != _passwordController.text) {
-                          return 'كلمة المرور غير متطابقة';
+                          return l10n.confirmPasswordErrorMismatch;
                         }
                         return null;
                       },
-                    ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
+                    )
+                        .animate()
+                        .fadeIn(delay: 1000.ms)
+                        .slideX(begin: -0.3, end: 0),
 
                     const SizedBox(height: 16),
 
@@ -254,33 +284,38 @@ class _RegisterPageState extends State<RegisterPage> {
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
                       textDirection: TextDirection.ltr,
-                      decoration: const InputDecoration(
-                        labelText: 'رقم الهاتف',
-                        prefixIcon: Icon(Icons.phone_outlined),
+                      decoration: InputDecoration(
+                        labelText: l10n.phoneField,
+                        prefixIcon: const Icon(Icons.phone_outlined),
                       ),
                       validator: (value) {
                         if (value != null && value.isNotEmpty) {
                           if (!RegExp(r'^01[0125][0-9]{8}$').hasMatch(value)) {
-                            return 'يرجى إدخال رقم هاتف صحيح';
+                            return l10n.phoneErrorInvalid;
                           }
                         }
                         return null;
                       },
-                    ).animate().fadeIn(delay: 1200.ms).slideX(begin: -0.3, end: 0),
+                    )
+                        .animate()
+                        .fadeIn(delay: 1200.ms)
+                        .slideX(begin: -0.3, end: 0),
 
                     const SizedBox(height: 16),
 
                     // Role Selection
                     DropdownButtonFormField<String>(
                       initialValue: _selectedRole,
-                      decoration: const InputDecoration(
-                        labelText: 'نوع العضوية',
-                        prefixIcon: Icon(Icons.group_outlined),
+                      decoration: InputDecoration(
+                        labelText: l10n.roleField,
+                        prefixIcon: const Icon(Icons.group_outlined),
                       ),
                       items: _roles.map((role) {
                         return DropdownMenuItem(
                           value: role,
-                          child: Text(role == 'student' ? 'طالب' : 'متطوع'),
+                          child: Text(role == 'student'
+                              ? l10n.studentRole
+                              : l10n.volunteerRole),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -288,16 +323,19 @@ class _RegisterPageState extends State<RegisterPage> {
                           _selectedRole = value!;
                         });
                       },
-                    ).animate().fadeIn(delay: 1400.ms).slideX(begin: -0.3, end: 0),
+                    )
+                        .animate()
+                        .fadeIn(delay: 1400.ms)
+                        .slideX(begin: -0.3, end: 0),
 
                     const SizedBox(height: 16),
 
                     // Governorate Selection
                     DropdownButtonFormField<String>(
                       initialValue: _selectedGovernorate,
-                      decoration: const InputDecoration(
-                        labelText: 'المحافظة',
-                        prefixIcon: Icon(Icons.location_on_outlined),
+                      decoration: InputDecoration(
+                        labelText: l10n.governorateField,
+                        prefixIcon: const Icon(Icons.location_on_outlined),
                       ),
                       items: _governorates.map((governorate) {
                         return DropdownMenuItem(
@@ -312,11 +350,14 @@ class _RegisterPageState extends State<RegisterPage> {
                       },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'يرجى اختيار المحافظة';
+                          return l10n.governorateErrorEmpty;
                         }
                         return null;
                       },
-                    ).animate().fadeIn(delay: 1600.ms).slideX(begin: -0.3, end: 0),
+                    )
+                        .animate()
+                        .fadeIn(delay: 1600.ms)
+                        .slideX(begin: -0.3, end: 0),
 
                     const SizedBox(height: 32),
 
@@ -324,19 +365,22 @@ class _RegisterPageState extends State<RegisterPage> {
                     TextFormField(
                       controller: _universityController,
                       keyboardType: TextInputType.streetAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'الجامعة',
-                        prefixIcon: Icon(Icons.school_outlined),
+                      decoration: InputDecoration(
+                        labelText: l10n.universityField,
+                        prefixIcon: const Icon(Icons.school_outlined),
                       ),
                       validator: (value) {
                         if (value != null && value.isNotEmpty) {
-                          if(value.isEmpty) {
-                            return 'يرجى إدخال اسم الجامعة';
+                          if (value.isEmpty) {
+                            return l10n.universityErrorEmpty;
                           }
                         }
                         return null;
-                        },
-                    ).animate().fadeIn(delay: 1200.ms).slideX(begin: -0.3, end: 0),
+                      },
+                    )
+                        .animate()
+                        .fadeIn(delay: 1800.ms)
+                        .slideX(begin: -0.3, end: 0),
                     const SizedBox(height: 32),
 
                     //National ID Field
@@ -345,39 +389,46 @@ class _RegisterPageState extends State<RegisterPage> {
                       keyboardType: TextInputType.number,
                       maxLines: 1,
                       maxLength: 14,
-                      decoration: const InputDecoration(
-                        labelText: 'الرقم القومي ',
-                        prefixIcon: Icon(Icons.badge_outlined),
+                      decoration: InputDecoration(
+                        labelText: l10n.nationalIdField,
+                        prefixIcon: const Icon(Icons.badge_outlined),
                       ),
                       validator: (value) {
                         if (value != null && value.isNotEmpty) {
                           if (!RegExp(r'^[0-9]{14}$').hasMatch(value)) {
-                            return 'يرجى إدخال رقم قومي صحيح مكون من 14 رقم';
+                            return l10n.nationalIdErrorInvalid;
                           } else if (value.length != 14) {
-                            return 'الرقم القومي يجب أن يكون مكون من 14 رقم';
-                          } else if (!value.startsWith('2') && !value.startsWith('3')) {
-                            return 'الرقم القومي يجب أن يبدأ بـ 2 أو 3';
-                          }else if (value.isEmpty) {
-                            return 'يرجى إدخال الرقم القومي';
+                            return l10n.nationalIdErrorLength;
+                          } else if (!value.startsWith('2') &&
+                              !value.startsWith('3')) {
+                            return l10n.nationalIdErrorStart;
                           }
                         }
                         return null;
                       },
-                    ).animate().fadeIn(delay: 1200.ms).slideX(begin: -0.3, end: 0),
-                    const SizedBox(height: 32,),
+                    )
+                        .animate()
+                        .fadeIn(delay: 2000.ms)
+                        .slideX(begin: -0.3, end: 0),
+                    const SizedBox(
+                      height: 32,
+                    ),
                     // Membership number field
                     TextFormField(
                       controller: _membershipNumberController,
                       keyboardType: TextInputType.text,
-                      decoration: const InputDecoration(
-                        labelText: 'رقم العضوية (اختياري)',
-                        prefixIcon: Icon(Icons.confirmation_number_outlined),
+                      decoration:  InputDecoration(
+                        labelText: l10n.membershipNumberField,
+                        prefixIcon: const Icon(Icons.confirmation_number_outlined),
                       ),
                       validator: (value) {
                         // Membership number is optional, so no validation needed
                         return null;
                       },
-                    ).animate().fadeIn(delay: 1200.ms).slideX(begin: -0.3, end: 0),
+                    )
+                        .animate()
+                        .fadeIn(delay: 2200.ms)
+                        .slideX(begin: -0.3, end: 0),
 
                     const SizedBox(height: 32),
                     // Register Button
@@ -389,7 +440,8 @@ class _RegisterPageState extends State<RegisterPage> {
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                        foregroundColor:
+                            Theme.of(context).colorScheme.onPrimary,
                       ),
                       child: state.maybeWhen(
                         loading: () => const SizedBox(
@@ -397,12 +449,16 @@ class _RegisterPageState extends State<RegisterPage> {
                           width: 20,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         ),
-                        orElse: () => const Text(
-                          'إنشاء الحساب',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        orElse: () =>  Text(
+                          l10n.registerButton,
+                          style: const TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w600),
                         ),
                       ),
-                    ).animate().fadeIn(delay: 1800.ms).slideY(begin: 0.3, end: 0),
+                    )
+                        .animate()
+                        .fadeIn(delay: 2400.ms)
+                        .slideY(begin: 0.3, end: 0),
 
                     const SizedBox(height: 24),
 
@@ -411,13 +467,13 @@ class _RegisterPageState extends State<RegisterPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'لديك حساب بالفعل؟ ',
+                    l10n.alreadyHaveAccount,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         TextButton(
                           onPressed: () => context.go('/login'),
                           child: Text(
-                            'تسجيل الدخول',
+                            l10n.loginButton,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
                               fontWeight: FontWeight.w600,
@@ -425,7 +481,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                       ],
-                    ).animate().fadeIn(delay: 2000.ms),
+                    ).animate().fadeIn(delay: 2800.ms),
                   ],
                 ),
               ),
@@ -439,18 +495,19 @@ class _RegisterPageState extends State<RegisterPage> {
   void _handleRegister() {
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
-        AuthEvent.registerRequested(
-          email: _emailController.text.trim(),
-          password: _passwordController.text,
-          name: _nameController.text.trim(),
-          governorate: _selectedGovernorate!,
-          phone: _phoneController.text.trim(),
-          university: _universityController.text,
-          nationalId: _nationalIdController.text,
-          // position: _selectedRole,
-          membershipNumber: _membershipNumberController.text,  // Membership number field is omitted in the form
-        ),
-      );
+            AuthEvent.registerRequested(
+              email: _emailController.text.trim(),
+              password: _passwordController.text,
+              name: _nameController.text.trim(),
+              governorate: _selectedGovernorate!,
+              phone: _phoneController.text.trim(),
+              university: _universityController.text,
+              nationalId: _nationalIdController.text,
+              // position: _selectedRole,
+              membershipNumber: _membershipNumberController
+                  .text, // Membership number field is omitted in the form
+            ),
+          );
     }
   }
 }

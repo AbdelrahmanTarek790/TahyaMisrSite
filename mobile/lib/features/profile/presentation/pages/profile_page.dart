@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../gen_l10n/app_localizations.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/presentation/bloc/auth_event.dart';
@@ -13,9 +14,10 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('الملف الشخصي'),
+        title:  Text(l10n.profile),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -112,7 +114,7 @@ class ProfilePage extends StatelessWidget {
                   // User Info Cards
                   _buildInfoCard(
                     context,
-                    'المحافظة',
+                    l10n.governorate,
                     user.governorate ?? 'غير محدد',
                     Icons.location_on,
                   ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3, end: 0),
@@ -121,7 +123,7 @@ class ProfilePage extends StatelessWidget {
 
                   _buildInfoCard(
                     context,
-                    'رقم الهاتف',
+                    l10n.phone,
                     user.phone ?? 'غير محدد',
                     Icons.phone,
                   ).animate().fadeIn(delay: 400.ms).slideX(begin: -0.3, end: 0),
@@ -130,7 +132,7 @@ class ProfilePage extends StatelessWidget {
 
                   _buildInfoCard(
                     context,
-                    'الجامعة',
+                    l10n.university,
                     user.university ?? 'غير محدد',
                     Icons.school,
                   ).animate().fadeIn(delay: 500.ms).slideX(begin: -0.3, end: 0),
@@ -139,7 +141,7 @@ class ProfilePage extends StatelessWidget {
 
                   _buildInfoCard(
                     context,
-                    'تاريخ الانضمام',
+                    l10n.createdAt,
                     _formatDate(user.createdAt),
                     Icons.calendar_today,
                   ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
@@ -148,7 +150,7 @@ class ProfilePage extends StatelessWidget {
 
                   _buildInfoCard(
                     context,
-                    'الرقم القومي',
+                    l10n.nationalId,
                     user.nationalId ?? 'غير محدد',
                     Icons.badge,
                   ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
@@ -158,7 +160,7 @@ class ProfilePage extends StatelessWidget {
 
                   _buildInfoCard(
                     context,
-                    'رقم العضوية ',
+                    l10n.membershipNumber,
                     user.membershipNumber ?? 'غير محدد',
                     Icons.card_membership,
                   ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
@@ -169,7 +171,7 @@ class ProfilePage extends StatelessWidget {
                     children: [
                       _buildActionButton(
                         context,
-                        'تعديل الملف الشخصي',
+                        l10n.editProfile,
                         Icons.edit,
                         () {
                           Navigator.of(context).push(
@@ -184,7 +186,7 @@ class ProfilePage extends StatelessWidget {
 
                       _buildActionButton(
                         context,
-                        'الإعدادات',
+                        l10n.settings,
                         Icons.settings,
                         () {
                           context.push('/profile/settings');
@@ -195,9 +197,9 @@ class ProfilePage extends StatelessWidget {
 
                       _buildActionButton(
                         context,
-                        'تسجيل الخروج',
+                        l10n.logout,
                         Icons.logout,
-                        () => _showLogoutDialog(context),
+                        () => context.read<AuthBloc>().add(const AuthEvent.logoutRequested()),
                         isDestructive: true,
                       ).animate().fadeIn(delay: 1200.ms).slideY(begin: 0.3, end: 0),
                     ],
@@ -294,32 +296,6 @@ class ProfilePage extends StatelessWidget {
           color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
         ),
         onTap: onTap,
-      ),
-    );
-  }
-
-  void _showLogoutDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('تسجيل الخروج'),
-        content: const Text('هل أنت متأكد من رغبتك في تسجيل الخروج؟'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('إلغاء'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              context.read<AuthBloc>().add(const AuthEvent.logoutRequested());
-            },
-            child: Text(
-              'تسجيل الخروج',
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
-          ),
-        ],
       ),
     );
   }

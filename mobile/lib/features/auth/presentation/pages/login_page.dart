@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../gen_l10n/app_localizations.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import '../bloc/auth_event.dart';
@@ -42,6 +43,7 @@ class _LoginPageState extends State<LoginPage> {
         );
       },
       builder: (context, state) {
+        final l10n = AppLocalizations.of(context)!;
         return SafeArea(
           child: Scaffold(
             body: SingleChildScrollView(
@@ -70,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
                         ).animate().scale(duration: 800.ms).fadeIn(),
                         const SizedBox(height: 24),
                         Text(
-                          'اتحاد شباب تحيا مصر',
+                          l10n.appTitle,
                           style: Theme.of(context)
                               .textTheme
                               .displayMedium
@@ -84,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                             .slideY(begin: 0.3, end: 0),
                         const SizedBox(height: 8),
                         Text(
-                          'جمهورية مصر العربية وزارة الشباب والرياضة',
+                        l10n.appSubTitle,
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge
@@ -108,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
-                          'تسجيل الدخول',
+                          l10n.login,
                           style: Theme.of(context)
                               .textTheme
                               .headlineMedium
@@ -127,17 +129,17 @@ class _LoginPageState extends State<LoginPage> {
                         TextFormField(
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
-                          decoration: const InputDecoration(
-                            labelText: 'البريد الإلكتروني',
-                            prefixIcon: Icon(Icons.email_outlined),
+                          decoration:  InputDecoration(
+                            labelText: l10n.email,
+                            prefixIcon: const Icon(Icons.email_outlined),
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'يرجى إدخال البريد الإلكتروني';
+                              return l10n.emailValidationEmpty;
                             }
                             if (!RegExp(r'^[^@]+@[^@]+\.[^@]+')
                                 .hasMatch(value)) {
-                              return 'يرجى إدخال بريد إلكتروني صحيح';
+                              return l10n.emailValidation;
                             }
                             return null;
                           },
@@ -153,7 +155,7 @@ class _LoginPageState extends State<LoginPage> {
                           controller: _passwordController,
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
-                            labelText: 'كلمة المرور',
+                            labelText: l10n.password,
                             prefixIcon: const Icon(Icons.lock_outlined),
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -170,10 +172,10 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'يرجى إدخال كلمة المرور';
+                              return l10n.passwordValidationEmpty;
                             }
                             if (value.length < 6) {
-                              return 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+                              return l10n.passwordValidation;
                             }
                             return null;
                           },
@@ -204,9 +206,9 @@ class _LoginPageState extends State<LoginPage> {
                               child:
                                   CircularProgressIndicator(strokeWidth: 2),
                             ),
-                            orElse: () => const Text(
-                              'تسجيل الدخول',
-                              style: TextStyle(
+                            orElse: () =>  Text(
+                              l10n.login,
+                              style: const TextStyle(
                                   fontSize: 16, fontWeight: FontWeight.w600,),
                             ),
                           ),
@@ -222,13 +224,13 @@ class _LoginPageState extends State<LoginPage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'ليس لديك حساب؟ ',
+                              l10n.notHaveAccount,
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             TextButton(
                               onPressed: () => context.go('/register'),
                               child: Text(
-                                'سجل الآن',
+                                l10n.register,
                                 style: TextStyle(
                                   color:
                                       Theme.of(context).colorScheme.primary,

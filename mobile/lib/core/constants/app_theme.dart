@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 class AppTheme {
   // Brand Colors
-  static const Color primaryColor = Color(0xFFF9BC27);     // Gold
-  static const Color secondaryColor = Color(0xFFBE232B);   // Red
+  static const Color primaryColor = /*Color(0xFFF9BC27)*/ Color(0xFFF2C94C);     // Gold
+  static const Color secondaryColor = /*Color(0xFFBE232B)*/ Color(0xFFFFF9E6);   // Red
   static const Color background = Color(0xFFFFFFF3);  // Off White
-  static const Color text = Color(0xFF1C1B18);        // Black
+  static const Color text = Colors.black;        // Black
 
   static const Color lightGold = Color(0xFFE6C262);
   static const Color beige = Color(0xFFFAECB2); // Yellow
