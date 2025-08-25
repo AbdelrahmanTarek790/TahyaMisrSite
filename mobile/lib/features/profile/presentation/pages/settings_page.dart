@@ -454,7 +454,7 @@ class SettingsPage extends StatelessWidget {
     }
   }
 
-  void _showAccountInfoDialog(BuildContext context, user) {
+/*  void _showAccountInfoDialog(BuildContext context, user) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -480,9 +480,9 @@ class SettingsPage extends StatelessWidget {
         ],
       ),
     );
-  }
+  }*/
 
-  Widget _buildInfoRow(String label, String value) {
+/*  Widget _buildInfoRow(String label, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: Row(
@@ -499,9 +499,9 @@ class SettingsPage extends StatelessWidget {
         ],
       ),
     );
-  }
+  }*/
 
-  void _showNotificationSettings(BuildContext context) {
+/*  void _showNotificationSettings(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -515,7 +515,7 @@ class SettingsPage extends StatelessWidget {
         ],
       ),
     );
-  }
+  }*/
 
 
   void _showFAQ(BuildContext context) {
@@ -604,9 +604,9 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
+/*  String _formatDate(DateTime date) {
     return '${date.day}/${date.month}/${date.year}';
-  }
+  }*/
 
 
   void showGlassBottomSheet({

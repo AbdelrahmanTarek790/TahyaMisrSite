@@ -1,11 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../gen_l10n/app_localizations.dart';
+import '../../../profile/presentation/pages/edit_profile_page.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 import '../bloc/auth_event.dart';
@@ -28,7 +27,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _nationalIdController = TextEditingController();
   final _universityController = TextEditingController();
 
-  final _membershipNumberController = TextEditingController();
+  // final _membershipNumberController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
@@ -36,35 +35,50 @@ class _RegisterPageState extends State<RegisterPage> {
   String? _selectedGovernorate;
 
   final List<String> _roles = ['student', 'volunteer'];
-  final List<String> _governorates = [
-    'القاهرة',
-    'الجيزة',
-    'الإسكندرية',
-    'الدقهلية',
-    'الشرقية',
-    'القليوبية',
-    'كفر الشيخ',
-    'الغربية',
-    'المنوفية',
-    'البحيرة',
-    'الإسماعيلية',
-    'بورسعيد',
-    'السويس',
-    'شمال سيناء',
-    'جنوب سيناء',
-    'دمياط',
-    'الفيوم',
-    'بني سويف',
-    'المنيا',
-    'أسيوط',
-    'سوهاج',
-    'قنا',
-    'الأقصر',
-    'أسوان',
-    'البحر الأحمر',
-    'الوادي الجديد',
-    'مطروح',
+  final List<Governorate> governoratesList = [
+    Governorate(id: 'cairo', nameAr: 'القاهرة', nameEn: 'Cairo'),
+    Governorate(id: 'giza', nameAr: 'الجيزة', nameEn: 'Giza'),
+    Governorate(id: 'alexandria', nameAr: 'الإسكندرية', nameEn: 'Alexandria'),
+    Governorate(id: 'dakahlia', nameAr: 'الدقهلية', nameEn: 'Dakahlia'),
+    Governorate(id: 'sharqia', nameAr: 'الشرقية', nameEn: 'Sharqia'),
+    Governorate(id: 'qalyubia', nameAr: 'القليوبية', nameEn: 'Qalyubia'),
+    Governorate(id: 'kafr_el_sheikh', nameAr: 'كفر الشيخ', nameEn: 'Kafr El Sheikh'),
+    Governorate(id: 'gharbia', nameAr: 'الغربية', nameEn: 'Gharbia'),
+    Governorate(id: 'monufia', nameAr: 'المنوفية', nameEn: 'Monufia'),
+    Governorate(id: 'beheira', nameAr: 'البحيرة', nameEn: 'Beheira'),
+    Governorate(id: 'ismailia', nameAr: 'الإسماعيلية', nameEn: 'Ismailia'),
+    Governorate(id: 'portsaid', nameAr: 'بورسعيد', nameEn: 'Port Said'),
+    Governorate(id: 'suez', nameAr: 'السويس', nameEn: 'Suez'),
+    Governorate(id: 'north_sinai', nameAr: 'شمال سيناء', nameEn: 'North Sinai'),
+    Governorate(id: 'south_sinai', nameAr: 'جنوب سيناء', nameEn: 'South Sinai'),
+    Governorate(id: 'fayoum', nameAr: 'الفيوم', nameEn: 'Fayoum'),
+    Governorate(id: 'beni_suef', nameAr: 'بني سويف', nameEn: 'Beni Suef'),
+    Governorate(id: 'minya', nameAr: 'المنيا', nameEn: 'Minya'),
+    Governorate(id: 'asyut', nameAr: 'أسيوط', nameEn: 'Asyut'),
+    Governorate(id: 'sohag', nameAr: 'سوهاج', nameEn: 'Sohag'),
+    Governorate(id: 'qena', nameAr: 'قنا', nameEn: 'Qena'),
+    Governorate(id: 'luxor', nameAr: 'الأقصر', nameEn: 'Luxor'),
+    Governorate(id: 'aswan', nameAr: 'أسوان', nameEn: 'Aswan'),
+    Governorate(id: 'red_sea', nameAr: 'البحر الأحمر', nameEn: 'Red Sea'),
+    Governorate(id: 'new_valley', nameAr: 'الوادي الجديد', nameEn: 'New Valley'),
+    Governorate(id: 'matrouh', nameAr: 'مطروح', nameEn: 'Matrouh'),
   ];
+
+  String mapNameToId(String name) {
+    final gov = governoratesList.firstWhere(
+          (g) => g.nameAr == name || g.nameEn == name,
+      orElse: () => Governorate(id: '', nameAr: '', nameEn: ''),
+    );
+    return gov.id;
+  }
+
+  String mapIdToNameAr(String id, String locale) {
+    final gov = governoratesList.firstWhere(
+          (g) => g.id == id,
+      orElse: () => Governorate(id: '', nameAr: '', nameEn: ''),
+    );
+    return  locale == 'ar' ?  gov.nameAr : gov.nameEn;
+  }
 
   @override
   void dispose() {
@@ -315,7 +329,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           value: role,
                           child: Text(role == 'student'
                               ? l10n.studentRole
-                              : l10n.volunteerRole),
+                              : l10n.volunteerRole,),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -337,10 +351,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         labelText: l10n.governorateField,
                         prefixIcon: const Icon(Icons.location_on_outlined),
                       ),
-                      items: _governorates.map((governorate) {
+                      items: governoratesList.map((gov) {
                         return DropdownMenuItem(
-                          value: governorate,
-                          child: Text(governorate),
+                          value: gov.id,
+                          child: Text(
+                            AppLocalizations.of(context)!.localeName == 'ar'
+                                ? gov.nameAr
+                                : gov.nameEn,
+                          ),
                         );
                       }).toList(),
                       onChanged: (value) {
@@ -413,7 +431,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(
                       height: 32,
                     ),
-                    // Membership number field
+/*                    // Membership number field
                     TextFormField(
                       controller: _membershipNumberController,
                       keyboardType: TextInputType.text,
@@ -430,7 +448,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         .fadeIn(delay: 2200.ms)
                         .slideX(begin: -0.3, end: 0),
 
-                    const SizedBox(height: 32),
+                    const SizedBox(height: 32),*/
                     // Register Button
                     ElevatedButton(
                       onPressed: state.maybeWhen(
@@ -452,7 +470,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         orElse: () =>  Text(
                           l10n.registerButton,
                           style: const TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.w600),
+                              fontSize: 16, fontWeight: FontWeight.w600,),
                         ),
                       ),
                     )
@@ -499,13 +517,12 @@ class _RegisterPageState extends State<RegisterPage> {
               email: _emailController.text.trim(),
               password: _passwordController.text,
               name: _nameController.text.trim(),
-              governorate: _selectedGovernorate!,
+              governorate: mapIdToNameAr(_selectedGovernorate!, AppLocalizations.of(context)!.localeName),
               phone: _phoneController.text.trim(),
               university: _universityController.text,
               nationalId: _nationalIdController.text,
+              membershipNumber: '',
               // position: _selectedRole,
-              membershipNumber: _membershipNumberController
-                  .text, // Membership number field is omitted in the form
             ),
           );
     }

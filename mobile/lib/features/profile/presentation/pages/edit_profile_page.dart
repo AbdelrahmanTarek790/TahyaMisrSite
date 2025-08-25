@@ -24,20 +24,67 @@ class _EditProfilePageState extends State<EditProfilePage> {
   late final TextEditingController _emailController;
   late final TextEditingController _phoneController;
   String? _selectedGovernorate;
+  final List<Governorate> governoratesList = [
+    Governorate(id: 'cairo', nameAr: 'القاهرة', nameEn: 'Cairo'),
+    Governorate(id: 'giza', nameAr: 'الجيزة', nameEn: 'Giza'),
+    Governorate(id: 'alexandria', nameAr: 'الإسكندرية', nameEn: 'Alexandria'),
+    Governorate(id: 'dakahlia', nameAr: 'الدقهلية', nameEn: 'Dakahlia'),
+    Governorate(id: 'sharqia', nameAr: 'الشرقية', nameEn: 'Sharqia'),
+    Governorate(id: 'qalyubia', nameAr: 'القليوبية', nameEn: 'Qalyubia'),
+    Governorate(id: 'kafr_el_sheikh', nameAr: 'كفر الشيخ', nameEn: 'Kafr El Sheikh'),
+    Governorate(id: 'gharbia', nameAr: 'الغربية', nameEn: 'Gharbia'),
+    Governorate(id: 'monufia', nameAr: 'المنوفية', nameEn: 'Monufia'),
+    Governorate(id: 'beheira', nameAr: 'البحيرة', nameEn: 'Beheira'),
+    Governorate(id: 'ismailia', nameAr: 'الإسماعيلية', nameEn: 'Ismailia'),
+    Governorate(id: 'portsaid', nameAr: 'بورسعيد', nameEn: 'Port Said'),
+    Governorate(id: 'suez', nameAr: 'السويس', nameEn: 'Suez'),
+    Governorate(id: 'north_sinai', nameAr: 'شمال سيناء', nameEn: 'North Sinai'),
+    Governorate(id: 'south_sinai', nameAr: 'جنوب سيناء', nameEn: 'South Sinai'),
+    Governorate(id: 'fayoum', nameAr: 'الفيوم', nameEn: 'Fayoum'),
+    Governorate(id: 'beni_suef', nameAr: 'بني سويف', nameEn: 'Beni Suef'),
+    Governorate(id: 'minya', nameAr: 'المنيا', nameEn: 'Minya'),
+    Governorate(id: 'asyut', nameAr: 'أسيوط', nameEn: 'Asyut'),
+    Governorate(id: 'sohag', nameAr: 'سوهاج', nameEn: 'Sohag'),
+    Governorate(id: 'qena', nameAr: 'قنا', nameEn: 'Qena'),
+    Governorate(id: 'luxor', nameAr: 'الأقصر', nameEn: 'Luxor'),
+    Governorate(id: 'aswan', nameAr: 'أسوان', nameEn: 'Aswan'),
+    Governorate(id: 'red_sea', nameAr: 'البحر الأحمر', nameEn: 'Red Sea'),
+    Governorate(id: 'new_valley', nameAr: 'الوادي الجديد', nameEn: 'New Valley'),
+    Governorate(id: 'matrouh', nameAr: 'مطروح', nameEn: 'Matrouh'),
+  ];
   late final TextEditingController _universityController;
   late final TextEditingController _nationalIdController;
-  late final TextEditingController _membershipNumberController ;
+  // late final TextEditingController _membershipNumberController ;
   bool _isLoading = false;
+
+  String mapNameToId(String name) {
+    final gov = governoratesList.firstWhere(
+          (g) => g.nameAr == name || g.nameEn == name,
+      orElse: () => Governorate(id: '', nameAr: '', nameEn: ''),
+    );
+    return gov.id;
+  }
+
+  String mapIdToNameAr(String id, String locale) {
+    final gov = governoratesList.firstWhere(
+          (g) => g.id == id,
+      orElse: () => Governorate(id: '', nameAr: '', nameEn: ''),
+    );
+    return  locale == 'ar' ?  gov.nameAr : gov.nameEn;
+  }
+
   @override
   void initState() {
     super.initState();
+
+   final nameToId =  mapNameToId(widget.user.governorate ?? '');
     _nameController = TextEditingController(text: widget.user.name);
     _emailController = TextEditingController(text: widget.user.email);
     _phoneController = TextEditingController(text: widget.user.phone ?? '');
-    _selectedGovernorate = widget.user.governorate ?? '';
+    _selectedGovernorate =nameToId;
     _universityController = TextEditingController(text: widget.user.university ?? '');
     _nationalIdController = TextEditingController(text: widget.user.nationalId ?? '');
-    _membershipNumberController = TextEditingController(text: widget.user.membershipNumber ?? '');
+    // _membershipNumberController = TextEditingController(text: widget.user.membershipNumber ?? '');
   }
 
   @override
@@ -47,7 +94,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _phoneController.dispose();
     _universityController.dispose();
     _nationalIdController.dispose();
-    _membershipNumberController.dispose();
+    // _membershipNumberController.dispose();
     super.dispose();
   }
 
@@ -228,15 +275,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     labelText: 'المحافظة',
                     prefixIcon: Icon(Icons.location_on_outlined),
                   ),
-                  items: l10n.governorates.map((governorate) {
-                    return DropdownMenuItem(
-                      value: governorate,
-                      child: Text(governorate),
+                  items: governoratesList.map((gov) {
+                    return DropdownMenuItem<String>(
+                      value: gov.id,
+                      child: Text(
+                        AppLocalizations.of(context)!.localeName == 'ar'
+                            ? gov.nameAr
+                            : gov.nameEn,
+                      ),
                     );
                   }).toList(),
                   onChanged: (value) {
                     setState(() {
+                      print(value);
                       _selectedGovernorate = value;
+
                     });
                   },
                   validator: (value) {
@@ -267,7 +320,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
 
                 const SizedBox(height: 32),
-
+/*
                 // Membership Number Field
                 _buildTextField(
                   controller: _membershipNumberController,
@@ -276,7 +329,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   validator: (value) => null, // Optional field
                 ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 32),*/
 
 
                 // Role Display (Read-only)
@@ -402,7 +455,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
 
       if (_selectedGovernorate!.isNotEmpty) {
-        data['governorate'] = _selectedGovernorate;
+        data['governorate'] = mapIdToNameAr(_selectedGovernorate!, AppLocalizations.of(context)!.localeName);
       }
 
       if (_universityController.text.trim().isNotEmpty) {
@@ -412,11 +465,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
       if (_nationalIdController.text.trim().isNotEmpty) {
         data['nationalId'] = _nationalIdController.text.trim();
       }
-      if (_membershipNumberController.text.trim().isNotEmpty) {
+     /* if (_membershipNumberController.text.trim().isNotEmpty) {
         data['membershipNumber'] = _membershipNumberController.text.trim();
-      }
+      }*/
 
       context.read<AuthBloc>().add(AuthEvent.updateProfile(data: data));
     }
   }
 }
+
+class Governorate {
+  final String id;
+  final String nameAr;
+  final String nameEn;
+
+  Governorate({required this.id, required this.nameAr, required this.nameEn});
+}
+
