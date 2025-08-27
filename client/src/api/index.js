@@ -118,4 +118,13 @@ export const notificationsAPI = {
     sendByGovernorate: (data) => api.post("/notifications/governorate", data),
 }
 
+// Timeline API
+export const timelineAPI = {
+    getAll: (params) => api.get("/timeline", { params }),
+    getById: (id) => api.get(`/timeline/${id}`),
+    create: (timelineData) => api.post("/timeline", timelineData),
+    update: (id, timelineData) => api.put(`/timeline/${id}`, timelineData),
+    delete: (id) => api.delete(`/timeline/${id}`),
+}
+
 export default api

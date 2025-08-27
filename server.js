@@ -21,6 +21,7 @@ const newsRoutes = require('./routes/news');
 const eventRoutes = require('./routes/events');
 const mediaRoutes = require('./routes/media');
 const notificationRoutes = require('./routes/notifications');
+const timelineRoutes = require('./routes/timeline');
 
 // Security middleware
 app.use(helmet());
@@ -59,6 +60,7 @@ app.use('/api/v1/news', newsRoutes);
 app.use('/api/v1/events', eventRoutes);
 app.use('/api/v1/media', mediaRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
+app.use('/api/v1/timeline', timelineRoutes);
 
 // 404 handler
 app.use('*', (req, res) => {
