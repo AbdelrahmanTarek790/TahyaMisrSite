@@ -1,13 +1,11 @@
 import React, { useState } from "react"
 // import { Sidebar } from "./Sidebar"
 // import { Header } from "./Header"
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from "../../context/AuthContext"
 import { Navigate } from "react-router-dom"
 import { SidebarInset, SidebarProvider } from "../ui/sidebar"
 import { AppSidebar } from "./AppSidebar"
-import { Header } from "./Header";
-
-
+import { Header } from "./Header"
 
 export function DashboardLayout({ children }) {
     const { isAuthenticated, loading } = useAuth()
@@ -27,12 +25,10 @@ export function DashboardLayout({ children }) {
 
     return (
         <SidebarProvider
-            style={
-                {
-                    "--sidebar-width": "calc(var(--spacing) * 72)",
-                    "--header-height": "calc(var(--spacing) * 12)",
-                } 
-            }
+            style={{
+                "--sidebar-width": "calc(var(--spacing) * 72)",
+                "--header-height": "calc(var(--spacing) * 12)",
+            }}
         >
             <AppSidebar variant="inset" />
 

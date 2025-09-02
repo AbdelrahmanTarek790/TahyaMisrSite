@@ -1,6 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react"
+import Logo from "@/assets/Logo.png"
 export default function PublicPagesFooter() {
     const socialLinks = [
         { icon: Facebook, href: "#", label: "Facebook" },
@@ -10,46 +11,45 @@ export default function PublicPagesFooter() {
     ]
 
     const footerLinks = {
-        "Quick Links": [
-            { name: "About Us", href: "#about" },
-            { name: "Events", href: "#events" },
-            { name: "News", href: "#news" },
-            { name: "Contact", href: "#contact" },
+        "روابط سريعة": [
+            { name: "من نحن", href: "#about" },
+            { name: "الأحداث", href: "#events" },
+            { name: "الأخبار", href: "#news" },
+            { name: "اتصل بنا", href: "#contact" },
         ],
-        "Get Involved": [
-            { name: "Join as Member", href: "#join" },
-            { name: "Volunteer", href: "#volunteer" },
-            { name: "Leadership Positions", href: "#positions" },
-            { name: "Local Chapters", href: "#chapters" },
+        "انضم إلينا": [
+            { name: "انضم كعضو", href: "#join" },
+            { name: "تطوع معنا", href: "#volunteer" },
+            { name: "المناصب القيادية", href: "#positions" },
+            { name: "الفروع المحلية", href: "#chapters" },
         ],
-        Support: [
-            { name: "Help Center", href: "#help" },
-            { name: "Privacy Policy", href: "#privacy" },
-            { name: "Terms of Service", href: "#terms" },
-            { name: "FAQs", href: "#faq" },
+        الدعم: [
+            { name: "مركز المساعدة", href: "#help" },
+            { name: "سياسة الخصوصية", href: "#privacy" },
+            { name: "شروط الخدمة", href: "#terms" },
+            { name: "الأسئلة الشائعة", href: "#faq" },
         ],
     }
 
     return (
         <footer className="bg-egypt-black text-egypt-white">
             <div className="container mx-auto px-6 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid  grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Brand Section */}
                     <div className="lg:col-span-1">
-                        <div className="flex items-center space-x-2 mb-6">
-                            <div className="w-12 h-12 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-lg flex items-center justify-center">
-                                <span className="text-egypt-white font-bold text-xl">LE</span>
+                        <div className="flex flex-row-reverse items-center space-x-2 mb-6">
+                            <div className="w-16 h-16    bg-white rounded-lg flex items-center justify-center">
+                                <img src={Logo} alt="Logo" className="w-12 h-12" />
                             </div>
-                            <div>
-                                <span className="text-xl font-bold">Long Live Egypt</span>
-                                <div className="text-sm text-egypt-white/70">Youth Union</div>
+                            <div className="text-right pr-2" >
+                                <span className="text-xl font-bold font-arabic">اتحاد شباب تحيا مصر</span>
+                                <div className="text-sm text-egypt-white/70 font-arabic">منظمة شبابية</div>
                             </div>
                         </div>
-                        <p className="text-egypt-white/80 mb-6 leading-relaxed">
-                            Empowering Egyptian youth through civic engagement, education, and community action to build a stronger, more united
-                            Egypt.
+                        <p className="text-egypt-white/80 mb-6 leading-relaxed font-arabic text-right">
+                            تمكين الشباب المصري من خلال المشاركة المدنية والتعليم والعمل المجتمعي لبناء مصر أقوى وأكثر توحداً.
                         </p>
-                        <div className="flex space-x-4">
+                        <div className="flex flex-row-reverse gap-4 ">
                             {socialLinks.map((social, index) => (
                                 <a
                                     key={index}
@@ -66,11 +66,14 @@ export default function PublicPagesFooter() {
                     {/* Footer Links */}
                     {Object.entries(footerLinks).map(([title, links]) => (
                         <div key={title}>
-                            <h3 className="text-lg font-semibold mb-6 text-egypt-gold">{title}</h3>
+                            <h3 className="text-lg font-semibold mb-6 text-egypt-gold font-arabic text-right">{title}</h3>
                             <ul className="space-y-3">
                                 {links.map((link, index) => (
                                     <li key={index}>
-                                        <a href={link.href} className="text-egypt-white/80 hover:text-egypt-gold transition-colors duration-300">
+                                        <a
+                                            href={link.href}
+                                            className="text-egypt-white/80 hover:text-egypt-gold transition-colors duration-300 font-arabic text-right block"
+                                        >
                                             {link.name}
                                         </a>
                                     </li>
@@ -83,31 +86,31 @@ export default function PublicPagesFooter() {
                 {/* Contact Bar */}
                 <div className="border-t border-egypt-white/20 mt-12 pt-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div className="flex items-center space-x-3">
+                        <div className="flex flex-row-reverse items-center space-x-3 space-x-reverse">
                             <div className="w-10 h-10 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center">
                                 <Mail className="w-5 h-5 text-egypt-white" />
                             </div>
-                            <div>
-                                <div className="text-sm text-egypt-white/70">Email</div>
-                                <div className="text-egypt-white">info@longliveegypt.org</div>
+                            <div className="text-right">
+                                <div className="text-sm text-egypt-white/70 font-arabic">البريد الإلكتروني</div>
+                                <div className="text-egypt-white">info@tahyamisr.org</div>
                             </div>
                         </div>
-                        <div className="flex items-center space-x-3">
+                        <div className="flex flex-row-reverse items-center  space-x-3 space-x-reverse">
                             <div className="w-10 h-10 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center">
                                 <Phone className="w-5 h-5 text-egypt-white" />
                             </div>
-                            <div>
-                                <div className="text-sm text-egypt-white/70">Phone</div>
+                            <div className="text-right">
+                                <div className="text-sm text-egypt-white/70 font-arabic">الهاتف</div>
                                 <div className="text-egypt-white">+20 123 456 7890</div>
                             </div>
                         </div>
-                        <div className="flex items-center space-x-3">
+                        <div className="flex flex-row-reverse items-center space-x-3 space-x-reverse">
                             <div className="w-10 h-10 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center">
                                 <MapPin className="w-5 h-5 text-egypt-white" />
                             </div>
-                            <div>
-                                <div className="text-sm text-egypt-white/70">Location</div>
-                                <div className="text-egypt-white">Cairo, Egypt</div>
+                            <div className="text-right">
+                                <div className="text-sm text-egypt-white/70 font-arabic">الموقع</div>
+                                <div className="text-egypt-white font-arabic">القاهرة، مصر</div>
                             </div>
                         </div>
                     </div>
@@ -115,8 +118,8 @@ export default function PublicPagesFooter() {
 
                 {/* Bottom Bar */}
                 <div className="border-t border-egypt-white/20 pt-8 flex flex-col md:flex-row justify-between items-center">
-                    <div className="text-egypt-white/70 text-sm mb-4 md:mb-0">© 2024 Long Live Egypt Youth Union. All rights reserved.</div>
-                    <div className="text-egypt-white/70 text-sm">Built with ❤️ for Egyptian Youth</div>
+                    <div className="text-egypt-white/70 text-sm mb-4 md:mb-0 font-arabic">© 2024 اتحاد شباب تحيا مصر. جميع الحقوق محفوظة.</div>
+                    <div className="text-egypt-white/70 text-sm font-arabic">صُنع بـ ❤️ للشباب المصري</div>
                 </div>
             </div>
         </footer>

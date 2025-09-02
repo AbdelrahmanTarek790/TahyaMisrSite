@@ -50,19 +50,24 @@ const NewsDetailPage = () => {
     }
 
     const formatDate = (dateString) => {
-        const date = new Date(dateString)
-        return date.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-        })
+        try {
+            const date = new Date(dateString)
+            return date.toLocaleDateString("ar-EG", {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+                weekday: "long",
+            })
+        } catch (error) {
+            return dateString
+        }
     }
 
     const getReadingTime = (content) => {
         const wordsPerMinute = 200
         const wordCount = content.split(" ").length
         const readingTime = Math.ceil(wordCount / wordsPerMinute)
-        return readingTime
+        return readingTime + " دقائق قراءة"
     }
 
     const shareOnSocial = (platform) => {
@@ -94,10 +99,10 @@ const NewsDetailPage = () => {
 
     if (isLoading) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-yellow-50 flex items-center justify-center">
                 <div className="text-center">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                    <p className="text-gray-600">Loading article...</p>
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-egypt-red mx-auto mb-4"></div>
+                    <p className="text-gray-600 font-arabic">جاري تحميل المقال...</p>
                 </div>
             </div>
         )
@@ -105,14 +110,14 @@ const NewsDetailPage = () => {
 
     if (error || !newsItem) {
         return (
-            <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-yellow-50 flex items-center justify-center">
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-4">Article Not Found</h1>
-                    <p className="text-gray-600 mb-6">{error || "The requested article could not be found."}</p>
+                    <h1 className="text-2xl font-bold text-gray-900 mb-4 font-arabic">لم يتم العثور على المقال</h1>
+                    <p className="text-gray-600 mb-6 font-arabic">{error || "لا يمكن العثور على المقال المطلوب."}</p>
                     <Link to="/public/news">
-                        <Button>
-                            <ArrowLeft className="mr-2 h-4 w-4" />
-                            Back to News
+                        <Button className="font-arabic">
+                            <ArrowLeft className="ml-2 h-4 w-4" />
+                            العودة للأخبار
                         </Button>
                     </Link>
                 </div>
@@ -121,22 +126,22 @@ const NewsDetailPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
+        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-yellow-50">
             {/* Header Navigation */}
-            <div className="bg-white border-b">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4">
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back
+            <div className="bg-white border-b border-gray-200">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4 font-arabic">
+                        <ArrowLeft className="ml-2 h-4 w-4" />
+                        العودة
                     </Button>
                 </div>
             </div>
 
             {/* Article Content */}
-            <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <article className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {/* Hero Image */}
                 {newsItem.image && (
-                    <div className="mb-8 rounded-lg overflow-hidden shadow-lg">
+                    <div className="mb-8 rounded-xl overflow-hidden shadow-elegant">
                         <img
                             src={`https://form.codepeak.software/uploads/${newsItem.image}`}
                             crossOrigin="anonymous"
@@ -147,30 +152,30 @@ const NewsDetailPage = () => {
                 )}
 
                 {/* Article Header */}
-                <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+                <div className="bg-white rounded-xl shadow-elegant p-8 mb-8">
                     <header className="mb-6">
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">{newsItem.title}</h1>
+                        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight font-arabic text-right">{newsItem.title}</h1>
 
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6">
-                            <div className="flex items-center">
-                                <Calendar className="mr-2 h-4 w-4" />
-                                {formatDate(newsItem.createdAt)}
+                        <div className="flex flex-wrap items-center justify-end gap-4 text-sm text-gray-600 mb-6">
+                            <div className="flex items-center font-arabic">
+                                <span>{formatDate(newsItem.createdAt)}</span>
+                                <Calendar className="ml-2 h-4 w-4" />
                             </div>
 
-                            <div className="flex items-center">
-                                <User className="mr-2 h-4 w-4" />
-                                By {newsItem.author?.name || "Admin"}
+                            <div className="flex items-center font-arabic">
+                                <span>بواسطة {newsItem.author?.name || "الإدارة"}</span>
+                                <User className="ml-2 h-4 w-4" />
                             </div>
 
-                            <div className="flex items-center">
-                                <Clock className="mr-2 h-4 w-4" />
-                                {getReadingTime(newsItem.content)} min read
+                            <div className="flex items-center font-arabic">
+                                <span>{getReadingTime(newsItem.content)}</span>
+                                <Clock className="ml-2 h-4 w-4" />
                             </div>
                         </div>
 
                         {/* Share Buttons */}
                         <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
-                            <span className="text-sm text-gray-600 mr-2">Share:</span>
+                            <span className="text-sm text-gray-600 ml-2 font-arabic">شارك:</span>
                             <Button variant="outline" size="sm" onClick={() => shareOnSocial("facebook")} className="text-blue-600 hover:bg-blue-50">
                                 <Facebook className="h-4 w-4" />
                             </Button>
@@ -188,17 +193,17 @@ const NewsDetailPage = () => {
 
                     {/* Article Content */}
                     <div className="prose prose-lg max-w-none">
-                        <div className="whitespace-pre-wrap text-gray-700 leading-relaxed">{newsItem.content}</div>
+                        <div className="whitespace-pre-wrap text-gray-700 leading-relaxed font-arabic text-right">{newsItem.content}</div>
                     </div>
                 </div>
 
                 {/* Related Articles */}
                 {relatedNews.length > 0 && (
-                    <section className="bg-white rounded-lg shadow-lg p-8">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6">Related Articles</h2>
+                    <section className="bg-white rounded-xl shadow-elegant p-8">
+                        <h2 className="text-2xl font-bold text-gray-900 mb-6 font-arabic text-right">مقالات ذات صلة</h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {relatedNews.map((article) => (
-                                <Card key={article._id} className="hover:shadow-lg transition-shadow cursor-pointer">
+                                <Card key={article._id} className="hover:shadow-elegant transition-shadow cursor-pointer bg-white border-gray-200">
                                     <Link to={`/news/${article._id}`}>
                                         {article.image && (
                                             <div className="aspect-video overflow-hidden rounded-t-lg">
@@ -211,13 +216,13 @@ const NewsDetailPage = () => {
                                             </div>
                                         )}
                                         <CardHeader className="pb-2">
-                                            <CardTitle className="text-lg line-clamp-2">{article.title}</CardTitle>
+                                            <CardTitle className="text-lg line-clamp-2 font-arabic text-right">{article.title}</CardTitle>
                                         </CardHeader>
                                         <CardContent>
-                                            <p className="text-sm text-gray-600 line-clamp-3 mb-2">{article.content}</p>
-                                            <div className="flex items-center text-xs text-gray-500">
-                                                <Calendar className="mr-1 h-3 w-3" />
-                                                {formatDate(article.createdAt)}
+                                            <p className="text-sm text-gray-600 line-clamp-3 mb-2 font-arabic text-right">{article.content}</p>
+                                            <div className="flex items-center justify-end text-xs text-gray-500 font-arabic">
+                                                <span>{formatDate(article.createdAt)}</span>
+                                                <Calendar className="ml-1 h-3 w-3" />
                                             </div>
                                         </CardContent>
                                     </Link>
@@ -229,15 +234,15 @@ const NewsDetailPage = () => {
             </article>
 
             {/* Call to Action */}
-            <section className="py-16 bg-blue-600 text-white mt-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl font-bold mb-6">Want to Stay Updated?</h2>
-                    <p className="text-xl mb-8 max-w-2xl mx-auto">
-                        Join our community to get the latest news and updates delivered directly to your dashboard
+            <section className="py-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white mt-12">
+                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <h2 className="text-3xl font-bold mb-6 font-arabic">هل تريد البقاء على اطلاع؟</h2>
+                    <p className="text-xl mb-8 max-w-2xl mx-auto font-arabic text-right leading-relaxed">
+                        انضم إلى مجتمعنا للحصول على آخر الأخبار والتحديثات مباشرة في لوحة التحكم الخاصة بك
                     </p>
                     <Link to="/register">
-                        <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 px-8 py-3">
-                            Join Our Community
+                        <Button size="lg" className="bg-white text-egypt-red hover:bg-gray-100 hover:text-egypt-red px-8 py-3 font-arabic">
+                            انضم إلى مجتمعنا
                         </Button>
                     </Link>
                 </div>

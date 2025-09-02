@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import { Button } from "@/components/ui/button"
+import Logo from "@/assets/Logo.png"
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -81,13 +82,13 @@ export default function PublicPagesHeader() {
                             </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-56">
-                            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                            <DropdownMenuLabel>حسابي</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            {user.role !== "user" && <DropdownMenuItem onClick={() => navigate("/dashboard")}>Dashboard</DropdownMenuItem>}
-                            <DropdownMenuItem onClick={() => navigate("/settings/profile")}>Profile</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate("/settings/account")}>Account Settings</DropdownMenuItem>
+                            {user.role !== "user" && <DropdownMenuItem onClick={() => navigate("/dashboard")}>لوحة التحكم</DropdownMenuItem>}
+                            <DropdownMenuItem onClick={() => navigate("/settings/profile")}>الملف الشخصي</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate("/settings/account")}>إعدادات الحساب</DropdownMenuItem>
                             <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+                            <DropdownMenuItem onClick={handleLogout}>تسجيل الخروج</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
                 </div>
@@ -97,11 +98,11 @@ export default function PublicPagesHeader() {
                 <div className="flex items-center space-x-1">
                     <Button variant="ghost" size="sm" asChild>
                         <Link to="/login">
-                            <LogIn className="mr-2 h-4 w-4" /> Sign In
+                            <LogIn className="mr-2 h-4 w-4" /> تسجيل الدخول
                         </Link>
                     </Button>
                     <Button size="sm" asChild>
-                        <Link to="/register">Sign Up</Link>
+                        <Link to="/register">إنشاء حساب</Link>
                     </Button>
                 </div>
             )
@@ -173,25 +174,26 @@ export default function PublicPagesHeader() {
         <>
             <header
                 className={cn(
-                    "sticky top-0 z-40 w-full transition-all duration-200 px-4 sm:px-6 lg:px-8"  ,
+                    "sticky top-0 z-40 w-full transition-all duration-200 px-4 sm:px-6 lg:px-8",
                     isScrolled ? "bg-background/95 backdrop-blur-sm shadow-sm" : "bg-background"
                 )}
             >
                 <div className="container mx-auto">
                     {/* Top bar with logo and auth buttons */}
-                    <div className="flex h-16 items-center justify-between">
+                    <div className="flex items-center flex-row-reverse justify-between">
                         {/* Logo */}
                         <Link to="/" className="flex items-center space-x-2">
-                            <span className="text-2xl font-bold">Tahya Misr</span>
+                            <span className="text-2xl font-bold">أتحاد شباب تحيا مصر</span>
+                            <img src={Logo} alt="Logo" className="h-28 w-28" />
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <div className="hidden md:flex md:items-center md:space-x-4">
+                        <div className="hidden md:flex md:items-center md:space-x-4 ">
                             <NavigationMenu>
-                                <NavigationMenuList>
+                                <NavigationMenuList className={" md:flex-row-reverse "}>
                                     <NavigationMenuItem>
                                         <NavLink to="/" className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}>
-                                            Home
+                                            الرئيسية
                                         </NavLink>
                                     </NavigationMenuItem>
 
@@ -203,19 +205,19 @@ export default function PublicPagesHeader() {
 
                                     <NavigationMenuItem>
                                         <NavLink
-                                            to="/public/news"
+                                            to="/news"
                                             className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}
                                         >
-                                            News
+                                            الاخبار
                                         </NavLink>
                                     </NavigationMenuItem>
 
                                     <NavigationMenuItem>
                                         <NavLink
-                                            to="/public/events"
+                                            to="/events"
                                             className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}
                                         >
-                                            Events
+                                            الفعاليات
                                         </NavLink>
                                     </NavigationMenuItem>
                                     <NavigationMenuItem>
@@ -223,7 +225,7 @@ export default function PublicPagesHeader() {
                                             to="/about"
                                             className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}
                                         >
-                                            About
+                                            من نحن
                                         </NavLink>
                                     </NavigationMenuItem>
                                     <NavigationMenuItem>
@@ -231,7 +233,7 @@ export default function PublicPagesHeader() {
                                             to="/contact"
                                             className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}
                                         >
-                                            Contact
+                                            اتصل بنا
                                         </NavLink>
                                     </NavigationMenuItem>
                                 </NavigationMenuList>
@@ -242,9 +244,8 @@ export default function PublicPagesHeader() {
                             </Button> */}
 
                             {/* Render auth buttons based on login state */}
-                            {renderAuthButtons()}
                         </div>
-
+                        <div className="hidden md:flex md:items-center md:flex-row-reverse md:space-x-4">{renderAuthButtons()}</div>
                         {/* Mobile menu and search buttons */}
                         <div className="flex items-center md:hidden">
                             {user && (

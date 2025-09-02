@@ -1,87 +1,213 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Calendar, Newspaper, Camera, Users, MapPin, Bell } from "lucide-react"
+import { Award, Users, Globe, Heart, BookOpen, Crown, Shield } from "lucide-react"
+import TheRoadOfRepublicForum from "@/assets/the-road-of-new-republic-forum.jpg"
+import ArabYouthSummit from "@/assets/Arab-youth-summit.jpg"
+import NationalForumforAwarenessBuilding from "@/assets/build-forum.jpg"
+import NationalInitiativeforConstructionandEmpowerment from "@/assets/assign.jpg"
+import Teasure27 from "@/assets/tresure27.jpg"
+import FemaleLeaders from "@/assets/Female-leaders.jpg"
+import CommunityInitiative from "@/assets/wqaya.jpg"
+import RadioTahiaMisr from "@/assets/RadioTahiaMisr.jpg"
+import NewsTahiaMisr from "@/assets/newsTahiaMisr.jpg"
+import StudentTahiaMisr from "@/assets/StudentUnuion.jpg"
+import Eaeat from "@/assets/EAEAT.jpg"
 
 const Features = () => {
-    const features = [
+    const achievements = [
         {
-            icon: Calendar,
-            title: "Events & Activities",
-            description: "Join workshops, seminars, volunteer activities, and cultural events across Egypt.",
+            icon: Globe,
+            title: "منتدي الطريق الى الجمهوريه الجديدة",
+            description:
+                "منصة حوارية تهدف الي الجمع بين شباب الجمهورية ، للمشاركة والتعبير عن آرائهم ، والخروج بتوصيات ومبادرات من خلال المناقشات الواسعة وتبادل الأفكار والخبرات ، ويأتي ذلك من خلال الجلسات وورش العمل بين الشباب والمتخصصين وقادة الفكر والشخصيات العامة في المجتمع.",
+            highlights: [
+                "الإستراتيجية الوطنية لحقوق الإنسان",
+                "الأمن القومي والتنمية السياسية",
+                "التغير المناخي والبيئة المستدامة",
+                "دور الشباب في تطبيق رؤية مصر 2030",
+            ],
             color: "text-egypt-red",
+            image: TheRoadOfRepublicForum,
         },
         {
-            icon: Newspaper,
-            title: "News & Updates",
-            description: "Stay informed with the latest news, announcements, and union developments.",
+            icon: Crown,
+            title: "القمه الشبابية العربيه",
+            description:
+                "حاضنة رئيسية لتطلعات وطموح الشباب العربي من خلال دعمها وتشجيعها العديد من المبادرات والبرامج للارتقاء بدورهم ، وتستهدف تمكين الشباب العربي واشراكهم في العمل الشبابي والمجتمعي، وبناء وعيهم بأهم قضايا الوطن العربي المشتركة.",
+            highlights: ["تعزيز الهوية العربية", "دعم الابتكار والمعرفة", "التنمية المستدامة", "الشراكة مع جامعة الدول العربية"],
             color: "text-egypt-gold",
+            image: ArabYouthSummit,
         },
         {
-            icon: Camera,
-            title: "Media Gallery",
-            description: "Explore photos and videos from our events, showcasing our active community.",
+            icon: BookOpen,
+            title: "المنتدي الوطني لبناء الوعي",
+            description:
+                "تحت شعار « شباب واعى نحو ريادة المستقبل « منصة حوارية هدفها نشر وتعزيز الوعى لدى الشباب ومناقشة الموضوعات المعاصرة ورؤيتهم فى التعامل معها للمساهمه في تنفيذ المشروعات التنموية التى تدعم رؤية مصر 2030 وتتصدى لحروب الجيل الرابع.",
+            highlights: ["نشر الوعي بين الشباب", "مناقشة القضايا المعاصرة", "دعم رؤية مصر 2030", "التصدي لحروب الجيل الرابع"],
             color: "text-egypt-red",
+            image: NationalForumforAwarenessBuilding,
         },
         {
             icon: Users,
-            title: "Leadership Positions",
-            description: "Apply for leadership roles and positions within your governorate or nationally.",
+            title: "المبادرة الوطنية للبناء والتمكين",
+            description:
+                'يهدف المشروع إلى تمكين الشباب من تطوير مهاراتهم وتعزيز قدراتهم، من خلال توفير بيئة داعمة تجمع بين التدريب العملي، العمل التطوعي، والإرشاد المهني. بما يتماشى مع الرؤية الوطنية لمبادرة "بداية".',
+            highlights: ["التدريب العملي المتخصص", "العمل التطوعي المنظم", "الإرشاد المهني", "بناء القدرات الشبابية"],
             color: "text-egypt-gold",
+            image: NationalInitiativeforConstructionandEmpowerment,
         },
         {
-            icon: MapPin,
-            title: "Local Chapters",
-            description: "Connect with union members in your governorate and participate locally.",
+            icon: Award,
+            title: "المبادرة الوطنية كنوز ال٢٧",
+            description:
+                "يسعي فريق كنوز ال27 أن يكون رائد في نشر الوعي الأثري والتاريخي والتصدي للخرافات والشائعات من خلال حملته لإيصال مفهوم التاريخ الصحيح بشكل مبسط وشيق لأكبر فئة من المجتمع من خلال عمل زيارات ميدانية للأماكن أثرية.",
+            highlights: ["نشر الوعي الأثري والتاريخي", "التصدي للخرافات والشائعات", "زيارات ميدانية للمواقع الأثرية", "تغطية جميع محافظات الجمهورية"],
             color: "text-egypt-red",
+            image: Teasure27,
         },
         {
-            icon: Bell,
-            title: "Notifications",
-            description: "Receive instant updates about events, opportunities, and important announcements.",
+            icon: Crown,
+            title: "المبادرة الوطنية رائدات مصر",
+            description:
+                "نسعى من خلالها إلى دعم وتمكين المرأة المصرية في مختلف المجالات، ورفع وعيها بقدراتها وإمكاناتها لتكون عنصرًا فاعلًا في تنمية المجتمع. تأتي هذه المبادرة انطلاقًا من إيماننا العميق بأهمية دور المراه في قيادة التغيير الإيجابي.",
+            highlights: ["برامج تدريبية متخصصة", "ورش عمل عملية", "مساحات حوارية تفاعلية", "تمكين المرأة اقتصادياً ومجتمعياً"],
             color: "text-egypt-gold",
+            image: FemaleLeaders,
+        },
+        {
+            icon: Heart,
+            title: "المبادرة المجتمعيه وقايه تحيا مصر",
+            description:
+                "تتمحور حول التثقيف المجتمعي وتعزيز الوعي العام حول مجموعة من القضايا المحددة فضلا عن تشجيع الفرص الواعدة المتاحة وإحداث تغيير إيجابي يعود بالفائدة على المجتمع ، وخاصة تسليط الضوء على أهمية الكشف المبكر والوقاية من سرطان الثدي.",
+            highlights: ["التثقيف الصحي المجتمعي", "الكشف المبكر لسرطان الثدي", "دعم صحة المرأة المصرية", "تنفيذ رؤية مصر 2030 الصحية"],
+            color: "text-egypt-red",
+            image: CommunityInitiative,
         },
     ]
 
     return (
-        <section className="py-20 bg-background">
+        <section className="py-10 bg-background">
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16 animate-fade-in">
-                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                        Platform <span className="text-egypt-gold">Features</span>
+                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 font-arabic">
+                        🔹 <span className="text-egypt-gold">إنجازات ومشروعات 🔹</span>
                     </h2>
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                        Our comprehensive platform provides everything you need to engage with the youth community and participate in meaningful
-                        activities across Egypt.
+                        مشروعاتنا ومبادراتنا التي تهدف إلى تمكين الشباب المصري وخدمة المجتمع في مختلف المجالات
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {features.map((feature, index) => (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {achievements.map((achievement, index) => (
                         <Card
                             key={index}
-                            className="bg-card border-border hover:shadow-card transition-all duration-300 hover:-translate-y-2 group animate-slide-up"
+                            className="bg-card border-border hover:shadow-card transition-all duration-300 hover:-translate-y-2 group animate-slide-up overflow-hidden"
                             style={{ animationDelay: `${index * 0.1}s` }}
                         >
-                            <CardHeader className="text-center pb-4">
-                                <div className="w-16 h-16 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:shadow-glow transition-all duration-300">
-                                    <feature.icon className={`w-8 h-8 ${feature.color}`} />
+                            {/* Project Image */}
+                            <div className="aspect-video bg-gradient-to-br from-egypt-red/10 to-egypt-gold/10 flex items-center justify-center">
+                                <img src={achievement.image} alt={achievement.title} className="object-cover w-[250px]" />
+                            </div>
+
+                            <CardHeader className="pb-4">
+                                <div className="flex items-center gap-3 mb-2">
+                                    <div
+                                        className={`w-10 h-10 bg-gradient-to-br from-egypt-red to-egypt-gold rounded-full flex items-center justify-center`}
+                                    >
+                                        <achievement.icon className="w-6 h-6 text-white" />
+                                    </div>
+                                    <CardTitle className="text-xl text-foreground font-arabic text-right flex-1">{achievement.title}</CardTitle>
                                 </div>
-                                <CardTitle className="text-xl text-foreground">{feature.title}</CardTitle>
                             </CardHeader>
-                            <CardContent className="text-center">
-                                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+
+                            <CardContent className="space-y-4">
+                                <p className="text-muted-foreground leading-relaxed text-right font-arabic">{achievement.description}</p>
+
+                                <div className="space-y-2">
+                                    <h4 className="font-semibold text-foreground text-right font-arabic">أبرز المحاور:</h4>
+                                    <ul className="space-y-1">
+                                        {achievement.highlights.map((highlight, idx) => (
+                                            <li key={idx} className="text-sm text-muted-foreground flex items-center justify-end gap-2 font-arabic">
+                                                <span>{highlight}</span>
+                                                <span className="w-2 h-2 bg-egypt-gold rounded-full"></span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
                             </CardContent>
                         </Card>
                     ))}
                 </div>
 
+                {/* Union Activities Section */}
+                <div className="mt-20">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 font-arabic">
+                            🔹 <span className="text-egypt-gold">أهم الأنشطة المندرجة تحت الاتحاد 🔹</span>
+                        </h2>
+                        <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-arabic">
+                            الأنشطة والكيانات المركزية التي تعمل تحت مظلة اتحاد شباب تحيا مصر
+                        </p>
+                    </div>
+
+                    <div className="bg-gradient-to-br from-egypt-red/5 to-egypt-gold/5 rounded-2xl p-8">
+                        <h3 className="text-2xl font-bold text-foreground mb-8 text-center font-arabic">🔹 أنشطة مركزية 🔹</h3>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {[
+                                {
+                                    title: "أسرة اتحاد طلاب تحيا مصر بالأكاديمية المصرية للهندسة والتكنولوجيا المتقدمة",
+                                    img: Eaeat,
+                                    color: "bg-gradient-to-br from-blue-500 to-blue-600",
+                                },
+                                {
+                                    title: "اتحاد طلاب تحيا مصر",
+                                    img: StudentTahiaMisr,
+                                    color: "bg-gradient-to-br from-egypt-red to-red-600",
+                                },
+
+                                {
+                                    title: "جريدة تحيا مصر",
+                                    img: NewsTahiaMisr,
+                                    color: "bg-gradient-to-br from-egypt-gold to-yellow-600",
+                                },
+                                {
+                                    title: "راديو تحيا مصر",
+                                    img: RadioTahiaMisr,
+                                    color: "bg-gradient-to-br from-purple-500 to-purple-600",
+                                },
+                            ].map((activity, index) => (
+                                <Card
+                                    key={index}
+                                    className="bg-white/80 backdrop-blur-sm border-2 border-white/20 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
+                                >
+                                    <CardHeader className="text-center pb-4 flex items-end">
+                                        <img src={activity.img} alt={activity.title} className="w-32  text-white" />
+                                    </CardHeader>
+                                    <CardContent className="text-center">
+                                        <h4 className="text-lg font-semibold text-foreground leading-tight font-arabic text-right px-2">
+                                            {activity.title}
+                                        </h4>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
+
+                        <div className="mt-8 text-center">
+                            <p className="text-muted-foreground font-arabic">
+                                هذه الأنشطة تمثل الذراع التنفيذي للاتحاد في مختلف المجالات التعليمية والإعلامية والمجتمعية
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 <div className="mt-16 text-center">
                     <div className="bg-[linear-gradient(145deg,_rgb(255,255,255),_rgb(242,242,242))] rounded-xl p-8 shadow-card">
-                        <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4">Ready to Get Started?</h3>
-                        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                            Join thousands of young Egyptians who are already making a difference in their communities.
+                        <h3 className="text-2xl md:text-3xl font-bold text-foreground mb-4 font-arabic">انضم إلى مسيرة التنمية والبناء</h3>
+                        <p className="text-muted-foreground mb-6 max-w-2xl mx-auto font-arabic">
+                            كن جزءاً من هذه المشروعات والمبادرات التي تهدف إلى بناء مستقبل أفضل لمصر وشبابها
                         </p>
-                        <button className="bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-egypt-white px-8 py-3 rounded-lg font-semibold hover:shadow-glow hover:scale-105 transition-all duration-300">
-                            Create Your Account
+                        <button className="bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white px-8 py-3 rounded-lg font-semibold hover:shadow-glow hover:scale-105 transition-all duration-300 font-arabic">
+                            انضم إلينا الآن
                         </button>
                     </div>
                 </div>

@@ -1,27 +1,25 @@
 import { Card, CardContent } from "@/components/ui/card"
-import { Users, Target, Heart, Zap } from "lucide-react"
+import { Users, Target, Heart, Zap, Mail, VenetianMaskIcon } from "lucide-react"
 
 const About = () => {
     const values = [
         {
-            icon: Users,
-            title: "Unity",
-            description: "Bringing together youth from all backgrounds and governorates across Egypt.",
+            icon: VenetianMaskIcon,
+            title: "الرؤية",
+            description:
+                "بناء جيل شبابي مُلهم يمتلك القدرة على التفكير الإبداعي والابتكار، ويشارك بفاعلية في تنمية المجتمع، عبر تمكين الشباب وتطوير قدراتهم ليتحملوا دورًا قياديًا في صناعة مستقبل مستدام ومتوازن للجمهورية الجديدة.",
+        },
+        {
+            icon: Mail,
+            title: "الرسالة",
+            description:
+                "العمل على إعداد كوادر شبابية واعية وقادرة، من خلال تعزيز قيم العمل التطوعي والمجتمعي والسياسي، وتوفير مساحات وفرص حقيقية للتمكين والمشاركة الفعّالة في خدمة الوطن.",
         },
         {
             icon: Target,
-            title: "Purpose",
-            description: "Focused on meaningful civic engagement and positive community impact.",
-        },
-        {
-            icon: Heart,
-            title: "Passion",
-            description: "Driven by love for Egypt and commitment to its bright future.",
-        },
-        {
-            icon: Zap,
-            title: "Action",
-            description: "Turning ideas into reality through organized campaigns and initiatives.",
+            title: "الهدف",
+            description:
+                "إعداد جيل مؤهل من الشباب المصري يمتلك الوعي والقدرة على القيادة والمشاركة في تنفيذ خطة الدولة للتنمية، مع توجيه طاقتهم نحو العمل والإنتاج والإبداع، وتعزيز روح التعاون والانتماء، بما يسهم في تحقيق أهداف الجمهورية الجديدة.",
         },
     ]
 
@@ -30,18 +28,18 @@ const About = () => {
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16 animate-fade-in">
                     <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 animate-slide-up">
-                        About Our <span className="text-egypt-red animate-float">Mission</span>
+                        عن <span className="text-egypt-red animate-float">الاتحاد</span>
                     </h2>
                     <p
                         className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed animate-slide-up"
                         style={{ animationDelay: "0.2s" }}
                     >
-                        The Long Live Egypt Youth Union is a platform dedicated to empowering young Egyptians through education, civic participation,
-                        and community service. We believe in the power of youth to shape Egypt's future.
+                        اتحاد شباب تحيا مصر هو منصة تهدف إلى تمكين الشباب المصري من خلال التعليم والمشاركة المدنية وخدمة المجتمع. نحن نؤمن بقوة الشباب
+                        في تشكيل مستقبل مصر.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
                     {values.map((value, index) => (
                         <Card
                             key={index}
@@ -60,23 +58,24 @@ const About = () => {
                 </div>
 
                 <div className="bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-2xl p-8 md:p-12 text-center shadow-elegant animate-bounce-in">
-                    <h3 className="text-3xl md:text-4xl font-bold text-egypt-white mb-6 animate-slide-up">Join the Movement</h3>
+                    <h3 className="text-3xl md:text-4xl font-bold text-egypt-white mb-6 animate-slide-up">
+                        انضم إلى الاتحاد
+                    </h3>
                     <p className="text-xl text-egypt-white/90 mb-8 max-w-2xl mx-auto animate-slide-up" style={{ animationDelay: "0.2s" }}>
-                        Be part of something bigger. Connect with like-minded youth, participate in meaningful initiatives, and help build a stronger
-                        Egypt for future generations.
+                        كن جزءًا من شيء أكبر. تواصل مع شباب ذوي تفكير مشابه، وشارك في مبادرات ذات مغزى، وساعد في بناء مصر أقوى للأجيال القادمة.
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center animate-scale-in" style={{ animationDelay: "0.4s" }}>
                         <a
                             href="#register"
                             className="inline-flex items-center justify-center px-8 py-3 bg-egypt-white text-egypt-red font-semibold rounded-lg hover:bg-egypt-white/90 transition-all duration-300 hover:scale-105 hover:shadow-glow"
                         >
-                            Become a Member
+                            انضم الان
                         </a>
                         <a
                             href="#contact"
                             className="inline-flex items-center justify-center px-8 py-3 border-2 border-egypt-white text-egypt-white font-semibold rounded-lg hover:bg-egypt-white hover:text-egypt-red transition-all duration-300 hover:scale-105"
                         >
-                            Get in Touch
+                            تواصل معنا
                         </a>
                     </div>
                 </div>
