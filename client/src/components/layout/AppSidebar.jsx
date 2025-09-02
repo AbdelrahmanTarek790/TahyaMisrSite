@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 
-import { Users, Newspaper, Calendar, Image, Settings, Bell, LogOut, Home, UserCircle, ChevronRight } from "lucide-react"
+import { Users, Newspaper, Calendar, Image, Settings, Bell, LogOut, Home, UserCircle, ChevronRight, Clock } from "lucide-react"
 import { NavMain } from "../ui/nav-main"
 // import { NavSecondary } from "../ui/nav-secondary"
 
@@ -19,11 +19,12 @@ export function AppSidebar(props) {
     // Define navigation items
     const navItems = [
         { title: "Dashboard", url: "/dashboard", icon: Home, role: ["student", "volunteer", "admin"] },
-        { title: "News", url: "/news", icon: Newspaper, role: ["student", "volunteer", "admin"] },
-        { title: "Events", url: "/events", icon: Calendar, role: ["student", "volunteer", "admin"] },
+        { title: "News", url: "/dashboard/news", icon: Newspaper, role: ["student", "volunteer", "admin"] },
+        { title: "Events", url: "/dashboard/events", icon: Calendar, role: ["student", "volunteer", "admin"] },
         { title: "Media", url: "/media", icon: Image, role: ["student", "volunteer", "admin"] },
         { title: "Manage News", url: "/admin/news", icon: Newspaper, role: ["admin"] },
         { title: "Manage Events", url: "/admin/events", icon: Calendar, role: ["admin"] },
+        { title: "Timeline", url: "/admin/timeline", icon: Clock, role: ["admin"] },
         { title: "Users", url: "/admin/users", icon: Users, role: ["admin"] },
         { title: "Positions", url: "/admin/positions", icon: Settings, role: ["admin"] },
         { title: "Notifications", url: "/admin/notifications", icon: Bell, role: ["admin"] },
@@ -61,7 +62,7 @@ export function AppSidebar(props) {
     // ]
 
     return (
-        <Sidebar collapsible="offcanvas" {...props}>
+        <Sidebar collapsible="offcanvas" {...props} >
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>

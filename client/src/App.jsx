@@ -14,6 +14,7 @@ import EventsManagement from "./pages/admin/EventsManagement"
 import UserManagement from "./pages/admin/UserManagement"
 import PositionsManagement from "./pages/admin/PositionsManagement"
 import NotificationsManagement from "./pages/admin/NotificationsManagement"
+import TimelineManagement from "./pages/admin/TimelineManagement"
 import Profile from "./pages/Profile"
 import Settings from "./pages/Settings"
 import LandingPage from "./pages/public/LandingPage"
@@ -26,6 +27,7 @@ import "./index.css"
 import { DashboardLayout } from "./components/layout/DashboardLayout"
 import PublicLayout from "./components/layout/PublicPagesLayout"
 import Home from "./pages/Home"
+import EventDetailPage from "./pages/public/EventDetailPage"
 
 function App() {
     const { isAuthenticated, user } = useAuth()
@@ -40,9 +42,10 @@ function App() {
                         <Route path="/" element={<Home />} />
                         <Route path="/about" element={<AboutPage />} />
                         <Route path="/contact" element={<ContactPage />} />
-                        <Route path="/public/news" element={<PublicNewsPage />} />
+                        <Route path="/news" element={<PublicNewsPage />} />
                         <Route path="/news/:id" element={<NewsDetailPage />} />
-                        <Route path="/public/events" element={<PublicEventsPage />} />
+                        <Route path="/events" element={<PublicEventsPage />} />
+                        <Route path="/events/:id" element={<EventDetailPage />} />
                     </Route>
 
                     {/* Auth Routes */}
@@ -61,7 +64,7 @@ function App() {
                         }
                     />
                     <Route
-                        path="/news"
+                        path="/dashboard/news"
                         element={
                             <ProtectedRoute>
                                 <DashboardLayout>
@@ -71,7 +74,7 @@ function App() {
                         }
                     />
                     <Route
-                        path="/events"
+                        path="/dashboard/events"
                         element={
                             <ProtectedRoute>
                                 <DashboardLayout>
@@ -158,6 +161,16 @@ function App() {
                             <ProtectedRoute roles={["admin"]}>
                                 <DashboardLayout>
                                     <NotificationsManagement />
+                                </DashboardLayout>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/timeline"
+                        element={
+                            <ProtectedRoute roles={["admin"]}>
+                                <DashboardLayout>
+                                    <TimelineManagement />
                                 </DashboardLayout>
                             </ProtectedRoute>
                         }

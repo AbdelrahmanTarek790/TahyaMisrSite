@@ -29,10 +29,10 @@ const Contact = () => {
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16 animate-fade-in">
                     <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                        Get In <span className="text-egypt-red">Touch</span>
+                        أبقي علي <span className="text-egypt-red">تواصل</span>
                     </h2>
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                        Have questions about joining the union? Want to learn more about our initiatives? We'd love to hear from you.
+                        هل لديك أسئلة حول الانضمام إلى الاتحاد؟ هل ترغب في معرفة المزيد عن مبادراتنا؟ نود أن نسمع منك.
                     </p>
                 </div>
 
@@ -40,18 +40,18 @@ const Contact = () => {
                     {/* Contact Information */}
                     <div className="space-y-8 animate-slide-up">
                         <div>
-                            <h3 className="text-2xl font-bold text-foreground mb-6">Contact Information</h3>
+                            <h3 className="text-2xl text-right font-bold text-foreground mb-6">معلومات الاتصال</h3>
                             <div className="space-y-4">
                                 {contactInfo.map((item, index) => (
                                     <a
                                         key={index}
                                         href={item.href}
-                                        className="flex items-center space-x-4 p-4 rounded-lg bg-card hover:shadow-card transition-all duration-300 group"
+                                        className="flex flex-row-reverse text-right items-center space-x-4 p-4 rounded-lg bg-card hover:shadow-card transition-all duration-300 group"
                                     >
                                         <div className="w-12 h-12 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center group-hover:shadow-glow transition-all duration-300">
                                             <item.icon className="w-6 h-6 text-egypt-white" />
                                         </div>
-                                        <div>
+                                        <div className="p-4">
                                             <div className="text-sm text-muted-foreground">{item.title}</div>
                                             <div className="text-foreground font-medium">{item.value}</div>
                                         </div>
@@ -60,18 +60,17 @@ const Contact = () => {
                             </div>
                         </div>
 
-                        <Card className="bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] border-0 text-egypt-white shadow-elegant">
+                        <Card className="text-right bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] border-0 text-egypt-white shadow-elegant">
                             <CardContent className="p-6">
-                                <h4 className="text-xl font-bold mb-4">Join Our Community</h4>
+                                <h4 className="text-xl font-bold mb-4">انضم إلى مجتمعنا</h4>
                                 <p className="mb-4 text-egypt-white/90">
-                                    Ready to become part of the Long Live Egypt Youth Union? Register today and start making a difference in your
-                                    community.
+                                    هل أنت مستعد لتصبح جزءًا من اتحاد شباب مصر؟ سجل اليوم وابدأ في إحداث فرق في مجتمعك.
                                 </p>
                                 <Button
                                     variant="outline-hero"
                                     className="border-egypt-white text-egypt-white hover:bg-egypt-white hover:text-egypt-red"
                                 >
-                                    Register Now
+                                    سجل الآن
                                 </Button>
                             </CardContent>
                         </Card>
@@ -81,11 +80,11 @@ const Contact = () => {
                     <div className="animate-slide-up" style={{ animationDelay: "0.2s" }}>
                         <Card className="bg-card border-border shadow-card">
                             <CardContent className="p-8">
-                                <h3 className="text-2xl font-bold text-foreground mb-6">Send us a Message</h3>
+                                <h3 className="text-2xl font-bold text-right text-foreground mb-6">أرسل لنا رسالة</h3>
                                 <form className="space-y-6">
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm font-medium text-foreground mb-2">First Name</label>
+                                            <label className="block text-sm font-medium text-foreground mb-2">الاسم الأول</label>
                                             <input
                                                 type="text"
                                                 className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-egypt-gold focus:border-transparent transition-all duration-300"
@@ -93,7 +92,7 @@ const Contact = () => {
                                             />
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-medium text-foreground mb-2">Last Name</label>
+                                            <label className="block text-sm font-medium text-foreground mb-2">الاسم الأخير</label>
                                             <input
                                                 type="text"
                                                 className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-egypt-gold focus:border-transparent transition-all duration-300"
@@ -103,7 +102,7 @@ const Contact = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">Email</label>
+                                        <label className="block text-sm font-medium text-foreground mb-2">البريد الإلكتروني</label>
                                         <input
                                             type="email"
                                             className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-egypt-gold focus:border-transparent transition-all duration-300"
@@ -112,26 +111,26 @@ const Contact = () => {
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">Subject</label>
+                                        <label className="block text-sm font-medium text-foreground mb-2">الموضوع</label>
                                         <input
                                             type="text"
                                             className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-egypt-gold focus:border-transparent transition-all duration-300"
-                                            placeholder="Interested in joining"
+                                            placeholder="مهتم بالانضمام"
                                         />
                                     </div>
 
                                     <div>
-                                        <label className="block text-sm font-medium text-foreground mb-2">Message</label>
+                                        <label className="block text-sm font-medium text-foreground mb-2">الرسالة</label>
                                         <textarea
                                             rows={4}
                                             className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-egypt-gold focus:border-transparent transition-all duration-300"
-                                            placeholder="Tell us about your interest in joining the union..."
+                                            placeholder="أخبرنا عن اهتمامك بالانضمام إلى الاتحاد..."
                                         ></textarea>
                                     </div>
 
                                     <Button variant="cta" size="lg" className="w-full">
                                         <Send className="w-5 h-5 mr-2" />
-                                        Send Message
+                                        إرسال الرسالة
                                     </Button>
                                 </form>
                             </CardContent>
