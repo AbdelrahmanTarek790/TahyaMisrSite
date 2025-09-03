@@ -4,7 +4,7 @@ import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "luci
 import Logo from "@/assets/Logo.png"
 export default function PublicPagesFooter() {
     const socialLinks = [
-        { icon: Facebook, href: "#", label: "Facebook" },
+        { icon: Facebook, href: "https://www.facebook.com/TahiaMisrYouthUnion", label: "Facebook" },
         { icon: Twitter, href: "#", label: "Twitter" },
         { icon: Instagram, href: "#", label: "Instagram" },
         { icon: Youtube, href: "#", label: "Youtube" },
@@ -41,7 +41,7 @@ export default function PublicPagesFooter() {
                             <div className="w-16 h-16    bg-white rounded-lg flex items-center justify-center">
                                 <img src={Logo} alt="Logo" className="w-12 h-12" />
                             </div>
-                            <div className="text-right pr-2" >
+                            <div className="text-right pr-2">
                                 <span className="text-xl font-bold font-arabic">اتحاد شباب تحيا مصر</span>
                                 <div className="text-sm text-egypt-white/70 font-arabic">منظمة شبابية</div>
                             </div>

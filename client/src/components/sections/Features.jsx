@@ -160,7 +160,7 @@ const Features = () => {
                                     color: "bg-gradient-to-br from-blue-500 to-blue-600",
                                 },
                                 {
-                                    title: "اتحاد طلاب تحيا مصر",
+                                    title: "اتحاد طلاب مدارس تحيا مصر",
                                     img: StudentTahiaMisr,
                                     color: "bg-gradient-to-br from-egypt-red to-red-600",
                                 },
