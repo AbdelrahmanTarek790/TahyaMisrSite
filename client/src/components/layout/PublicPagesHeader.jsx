@@ -85,8 +85,7 @@ export default function PublicPagesHeader() {
                             <DropdownMenuLabel>حسابي</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             {user.role !== "user" && <DropdownMenuItem onClick={() => navigate("/dashboard")}>لوحة التحكم</DropdownMenuItem>}
-                            <DropdownMenuItem onClick={() => navigate("/settings/profile")}>الملف الشخصي</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate("/settings/account")}>إعدادات الحساب</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate("/profile")}>الملف الشخصي</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={handleLogout}>تسجيل الخروج</DropdownMenuItem>
                         </DropdownMenuContent>
@@ -145,7 +144,7 @@ export default function PublicPagesHeader() {
                         <Link to="/dashboard">Dashboard</Link>
                     </Button>
                     <Button variant="ghost" className="w-full" asChild>
-                        <Link to="/settings/account">Account Settings</Link>
+                        <Link to="/profile">Profile</Link>
                     </Button>
                     <Button variant="ghost" className="w-full" onClick={handleLogout}>
                         Logout

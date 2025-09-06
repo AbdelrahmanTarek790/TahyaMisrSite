@@ -247,7 +247,7 @@ const Profile = () => {
                   )}
                 </div>
 
-                <div>
+                {/* <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Academic Year
                   </label>
@@ -259,7 +259,7 @@ const Profile = () => {
                   {errors.year && (
                     <p className="text-red-500 text-sm mt-1">{errors.year.message}</p>
                   )}
-                </div>
+                </div> */}
               </div>
 
               {isEditing && (
