@@ -485,4 +485,58 @@ class   AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unionJourneySubtitle => 'We believe in the power of youth to shape Egypt\'s future.';
+
+  @override
+  String get unionJourneyItemDescription1 => 'We strive to build a generation of youth capable of leading Egypt towards a better future through organized and purposeful work.';
+
+  @override
+  String get unionJourneyItemDescription2 => 'We work in various fields to serve youth and the Egyptian community in all vital sectors.';
+
+  @override
+  String get unionJourneyItemDescription3 => 'We focus on the key issues that matter to Egyptian youth and affect their future and daily lives.';
+
+  @override
+  String get unionJourneyItemTitle1 => 'Our Future Vision';
+
+  @override
+  String get unionJourneyItemTitle2 => 'Fields of Work for the Tahya Misr Youth Union';
+
+  @override
+  String get unionJourneyItemTitle3 => 'Youth Priorities in Egypt';
+
+  @override
+  List<String> get unionJourneyItemBulletPoints1 => [
+    'Empowering youth for effective participation',
+    'Building capacity and leadership skills',
+    'Enhancing community and national awareness',
+    'Supporting innovative youth initiatives',
+    'Facilitating communication with decision-makers',
+    'Contributing to sustainable development',
+  ];
+
+  @override
+  List<String> get unionJourneyItemBulletPoints2 => [
+    'Community and volunteer sector',
+    'Political and national sector',
+    'Developmental and economic sector',
+    'Cultural and artistic sector',
+    'Educational and capacity-building sector',
+    'Sports and health sector',
+    'Environmental and sustainability sector',
+  ];
+
+  @override
+  List<String> get unionJourneyItemBulletPoints3 => [
+    'Education and personal development',
+    'Healthcare',
+    'Security, stability, and safety',
+    'Income and job opportunities',
+    'Self-development and empowerment',
+    'Environment',
+    'Infrastructure and public services',
+    'Community participation',
+    'Entertainment and hobbies',
+    'Technological development and artificial intelligence',
+  ];
+
 }

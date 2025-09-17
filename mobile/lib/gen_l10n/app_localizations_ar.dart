@@ -482,4 +482,62 @@ class  AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get unionJourneySubtitle => 'نحن نؤمن بقوة الشباب في تشكيل مستقبل مصر.';
+
+  @override
+
+  String get unionJourneyItemDescription1 => 'نسعى لبناء جيل من الشباب القادر على قيادة مصر نحو مستقبل أفضل من خلال العمل المنظم والهادف.';
+
+  @override
+
+  String get unionJourneyItemDescription2 => 'نعمل في مجالات متنوعة لخدمة الشباب والمجتمع المصري في جميع القطاعات الحيوية.';
+
+  @override
+
+  String get unionJourneyItemDescription3 => 'نركز على القضايا الأساسية التي تهم الشباب المصري وتؤثر على مستقبلهم وحياتهم اليومية.';
+
+  @override
+
+  String get unionJourneyItemTitle1 => 'رؤيتنا المستقبلية';
+
+  @override
+
+  String get unionJourneyItemTitle2 => 'ميادين العمل لاتحاد شباب تحيا مصر';
+
+  @override
+  String get unionJourneyItemTitle3 => 'أولويات الشباب في مصر';
+
+  @override
+  List<String> get unionJourneyItemBulletPoints1 => [
+    'تمكين الشباب من المشاركة الفعالة',
+    'بناء القدرات والمهارات القيادية',
+    'تعزيز الوعي المجتمعي والوطني',
+    'دعم المبادرات الشبابية المبتكرة',
+    'تحقيق التواصل مع صناع القرار',
+    'المساهمة في التنمية المستدامة',
+  ];
+
+  @override
+  List<String> get unionJourneyItemBulletPoints2 => [
+    'المجال المجتمعي والتطوعي',
+    'المجال السياسي والوطني',
+    'المجال التنموي والاقتصادي',
+    'المجال الثقافي والفني',
+    'المجال التعليمي وبناء القدرات',
+    'المجال الرياضي والصحي',
+    'المجال البيئي والاستدامة',
+  ];
+
+  @override
+  List<String> get unionJourneyItemBulletPoints3 => [
+    'التعليم والتطوير الشخصي',
+    'الرعاية الصحية',
+    'الأمن والاستقرار والسلامة',
+    'الدخل وفرص العمل',
+    'التطوير الشخصي وبناء الذات',
+    'البيئة',
+    'البنية التحتية والمرافق',
+    'المشاركة المجتمعية',
+    'الترفيه والهوايات',
+    'التطوير التكنولوجي والذكاء الاصطناعي',
+  ];
 }

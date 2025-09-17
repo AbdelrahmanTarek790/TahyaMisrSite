@@ -301,6 +301,17 @@ abstract class AppLocalizations {
 
   String get unionJourneySubtitle;
 
+  String get unionJourneyItemTitle1;
+  String get unionJourneyItemDescription1;
+  List<String> get unionJourneyItemBulletPoints1;
+  String get unionJourneyItemTitle2;
+  String get unionJourneyItemDescription2;
+
+  List<String> get unionJourneyItemBulletPoints2;
+  String get unionJourneyItemTitle3;
+  String get unionJourneyItemDescription3;
+
+  List<String> get unionJourneyItemBulletPoints3;
 
 }
 

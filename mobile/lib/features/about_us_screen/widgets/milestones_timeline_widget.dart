@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/app_theme.dart';
 import '../../../gen_l10n/app_localizations.dart';
 import '../../home/presentation/widgets/custom_icon_widget.dart';
 import '../../home/presentation/widgets/custom_image_widget.dart';
+import 'build_milestones_widget.dart';
 
 
 class MilestonesTimelineWidget extends StatefulWidget {
@@ -14,7 +16,6 @@ class MilestonesTimelineWidget extends StatefulWidget {
 }
 
 class _MilestonesTimelineWidgetState extends State<MilestonesTimelineWidget> {
-  bool _isExpanded = false;
 
   final List<Map<String, dynamic>> _milestones = [
     {
@@ -85,21 +86,9 @@ class _MilestonesTimelineWidgetState extends State<MilestonesTimelineWidget> {
             const SizedBox(
               height: 5,
             ),
-            Center(
-              child: Text(
-                l10n.unionJourneyTitle,
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 5,
-            ),
             Text(
-              l10n.unionJourneySubtitle,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              l10n.unionJourneyTitle,
+              style: AppTheme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.bold,
                 color: Theme.of(context).colorScheme.primary,
               ),
@@ -107,86 +96,38 @@ class _MilestonesTimelineWidgetState extends State<MilestonesTimelineWidget> {
             const SizedBox(
               height: 5,
             ),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  _isExpanded = !_isExpanded;
-                });
-              },
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 30,
-                      height: 28,
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.secondary,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: CustomIconWidget(
-                        iconName: 'album',
-                        color: Theme.of(context).colorScheme.onSecondary,
-                        size: 24,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        l10n.unionJourneyTitle,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
-                    ),
-                    CustomIconWidget(
-                      iconName: _isExpanded ? 'expand_less' : 'expand_more',
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 24,
-                    ),
-                  ],
-                ),
-              ),
+            Text(
+              l10n.unionJourneySubtitle,
+              style: AppTheme.textTheme.titleLarge?.copyWith(),
             ),
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              height: _isExpanded ? null : 0,
-              child: _isExpanded
-                  ? Container(
-                padding: const EdgeInsets.fromLTRB(8, 0, 4, 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    Divider(
-                      color: Theme.of(context).dividerColor,
-                      thickness: 2,
-                    ),
-                    const SizedBox(height: 4),
-                    const CustomImageWidget(
-                      imageUrl:
-                      'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-                      width: double.infinity,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      l10n.descriptionVision,
-                      style:
-                      Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        height: 1.6,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                      textAlign: TextAlign.right,
-                      textDirection: TextDirection.rtl,
-                    ),
-                  ],
-                ),
-              )
-                  : const SizedBox.shrink(),
+            const SizedBox(
+              height: 5,
+            ),
+            BuildMilestonesWidget(
+            title: l10n.unionJourneyItemTitle1,
+            description: l10n.unionJourneyItemDescription1,
+            bulletPoints: l10n.unionJourneyItemBulletPoints1,
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            BuildMilestonesWidget(
+              title: l10n.unionJourneyItemTitle2,
+              description: l10n.unionJourneyItemDescription2,
+              bulletPoints: l10n.unionJourneyItemBulletPoints2,
+
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            BuildMilestonesWidget(
+              title: l10n.unionJourneyItemTitle3,
+              description: l10n.unionJourneyItemDescription3,
+              bulletPoints: l10n.unionJourneyItemBulletPoints3,
+
+            ),
+            const SizedBox(
+              height: 5,
             ),
           ],
         ),
@@ -194,3 +135,4 @@ class _MilestonesTimelineWidgetState extends State<MilestonesTimelineWidget> {
     );
   }
 }
+
