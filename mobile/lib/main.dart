@@ -28,7 +28,6 @@ void main() async {
 
   Bloc.observer = AppBlocObserver();
 
-  // Lock device orientation to portrait mode
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
