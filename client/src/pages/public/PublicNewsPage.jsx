@@ -135,11 +135,11 @@ const PublicNewsPage = () => {
                             {filteredNews.map((newsItem, index) => (
                                 <Link to={`/news/${newsItem._id}`} key={newsItem._id}>
                                     <Card
-                                        className="group overflow-hidden hover:shadow-elegant hover:-translate-y-2 transition-all duration-500 bg-white border-gray-200 animate-slide-up"
+                                        className="group overflow-hidden h-full hover:shadow-elegant hover:-translate-y-2 transition-all duration-500 bg-white border-gray-200 animate-slide-up"
                                         style={{ animationDelay: `${index * 0.1}s` }}
                                     >
                                         {newsItem.image && (
-                                            <div className="aspect-video overflow-hidden relative">
+                                            <div className=" overflow-hidden relative">
                                                 <img
                                                     crossOrigin="anonymous"
                                                     src={`https://form.codepeak.software/uploads/${newsItem.image}`}

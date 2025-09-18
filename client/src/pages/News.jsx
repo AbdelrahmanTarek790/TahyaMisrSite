@@ -60,13 +60,13 @@ const News = () => {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Latest News</h1>
-                    <p className="text-gray-600">Stay updated with the latest announcements and news</p>
+                    <h1 className="text-3xl font-bold text-gray-900">الأخبار</h1>
+                    <p className="text-gray-600">تابع آخر الأخبار والإعلانات</p>
                 </div>
                 {user?.role === "admin" && (
                     <Button onClick={() => setIsCreateSheetOpen(true)}>
+                        إنشاء خبر
                         <Plus className="h-4 w-4 mr-2" />
-                        Create News
                     </Button>
                 )}
             </div>
@@ -76,7 +76,7 @@ const News = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                     type="text"
-                    placeholder="Search news..."
+                    placeholder="ابحث في الأخبار..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -107,8 +107,8 @@ const News = () => {
                 <Card>
                     <CardContent className="flex items-center justify-center py-12">
                         <div className="text-center">
-                            <h3 className="text-lg font-medium text-gray-900 mb-2">{searchTerm ? "No news found" : "No news available"}</h3>
-                            <p className="text-gray-600">{searchTerm ? "Try adjusting your search terms" : "Check back later for updates"}</p>
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">{searchTerm ? "لا توجد أخبار" : "لا توجد أخبار متاحة"}</h3>
+                            <p className="text-gray-600">{searchTerm ? "حاول تعديل مصطلحات البحث الخاصة بك" : "تحقق مرة أخرى لاحقًا للحصول على تحديثات"}</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -117,12 +117,12 @@ const News = () => {
                     {filteredNews.map((newsItem) => (
                         <Card key={newsItem._id} className="overflow-hidden hover:shadow-lg transition-shadow">
                             {newsItem.image && (
-                                <div className="aspect-video overflow-hidden">
+                                <div className=" overflow-hidden">
                                     <img
                                         crossOrigin="anonymous"
                                         src={`https://form.codepeak.software/uploads/${newsItem.image}`}
                                         alt={newsItem.title}
-                                        className="w-full h-full object-cover hover:scale-105 transition-transform"
+                                        className="w-full object-cover hover:scale-105 transition-transform"
                                     />
                                 </div>
                             )}
@@ -137,7 +137,7 @@ const News = () => {
                                 <p className="text-gray-600 line-clamp-3 mb-4">{newsItem.content}</p>
                                 <Button variant="outline" size="sm">
                                     <Link to={`/news/${newsItem._id}`} className="text-blue-600 hover:underline">
-                                        Read More
+                                        قراءة المزيد
                                     </Link>
                                 </Button>
                             </CardContent>

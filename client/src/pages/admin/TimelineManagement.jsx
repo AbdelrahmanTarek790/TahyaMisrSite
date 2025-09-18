@@ -70,8 +70,10 @@ const TimelineManagement = () => {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Journey Timeline Management</h1>
-            <p className="text-gray-600">Manage timeline events for the "Our Journey of Impact" section</p>
+            <h1 className="text-3xl font-bold text-gray-900">
+              اعدادات خط الزمن
+            </h1>
+            <p className="text-gray-600">إدارة أحداث الخط الزمني لقسم "رحلتنا من أجل التأثير"</p>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -100,12 +102,12 @@ const TimelineManagement = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Journey Timeline Management</h1>
-          <p className="text-gray-600">Manage timeline events for the "Our Journey of Impact" section</p>
+          <h1 className="text-3xl font-bold text-gray-900">اعدادات خط الزمن</h1>
+          <p className="text-gray-600">إدارة أحداث الخط الزمني لقسم "رحلتنا من أجل التأثير"</p>
         </div>
         <Button onClick={handleCreateNew}>
           <Plus className="h-4 w-4 mr-2" />
-          Add Timeline Event
+          إضافة حدث خط الزمن
         </Button>
       </div>
 
@@ -114,8 +116,8 @@ const TimelineManagement = () => {
         <Card>
           <CardContent className="flex items-center justify-center py-12">
             <div className="text-center">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">No timeline events</h3>
-              <p className="text-gray-600 mb-4">Get started by creating your first timeline event</p>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">لا توجد أحداث خط زمن</h3>
+              <p className="text-gray-600 mb-4">ابدأ بإنشاء أول حدث خط زمن</p>
               <Button onClick={handleCreateNew}>
                 <Plus className="h-4 w-4 mr-2" />
                 Add Timeline Event
@@ -157,7 +159,7 @@ const TimelineManagement = () => {
                     className="flex-1"
                   >
                     <Edit className="h-4 w-4 mr-1" />
-                    Edit
+                    تعديل
                   </Button>
                   <Button
                     variant="destructive"
@@ -166,7 +168,7 @@ const TimelineManagement = () => {
                     className="flex-1"
                   >
                     <Trash2 className="h-4 w-4 mr-1" />
-                    Delete
+                    حذف
                   </Button>
                 </div>
               </CardContent>
@@ -183,17 +185,17 @@ const TimelineManagement = () => {
             onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
             disabled={pagination.page === 1 || isLoading}
           >
-            Previous
+            السابق
           </Button>
           <span className="flex items-center px-4">
-            Page {pagination.page} of {Math.ceil(pagination.total / pagination.limit)}
+            الصفحة {pagination.page} من {Math.ceil(pagination.total / pagination.limit)}
           </span>
           <Button
             variant="outline"
             onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
             disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit) || isLoading}
           >
-            Next
+            التالي
           </Button>
         </div>
       )}

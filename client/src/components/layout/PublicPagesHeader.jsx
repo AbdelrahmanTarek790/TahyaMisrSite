@@ -27,7 +27,15 @@ import { Menu, Search, X, ChevronDown, User, LogIn, Bell } from "lucide-react"
 import { cn, getInitials } from "@/lib/utils"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 import { useAuth } from "@/context/AuthContext"
+
+const components = [
+    { title: "من نحن", href: "/about", description: "تعرف على المزيد حول أتحاد شباب تحيا مصر ورؤيتنا ورسالتنا." },
+    { title: "رحلة الاتحاد", href: "/journey", description: "تعرف على رحلة الاتحاد وأهدافه." },
+    // { title: "شركاؤنا", href: "/partners", description: "اكتشف شركاء النجاح الذين يدعمون مبادراتنا." },
+    // { title: "قصص النجاح", href: "/success-stories", description: "اقرأ قصص النجاح الملهمة من مشاريعنا ومبادراتنا." },
+]
 
 export default function PublicPagesHeader() {
     const navigate = useNavigate()
@@ -85,7 +93,8 @@ export default function PublicPagesHeader() {
                             <DropdownMenuLabel>حسابي</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             {user.role !== "user" && <DropdownMenuItem onClick={() => navigate("/dashboard")}>لوحة التحكم</DropdownMenuItem>}
-                            <DropdownMenuItem onClick={() => navigate("/profile")}>الملف الشخصي</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate("/settings/profile")}>الملف الشخصي</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate("/settings/account")}>إعدادات الحساب</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={handleLogout}>تسجيل الخروج</DropdownMenuItem>
                         </DropdownMenuContent>
@@ -144,7 +153,7 @@ export default function PublicPagesHeader() {
                         <Link to="/dashboard">Dashboard</Link>
                     </Button>
                     <Button variant="ghost" className="w-full" asChild>
-                        <Link to="/profile">Profile</Link>
+                        <Link to="/settings/account">Account Settings</Link>
                     </Button>
                     <Button variant="ghost" className="w-full" onClick={handleLogout}>
                         Logout
@@ -220,12 +229,22 @@ export default function PublicPagesHeader() {
                                         </NavLink>
                                     </NavigationMenuItem>
                                     <NavigationMenuItem>
-                                        <NavLink
+                                        {/* <NavLink    
                                             to="/about"
                                             className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}
                                         >
                                             من نحن
-                                        </NavLink>
+                                        </NavLink> */}
+                                        <NavigationMenuTrigger>من نحن</NavigationMenuTrigger>
+                                        <NavigationMenuContent>
+                                            <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px] text-right" dir="rtl">
+                                                {components.map((component) => (
+                                                    <ListItem key={component.title} title={component.title} href={component.href}>
+                                                        {component.description}
+                                                    </ListItem>
+                                                ))}
+                                            </ul>
+                                        </NavigationMenuContent>
                                     </NavigationMenuItem>
                                     <NavigationMenuItem>
                                         <NavLink
@@ -345,5 +364,18 @@ export default function PublicPagesHeader() {
                 </div>
             </header>
         </>
+    )
+}
+
+function ListItem({ title, children, href, ...props }) {
+    return (
+        <li {...props}>
+            <NavigationMenuLink asChild>
+                <Link to={href}>
+                    <div className="text-sm leading-none font-medium">{title}</div>
+                    <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">{children}</p>
+                </Link>
+            </NavigationMenuLink>
+        </li>
     )
 }

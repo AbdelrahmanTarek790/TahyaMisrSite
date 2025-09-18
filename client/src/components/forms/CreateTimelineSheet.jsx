@@ -81,16 +81,16 @@ const CreateTimelineSheet = ({ isOpen, onClose, onTimelineUpdate, timeline = nul
   return (
     <Sheet open={isOpen} onOpenChange={handleClose}>
       <SheetContent className="sm:max-w-md">
-        <SheetHeader>
+        <SheetHeader className={"text-left"}>
           <SheetTitle>
-            {timeline ? 'Edit Timeline Event' : 'Create Timeline Event'}
+            {timeline ? 'تعديل حدث خط الزمن' : 'إنشاء حدث خط الزمن'}
           </SheetTitle>
         </SheetHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6 px-4">
           <div>
             <label className="text-sm font-medium text-gray-700 block mb-2">
-              Year
+                السنه
             </label>
             <Input
               {...register('year')}
@@ -104,11 +104,11 @@ const CreateTimelineSheet = ({ isOpen, onClose, onTimelineUpdate, timeline = nul
 
           <div>
             <label className="text-sm font-medium text-gray-700 block mb-2">
-              Title
+              العنوان
             </label>
             <Input
               {...register('title')}
-              placeholder="Union Founded"
+              placeholder="تأسيس الاتحاد"
               disabled={isLoading}
             />
             {errors.title && (
@@ -118,11 +118,11 @@ const CreateTimelineSheet = ({ isOpen, onClose, onTimelineUpdate, timeline = nul
 
           <div>
             <label className="text-sm font-medium text-gray-700 block mb-2">
-              Description
+              الوصف
             </label>
             <textarea
               {...register('description')}
-              placeholder="Describe what happened in this year..."
+              placeholder="صف ما حدث في هذه السنة..."
               rows={3}
               disabled={isLoading}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -134,11 +134,11 @@ const CreateTimelineSheet = ({ isOpen, onClose, onTimelineUpdate, timeline = nul
 
           <div>
             <label className="text-sm font-medium text-gray-700 block mb-2">
-              Key Achievement
+              الإنجاز الرئيسي
             </label>
             <textarea
               {...register('achievement')}
-              placeholder="What was the key achievement in this year..."
+              placeholder="ما هو الإنجاز الرئيسي في هذه السنة..."
               rows={3}
               disabled={isLoading}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -150,7 +150,7 @@ const CreateTimelineSheet = ({ isOpen, onClose, onTimelineUpdate, timeline = nul
 
           <div>
             <label className="text-sm font-medium text-gray-700 block mb-2">
-              Order
+              الترتيب
             </label>
             <Input
               {...register('order', { valueAsNumber: true })}
@@ -172,10 +172,10 @@ const CreateTimelineSheet = ({ isOpen, onClose, onTimelineUpdate, timeline = nul
               disabled={isLoading}
               className="flex-1"
             >
-              Cancel
+              إلغاء
             </Button>
             <Button type="submit" disabled={isLoading} className="flex-1">
-              {isLoading ? 'Saving...' : timeline ? 'Update' : 'Create'}
+              {isLoading ? 'جاري الحفظ...' : timeline ? 'تحديث' : 'إنشاء'}
             </Button>
           </div>
         </form>

@@ -1,0 +1,40 @@
+{
+    "dashboard": {
+        "welcome": {
+            "morning": "صباح الخير",
+            "afternoon": "مساء الخير",
+            "evening": "مساء الخير"
+        },
+        "welcomeMessage": "مرحباً بك في لوحة تحكم {role} الخاصة بك في تحيا مصر",
+        "stats": {
+            "newsArticles": "المقالات الإخبارية",
+            "upcomingEvents": "الفعاليات القادمة",
+            "mediaItems": "العناصر الإعلامية",
+            "activeMembers": "الأعضاء النشطون",
+            "publishedArticles": "المقالات المنشورة",
+            "totalEvents": "إجمالي الفعاليات",
+            "photosAndVideos": "الصور والفيديوهات",
+            "registeredUsers": "المستخدمون المسجلون"
+        },
+        "sections": {
+            "recentNews": "الأخبار الحديثة",
+            "latestPublishedArticles": "آخر المقالات المنشورة",
+            "upcomingEvents": "الفعاليات القادمة",
+            "scheduledEvents": "الفعاليات المجدولة",
+            "noNewsAvailable": "لا توجد أخبار متاحة",
+            "noEventsAvailable": "لا توجد فعاليات متاحة",
+            "viewMore": "عرض المزيد",
+            "loading": "جاري التحميل..."
+        },
+        "errors": {
+            "failedToLoadData": "فشل في تحميل بيانات لوحة التحكم"
+        },
+        "roles": {
+            "admin": "المدير",
+            "user": "المستخدم",
+            "moderator": "المشرف",
+            "volunteer": "المتطوع",
+            "student": "الطالب"
+        }
+    }
+}

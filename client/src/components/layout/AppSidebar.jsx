@@ -18,17 +18,17 @@ export function AppSidebar(props) {
 
     // Define navigation items
     const navItems = [
-        { title: "Dashboard", url: "/dashboard", icon: Home, role: ["student", "volunteer", "admin"] },
-        { title: "News", url: "/dashboard/news", icon: Newspaper, role: ["student", "volunteer", "admin"] },
-        { title: "Events", url: "/dashboard/events", icon: Calendar, role: ["student", "volunteer", "admin"] },
-        { title: "Media", url: "/media", icon: Image, role: ["student", "volunteer", "admin"] },
-        { title: "Manage News", url: "/admin/news", icon: Newspaper, role: ["admin"] },
-        { title: "Manage Events", url: "/admin/events", icon: Calendar, role: ["admin"] },
-        { title: "Timeline", url: "/admin/timeline", icon: Clock, role: ["admin"] },
-        { title: "Users", url: "/admin/users", icon: Users, role: ["admin"] },
-        { title: "Positions", url: "/admin/positions", icon: Settings, role: ["admin"] },
-        { title: "Notifications", url: "/admin/notifications", icon: Bell, role: ["admin"] },
-        { title: "Settings", url: "/settings", icon: UserCircle, role: ["student", "volunteer", "admin"] },
+        { title: "لوحة التحكم", url: "/dashboard", icon: Home, role: ["student", "volunteer", "admin"] },
+        { title: "الأخبار", url: "/dashboard/news", icon: Newspaper, role: ["student", "volunteer", "admin"] },
+        { title: "الفعاليات", url: "/dashboard/events", icon: Calendar, role: ["student", "volunteer", "admin"] },
+        { title: "الوسائط", url: "/media", icon: Image, role: ["student", "volunteer", "admin"] },
+        { title: "إدارة الأخبار", url: "/admin/news", icon: Newspaper, role: ["admin"] },
+        { title: "إدارة الفعاليات", url: "/admin/events", icon: Calendar, role: ["admin"] },
+        { title: "الجدول الزمني", url: "/admin/timeline", icon: Clock, role: ["admin"] },
+        { title: "المستخدمون", url: "/admin/users", icon: Users, role: ["admin"] },
+        { title: "المناصب", url: "/admin/positions", icon: Settings, role: ["admin"] },
+        { title: "الإشعارات", url: "/admin/notifications", icon: Bell, role: ["admin"] },
+        { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["student", "volunteer", "admin"] },
     ]
 
     // Filter navigation items based on user role and authentication status
@@ -62,13 +62,15 @@ export function AppSidebar(props) {
     // ]
 
     return (
-        <Sidebar collapsible="offcanvas" {...props} >
+        <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-                            <a href="/">
-                                <span className="text-base font-semibold">NewsPress</span>
+                        <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5  py-4">
+                            <a href="/" className=" text-center  py-4">
+                                <p className="text-2xl py-2 font-bold mx-auto">
+                                    اتحاد شباب <span className="text-egypt-red">تحيا مصر</span>
+                                </p>
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>

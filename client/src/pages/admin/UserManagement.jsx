@@ -273,12 +273,12 @@ const UserManagement = () => {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">User Management</h1>
-                    <p className="text-gray-600">Manage users and their roles</p>
+                    <h1 className="text-3xl font-bold text-gray-900"> إدارة المستخدمين</h1>
+                    <p className="text-gray-600">إدارة المستخدمين وأدوارهم</p>
                 </div>
                 <Button onClick={() => setIsCreateSheetOpen(true)}>
                     <UserPlus className="h-4 w-4 mr-2" />
-                    Create User
+                    إنشاء مستخدم
                 </Button>
             </div>
 
@@ -288,7 +288,7 @@ const UserManagement = () => {
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                     <Input
                         type="text"
-                        placeholder="Search users (name, email, university, national ID, membership, phone)..."
+                        placeholder="ابحث في المستخدمين..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-10"
@@ -299,17 +299,17 @@ const UserManagement = () => {
                     onChange={(e) => setFilterRole(e.target.value)}
                     className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                    <option value="all">All Roles</option>
-                    <option value="student">Students</option>
-                    <option value="volunteer">Volunteers</option>
-                    <option value="admin">Admins</option>
+                    <option value="all">كل المستخدمين</option>
+                    <option value="student">الاعضاء</option>
+                    <option value="volunteer">المتطوعين</option>
+                    <option value="admin">المدراء</option>
                 </select>
                 <select
                     value={filterGovernorate}
                     onChange={(e) => setFilterGovernorate(e.target.value)}
                     className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                    <option value="all">All Governorates</option>
+                    <option value="all">كل المحافظات</option>
                     {EGYPT_GOVERNORATES.map((governorate) => (
                         <option key={governorate} value={governorate}>
                             {governorate}
@@ -321,7 +321,7 @@ const UserManagement = () => {
                     onChange={(e) => setFilterUniversity(e.target.value)}
                     className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
-                    <option value="all">All Universities</option>
+                    <option value="all">كل الجامعات</option>
                     {uniqueUniversities.map((university) => (
                         <option key={university} value={university}>
                             {university}
@@ -330,7 +330,7 @@ const UserManagement = () => {
                 </select>
                 <Button variant="outline" onClick={clearFilters}>
                     <Filter className="h-4 w-4 mr-2" />
-                    Clear
+                    مسح الفلاتر
                 </Button>
             </div>
 
@@ -347,13 +347,13 @@ const UserManagement = () => {
                         <div className="text-center">
                             <h3 className="text-lg font-medium text-gray-900 mb-2">
                                 {searchTerm || filterRole !== "all" || filterGovernorate !== "all" || filterUniversity !== "all"
-                                    ? "No users found"
-                                    : "No users available"}
+                                    ? "لا توجد مستخدمين"
+                                    : "لا توجد مستخدمين متاحين"}
                             </h3>
                             <p className="text-gray-600">
                                 {searchTerm || filterRole !== "all" || filterGovernorate !== "all" || filterUniversity !== "all"
-                                    ? "Try adjusting your search or filter criteria"
-                                    : "Users will appear here once they register"}
+                                    ? "حاول تعديل معايير البحث أو الفلترة"
+                                    : "سيظهر المستخدمون هنا بمجرد تسجيلهم"}
                             </p>
                         </div>
                     </CardContent>
@@ -361,23 +361,23 @@ const UserManagement = () => {
             ) : (
                 <Card>
                     <CardHeader>
-                        <CardTitle>Users ({filteredUsers.length})</CardTitle>
-                        <CardDescription>Manage user accounts and permissions</CardDescription>
+                        <CardTitle>المستخدمين ({filteredUsers.length})</CardTitle>
+                        <CardDescription>إدارة حسابات المستخدمين والأذونات</CardDescription>
                     </CardHeader>
                     <CardContent>
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b">
-                                        <th className="text-left pb-3 font-medium">User</th>
-                                        <th className="text-left pb-3 font-medium">Role</th>
-                                        <th className="text-left pb-3 font-medium">University</th>
-                                        <th className="text-left pb-3 font-medium">Governorate</th>
-                                        <th className="text-left pb-3 font-medium">National ID</th>
-                                        <th className="text-left pb-3 font-medium">Position</th>
-                                        <th className="text-left pb-3 font-medium">Membership</th>
-                                        <th className="text-left pb-3 font-medium">Joined</th>
-                                        <th className="text-left pb-3 font-medium">Actions</th>
+                                        <th className="text-left pb-3 font-medium">المستخدم</th>
+                                        <th className="text-left pb-3 font-medium">الدور</th>
+                                        <th className="text-left pb-3 font-medium">الجامعة</th>
+                                        <th className="text-left pb-3 font-medium">المحافظة</th>
+                                        <th className="text-left pb-3 font-medium">الرقم القومي</th>
+                                        <th className="text-left pb-3 font-medium">الوظيفة</th>
+                                        <th className="text-left pb-3 font-medium">العضوية</th>
+                                        <th className="text-left pb-3 font-medium">تاريخ الانضمام</th>
+                                        <th className="text-left pb-3 font-medium">الإجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>

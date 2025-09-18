@@ -46,7 +46,7 @@ const Contact = () => {
                                     <a
                                         key={index}
                                         href={item.href}
-                                        className="flex flex-row-reverse text-right items-center space-x-4 p-4 rounded-lg bg-card hover:shadow-card transition-all duration-300 group"
+                                        className="flex text-right items-center space-x-4 p-4 rounded-lg bg-card hover:shadow-card transition-all duration-300 group"
                                     >
                                         <div className="w-12 h-12 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center group-hover:shadow-glow transition-all duration-300">
                                             <item.icon className="w-6 h-6 text-egypt-white" />
@@ -129,7 +129,7 @@ const Contact = () => {
                                     </div>
 
                                     <Button variant="cta" size="lg" className="w-full">
-                                        <Send className="w-5 h-5 mr-2" />
+                                        <Send className="w-5 h-5 mr-2 ml-2" />
                                         إرسال الرسالة
                                     </Button>
                                 </form>

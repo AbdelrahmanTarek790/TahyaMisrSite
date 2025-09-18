@@ -146,7 +146,7 @@ const NewsDetailPage = () => {
                             src={`https://form.codepeak.software/uploads/${newsItem.image}`}
                             crossOrigin="anonymous"
                             alt={newsItem.title}
-                            className="w-full h-64 md:h-96 object-cover"
+                            className=" w-1/2 mx-auto object-cover"
                         />
                     </div>
                 )}

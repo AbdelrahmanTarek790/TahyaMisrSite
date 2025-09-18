@@ -85,13 +85,13 @@ const Events = () => {
             {/* Header */}
             <div className="flex justify-between items-center">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Events</h1>
-                    <p className="text-gray-600">Discover and register for upcoming events</p>
+                    <h1 className="text-3xl font-bold text-gray-900">الأحداث</h1>
+                    <p className="text-gray-600">اكتشف وسجل في الأحداث القادمة</p>
                 </div>
                 {user?.role === "admin" && (
                     <Button onClick={() => setIsCreateSheetOpen(true)}>
+                        إنشاء حدث
                         <Plus className="h-4 w-4 mr-2" />
-                        Create Event
                     </Button>
                 )}
             </div>
@@ -101,7 +101,7 @@ const Events = () => {
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
                 <Input
                     type="text"
-                    placeholder="Search events..."
+                    placeholder="ابحث في الأحداث..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="pl-10"
@@ -132,8 +132,10 @@ const Events = () => {
                 <Card>
                     <CardContent className="flex items-center justify-center py-12">
                         <div className="text-center">
-                            <h3 className="text-lg font-medium text-gray-900 mb-2">{searchTerm ? "No events found" : "No events available"}</h3>
-                            <p className="text-gray-600">{searchTerm ? "Try adjusting your search terms" : "Check back later for upcoming events"}</p>
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">{searchTerm ? "لا توجد أحداث" : "لا توجد أحداث متاحة"}</h3>
+                            <p className="text-gray-600">
+                                {searchTerm ? "حاول تعديل مصطلحات البحث الخاصة بك" : "تحقق مرة أخرى لاحقًا للحصول على تحديثات"}
+                            </p>
                         </div>
                     </CardContent>
                 </Card>
@@ -148,15 +150,18 @@ const Events = () => {
                                         src={`https://form.codepeak.software/uploads/${event.image}`}
                                         alt={event.title}
                                         className="w-full h-full object-cover hover:scale-105 transition-transform"
+                                        onError={(e) => {
+                                            e.target.src = "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&h=400&fit=crop"
+                                        }}
                                     />
                                     {isEventToday(event.date) && (
                                         <div className="absolute top-2 right-2 bg-green-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                                            Today
+                                            اليوم
                                         </div>
                                     )}
                                     {isEventPast(event.date) && (
                                         <div className="absolute top-2 right-2 bg-gray-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
-                                            Past
+                                            ماضٍ
                                         </div>
                                     )}
                                 </div>
@@ -174,7 +179,7 @@ const Events = () => {
                                     </div>
                                     <div className="flex items-center text-sm text-gray-500">
                                         <Users className="mr-1 h-3 w-3" />
-                                        {event.registeredUsers?.length || 0} registered
+                                        {event.registeredUsers?.length || 0} مسجلين
                                     </div>
                                 </CardDescription>
                             </CardHeader>

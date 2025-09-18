@@ -12,6 +12,8 @@ import NewsTahiaMisr from "@/assets/newsTahiaMisr.jpg"
 import StudentTahiaMisr from "@/assets/StudentUnuion.jpg"
 import Eaeat from "@/assets/EAEAT.jpg"
 
+import { InViewSection, InViewStagger } from "@/components/ui/MotionComponents"
+
 const Features = () => {
     const achievements = [
         {
@@ -87,35 +89,37 @@ const Features = () => {
     return (
         <section className="py-10 bg-background">
             <div className="container mx-auto px-6">
-                <div className="text-center mb-16 animate-fade-in">
+                <InViewSection animation="fadeInUp" className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 font-arabic">
-                        🔹 <span className="text-egypt-gold">إنجازات ومشروعات 🔹</span>
+                        🔹 <span className="text-egypt-gold animate-gradient">إنجازات ومشروعات 🔹</span>
                     </h2>
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                         مشروعاتنا ومبادراتنا التي تهدف إلى تمكين الشباب المصري وخدمة المجتمع في مختلف المجالات
                     </p>
-                </div>
+                </InViewSection>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <InViewStagger className="grid grid-cols-1 lg:grid-cols-3 gap-8" staggerDelay={0.2}>
                     {achievements.map((achievement, index) => (
-                        <Card
-                            key={index}
-                            className="bg-card border-border hover:shadow-card transition-all duration-300 hover:-translate-y-2 group animate-slide-up overflow-hidden"
-                            style={{ animationDelay: `${index * 0.1}s` }}
-                        >
+                        <Card key={index} className="bg-card border-border card-hover group overflow-hidden">
                             {/* Project Image */}
-                            <div className="aspect-video bg-gradient-to-br from-egypt-red/10 to-egypt-gold/10 flex items-center justify-center">
-                                <img src={achievement.image} alt={achievement.title} className="object-cover w-[250px]" />
+                            <div className="aspect-video bg-gradient-to-br from-egypt-red/10 to-egypt-gold/10 flex items-center justify-center overflow-hidden">
+                                <img
+                                    src={achievement.image}
+                                    alt={achievement.title}
+                                    className="object-cover w-[250px] group-hover:scale-110 transition-transform duration-500"
+                                />
                             </div>
 
                             <CardHeader className="pb-4">
                                 <div className="flex items-center gap-3 mb-2">
                                     <div
-                                        className={`w-10 h-10 bg-gradient-to-br from-egypt-red to-egypt-gold rounded-full flex items-center justify-center`}
+                                        className={`w-10 h-10 bg-gradient-to-br from-egypt-red to-egypt-gold rounded-full flex items-center justify-center group-hover:animate-float`}
                                     >
-                                        <achievement.icon className="w-6 h-6 text-white" />
+                                        <achievement.icon className="w-6 h-6 text-white group-hover:animate-pulse" />
                                     </div>
-                                    <CardTitle className="text-xl text-foreground font-arabic text-right flex-1">{achievement.title}</CardTitle>
+                                    <CardTitle className="text-xl text-foreground font-arabic text-right flex-1 group-hover:text-egypt-red transition-colors duration-300">
+                                        {achievement.title}
+                                    </CardTitle>
                                 </div>
                             </CardHeader>
 
@@ -126,9 +130,9 @@ const Features = () => {
                                     <h4 className="font-semibold text-foreground text-right font-arabic">أبرز المحاور:</h4>
                                     <ul className="space-y-1">
                                         {achievement.highlights.map((highlight, idx) => (
-                                            <li key={idx} className="text-sm text-muted-foreground flex items-center justify-end gap-2 font-arabic">
-                                                <span>{highlight}</span>
+                                            <li key={idx} className="text-sm text-muted-foreground flex  items-center gap-2 font-arabic">
                                                 <span className="w-2 h-2 bg-egypt-gold rounded-full"></span>
+                                                <span>{highlight}</span>
                                             </li>
                                         ))}
                                     </ul>
@@ -136,10 +140,10 @@ const Features = () => {
                             </CardContent>
                         </Card>
                     ))}
-                </div>
+                </InViewStagger>
 
                 {/* Union Activities Section */}
-                <div className="mt-20">
+                <InViewSection animation="fadeInUp" delay={0.3} className="mt-20">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 font-arabic">
                             🔹 <span className="text-egypt-gold">أهم الأنشطة المندرجة تحت الاتحاد 🔹</span>
@@ -152,7 +156,7 @@ const Features = () => {
                     <div className="bg-gradient-to-br from-egypt-red/5 to-egypt-gold/5 rounded-2xl p-8">
                         <h3 className="text-2xl font-bold text-foreground mb-8 text-center font-arabic">🔹 أنشطة مركزية 🔹</h3>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <InViewStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.15}>
                             {[
                                 {
                                     title: "أسرة اتحاد طلاب تحيا مصر بالأكاديمية المصرية للهندسة والتكنولوجيا المتقدمة",
@@ -180,7 +184,7 @@ const Features = () => {
                                     key={index}
                                     className="bg-white/80 backdrop-blur-sm border-2 border-white/20 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
                                 >
-                                    <CardHeader className="text-center pb-4 flex items-end">
+                                    <CardHeader className="text-center pb-4 ">
                                         <img src={activity.img} alt={activity.title} className="w-32  text-white" />
                                     </CardHeader>
                                     <CardContent className="text-center">
@@ -190,7 +194,7 @@ const Features = () => {
                                     </CardContent>
                                 </Card>
                             ))}
-                        </div>
+                        </InViewStagger>
 
                         <div className="mt-8 text-center">
                             <p className="text-muted-foreground font-arabic">
@@ -198,7 +202,7 @@ const Features = () => {
                             </p>
                         </div>
                     </div>
-                </div>
+                </InViewSection>
 
                 <div className="mt-16 text-center">
                     <div className="bg-[linear-gradient(145deg,_rgb(255,255,255),_rgb(242,242,242))] rounded-xl p-8 shadow-card">

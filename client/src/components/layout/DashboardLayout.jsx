@@ -6,10 +6,13 @@ import { Navigate } from "react-router-dom"
 import { SidebarInset, SidebarProvider } from "../ui/sidebar"
 import { AppSidebar } from "./AppSidebar"
 import { Header } from "./Header"
+import { useLocalization } from "@/hooks/useLocalization"
 
 export function DashboardLayout({ children }) {
     const { isAuthenticated, loading } = useAuth()
     const [sidebarOpen, setSidebarOpen] = useState(true)
+
+    const { t, isRTL } = useLocalization()
 
     if (loading) {
         return (
@@ -30,13 +33,12 @@ export function DashboardLayout({ children }) {
                 "--header-height": "calc(var(--spacing) * 12)",
             }}
         >
-            <AppSidebar variant="inset" />
-
             {/* Sidebar with fixed width */}
             {/* <div className={`h-full ${sidebarOpen ? "w-64" : "w-0"} transition-all duration-300 overflow-hidden`}>
                 <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
-            </div> */}
+                </div> */}
 
+            <AppSidebar variant="inset" side={isRTL ? "right" : "left"} />
             {/* Main area */}
             <SidebarInset>
                 <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />

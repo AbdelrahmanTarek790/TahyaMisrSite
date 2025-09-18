@@ -73,12 +73,12 @@ const NewsManagement = () => {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">News Management</h1>
-          <p className="text-gray-600">Create and manage news articles</p>
+          <h1 className="text-3xl font-bold text-gray-900">إدارة الأخبار</h1>
+          <p className="text-gray-600">إنشاء وإدارة مقالات الأخبار</p>
         </div>
         <Button onClick={handleNewNews}>
           <Plus className="mr-2 h-4 w-4" />
-          Add News
+          إضافة خبر
         </Button>
       </div>
 
@@ -94,11 +94,11 @@ const NewsManagement = () => {
           <Card>
             <CardContent className="flex items-center justify-center py-12">
               <div className="text-center">
-                <h3 className="text-lg font-medium text-gray-900 mb-2">No news articles</h3>
-                <p className="text-gray-600 mb-4">Get started by creating your first news article</p>
+                <h3 className="text-lg font-medium text-gray-900 mb-2">لا توجد مقالات أخبار</h3>
+                <p className="text-gray-600 mb-4">ابدأ بإنشاء أول مقالة أخبارية لك</p>
                 <Button onClick={handleNewNews}>
                   <Plus className="mr-2 h-4 w-4" />
-                  Add News
+                  إضافة خبر
                 </Button>
               </div>
             </CardContent>
@@ -131,7 +131,8 @@ const NewsManagement = () => {
                 <div className="flex space-x-4">
                   {newsItem.image && (
                     <img
-                      src={`http://localhost:5000${newsItem.image}`}
+                      src={`https://form.codepeak.software/uploads/${newsItem.image}`}
+                      crossOrigin='anonymous'
                       alt={newsItem.title}
                       className="w-24 h-24 object-cover rounded-lg"
                     />

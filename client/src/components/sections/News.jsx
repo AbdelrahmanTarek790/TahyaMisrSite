@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { InViewSection, InViewStagger } from "@/components/ui/MotionComponents"
 import { Calendar, Clock, ArrowRight } from "lucide-react"
 import { Button } from "../ui/enhanced-button"
 import { useState, useEffect } from "react"
@@ -52,16 +53,16 @@ const News = () => {
     }
 
     return (
-        <section className="py-20 bg-background overflow-hidden">
+        <section className="py-20 bg-[linear-gradient(180deg,_rgb(245,245,245),_rgb(255,255,255))]">
             <div className="container mx-auto px-6">
-                <div className="text-center mb-16 animate-fade-in">
+                <InViewSection animation="fadeInUp" className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                        أخر <span className="text-egypt-red">الأخبار</span>
+                        آخر <span className="text-egypt-red animate-gradient">الأخبار</span>
                     </h2>
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-                        تابع أحدث التطورات والإنجازات والمبادرات من مجتمع اتحاد شباب تحيا مصر.
+                        تابع أحدث الأخبار والفعاليات والمبادرات التي ينظمها اتحاد شباب تحيا مصر
                     </p>
-                </div>
+                </InViewSection>
 
                 {isLoading ? (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
@@ -95,16 +96,16 @@ const News = () => {
                         </div>
                     </div>
                 ) : newsItems.length > 0 ? (
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                    <InViewStagger className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12" staggerDelay={0.2}>
                         {/* Featured News */}
-                        <div className="lg:col-span-1 animate-slide-up">
+                        <div className="lg:col-span-1">
                             <Card className="group bg-card border-border hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 overflow-hidden">
                                 <div className="relative overflow-hidden">
                                     <img
                                         src={`${newsItems[0].image}`}
                                         alt={newsItems[0].title}
                                         crossOrigin="anonymous"
-                                        className="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-700"
+                                        className="w-full object-cover group-hover:scale-110 transition-transform duration-700"
                                         onError={(e) => {
                                             e.target.src = "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop"
                                         }}
@@ -133,8 +134,8 @@ const News = () => {
                                             variant="outline"
                                             className="group-hover:bg-egypt-red group-hover:text-egypt-white group-hover:border-egypt-red transition-all duration-300"
                                         >
-                                            <span className="text-sm font-semibold">اقرأ المزيد</span>
                                             <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform duration-300" />
+                                            <span className="text-sm font-semibold">اقرأ المزيد</span>
                                         </Button>
                                     </Link>
                                 </CardContent>
@@ -180,20 +181,18 @@ const News = () => {
                                 </Card>
                             ))}
                         </div>
-                    </div>
+                    </InViewStagger>
                 ) : (
                     <div className="text-center py-12">
-                        <p className="text-muted-foreground text-lg">
-                            لا توجد أخبار متاحة في الوقت الحالي.
-                        </p>
+                        <p className="text-muted-foreground text-lg">لا توجد أخبار متاحة في الوقت الحالي.</p>
                     </div>
                 )}
 
                 <div className="text-center animate-bounce-in">
                     <Link to="/news">
                         <Button variant="cta" size="lg" className="hover:shadow-glow hover:scale-105 transition-all duration-300">
-                            عرض جميع الأخبار
                             <ArrowRight className="w-5 h-5 ml-2" />
+                            عرض جميع الأخبار
                         </Button>
                     </Link>
                 </div>

@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom"
 import { AuthProvider, useAuth } from "./context/AuthContext"
 import { ErrorProvider } from "./context/ErrorContext"
+// import { LocalizationProvider } from "./hooks/useLocalization"
 import ProtectedRoute from "./components/ProtectedRoute"
 import ErrorDisplay from "./components/ui/ErrorDisplay"
 import Login from "./pages/auth/Login"
@@ -17,7 +18,7 @@ import NotificationsManagement from "./pages/admin/NotificationsManagement"
 import TimelineManagement from "./pages/admin/TimelineManagement"
 import Profile from "./pages/Profile"
 import Settings from "./pages/Settings"
-// import LandingPage from "./pages/public/LandingPage"
+import LandingPage from "./pages/public/LandingPage"
 import AboutPage from "./pages/public/AboutPage"
 import ContactPage from "./pages/public/ContactPage"
 import PublicNewsPage from "./pages/public/PublicNewsPage"
@@ -28,154 +29,157 @@ import { DashboardLayout } from "./components/layout/DashboardLayout"
 import PublicLayout from "./components/layout/PublicPagesLayout"
 import Home from "./pages/Home"
 import EventDetailPage from "./pages/public/EventDetailPage"
+import Journy from "./pages/public/Journy"
+import ScrollToTop from "./components/ScrollToTop"
 
 function App() {
     const { isAuthenticated, user } = useAuth()
     return (
         <ErrorProvider>
             <Router>
-                <Routes>
+                <ScrollToTop>
+                    <Routes>
+                        <Route element={<PublicLayout />}>
+                            {/* Public Routes */}
+                            <Route path="/" element={<Home />} />
+                            <Route path="/about" element={<AboutPage />} />
+                            <Route path="/contact" element={<ContactPage />} />
+                            <Route path="/news" element={<PublicNewsPage />} />
+                            <Route path="/news/:id" element={<NewsDetailPage />} />
+                            <Route path="/events" element={<PublicEventsPage />} />
+                            <Route path="/events/:id" element={<EventDetailPage />} />
+                            <Route path="/journey" element={<Journy />} />
+                        </Route>
 
+                        {/* Auth Routes */}
+                        <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
+                        <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
+                        {/* Protected Routes */}
 
-                    <Route element={<PublicLayout />}>
-                        {/* Public Routes */}
-                        <Route path="/" element={<Home />} />
-                        <Route path="/about" element={<AboutPage />} />
-                        <Route path="/contact" element={<ContactPage />} />
-                        <Route path="/news" element={<PublicNewsPage />} />
-                        <Route path="/news/:id" element={<NewsDetailPage />} />
-                        <Route path="/events" element={<PublicEventsPage />} />
-                        <Route path="/events/:id" element={<EventDetailPage />} />
-                    </Route>
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <ProtectedRoute>
+                                    <DashboardLayout>
+                                        <Dashboard />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/news"
+                            element={
+                                <ProtectedRoute>
+                                    <DashboardLayout>
+                                        <News />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/dashboard/events"
+                            element={
+                                <ProtectedRoute>
+                                    <DashboardLayout>
+                                        <Events />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/media"
+                            element={
+                                <ProtectedRoute>
+                                    <DashboardLayout>
+                                        <MediaPage />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/profile"
+                            element={
+                                <ProtectedRoute>
+                                    <DashboardLayout>
+                                        <Profile />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/settings"
+                            element={
+                                <ProtectedRoute>
+                                    <DashboardLayout>
+                                        <Settings />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
 
-                    {/* Auth Routes */}
-                    <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-                    <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
-                    {/* Protected Routes */}
-
-                    <Route
-                        path="/dashboard"
-                        element={
-                            <ProtectedRoute>
-                                <DashboardLayout>
-                                    <Dashboard />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/dashboard/news"
-                        element={
-                            <ProtectedRoute>
-                                <DashboardLayout>
-                                    <News />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/dashboard/events"
-                        element={
-                            <ProtectedRoute>
-                                <DashboardLayout>
-                                    <Events />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/media"
-                        element={
-                            <ProtectedRoute>
-                                <DashboardLayout>
-                                    <MediaPage />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/profile"
-                        element={
-                            <ProtectedRoute>
-                                <DashboardLayout>
-                                    <Profile />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/settings"
-                        element={
-                            <ProtectedRoute>
-                                <DashboardLayout>
-                                    <Settings />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-
-                    {/* Admin Routes */}
-                    <Route
-                        path="/admin/news"
-                        element={
-                            <ProtectedRoute roles={["admin"]}>
-                                <DashboardLayout>
-                                    <NewsManagement />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin/events"
-                        element={
-                            <ProtectedRoute roles={["admin"]}>
-                                <DashboardLayout>
-                                    <EventsManagement />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin/users"
-                        element={
-                            <ProtectedRoute roles={["admin"]}>
-                                <DashboardLayout>
-                                    <UserManagement />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin/positions"
-                        element={
-                            <ProtectedRoute roles={["admin"]}>
-                                <DashboardLayout>
-                                    <PositionsManagement />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin/notifications"
-                        element={
-                            <ProtectedRoute roles={["admin"]}>
-                                <DashboardLayout>
-                                    <NotificationsManagement />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                    <Route
-                        path="/admin/timeline"
-                        element={
-                            <ProtectedRoute roles={["admin"]}>
-                                <DashboardLayout>
-                                    <TimelineManagement />
-                                </DashboardLayout>
-                            </ProtectedRoute>
-                        }
-                    />
-                </Routes>
+                        {/* Admin Routes */}
+                        <Route
+                            path="/admin/news"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <DashboardLayout>
+                                        <NewsManagement />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/events"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <DashboardLayout>
+                                        <EventsManagement />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/users"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <DashboardLayout>
+                                        <UserManagement />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/positions"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <DashboardLayout>
+                                        <PositionsManagement />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/notifications"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <DashboardLayout>
+                                        <NotificationsManagement />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/timeline"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <DashboardLayout>
+                                        <TimelineManagement />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                    </Routes>
+                </ScrollToTop>
             </Router>
             <ErrorDisplay />
         </ErrorProvider>

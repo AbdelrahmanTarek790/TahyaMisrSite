@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react"
-import Icon from "../AppIcon"
+import Icon from "../../components/AppIcon"
 import { timelineAPI } from "../../api"
 
 const Journy = () => {
@@ -142,7 +142,7 @@ const Journy = () => {
                     {pillars?.map((pillar, index) => (
                         <div
                             key={index}
-                            className="bg-card text-right  rounded-2xl p-8 shadow-card hover:shadow-elevation transition-smooth border border-border"
+                            className="bg-card rounded-2xl p-8 shadow-card hover:shadow-elevation transition-smooth border border-border"
                         >
                             <div className=" bg-success/10 rounded-2xl flex items-center justify-end mb-6">
                                 <Icon name={pillar?.icon} size={32} className="text-green-500 " />
@@ -153,7 +153,7 @@ const Journy = () => {
 
                             <ul className="space-y-3">
                                 {pillar?.features?.map((feature, featureIndex) => (
-                                    <li key={featureIndex} className="flex items-center flex-row-reverse gap-3">
+                                    <li key={featureIndex} className="flex  gap-3">
                                         <Icon name="Check" size={16} className="text-green-500" />
                                         <span className="text-sm text-text-secondary">{feature}</span>
                                     </li>
@@ -206,7 +206,7 @@ const Journy = () => {
                                         <button
                                             key={index}
                                             onClick={() => setActiveTimeline(index)}
-                                            className={`w-full text-left p-4 rounded-xl transition-smooth ${
+                                            className={`w-full text-right p-4 rounded-xl transition-smooth ${
                                                 activeTimeline === index
                                                     ? "bg-egypt-gold text-primary-foreground"
                                                     : "bg-background hover:bg-background/80"
