@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tahya_misr_app/features/about_us_screen/about_us_screen.dart';
+import 'package:tahya_misr_app/features/media/presentation/pages/media_detail_page.dart';
 
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
@@ -81,6 +82,14 @@ class AppRouter {
             GoRoute(
               path: '/media',
               builder: (context, state) => const MediaGalleryPage(),
+              routes: [
+                GoRoute(
+                  path: 'detail/:id', // إزالة "/" من البداية
+                  builder: (context, state) => MediaDetailPage(
+                    newsId: state.pathParameters['id']!,
+                  ),
+                ),
+              ],
             ),
             GoRoute(
               path: '/profile',

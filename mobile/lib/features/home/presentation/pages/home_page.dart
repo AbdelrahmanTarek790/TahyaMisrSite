@@ -59,40 +59,23 @@ class HomeView extends StatelessWidget {
   final List<Map<String, dynamic>> achievementsData = [
     {
       'id': 1,
-      'title': ' منتدي الطريق الى الجمهوريه الجديدة',
-      'description':
-          'منصة حوارية تهدف الي الجمع بين شباب الجمهورية ، للمشاركة والتعبير عن آرائهم ، والخروج بتوصيات ومبادرات من خلال المناقشات الواسعة وتبادل الأفكار والخبرات ، ويأتي ذلك من خلال الجلسات وورش العمل بين الشباب والمتخصصين وقادة الفكر والشخصيات العامة في المجتمع ، أن المنتدى خلال نسخه الثلاثة المنفذه تم عرض العديد من المحاور النقاشية ،تدريب 5000 شاب على المهارات الرقمية المتقدمة',
-      'image':
-          'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      'completionDate': 'يوليو 2025',
-      'beneficiaries': 5000,
+      'title': 'منتدي الطريق الى الجمهوريه الجديدة ',
+      'image': 'assets/images/Achievements1.jpg',
     },
     {
       'id': 2,
-      'title': 'برنامج دعم رواد الأعمال',
-      'description': 'إطلاق 200 مشروع ناشئ بدعم من الاتحاد',
-      'image':
-          'https://images.pixabay.com/photo/2015/01/08/18/29/entrepreneur-593358_1280.jpg',
-      'completionDate': 'يونيو 2025',
-      'beneficiaries': 200,
+      'title': ' القمه الشبابية العربيه',
+      'image': 'assets/images/Achievements2.jpg',
     },
     {
       'id': 3,
-      'title': 'مبادرة الشباب والبيئة',
-      'description': 'زراعة 10000 شجرة في محافظات مصر المختلفة',
-      'image':
-          'https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80',
-      'completionDate': 'مايو 2025',
-      'beneficiaries': 10000,
+      'title': 'المنتدي الوطني لبناء الوعي',
+      'image': 'assets/images/Achievements3.jpg',
     },
     {
       'id': 4,
-      'title': 'برنامج التطوع المجتمعي',
-      'description': 'مشاركة 3000 متطوع في خدمة المجتمع',
-      'image':
-          'https://images.pexels.com/photos/6646918/pexels-photo-6646918.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
-      'completionDate': 'أبريل 2025',
-      'beneficiaries': 3000,
+      'title': 'المبادرة الوطنية للبناء والتمكين',
+      'image': 'assets/images/Achievements4.jpg',
     }
   ];
 
@@ -336,7 +319,11 @@ class HomeView extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         itemCount: min(newsList.length, 5),
         itemBuilder: (context, index) =>
-            _buildNewsCard(context, newsList[index]),
+            InkWell(
+                onTap: () {
+                  context.push('/news/detail/${newsList[index].id}');
+                },
+                child: _buildNewsCard(context, newsList[index]),),
       ),
     );
   }
@@ -686,51 +673,25 @@ class HomeView extends StatelessWidget {
         onTap: () => context.push('/media'),
         borderRadius: BorderRadius.circular(16),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(12),
-                ),
-                child: Stack(
-                  alignment: AlignmentDirectional.bottomStart,
-                  children: [
-                    Opacity(
-                      opacity: 0.7,
-                      child: CustomImageWidget(
-                        imageUrl: media['image'] as String,
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        media['title'] as String,
-                        style: AppTheme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w900,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
+              child: Image.asset(
+                media['image'] as String,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.fill,
               ),
             ),
-
-            /*  ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.network(
-                media.url,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => Container(
-                  color: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  child: const Icon(Icons.image_not_supported),
-                ),
+            const SizedBox(height: 8),
+            Text(
+              media['title'] as String,
+              style: AppTheme.textTheme.titleSmall?.copyWith(
+                fontWeight: FontWeight.w900,
               ),
-            ),*/
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       ).animate().fadeIn().scale(),
