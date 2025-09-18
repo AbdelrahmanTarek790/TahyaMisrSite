@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_bloc.dart';
 
 import '../../domain/entities/event.dart';
 import '../bloc/events_bloc.dart';
@@ -228,10 +229,17 @@ class _EventCard extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton.icon(
                       onPressed: () {
-                        // هنا تحط اللوجيك بتاع التسجيل (API call or navigation)
+
+                        context.read<AuthBloc>().asGuest == true
+                            ? ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('يرجى تسجيل الدخول أولاً')),
+                              )
+                            :
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('تم التسجيل في الفعالية 🎉')),
                         );
+
+                        context.read<AuthBloc>().asGuest == true ?  context.go('/login'): null ;
                       },
                       icon: const Icon(Icons.check_circle_outline),
                       label: const Text('سجل الآن'),

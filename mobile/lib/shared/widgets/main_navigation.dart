@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
+import '../../features/auth/presentation/bloc/auth_bloc.dart';
 import '../../gen_l10n/app_localizations.dart';
 
 class MainNavigation extends StatefulWidget {
@@ -21,8 +23,8 @@ class _MainNavigationState extends State<MainNavigation> {
 
   List<NavigationItem> _getNavigationItems(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
-    return [
+    final bool isGuest = context.read<AuthBloc>().asGuest;
+    final items = [
       NavigationItem(
         icon: Icons.home_outlined,
         activeIcon: Icons.home,
@@ -54,12 +56,20 @@ class _MainNavigationState extends State<MainNavigation> {
         route: '/profile',
       ),
     ];
+
+    // remove dashboard if guest
+    if (isGuest) {
+      items.removeWhere((item) => item.route == '/dashboard');
+    }
+
+    return items;
+
   }
 
   @override
   Widget build(BuildContext context) {
     final navigationItems = _getNavigationItems(context);
-    
+
     // Update selected index based on current route
     final currentRoute = GoRouterState.of(context).uri.path;
     for (int i = 0; i < navigationItems.length; i++) {
@@ -101,7 +111,8 @@ class _MainNavigationState extends State<MainNavigation> {
               context.go(navigationItems[index].route);
             },
             backgroundColor: Theme.of(context).colorScheme.surface,
-            indicatorColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+            indicatorColor:
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
             destinations: navigationItems.asMap().entries.map((entry) {
               final index = entry.key;
               final item = entry.value;

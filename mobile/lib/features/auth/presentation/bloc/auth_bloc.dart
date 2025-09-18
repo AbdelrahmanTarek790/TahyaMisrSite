@@ -208,4 +208,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
   }
+
+  bool asGuest  = false;
+
+  void setAsGuest(bool value) {
+    asGuest = value;
+  }
 }

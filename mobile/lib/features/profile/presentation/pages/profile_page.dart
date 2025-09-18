@@ -207,7 +207,78 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
-            unauthenticated: () => const SizedBox.shrink(),
+            unauthenticated: () => SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Profile Header
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(24),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context).colorScheme.primary,
+                          Theme.of(context).colorScheme.secondary,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Column(
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundColor: Colors.white,
+                          child: Icon(
+                            Icons.person,
+                            size: 60,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+                  ).animate().fadeIn().slideY(begin: -0.3, end: 0),
+
+                  const SizedBox(height: 24),
+
+                  // Action Buttons
+                  Column(
+                    children: [
+
+                      const SizedBox(height: 12),
+
+                      _buildActionButton(
+                        context,
+                        l10n.settings,
+                        Icons.settings,
+                            () {
+                          context.push('/profile/settings');
+                        },
+                      ).animate().fadeIn(delay: 1000.ms).slideY(begin: 0.3, end: 0),
+
+                      const SizedBox(height: 12),
+
+                      context.read<AuthBloc>().asGuest == false ? _buildActionButton(
+                        context,
+                        l10n.logout,
+                        Icons.logout,
+                            () => context.read<AuthBloc>().add(const AuthEvent.logoutRequested()),
+                        isDestructive: true,
+                      ).animate().fadeIn(delay: 1200.ms).slideY(begin: 0.3, end: 0) :
+                      _buildActionButton(
+                        context,
+                        l10n.login,
+                        Icons.login,
+                            () => context.go('/login'),
+                        isDestructive: false,
+                      ).animate().fadeIn(delay: 1200.ms).slideY(begin: 0.3, end: 0),
+                    ],
+                  ),
+                ],
+              ),
+            ),
             error: (message) => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

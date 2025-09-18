@@ -339,7 +339,234 @@ class SettingsPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                unauthenticated: () => const SizedBox.shrink(),
+                unauthenticated: () => SingleChildScrollView(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+
+
+                      const SizedBox(height: 24),
+
+                      // Account Settings Section
+                      _buildSectionCard(
+                        context,
+                        l10n.accountSettings,
+                        Icons.account_circle,
+                        [
+                          /*    _buildSettingsTile(
+                            context,
+                            'معلومات الحساب',
+                            'عرض تفاصيل الحساب والإحصائيات',
+                            Icons.info,
+                            () {
+                              _showAccountInfoDialog(context, user);
+                            },
+                          ),*/
+                        ],
+                      ).animate().fadeIn(delay: 200.ms).slideX(begin: -0.3, end: 0),
+
+                      const SizedBox(height: 16),
+
+                      // App Settings Section
+                      _buildSectionCard(
+                        context,
+                        l10n.appPreferences,
+                        Icons.settings,
+                        [
+                          /*  _buildSettingsTile(
+                            context,
+                            'الإشعارات',
+                            'إدارة إعدادات الإشعارات',
+                            Icons.notifications,
+                            () {
+                              _showNotificationSettings(context);
+                            },
+                          ),*/
+                          BlocBuilder<SettingsCubit, AppSettings>(
+                            builder: (context, settings) {
+                              return _buildSettingsTile(
+                                context,
+                                l10n.language,
+                                settings.language == AppLanguage.arabic ? l10n.arabic : l10n.english,
+                                Icons.language,
+                                    () {
+
+                                  showGlassBottomSheet(
+                                    context: context,
+                                    title: l10n.language,
+                                    options: [
+
+                                      RadioGroup<AppLanguage>(
+                                        groupValue: settings.language,
+                                        onChanged: (value) {
+                                          context.read<SettingsCubit>().changeLanguage(value!);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Column(
+                                          children: [
+                                            RadioListTile<AppLanguage>(
+                                              title: Text(l10n.arabic, style: const TextStyle(color: Colors.white)),
+                                              value: AppLanguage.arabic,
+                                            ),
+                                            RadioListTile<AppLanguage>(
+                                              title: Text(l10n.english, style: const TextStyle(color: Colors.white)),
+                                              value: AppLanguage.english,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                          ),
+                          BlocBuilder<SettingsCubit, AppSettings>(
+                            builder: (context, settings) {
+                              String themeText;
+                              switch (settings.themeMode) {
+                                case AppThemeMode.light:
+                                  themeText = l10n.lightTheme;
+                                  break;
+                                case AppThemeMode.dark:
+                                  themeText = l10n.darkTheme;
+                                  break;
+                                case AppThemeMode.system:
+                                  themeText = l10n.systemTheme;
+                                  break;
+                              }
+
+                              return _buildSettingsTile(
+                                context,
+                                l10n.theme,
+                                themeText,
+                                Icons.palette,
+                                    () {
+                                  showGlassBottomSheet(
+                                    context: context,
+                                    title: l10n.theme,
+                                    options: [
+                                      RadioGroup(
+                                        groupValue: settings.themeMode,
+                                        onChanged: (value) {
+                                          context.read<SettingsCubit>().changeThemeMode(value!);
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: Column(
+                                          children: [
+                                            RadioListTile<AppThemeMode>(
+                                              title: Text(l10n.lightTheme, style: const TextStyle(color: Colors.white)),
+                                              value: AppThemeMode.light,
+                                            ),
+                                            RadioListTile<AppThemeMode>(
+                                              title: Text(l10n.darkTheme, style: const TextStyle(color: Colors.white)),
+                                              value: AppThemeMode.dark,
+                                            ),
+                                            RadioListTile<AppThemeMode>(
+                                              title: Text(l10n.systemTheme, style: const TextStyle(color: Colors.white)),
+                                              value: AppThemeMode.system,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  );
+
+                                },
+                              );
+                            },
+                          ),
+                        ],
+                      ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.3, end: 0),
+
+                      const SizedBox(height: 16),
+
+                      // Support Section
+                      _buildSectionCard(
+                        context,
+                        'الدعم والمساعدة',
+                        Icons.help,
+                        [
+                          _buildSettingsTile(
+                            context,
+                            'الأسئلة الشائعة',
+                            'الحصول على إجابات للأسئلة الشائعة',
+                            Icons.quiz,
+                                () {
+                              _showFAQ(context);
+                            },
+                          ),
+                          _buildSettingsTile(
+                            context,
+                            'تواصل معنا',
+                            'إرسال ملاحظات أو طلب المساعدة',
+                            Icons.contact_support,
+                                () {
+                              _showContactSupport(context);
+                            },
+                          ),
+                          _buildSettingsTile(
+                            context,
+                            'حول التطبيق',
+                            'معلومات حول تطبيق تحيا مصر',
+                            Icons.info_outline,
+                                () {
+                              _showAboutDialog(context);
+                            },
+                          ),
+                        ],
+                      ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
+
+                      const SizedBox(height: 32),
+
+                      // Logout Button
+                      context.read<AuthBloc>().asGuest == false ? Card(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.logout,
+                            color: Theme.of(context).colorScheme.error,
+                          ),
+                          title: Text(
+                            l10n.logout,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.error,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.error.withValues(alpha: 0.7),
+                          ),
+                          onTap: () =>  context.read<AuthBloc>().add(const AuthEvent.logoutRequested()),
+                        ),
+                      ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3, end: 0) :
+                      Card(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.login,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
+                          title: Text(
+                            l10n.login,
+                            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          trailing: Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
+                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+                          ),
+                          onTap: () =>  context.go('/login'),
+                        ),
+                      ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3, end: 0),
+
+                      const SizedBox(height: 32),
+                    ],
+                  ),
+                ),
                 error: (message) => Center(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
