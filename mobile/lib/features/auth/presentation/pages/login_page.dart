@@ -275,6 +275,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleLogin() {
+    context.read<AuthBloc>().setAsGuest(false);
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
             AuthEvent.loginRequested(
