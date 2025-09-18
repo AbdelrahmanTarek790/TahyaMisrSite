@@ -509,6 +509,7 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _handleRegister() {
+    context.read<AuthBloc>().setAsGuest(false);
     if (_formKey.currentState?.validate() ?? false) {
       context.read<AuthBloc>().add(
             AuthEvent.registerRequested(
