@@ -141,7 +141,7 @@ class HomeView extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: Image.asset(
-            'assets/images/Logo.jpg',
+              'assets/images/Logo.png',
           ),
         ),
       ),
@@ -280,7 +280,7 @@ class HomeView extends StatelessWidget {
               const SizedBox(height: 16),
               _buildMediaSection(context, achievementsData.take(4).toList()),
 
-              /* BlocBuilder<MediaBloc, MediaState>(
+      /*         BlocBuilder<MediaBloc, MediaState>(
                 builder: (context, state) {
                   return state.when(
                     initial: () => const SizedBox.shrink(),
@@ -326,7 +326,7 @@ class HomeView extends StatelessWidget {
     // ناخد العرض من الشاشة (80% مثلا)
     final double cardWidth = MediaQuery.of(context).size.width * 0.8;
 
-    final double cardHeight = cardWidth * 1.1;
+    final double cardHeight = cardWidth * 1.3;
     if (newsList.isEmpty) {
       return _buildEmptyCard(context);
     }
@@ -345,14 +345,11 @@ class HomeView extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     return LayoutBuilder(
       builder: (context, constraints) {
-        // ناخد العرض من الشاشة (80% مثلا)
-        // نخلي الارتفاع نسبي (مثلا 4/5 من العرض)
-
         return Container(
           width: MediaQuery.of(context).size.width * 0.8,
           margin: const EdgeInsets.symmetric(horizontal: 8),
           child: Card(
-            margin: const EdgeInsets.only(bottom: 12),
+            margin: const EdgeInsets.only(bottom: 2),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -364,17 +361,19 @@ class HomeView extends StatelessWidget {
                     borderRadius: const BorderRadius.vertical(
                       top: Radius.circular(12),
                     ),
-                    child: CachedNetworkImage(
-                      imageUrl: news.imageUrl ?? '',
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                      errorWidget: (context, error, stackTrace) => Container(
-                        width: double.infinity,
-                        height: 150,
-                        color: Theme.of(context)
-                            .colorScheme
-                            .surfaceContainerHighest,
-                        child: const Icon(Icons.image_not_supported),
+                    child: AspectRatio(
+                      aspectRatio: 16 / 9,
+                      child: CachedNetworkImage(
+                        imageUrl: news.imageUrl ?? '',
+                        fit: BoxFit.fill,
+                        errorWidget: (context, error, stackTrace) => Container(
+                          width: double.infinity,
+                          height: 150,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .surfaceContainerHighest,
+                          child: const Icon(Icons.image_not_supported),
+                        ),
                       ),
                     ),
                   ),
@@ -661,7 +660,7 @@ class HomeView extends StatelessWidget {
         crossAxisCount: 2,
         crossAxisSpacing: 3,
         mainAxisSpacing: 2,
-        childAspectRatio: 2 / 3,
+        childAspectRatio: 2 / 2,
       ),
       itemCount: 4,
       itemBuilder: (context, index) =>
@@ -674,7 +673,7 @@ class HomeView extends StatelessWidget {
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(10),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.08),
@@ -689,74 +688,38 @@ class HomeView extends StatelessWidget {
         child: Column(
           children: [
             Expanded(
-              flex: 3,
               child: ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(12),
                 ),
-                child: CustomImageWidget(
-                  imageUrl: media['image'] as String,
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
+                child: Stack(
+                  alignment: AlignmentDirectional.bottomStart,
+                  children: [
+                    Opacity(
+                      opacity: 0.7,
+                      child: CustomImageWidget(
+                        imageUrl: media['image'] as String,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        media['title'] as String,
+                        style: AppTheme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
-            Expanded(
-              flex: 2,
-              child: Column(
-                children: [
-                  Text(
-                    media['title'] as String,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const SizedBox(height: 0.5),
-                  Text(
-                    media['description'] as String,
-                    style: Theme.of(context).textTheme.bodySmall,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  const Spacer(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 1.5,
-                          vertical: 0.3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .tertiary
-                              .withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Text(
-                          '${media['beneficiaries']} مستفيد',
-                          style: Theme.of(context)
-                              .textTheme
-                              .labelSmall
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.tertiary,
-                                fontWeight: FontWeight.w500,
-                              ),
-                        ),
-                      ),
-                      Text(
-                        media['completionDate'] as String,
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+
             /*  ClipRRect(
               borderRadius: BorderRadius.circular(16),
               child: Image.network(

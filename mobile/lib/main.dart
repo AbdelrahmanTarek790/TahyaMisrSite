@@ -60,6 +60,8 @@ class TahyaMisrApp extends StatelessWidget {
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
             themeMode: settings.materialThemeMode,
+            themeAnimationCurve: Curves.easeInOut,
+            themeAnimationDuration: const Duration(milliseconds: 300),
             locale: settings.locale,
             localizationsDelegates: const [
               AppLocalizations.delegate,

@@ -197,7 +197,7 @@ class NewsCard extends StatelessWidget {
                   aspectRatio: 16 / 9,
                   child: Image.network(
                     news.imageUrl!,
-                    fit: BoxFit.cover,
+                    fit: BoxFit.fill,
                     errorBuilder: (context, error, stackTrace) => Container(
                       color: Theme.of(context).colorScheme.surfaceContainerHighest,
                       child: Icon(

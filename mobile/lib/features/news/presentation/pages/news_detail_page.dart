@@ -71,7 +71,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                   return CustomScrollView(
                   slivers: [
                     SliverAppBar(
-                      expandedHeight: 350,
+                      expandedHeight: 400,
                       pinned: true,
                       flexibleSpace: FlexibleSpaceBar(
                         background: Image.network(
