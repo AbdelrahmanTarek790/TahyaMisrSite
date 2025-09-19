@@ -12,7 +12,8 @@ import NewsTahiaMisr from "@/assets/newsTahiaMisr.jpg"
 import StudentTahiaMisr from "@/assets/StudentUnuion.jpg"
 import Eaeat from "@/assets/EAEAT.jpg"
 
-import { InViewSection, InViewStagger } from "@/components/ui/MotionComponents"
+import { SimpleInViewSection, SimpleInViewStagger } from "@/components/ui/SimpleMotionComponents"
+import { InViewSection, InViewStagger } from "../ui/MotionComponents"
 
 const Features = () => {
     const achievements = [
@@ -89,16 +90,16 @@ const Features = () => {
     return (
         <section className="py-10 bg-background">
             <div className="container mx-auto px-6">
-                <InViewSection animation="fadeInUp" className="text-center mb-16">
-                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 font-arabic">
-                        🔹 <span className="text-egypt-gold animate-gradient">إنجازات ومشروعات 🔹</span>
+                <SimpleInViewSection animation="fadeInUp" className="text-center mb-16">
+                    <h2 className="text-2xl md:text-5xl font-bold text-foreground mb-6 font-arabic">
+                        🔹 <span className="text-egypt-gold  animate-gradient">إنجازات ومشروعات 🔹</span>
                     </h2>
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                         مشروعاتنا ومبادراتنا التي تهدف إلى تمكين الشباب المصري وخدمة المجتمع في مختلف المجالات
                     </p>
-                </InViewSection>
+                </SimpleInViewSection>
 
-                <InViewStagger className="grid grid-cols-1 lg:grid-cols-3 gap-8" staggerDelay={0.2}>
+                <SimpleInViewStagger className="grid grid-cols-1 lg:grid-cols-3 gap-8" staggerDelay={0.2}>
                     {achievements.map((achievement, index) => (
                         <Card key={index} className="bg-card border-border card-hover group overflow-hidden">
                             {/* Project Image */}
@@ -140,12 +141,12 @@ const Features = () => {
                             </CardContent>
                         </Card>
                     ))}
-                </InViewStagger>
+                </SimpleInViewStagger>
 
                 {/* Union Activities Section */}
                 <InViewSection animation="fadeInUp" delay={0.3} className="mt-20">
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 font-arabic">
+                        <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-6 font-arabic">
                             🔹 <span className="text-egypt-gold">أهم الأنشطة المندرجة تحت الاتحاد 🔹</span>
                         </h2>
                         <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-arabic">
@@ -156,7 +157,7 @@ const Features = () => {
                     <div className="bg-gradient-to-br from-egypt-red/5 to-egypt-gold/5 rounded-2xl p-8">
                         <h3 className="text-2xl font-bold text-foreground mb-8 text-center font-arabic">🔹 أنشطة مركزية 🔹</h3>
 
-                        <InViewStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.15}>
+                        <InViewStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.2}>
                             {[
                                 {
                                     title: "أسرة اتحاد طلاب تحيا مصر بالأكاديمية المصرية للهندسة والتكنولوجيا المتقدمة",

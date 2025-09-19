@@ -193,11 +193,11 @@ export default function PublicPagesHeader() {
             >
                 <div className="container mx-auto">
                     {/* Top bar with logo and auth buttons */}
-                    <div className="flex items-center flex-row-reverse justify-between">
+                    <div className="flex items-center  justify-between">
                         {/* Logo */}
-                        <Link to="/" className="flex items-center space-x-2">
+                        <Link to="/" className="flex items-center justify-between py-4 lg:py-0 space-x-2">
+                            <img src={Logo} alt="Logo" className=" w-16 h-16 lg:h-28 lg:w-28" />
                             <span className="text-2xl font-bold">أتحاد شباب تحيا مصر</span>
-                            <img src={Logo} alt="Logo" className="h-28 w-28" />
                         </Link>
 
                         {/* Desktop Navigation */}

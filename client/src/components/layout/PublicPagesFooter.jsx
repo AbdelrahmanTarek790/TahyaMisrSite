@@ -37,7 +37,7 @@ export default function PublicPagesFooter() {
                 <div className="grid  grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Brand Section */}
                     <div className="lg:col-span-1">
-                        <div className="flex flex-row-reverse items-center space-x-2 mb-6">
+                        <div className="flex  items-center space-x-2 mb-6">
                             <div className="w-16 h-16    bg-white rounded-lg flex items-center justify-center">
                                 <img src={Logo} alt="Logo" className="w-12 h-12" />
                             </div>
@@ -49,7 +49,7 @@ export default function PublicPagesFooter() {
                         <p className="text-egypt-white/80 mb-6 leading-relaxed font-arabic text-right">
                             تمكين الشباب المصري من خلال المشاركة المدنية والتعليم والعمل المجتمعي لبناء مصر أقوى وأكثر توحداً.
                         </p>
-                        <div className="flex flex-row-reverse gap-4 ">
+                        <div className="flex  gap-4 ">
                             {socialLinks.map((social, index) => (
                                 <a
                                     key={index}
@@ -86,7 +86,7 @@ export default function PublicPagesFooter() {
                 {/* Contact Bar */}
                 <div className="border-t border-egypt-white/20 mt-12 pt-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                        <div className="flex flex-row-reverse items-center space-x-3 space-x-reverse">
+                        <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center">
                                 <Mail className="w-5 h-5 text-egypt-white" />
                             </div>
@@ -95,7 +95,7 @@ export default function PublicPagesFooter() {
                                 <div className="text-egypt-white">info@tahyamisr.org</div>
                             </div>
                         </div>
-                        <div className="flex flex-row-reverse items-center  space-x-3 space-x-reverse">
+                        <div className="flex  items-center space-x-3 ">
                             <div className="w-10 h-10 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center">
                                 <Phone className="w-5 h-5 text-egypt-white" />
                             </div>
@@ -104,7 +104,7 @@ export default function PublicPagesFooter() {
                                 <div className="text-egypt-white">+20 123 456 7890</div>
                             </div>
                         </div>
-                        <div className="flex flex-row-reverse items-center space-x-3 space-x-reverse">
+                        <div className="flex  items-center space-x-3 ">
                             <div className="w-10 h-10 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center">
                                 <MapPin className="w-5 h-5 text-egypt-white" />
                             </div>
