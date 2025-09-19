@@ -26,6 +26,7 @@ export function AppSidebar(props) {
         { title: "إدارة الفعاليات", url: "/admin/events", icon: Calendar, role: ["admin"] },
         { title: "الجدول الزمني", url: "/admin/timeline", icon: Clock, role: ["admin"] },
         { title: "المستخدمون", url: "/admin/users", icon: Users, role: ["admin"] },
+        { title: "طلبات الانضمام", url: "/admin/join-requests", icon: Users, role: ["admin"] },
         { title: "المناصب", url: "/admin/positions", icon: Settings, role: ["admin"] },
         { title: "الإشعارات", url: "/admin/notifications", icon: Bell, role: ["admin"] },
         { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["student", "volunteer", "admin"] },

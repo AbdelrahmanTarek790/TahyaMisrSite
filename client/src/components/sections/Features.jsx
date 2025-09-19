@@ -212,7 +212,7 @@ const Features = () => {
                         <p className="text-muted-foreground mb-6 max-w-2xl mx-auto font-arabic">
                             كن جزءاً من هذه المشروعات والمبادرات التي تهدف إلى بناء مستقبل أفضل لمصر وشبابها
                         </p>
-                        <Link to="/register">
+                        <Link to="/join">
                             <button className="bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white px-8 py-3 rounded-lg font-semibold hover:shadow-glow hover:scale-105 transition-all duration-300 font-arabic">
                                 انضم إلينا الآن
                             </button>

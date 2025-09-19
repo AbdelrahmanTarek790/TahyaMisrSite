@@ -27,7 +27,7 @@ const Hero = () => {
                     </p>
 
                     <div className="flex gap-4 justify-center items-center hero-buttons">
-                        <Link to="/register">
+                        <Link to="/join">
                             <Button variant="hero" size="xl" className="btn-spring animate-pulse-glow">
                                 انضم الان
                             </Button>

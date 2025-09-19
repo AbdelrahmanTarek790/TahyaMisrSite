@@ -16,6 +16,7 @@ import UserManagement from "./pages/admin/UserManagement"
 import PositionsManagement from "./pages/admin/PositionsManagement"
 import NotificationsManagement from "./pages/admin/NotificationsManagement"
 import TimelineManagement from "./pages/admin/TimelineManagement"
+import JoinRequestManagement from "./pages/admin/JoinRequestManagement"
 import Profile from "./pages/Profile"
 import Settings from "./pages/Settings"
 import LandingPage from "./pages/public/LandingPage"
@@ -35,6 +36,7 @@ import HelpPage from "./pages/public/HelpPage"
 import TermsPage from "./pages/public/TermsPage"
 import PrivacyPage from "./pages/public/PrivacyPage"
 import FAQPage from "./pages/public/FAQPage"
+import JoinRequestPage from "./pages/public/JoinRequestPage"
 
 function App() {
     const { isAuthenticated, user } = useAuth()
@@ -57,9 +59,10 @@ function App() {
                             <Route path="/terms" element={<TermsPage />} />
                             <Route path="/privacy" element={<PrivacyPage />} />
                             <Route path="/faq" element={<FAQPage />} />
+                            <Route path="/join" element={<JoinRequestPage />} />
                             {/* Auth Routes */}
                             <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-                            <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
+                            <Route path="/register" element={<Navigate to="/join" replace />} />
                         </Route>
 
                         {/* Auth Routes */}
@@ -174,6 +177,16 @@ function App() {
                                 <ProtectedRoute roles={["admin"]}>
                                     <DashboardLayout>
                                         <NotificationsManagement />
+                                    </DashboardLayout>
+                                </ProtectedRoute>
+                            }
+                        />
+                        <Route
+                            path="/admin/join-requests"
+                            element={
+                                <ProtectedRoute roles={["admin"]}>
+                                    <DashboardLayout>
+                                        <JoinRequestManagement />
                                     </DashboardLayout>
                                 </ProtectedRoute>
                             }

@@ -42,10 +42,20 @@ api.interceptors.response.use(
 // Auth API
 export const authAPI = {
     login: (credentials) => api.post("/auth/login", credentials),
-    register: (userData) => api.post("/auth/register", userData),
+    // register: (userData) => api.post("/auth/register", userData), // Disabled - use joinRequestAPI instead
     forgotPassword: (email) => api.post("/auth/forgot-password", { email }),
     resetPassword: (token, password) => api.post("/auth/reset-password", { token, password }),
     changePassword: (passwords) => api.put("/auth/change-password", passwords),
+}
+
+// Join Request API
+export const joinRequestAPI = {
+    create: (requestData) => api.post("/join-requests", requestData),
+    getAll: (params) => api.get("/join-requests", { params }),
+    getById: (id) => api.get(`/join-requests/${id}`),
+    approve: (id, data) => api.patch(`/join-requests/${id}/approve`, data),
+    deny: (id, data) => api.patch(`/join-requests/${id}/deny`, data),
+    delete: (id) => api.delete(`/join-requests/${id}`),
 }
 
 // Users API

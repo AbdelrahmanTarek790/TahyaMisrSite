@@ -109,9 +109,9 @@ export default function PublicPagesHeader() {
                             <LogIn className="mr-2 h-4 w-4" /> تسجيل الدخول
                         </Link>
                     </Button>
-                    <Button size="sm" asChild>
+                    {/* <Button size="sm" asChild>
                         <Link to="/register">إنشاء حساب</Link>
-                    </Button>
+                    </Button> */}
                 </div>
             )
         }
@@ -404,11 +404,11 @@ export default function PublicPagesHeader() {
                                                             <LogIn className="ml-2 h-4 w-4" /> تسجيل الدخول
                                                         </Link>
                                                     </Button>
-                                                    <Button variant="outline" className="w-full justify-center" asChild>
+                                                    {/* <Button variant="outline" className="w-full justify-center" asChild>
                                                         <Link to="/register">
                                                             <User className="ml-2 h-4 w-4" /> إنشاء حساب
                                                         </Link>
-                                                    </Button>
+                                                    </Button> */}
                                                 </div>
                                             )}
                                         </div>

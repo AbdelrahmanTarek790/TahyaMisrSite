@@ -44,12 +44,8 @@ const Login = () => {
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full space-y-8">
                 <div className="text-center">
-                    <h1 className="text-3xl font-bold text-gray-900">
-                        اتحاد شباب تحيا مصر
-                    </h1>
-                    <p className="mt-2 text-gray-600">
-                        أهلاً بك مرة أخرى! الرجاء تسجيل الدخول إلى حسابك.
-                    </p>
+                    <h1 className="text-3xl font-bold text-gray-900">اتحاد شباب تحيا مصر</h1>
+                    <p className="mt-2 text-gray-600">أهلاً بك مرة أخرى! الرجاء تسجيل الدخول إلى حسابك.</p>
                 </div>
 
                 <Card>
@@ -89,8 +85,8 @@ const Login = () => {
                         <div className="mt-6 text-center">
                             <p className="text-sm text-gray-600">
                                 لا تملك حسابًا؟{" "}
-                                <Link to="/register" className="text-primary hover:underline">
-                                    سجل الآن
+                                <Link to="/join" className="text-primary hover:underline">
+                                    انضم الآن
                                 </Link>
                             </p>
                         </div>
