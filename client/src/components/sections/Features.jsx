@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Award, Users, Globe, Heart, BookOpen, Crown, Shield } from "lucide-react"
+import { Link } from "react-router-dom"
 import TheRoadOfRepublicForum from "@/assets/the-road-of-new-republic-forum.jpg"
 import ArabYouthSummit from "@/assets/Arab-youth-summit.jpg"
 import NationalForumforAwarenessBuilding from "@/assets/build-forum.jpg"
@@ -101,7 +102,7 @@ const Features = () => {
 
                 <SimpleInViewStagger className="grid grid-cols-1 lg:grid-cols-3 gap-8" staggerDelay={0.2}>
                     {achievements.map((achievement, index) => (
-                        <Card key={index} className="bg-card border-border card-hover group overflow-hidden">
+                        <Card key={index} className="bg-card border-border card-hover group h-full overflow-hidden">
                             {/* Project Image */}
                             <div className="aspect-video bg-gradient-to-br from-egypt-red/10 to-egypt-gold/10 flex items-center justify-center overflow-hidden">
                                 <img
@@ -183,7 +184,7 @@ const Features = () => {
                             ].map((activity, index) => (
                                 <Card
                                     key={index}
-                                    className="bg-white/80 backdrop-blur-sm border-2 border-white/20 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
+                                    className="bg-white/80 backdrop-blur-sm border-2 h-full border-white/20 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
                                 >
                                     <CardHeader className="text-center pb-4 ">
                                         <img src={activity.img} alt={activity.title} className="w-32  text-white" />
@@ -211,9 +212,11 @@ const Features = () => {
                         <p className="text-muted-foreground mb-6 max-w-2xl mx-auto font-arabic">
                             كن جزءاً من هذه المشروعات والمبادرات التي تهدف إلى بناء مستقبل أفضل لمصر وشبابها
                         </p>
-                        <button className="bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white px-8 py-3 rounded-lg font-semibold hover:shadow-glow hover:scale-105 transition-all duration-300 font-arabic">
-                            انضم إلينا الآن
-                        </button>
+                        <Link to="/register">
+                            <button className="bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white px-8 py-3 rounded-lg font-semibold hover:shadow-glow hover:scale-105 transition-all duration-300 font-arabic">
+                                انضم إلينا الآن
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </div>

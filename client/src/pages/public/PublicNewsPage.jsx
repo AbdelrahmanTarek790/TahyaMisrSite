@@ -62,7 +62,7 @@ const PublicNewsPage = () => {
                     <div className="text-center animate-fade-in">
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 font-arabic">أخبارنا</h1>
                         <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto text-white/90 font-arabic text-center leading-relaxed">
-                            تابع آخر الأخبار والإعلانات والإنجازات من اتحاد طلاب تحيا مصر
+                            تابع آخر الأخبار والإعلانات والإنجازات من اتحاد شباب تحيا مصر
                         </p>
                     </div>
                 </div>

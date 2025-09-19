@@ -31,6 +31,10 @@ import Home from "./pages/Home"
 import EventDetailPage from "./pages/public/EventDetailPage"
 import Journy from "./pages/public/Journy"
 import ScrollToTop from "./components/ScrollToTop"
+import HelpPage from "./pages/public/HelpPage"
+import TermsPage from "./pages/public/TermsPage"
+import PrivacyPage from "./pages/public/PrivacyPage"
+import FAQPage from "./pages/public/FAQPage"
 
 function App() {
     const { isAuthenticated, user } = useAuth()
@@ -49,11 +53,17 @@ function App() {
                             <Route path="/events" element={<PublicEventsPage />} />
                             <Route path="/events/:id" element={<EventDetailPage />} />
                             <Route path="/journey" element={<Journy />} />
+                            <Route path="/help" element={<HelpPage />} />
+                            <Route path="/terms" element={<TermsPage />} />
+                            <Route path="/privacy" element={<PrivacyPage />} />
+                            <Route path="/faq" element={<FAQPage />} />
+                            {/* Auth Routes */}
+                            <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
+                            <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
                         </Route>
 
                         {/* Auth Routes */}
-                        <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
-                        <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />} />
+
                         {/* Protected Routes */}
 
                         <Route

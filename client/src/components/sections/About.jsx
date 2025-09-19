@@ -25,7 +25,7 @@ const About = () => {
     ]
 
     return (
-        <section className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))]">
+        <section id="about-section" className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))]">
             <div className="container mx-auto px-6">
                 <SimpleInViewSection animation="fadeInUp" className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
@@ -41,7 +41,7 @@ const About = () => {
                     {values.map((value, index) => (
                         <Card
                             key={index}
-                            className="bg-[linear-gradient(145deg,_rgb(255,255,255),_rgb(242,242,242))] border-0 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group"
+                            className="bg-[linear-gradient(145deg,_rgb(255,255,255),_rgb(242,242,242))] border-0 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group h-full"
                         >
                             <CardContent className="p-6 text-center">
                                 <div className="w-16 h-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:animate-float transition-all duration-300">

@@ -247,11 +247,49 @@ const registerForEvent = async (req, res, next) => {
   }
 };
 
+// @desc    Get registered users for event
+// @route   GET /api/v1/events/:id/registered-users
+// @access  Private/Admin
+const getEventRegisteredUsers = async (req, res, next) => {
+  try {
+    const event = await Event.findById(req.params.id)
+      .populate({
+        path: 'registeredUsers',
+        select: 'name phone nationalId email position university governorate createdAt',
+        populate: {
+          path: 'position',
+          select: 'name'
+        }
+      });
+
+    if (!event) {
+      return res.status(404).json({
+        success: false,
+        error: 'Event not found',
+        data: null
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        eventTitle: event.title,
+        eventDate: event.date,
+        registeredUsers: event.registeredUsers
+      },
+      error: null
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   getEvents,
   getEventById,
   createEvent,
   updateEvent,
   deleteEvent,
-  registerForEvent
+  registerForEvent,
+  getEventRegisteredUsers
 };

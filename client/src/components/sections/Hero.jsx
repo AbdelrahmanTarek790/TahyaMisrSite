@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/enhanced-button"
 import { SimpleInViewStagger } from "@/components/ui/SimpleMotionComponents"
+import { Link } from "react-router-dom"
 import heroImage from "@/assets/1758267543110-78fd503d-f9e8-47a2-9933-7db0dab1aa98.png"
 
 const Hero = () => {
@@ -26,10 +27,22 @@ const Hero = () => {
                     </p>
 
                     <div className="flex gap-4 justify-center items-center hero-buttons">
-                        <Button variant="hero" size="xl" className="btn-spring animate-pulse-glow">
-                            انضم الان
-                        </Button>
-                        <Button variant="outline-hero" size="xl" className="btn-spring hover-spring">
+                        <Link to="/register">
+                            <Button variant="hero" size="xl" className="btn-spring animate-pulse-glow">
+                                انضم الان
+                            </Button>
+                        </Link>
+                        <Button
+                            variant="outline-hero"
+                            size="xl"
+                            className="btn-spring hover-spring"
+                            onClick={() => {
+                                document.getElementById("about-section")?.scrollIntoView({
+                                    behavior: "smooth",
+                                    block: "start",
+                                })
+                            }}
+                        >
                             المزيد
                         </Button>
                     </div>
@@ -52,7 +65,16 @@ const Hero = () => {
             </div>
 
             {/* Scroll Indicator */}
-            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce-in-elastic" style={{ animationDelay: "1.5s" }}>
+            <div
+                className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce-in-elastic cursor-pointer"
+                style={{ animationDelay: "1.5s" }}
+                onClick={() => {
+                    document.getElementById("about-section")?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    })
+                }}
+            >
                 <div className="w-6 h-10 border-2 border-egypt-gold rounded-full flex justify-center hover-spring animate-glow">
                     <div className="w-1 h-3 bg-egypt-gold rounded-full mt-2 animate-float"></div>
                 </div>

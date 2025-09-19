@@ -1,8 +1,51 @@
 import { Card, CardContent } from "@/components/ui/card"
 import { Mail, Phone, MapPin, Send } from "lucide-react"
 import { Button } from "../ui/enhanced-button"
+import { useState } from "react"
+import { Link } from "react-router-dom"
 
 const Contact = () => {
+    const [formData, setFormData] = useState({
+        firstName: "",
+        lastName: "",
+        email: "",
+        subject: "",
+        message: "",
+    })
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [submitMessage, setSubmitMessage] = useState("")
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }))
+    }
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        setIsSubmitting(true)
+        setSubmitMessage("")
+
+        try {
+            // Simulate form submission - replace with actual API call
+            await new Promise((resolve) => setTimeout(resolve, 2000))
+
+            setSubmitMessage("تم إرسال رسالتك بنجاح! سنتواصل معك قريباً.")
+            setFormData({
+                firstName: "",
+                lastName: "",
+                email: "",
+                subject: "",
+                message: "",
+            })
+        } catch (error) {
+            setSubmitMessage("حدث خطأ في إرسال الرسالة. يرجى المحاولة مرة أخرى.")
+        } finally {
+            setIsSubmitting(false)
+        }
+    }
     const contactInfo = [
         {
             icon: Mail,
@@ -25,7 +68,7 @@ const Contact = () => {
     ]
 
     return (
-        <section id="contact" className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))]">
+        <section id="contact-section" className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))]">
             <div className="container mx-auto px-6">
                 <div className="text-center mb-16 animate-fade-in">
                     <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
@@ -66,12 +109,14 @@ const Contact = () => {
                                 <p className="mb-4 text-egypt-white/90">
                                     هل أنت مستعد لتصبح جزءًا من اتحاد شباب مصر؟ سجل اليوم وابدأ في إحداث فرق في مجتمعك.
                                 </p>
-                                <Button
-                                    variant="outline-hero"
-                                    className="border-egypt-white text-egypt-white hover:bg-egypt-white hover:text-egypt-red"
-                                >
-                                    سجل الآن
-                                </Button>
+                                <Link to="/register">
+                                    <Button
+                                        variant="outline-hero"
+                                        className="border-egypt-white text-egypt-white hover:bg-egypt-white hover:text-egypt-red"
+                                    >
+                                        سجل الآن
+                                    </Button>
+                                </Link>
                             </CardContent>
                         </Card>
                     </div>
@@ -81,12 +126,27 @@ const Contact = () => {
                         <Card className="bg-card border-border shadow-card">
                             <CardContent className="p-8">
                                 <h3 className="text-2xl font-bold text-right text-foreground mb-6">أرسل لنا رسالة</h3>
-                                <form className="space-y-6">
+                                {submitMessage && (
+                                    <div
+                                        className={`mb-4 p-4 rounded-lg text-center ${
+                                            submitMessage.includes("بنجاح")
+                                                ? "bg-green-100 text-green-800 border border-green-300"
+                                                : "bg-red-100 text-red-800 border border-red-300"
+                                        }`}
+                                    >
+                                        {submitMessage}
+                                    </div>
+                                )}
+                                <form className="space-y-6" onSubmit={handleSubmit}>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div>
                                             <label className="block text-sm font-medium text-foreground mb-2">الاسم الأول</label>
                                             <input
                                                 type="text"
+                                                name="firstName"
+                                                value={formData.firstName}
+                                                onChange={handleInputChange}
+                                                required
                                                 className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-egypt-gold focus:border-transparent transition-all duration-300"
                                                 placeholder="Ahmed"
                                             />
@@ -95,6 +155,10 @@ const Contact = () => {
                                             <label className="block text-sm font-medium text-foreground mb-2">الاسم الأخير</label>
                                             <input
                                                 type="text"
+                                                name="lastName"
+                                                value={formData.lastName}
+                                                onChange={handleInputChange}
+                                                required
                                                 className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-egypt-gold focus:border-transparent transition-all duration-300"
                                                 placeholder="Mohamed"
                                             />
@@ -105,6 +169,10 @@ const Contact = () => {
                                         <label className="block text-sm font-medium text-foreground mb-2">البريد الإلكتروني</label>
                                         <input
                                             type="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleInputChange}
+                                            required
                                             className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-egypt-gold focus:border-transparent transition-all duration-300"
                                             placeholder="ahmed@example.com"
                                         />
@@ -114,6 +182,10 @@ const Contact = () => {
                                         <label className="block text-sm font-medium text-foreground mb-2">الموضوع</label>
                                         <input
                                             type="text"
+                                            name="subject"
+                                            value={formData.subject}
+                                            onChange={handleInputChange}
+                                            required
                                             className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-egypt-gold focus:border-transparent transition-all duration-300"
                                             placeholder="مهتم بالانضمام"
                                         />
@@ -123,14 +195,18 @@ const Contact = () => {
                                         <label className="block text-sm font-medium text-foreground mb-2">الرسالة</label>
                                         <textarea
                                             rows={4}
+                                            name="message"
+                                            value={formData.message}
+                                            onChange={handleInputChange}
+                                            required
                                             className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-egypt-gold focus:border-transparent transition-all duration-300"
                                             placeholder="أخبرنا عن اهتمامك بالانضمام إلى الاتحاد..."
                                         ></textarea>
                                     </div>
 
-                                    <Button variant="cta" size="lg" className="w-full">
+                                    <Button type="submit" variant="cta" size="lg" className="w-full" disabled={isSubmitting}>
                                         <Send className="w-5 h-5 mr-2 ml-2" />
-                                        إرسال الرسالة
+                                        {isSubmitting ? "جارٍ الإرسال..." : "إرسال الرسالة"}
                                     </Button>
                                 </form>
                             </CardContent>

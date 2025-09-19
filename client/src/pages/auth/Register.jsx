@@ -82,15 +82,15 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900">Tahya Misr</h1>
-          <p className="mt-2 text-gray-600">Students Union Platform</p>
+          <h1 className="text-3xl font-bold text-gray-900">اتحاد شباب تحيا مصر</h1>
+          <p className="mt-2 text-gray-600">منصة اتحاد شباب تحيا مصر</p>
         </div>
 
         <Card>
           <CardHeader>
-            <CardTitle>Create your account</CardTitle>
+            <CardTitle>إنشاء حسابك</CardTitle>
             <CardDescription>
-              Join the Tahya Misr Students Union community
+              انضم إلى مجتمع اتحاد شباب تحيا مصر. املأ النموذج أدناه للبدء.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -98,12 +98,12 @@ const Register = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                    Full Name *
+                    الاسم الكامل *
                   </label>
                   <Input
                     id="name"
                     type="text"
-                    placeholder="Enter your full name"
+                    placeholder="أدخل اسمك الكامل"
                     {...register('name')}
                   />
                   {errors.name && (
@@ -113,12 +113,12 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                    Email *
+                    البريد الإلكتروني *
                   </label>
                   <Input
                     id="email"
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="أدخل بريدك الإلكتروني"
                     {...register('email')}
                   />
                   {errors.email && (
@@ -128,12 +128,12 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
-                    Password *
+                    كلمة المرور *
                   </label>
                   <Input
                     id="password"
                     type="password"
-                    placeholder="Enter your password"
+                    placeholder="أدخل كلمة المرور الخاصة بك"
                     {...register('password')}
                   />
                   {errors.password && (
@@ -143,12 +143,12 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
-                    Confirm Password *
+                    تأكيد كلمة المرور *
                   </label>
                   <Input
                     id="confirmPassword"
                     type="password"
-                    placeholder="Confirm your password"
+                    placeholder="تأكيد كلمة المرور الخاصة بك"
                     {...register('confirmPassword')}
                   />
                   {errors.confirmPassword && (
@@ -158,7 +158,7 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number *
+                    رقم الهاتف *
                   </label>
                   <Input
                     id="phone"
@@ -173,12 +173,12 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="university" className="block text-sm font-medium text-gray-700 mb-1">
-                    University *
+                    الجامعة *
                   </label>
                   <Input
                     id="university"
                     type="text"
-                    placeholder="Enter your university"
+                    placeholder="أدخل جامعتك"
                     {...register('university')}
                   />
                   {errors.university && (
@@ -188,12 +188,12 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="nationalId" className="block text-sm font-medium text-gray-700 mb-1">
-                    National ID *
+                    الرقم القومي *
                   </label>
                   <Input
                     id="nationalId"
                     type="text"
-                    placeholder="14-digit National ID"
+                    placeholder="أدخل رقمك القومي (14 رقمًا)"
                     {...register('nationalId')}
                   />
                   {errors.nationalId && (
@@ -203,14 +203,14 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="governorate" className="block text-sm font-medium text-gray-700 mb-1">
-                    Governorate *
+                    المحافظة *
                   </label>
                   <select
                     id="governorate"
                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     {...register('governorate')}
                   >
-                    <option value="">Select your governorate</option>
+                    <option value="">اختر محافظتك</option>
                     {EGYPT_GOVERNORATES.map((gov) => (
                       <option key={gov} value={gov}>{gov}</option>
                     ))}
@@ -223,14 +223,14 @@ const Register = () => {
                 {positions.length > 0 && (
                   <div>
                     <label htmlFor="position" className="block text-sm font-medium text-gray-700 mb-1">
-                      Position (Optional)
+                      (اختياري) المنصب داخل الاتحاد
                     </label>
                     <select
                       id="position"
                       className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       {...register('position')}
                     >
-                      <option value="">Select a position</option>
+                      <option value="">اختر المنصب</option>
                       {positions.map((position) => (
                         <option key={position._id} value={position._id}>
                           {position.name}
@@ -242,7 +242,7 @@ const Register = () => {
 
                 <div>
                   <label htmlFor="membershipNumber" className="block text-sm font-medium text-gray-700 mb-1">
-                    Membership Number (Optional)
+                    (اختياري) رقم العضوية
                   </label>
                   <Input
                     id="membershipNumber"
@@ -258,15 +258,15 @@ const Register = () => {
                 className="w-full"
                 disabled={isLoading}
               >
-                {isLoading ? 'Creating account...' : 'Create account'}
+                {isLoading ? 'إنشاء حساب...' : 'إنشاء حساب'}
               </Button>
             </form>
 
             <div className="mt-6 text-center">
               <p className="text-sm text-gray-600">
-                Already have an account?{' '}
+                لديك حساب بالفعل؟{' '}
                 <Link to="/login" className="text-primary hover:underline">
-                  Sign in
+                  تسجيل الدخول
                 </Link>
               </p>
             </div>

@@ -12,22 +12,22 @@ export default function PublicPagesFooter() {
 
     const footerLinks = {
         "روابط سريعة": [
-            { name: "من نحن", href: "#about" },
-            { name: "الأحداث", href: "#events" },
-            { name: "الأخبار", href: "#news" },
-            { name: "اتصل بنا", href: "#contact" },
+            { name: "من نحن", href: "/about" },
+            { name: "الأحداث", href: "/events" },
+            { name: "الأخبار", href: "/news" },
+            { name: "اتصل بنا", href: "/contact" },
         ],
         "انضم إلينا": [
             { name: "انضم كعضو", href: "#join" },
             { name: "تطوع معنا", href: "#volunteer" },
             { name: "المناصب القيادية", href: "#positions" },
-            { name: "الفروع المحلية", href: "#chapters" },
+            // { name: "الفروع المحلية", href: "#chapters" },
         ],
         الدعم: [
-            { name: "مركز المساعدة", href: "#help" },
-            { name: "سياسة الخصوصية", href: "#privacy" },
-            { name: "شروط الخدمة", href: "#terms" },
-            { name: "الأسئلة الشائعة", href: "#faq" },
+            { name: "مركز المساعدة", href: "/help" },
+            { name: "سياسة الخصوصية", href: "/privacy" },
+            { name: "شروط الخدمة", href: "/terms" },
+            { name: "الأسئلة الشائعة", href: "/faq" },
         ],
     }
 
@@ -51,14 +51,14 @@ export default function PublicPagesFooter() {
                         </p>
                         <div className="flex  gap-4 ">
                             {socialLinks.map((social, index) => (
-                                <a
+                                <Link
                                     key={index}
-                                    href={social.href}
+                                    to={social.href}
                                     aria-label={social.label}
                                     className="w-10 h-10 bg-egypt-white/10 rounded-lg flex items-center justify-center hover:bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] transition-all duration-300 hover:scale-110"
                                 >
                                     <social.icon className="w-5 h-5" />
-                                </a>
+                                </Link>
                             ))}
                         </div>
                     </div>
@@ -70,12 +70,12 @@ export default function PublicPagesFooter() {
                             <ul className="space-y-3">
                                 {links.map((link, index) => (
                                     <li key={index}>
-                                        <a
-                                            href={link.href}
+                                        <Link
+                                            to={link.href}
                                             className="text-egypt-white/80 hover:text-egypt-gold transition-colors duration-300 font-arabic text-right block"
                                         >
                                             {link.name}
-                                        </a>
+                                        </Link>
                                     </li>
                                 ))}
                             </ul>

@@ -53,7 +53,7 @@ const News = () => {
     }
 
     return (
-        <section className="py-20 bg-[linear-gradient(180deg,_rgb(245,245,245),_rgb(255,255,255))]">
+        <section id="news-section" className="py-20 bg-[linear-gradient(180deg,_rgb(245,245,245),_rgb(255,255,255))]">
             <div className="container mx-auto px-6">
                 <InViewSection animation="fadeInUp" className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">

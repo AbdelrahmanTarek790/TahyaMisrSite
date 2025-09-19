@@ -29,7 +29,7 @@ const AboutPage = () => {
         {
             icon: Users,
             title: "الوحدة",
-            description: "جمع الطلاب من خلفيات متنوعة للعمل نحو أهداف مشتركة",
+            description: "جمع الشباب من خلفيات متنوعة للعمل نحو أهداف مشتركة",
             color: "bg-blue-100",
             iconColor: "text-blue-600",
         },
@@ -51,13 +51,13 @@ const AboutPage = () => {
 
     const activities = [
         {
-            title: "تمثيل الطلاب",
-            description: "الدفاع عن حقوق ومصالح الطلاب على مستوى الجامعة والمستوى الوطني",
+            title: "تمثيل الشباب",
+            description: "الدفاع عن حقوق ومصالح الشباب على مستوى الجامعة والمستوى الوطني",
             icon: Users,
         },
         {
             title: "تطوير القيادة",
-            description: "تنظيم ورش عمل وبرامج تدريبية لتطوير مهارات القيادة الطلابية",
+            description: "تنظيم ورش عمل وبرامج تدريبية لتطوير مهارات القيادة الشبابية",
             icon: Crown,
         },
         {
@@ -72,12 +72,12 @@ const AboutPage = () => {
         },
         {
             title: "الدعم الأكاديمي",
-            description: "توفير الموارد وأنظمة الدعم لمساعدة الطلاب على النجاح أكاديمياً",
+            description: "توفير الموارد وأنظمة الدعم لمساعدة الشباب على النجاح أكاديمياً",
             icon: BookOpen,
         },
         {
             title: "التواصل والشبكات",
-            description: "إنشاء روابط بين الطلاب والخريجين والمهنيين في الصناعة",
+            description: "إنشاء روابط بين الشباب والخريجين والمهنيين في الصناعة",
             icon: Target,
         },
     ]
@@ -188,7 +188,7 @@ const AboutPage = () => {
                         className="text-xl mb-8 max-w-2xl mx-auto font-arabic text-right leading-relaxed animate-slide-up"
                         style={{ animationDelay: "0.2s" }}
                     >
-                        انضم إلى آلاف الطلاب المصريين الذين يحدثون فرقاً. معاً، يمكننا بناء مستقبل أفضل لمصر.
+                        انضم إلى آلاف الشباب المصريين الذين يحدثون فرقاً. معاً، يمكننا بناء مستقبل أفضل لمصر.
                     </p>
                     <div className="flex flex-col sm:flex-row justify-center gap-4 animate-scale-in" style={{ animationDelay: "0.4s" }}>
                         <Link to="/register">

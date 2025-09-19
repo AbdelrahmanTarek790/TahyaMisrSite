@@ -66,7 +66,7 @@ const Events = () => {
     }
 
     return (
-        <section className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))] overflow-hidden">
+        <section id="events-section" className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))] overflow-hidden">
             <div className="container mx-auto px-6">
                 <InViewSection animation="fadeInUp" className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">

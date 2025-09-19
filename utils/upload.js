@@ -15,11 +15,11 @@ const storage = multer.diskStorage({
 
 // File filter
 const fileFilter = (req, file, cb) => {
-  // Check file type
-  if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
+  // Check file type - only allow images for profile uploads
+  if (file.mimetype.startsWith('image/')) {
     cb(null, true);
   } else {
-    cb(new Error('Only image and video files are allowed'), false);
+    cb(new Error('Only image files are allowed for profile images'), false);
   }
 };
 
