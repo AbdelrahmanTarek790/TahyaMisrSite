@@ -241,8 +241,8 @@ const TermsPage = () => {
                                     تواصل مع الفريق القانوني
                                 </Button>
                                 <Button
-                                    variant="outline"
-                                    className="border-white text-white hover:bg-white hover:text-egypt-red font-semibold"
+                                    // variant="outline"
+                                    className="border-white border bg-transparent text-white hover:bg-white hover:text-egypt-red font-semibold"
                                     size="lg"
                                 >
                                     <FileText className="w-5 h-5 ml-2" />
