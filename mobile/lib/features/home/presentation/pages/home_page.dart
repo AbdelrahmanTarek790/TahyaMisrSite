@@ -242,6 +242,7 @@ class HomeView extends StatelessWidget {
                   return state.when(
                     initial: () => const SizedBox.shrink(),
                     loading: () => _buildLoadingCards(3),
+                    loadedDetails: (_) => const SizedBox.shrink(),
                     loaded: (
                       eventsList,
                     ) =>
@@ -728,27 +729,6 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildLoadingGrid() {
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        crossAxisSpacing: 12,
-        mainAxisSpacing: 12,
-        childAspectRatio: 1,
-      ),
-      itemCount: 6,
-      itemBuilder: (context, index) => Card(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.grey[300],
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget _buildErrorCard(BuildContext context, String message) {
     final l10n = AppLocalizations.of(context)!;

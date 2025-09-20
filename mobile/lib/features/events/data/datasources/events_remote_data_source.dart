@@ -20,7 +20,8 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
   Future<List<EventModel>> getEvents({
     int page = 1,
     int limit = 10,
-  }) async {
+  }) async
+  {
     try {
       final response = await apiClient.getEvents(page, limit);
       
@@ -62,10 +63,8 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
   Future<EventModel> getEventById(String id) async {
     try {
       final response = await apiClient.getEventById(id);
-      
-
       if (response.success && response.data != null) {
-        return EventModel.fromJson(response.data as Map<String, dynamic>);
+        return response.data as EventModel;
       } else {
         throw ServerException(
           response.error ?? 'Failed to fetch event',

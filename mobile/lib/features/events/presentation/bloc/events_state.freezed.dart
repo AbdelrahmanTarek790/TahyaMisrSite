@@ -22,6 +22,7 @@ mixin _$EventsState {
     required TResult Function() loading,
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
+    required TResult Function(Event eventDetails) loadedDetails,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -30,6 +31,7 @@ mixin _$EventsState {
     TResult? Function()? loading,
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
+    TResult? Function(Event eventDetails)? loadedDetails,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -38,6 +40,7 @@ mixin _$EventsState {
     TResult Function()? loading,
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
+    TResult Function(Event eventDetails)? loadedDetails,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -47,6 +50,7 @@ mixin _$EventsState {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -55,6 +59,7 @@ mixin _$EventsState {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -63,6 +68,7 @@ mixin _$EventsState {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -128,6 +134,7 @@ class _$InitialImpl implements _Initial {
     required TResult Function() loading,
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
+    required TResult Function(Event eventDetails) loadedDetails,
   }) {
     return initial();
   }
@@ -139,6 +146,7 @@ class _$InitialImpl implements _Initial {
     TResult? Function()? loading,
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
+    TResult? Function(Event eventDetails)? loadedDetails,
   }) {
     return initial?.call();
   }
@@ -150,6 +158,7 @@ class _$InitialImpl implements _Initial {
     TResult Function()? loading,
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
+    TResult Function(Event eventDetails)? loadedDetails,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -165,6 +174,7 @@ class _$InitialImpl implements _Initial {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
   }) {
     return initial(this);
   }
@@ -176,6 +186,7 @@ class _$InitialImpl implements _Initial {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
   }) {
     return initial?.call(this);
   }
@@ -187,6 +198,7 @@ class _$InitialImpl implements _Initial {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -242,6 +254,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function() loading,
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
+    required TResult Function(Event eventDetails) loadedDetails,
   }) {
     return loading();
   }
@@ -253,6 +266,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function()? loading,
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
+    TResult? Function(Event eventDetails)? loadedDetails,
   }) {
     return loading?.call();
   }
@@ -264,6 +278,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function()? loading,
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
+    TResult Function(Event eventDetails)? loadedDetails,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -279,6 +294,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
   }) {
     return loading(this);
   }
@@ -290,6 +306,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
   }) {
     return loading?.call(this);
   }
@@ -301,6 +318,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -388,6 +406,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function() loading,
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
+    required TResult Function(Event eventDetails) loadedDetails,
   }) {
     return loaded(events);
   }
@@ -399,6 +418,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function()? loading,
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
+    TResult? Function(Event eventDetails)? loadedDetails,
   }) {
     return loaded?.call(events);
   }
@@ -410,6 +430,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function()? loading,
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
+    TResult Function(Event eventDetails)? loadedDetails,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -425,6 +446,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
   }) {
     return loaded(this);
   }
@@ -436,6 +458,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
   }) {
     return loaded?.call(this);
   }
@@ -447,6 +470,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -533,6 +557,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function() loading,
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
+    required TResult Function(Event eventDetails) loadedDetails,
   }) {
     return error(message);
   }
@@ -544,6 +569,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function()? loading,
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
+    TResult? Function(Event eventDetails)? loadedDetails,
   }) {
     return error?.call(message);
   }
@@ -555,6 +581,7 @@ class _$ErrorImpl implements _Error {
     TResult Function()? loading,
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
+    TResult Function(Event eventDetails)? loadedDetails,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -570,6 +597,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
   }) {
     return error(this);
   }
@@ -581,6 +609,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
   }) {
     return error?.call(this);
   }
@@ -592,6 +621,7 @@ class _$ErrorImpl implements _Error {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -607,5 +637,158 @@ abstract class _Error implements EventsState {
   String get message;
   @JsonKey(ignore: true)
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$LoadedDetailsImplCopyWith<$Res> {
+  factory _$$LoadedDetailsImplCopyWith(
+          _$LoadedDetailsImpl value, $Res Function(_$LoadedDetailsImpl) then) =
+      __$$LoadedDetailsImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({Event eventDetails});
+}
+
+/// @nodoc
+class __$$LoadedDetailsImplCopyWithImpl<$Res>
+    extends _$EventsStateCopyWithImpl<$Res, _$LoadedDetailsImpl>
+    implements _$$LoadedDetailsImplCopyWith<$Res> {
+  __$$LoadedDetailsImplCopyWithImpl(
+      _$LoadedDetailsImpl _value, $Res Function(_$LoadedDetailsImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? eventDetails = null,
+  }) {
+    return _then(_$LoadedDetailsImpl(
+      eventDetails: null == eventDetails
+          ? _value.eventDetails
+          : eventDetails // ignore: cast_nullable_to_non_nullable
+              as Event,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$LoadedDetailsImpl implements _LoadedDetails {
+  const _$LoadedDetailsImpl({required this.eventDetails});
+
+  @override
+  final Event eventDetails;
+
+  @override
+  String toString() {
+    return 'EventsState.loadedDetails(eventDetails: $eventDetails)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LoadedDetailsImpl &&
+            (identical(other.eventDetails, eventDetails) ||
+                other.eventDetails == eventDetails));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, eventDetails);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LoadedDetailsImplCopyWith<_$LoadedDetailsImpl> get copyWith =>
+      __$$LoadedDetailsImplCopyWithImpl<_$LoadedDetailsImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(List<Event> events) loaded,
+    required TResult Function(String message) error,
+    required TResult Function(Event eventDetails) loadedDetails,
+  }) {
+    return loadedDetails(eventDetails);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(List<Event> events)? loaded,
+    TResult? Function(String message)? error,
+    TResult? Function(Event eventDetails)? loadedDetails,
+  }) {
+    return loadedDetails?.call(eventDetails);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(List<Event> events)? loaded,
+    TResult Function(String message)? error,
+    TResult Function(Event eventDetails)? loadedDetails,
+    required TResult orElse(),
+  }) {
+    if (loadedDetails != null) {
+      return loadedDetails(eventDetails);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
+  }) {
+    return loadedDetails(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
+  }) {
+    return loadedDetails?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
+    required TResult orElse(),
+  }) {
+    if (loadedDetails != null) {
+      return loadedDetails(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _LoadedDetails implements EventsState {
+  const factory _LoadedDetails({required final Event eventDetails}) =
+      _$LoadedDetailsImpl;
+
+  Event get eventDetails;
+  @JsonKey(ignore: true)
+  _$$LoadedDetailsImplCopyWith<_$LoadedDetailsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -48,6 +48,7 @@ class _EventsListPageState extends State<EventsListPage> {
         child: BlocBuilder<EventsBloc, EventsState>(
           builder: (context, state) {
             return state.when(
+              loadedDetails: (_) => const SizedBox.shrink(),
               initial: () => const Center(
                 child: CircularProgressIndicator(),
               ),

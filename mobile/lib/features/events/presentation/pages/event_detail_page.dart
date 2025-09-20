@@ -22,16 +22,6 @@ class EventDetailPage extends StatefulWidget {
 
 class _EventDetailPageState extends State<EventDetailPage> {
   late EventsBloc _eventsBloc;
-  Event news = Event(
-    id: '',
-    title: 'title',
-    description: 'description',
-    eventDate: DateTime(2023, 1, 1),
-    location: 'location',
-    createdAt: DateTime(2023, 1, 1),
-    updatedAt: DateTime(2023, 1, 1),
-    registeredUsers: const [],
-  );
 
   @override
   void initState() {
@@ -48,13 +38,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
       child: BlocConsumer<EventsBloc, EventsState>(
         listener: (context, state) {
           state.whenOrNull(
-            loaded: (event) {
-              if (event.isNotEmpty) {
-                setState(() {
-                  news = event.first;
-                });
-              }
-            },
+            loaded: (event) {},
             error: (message) {},
           );
         },
@@ -66,12 +50,12 @@ class _EventDetailPageState extends State<EventDetailPage> {
             body: state.when(
               initial: () => const Center(child: CircularProgressIndicator()),
               loading: () => const Center(child: CircularProgressIndicator()),
-              loaded: (event) {
-                if (event.isEmpty) {
+              loaded: (_) => const SizedBox.shrink(),
+              loadedDetails: (event) {
+                if (event.id.isEmpty) {
                   return const Center(child: Text('No event found'));
                 }
-                final eventDetail = event.first;
-
+                final eventDetail = event;
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: SingleChildScrollView(

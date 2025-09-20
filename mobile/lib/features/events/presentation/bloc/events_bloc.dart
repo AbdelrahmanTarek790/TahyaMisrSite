@@ -52,10 +52,8 @@ class EventsBloc extends Bloc<EventsEvent, EventsState> {
 
     result.fold(
       (failure) => emit(EventsState.error(message: failure.message)),
-      (eventDetails) => emit(EventsState.loaded(events: [eventDetails])),
+      (eventDetails) => emit(EventsState.loadedDetails(eventDetails:eventDetails)),
     );
-
-    add(const EventsEvent.getEvents());
   }
 
   Future<void> _onRegisterForEvent(

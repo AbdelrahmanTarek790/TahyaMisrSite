@@ -19,7 +19,8 @@ class EventRepositoryImpl implements EventRepository {
   Future<Either<Failure, List<Event>>> getEvents({
     int page = 1,
     int limit = 10,
-  }) async {
+  }) async
+  {
     try {
       final result = await remoteDataSource.getEvents(
         page: page,

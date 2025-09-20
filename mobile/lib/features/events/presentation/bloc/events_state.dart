@@ -13,4 +13,8 @@ class EventsState with _$EventsState {
   const factory EventsState.error({
     required String message,
   }) = _Error;
+
+  const factory EventsState.loadedDetails({
+    required Event eventDetails,
+  }) = _LoadedDetails;
 }
