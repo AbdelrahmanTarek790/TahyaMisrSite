@@ -21,7 +21,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Future<void> _onGetNews(
     GetNews event,
     Emitter<NewsState> emit,
-  ) async {
+  ) async
+  {
     emit(const NewsState.loading());
 
     final result = await getNewsUseCase(const NewsParams());
@@ -35,7 +36,8 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
   Future<void> _onRefreshNews(
     RefreshNews event,
     Emitter<NewsState> emit,
-  ) async {
+  ) async
+  {
     add(const NewsEvent.getNews());
   }
 
@@ -48,9 +50,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
         await getNewsDetailUseCase(GetNewsDetailParams(id: event.id));
     result.fold(
       (failure) => emit(NewsState.error(message: failure.message)),
-      (news) => emit(NewsState.loaded(news: [news])),
+      (newDetails) => emit(NewsState.loadedDetails(newsDetails: newDetails)),
     );
-    
-    add(const NewsEvent.getNews());
   }
 }

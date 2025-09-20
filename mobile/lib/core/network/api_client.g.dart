@@ -179,13 +179,13 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<ApiResponse<NewsModel>> getNewsById(String id) async {
+  Future<ApiResponse<dynamic>> getNewsById(String id) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ApiResponse<NewsModel>>(Options(
+        _setStreamType<ApiResponse<dynamic>>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -201,9 +201,9 @@ class _ApiClient implements ApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = ApiResponse<NewsModel>.fromJson(
+    final value = ApiResponse<dynamic>.fromJson(
       _result.data!,
-      (json) => NewsModel.fromJson(json as Map<String, dynamic>),
+      (json) => json as dynamic,
     );
     return value;
   }

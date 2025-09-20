@@ -38,7 +38,7 @@ abstract class ApiClient {
       );
 
   @GET('/news/{id}')
-  Future<ApiResponse<NewsModel>> getNewsById(@Path('id') String id);
+  Future<ApiResponse<dynamic>> getNewsById(@Path('id') String id);
 
   // Events endpoints
   @GET('/events')

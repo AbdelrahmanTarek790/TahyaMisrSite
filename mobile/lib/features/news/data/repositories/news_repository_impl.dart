@@ -19,7 +19,8 @@ class NewsRepositoryImpl implements NewsRepository {
   Future<Either<Failure, List<News>>> getNews({
     int page = 1,
     int limit = 10,
-  }) async {
+  }) async
+  {
     try {
       final result = await remoteDataSource.getNews(
         page: page,

@@ -14,4 +14,8 @@ class NewsState with _$NewsState {
     required String message,
   }) = _Error;
 
+  const factory NewsState.loadedDetails({
+    required News newsDetails,
+  }) = _LoadedDetails;
+
 }

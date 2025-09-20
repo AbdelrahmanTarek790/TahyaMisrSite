@@ -19,7 +19,8 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
   Future<List<NewsModel>> getNews({
     int page = 1,
     int limit = 10,
-  }) async {
+  }) async
+  {
     try {
       final response = await apiClient.getNews(page, limit);
       
@@ -62,18 +63,17 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
   Future<NewsModel> getNewsById(String id) async {
     try {
       final response = await apiClient.getNewsById(id);
-      
-      // print('News by ID API Response: ${response.toJson()}'); // Debug logging
-      
       if (response.success && response.data != null) {
-        return NewsModel.fromJson(response.data as Map<String, dynamic>);
+        final data = response.data as Map<String, dynamic>;
+        final newsModel = NewsModel.fromJson(data);
+        return newsModel;
       } else {
         throw ServerException(
           response.error ?? 'Failed to fetch news',
         );
       }
     } catch (e) {
-      print('News by ID fetch error: $e'); // Debug logging
+      print('NewDetails by ID fetch error: $e'); // Debug logging
       if (e is ServerException) {
         rethrow;
       }

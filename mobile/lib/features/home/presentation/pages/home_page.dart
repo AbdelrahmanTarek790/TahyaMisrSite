@@ -221,6 +221,8 @@ class HomeView extends StatelessWidget {
                     loading: () => _buildLoadingCards(3),
                     loaded: (newsList) =>
                         _buildNewsSection(context, newsList.toList()),
+                    loadedDetails:  (_) =>
+                        const SizedBox.shrink(),
                     error: (message) => _buildErrorCard(context, message),
                   );
                 },

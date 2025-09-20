@@ -22,6 +22,7 @@ mixin _$NewsState {
     required TResult Function() loading,
     required TResult Function(List<News> news) loaded,
     required TResult Function(String message) error,
+    required TResult Function(News newsDetails) loadedDetails,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -30,6 +31,7 @@ mixin _$NewsState {
     TResult? Function()? loading,
     TResult? Function(List<News> news)? loaded,
     TResult? Function(String message)? error,
+    TResult? Function(News newsDetails)? loadedDetails,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -38,6 +40,7 @@ mixin _$NewsState {
     TResult Function()? loading,
     TResult Function(List<News> news)? loaded,
     TResult Function(String message)? error,
+    TResult Function(News newsDetails)? loadedDetails,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -47,6 +50,7 @@ mixin _$NewsState {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -55,6 +59,7 @@ mixin _$NewsState {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -63,6 +68,7 @@ mixin _$NewsState {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -127,6 +133,7 @@ class _$InitialImpl implements _Initial {
     required TResult Function() loading,
     required TResult Function(List<News> news) loaded,
     required TResult Function(String message) error,
+    required TResult Function(News newsDetails) loadedDetails,
   }) {
     return initial();
   }
@@ -138,6 +145,7 @@ class _$InitialImpl implements _Initial {
     TResult? Function()? loading,
     TResult? Function(List<News> news)? loaded,
     TResult? Function(String message)? error,
+    TResult? Function(News newsDetails)? loadedDetails,
   }) {
     return initial?.call();
   }
@@ -149,6 +157,7 @@ class _$InitialImpl implements _Initial {
     TResult Function()? loading,
     TResult Function(List<News> news)? loaded,
     TResult Function(String message)? error,
+    TResult Function(News newsDetails)? loadedDetails,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -164,6 +173,7 @@ class _$InitialImpl implements _Initial {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
   }) {
     return initial(this);
   }
@@ -175,6 +185,7 @@ class _$InitialImpl implements _Initial {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
   }) {
     return initial?.call(this);
   }
@@ -186,6 +197,7 @@ class _$InitialImpl implements _Initial {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -241,6 +253,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function() loading,
     required TResult Function(List<News> news) loaded,
     required TResult Function(String message) error,
+    required TResult Function(News newsDetails) loadedDetails,
   }) {
     return loading();
   }
@@ -252,6 +265,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function()? loading,
     TResult? Function(List<News> news)? loaded,
     TResult? Function(String message)? error,
+    TResult? Function(News newsDetails)? loadedDetails,
   }) {
     return loading?.call();
   }
@@ -263,6 +277,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function()? loading,
     TResult Function(List<News> news)? loaded,
     TResult Function(String message)? error,
+    TResult Function(News newsDetails)? loadedDetails,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -278,6 +293,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
   }) {
     return loading(this);
   }
@@ -289,6 +305,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
   }) {
     return loading?.call(this);
   }
@@ -300,6 +317,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -387,6 +405,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function() loading,
     required TResult Function(List<News> news) loaded,
     required TResult Function(String message) error,
+    required TResult Function(News newsDetails) loadedDetails,
   }) {
     return loaded(news);
   }
@@ -398,6 +417,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function()? loading,
     TResult? Function(List<News> news)? loaded,
     TResult? Function(String message)? error,
+    TResult? Function(News newsDetails)? loadedDetails,
   }) {
     return loaded?.call(news);
   }
@@ -409,6 +429,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function()? loading,
     TResult Function(List<News> news)? loaded,
     TResult Function(String message)? error,
+    TResult Function(News newsDetails)? loadedDetails,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -424,6 +445,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
   }) {
     return loaded(this);
   }
@@ -435,6 +457,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
   }) {
     return loaded?.call(this);
   }
@@ -446,6 +469,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -532,6 +556,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function() loading,
     required TResult Function(List<News> news) loaded,
     required TResult Function(String message) error,
+    required TResult Function(News newsDetails) loadedDetails,
   }) {
     return error(message);
   }
@@ -543,6 +568,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function()? loading,
     TResult? Function(List<News> news)? loaded,
     TResult? Function(String message)? error,
+    TResult? Function(News newsDetails)? loadedDetails,
   }) {
     return error?.call(message);
   }
@@ -554,6 +580,7 @@ class _$ErrorImpl implements _Error {
     TResult Function()? loading,
     TResult Function(List<News> news)? loaded,
     TResult Function(String message)? error,
+    TResult Function(News newsDetails)? loadedDetails,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -569,6 +596,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
   }) {
     return error(this);
   }
@@ -580,6 +608,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
   }) {
     return error?.call(this);
   }
@@ -591,6 +620,7 @@ class _$ErrorImpl implements _Error {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -606,5 +636,158 @@ abstract class _Error implements NewsState {
   String get message;
   @JsonKey(ignore: true)
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$LoadedDetailsImplCopyWith<$Res> {
+  factory _$$LoadedDetailsImplCopyWith(
+          _$LoadedDetailsImpl value, $Res Function(_$LoadedDetailsImpl) then) =
+      __$$LoadedDetailsImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({News newsDetails});
+}
+
+/// @nodoc
+class __$$LoadedDetailsImplCopyWithImpl<$Res>
+    extends _$NewsStateCopyWithImpl<$Res, _$LoadedDetailsImpl>
+    implements _$$LoadedDetailsImplCopyWith<$Res> {
+  __$$LoadedDetailsImplCopyWithImpl(
+      _$LoadedDetailsImpl _value, $Res Function(_$LoadedDetailsImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? newsDetails = null,
+  }) {
+    return _then(_$LoadedDetailsImpl(
+      newsDetails: null == newsDetails
+          ? _value.newsDetails
+          : newsDetails // ignore: cast_nullable_to_non_nullable
+              as News,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$LoadedDetailsImpl implements _LoadedDetails {
+  const _$LoadedDetailsImpl({required this.newsDetails});
+
+  @override
+  final News newsDetails;
+
+  @override
+  String toString() {
+    return 'NewsState.loadedDetails(newsDetails: $newsDetails)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LoadedDetailsImpl &&
+            (identical(other.newsDetails, newsDetails) ||
+                other.newsDetails == newsDetails));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, newsDetails);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LoadedDetailsImplCopyWith<_$LoadedDetailsImpl> get copyWith =>
+      __$$LoadedDetailsImplCopyWithImpl<_$LoadedDetailsImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(List<News> news) loaded,
+    required TResult Function(String message) error,
+    required TResult Function(News newsDetails) loadedDetails,
+  }) {
+    return loadedDetails(newsDetails);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(List<News> news)? loaded,
+    TResult? Function(String message)? error,
+    TResult? Function(News newsDetails)? loadedDetails,
+  }) {
+    return loadedDetails?.call(newsDetails);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(List<News> news)? loaded,
+    TResult Function(String message)? error,
+    TResult Function(News newsDetails)? loadedDetails,
+    required TResult orElse(),
+  }) {
+    if (loadedDetails != null) {
+      return loadedDetails(newsDetails);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
+  }) {
+    return loadedDetails(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
+  }) {
+    return loadedDetails?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
+    required TResult orElse(),
+  }) {
+    if (loadedDetails != null) {
+      return loadedDetails(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _LoadedDetails implements NewsState {
+  const factory _LoadedDetails({required final News newsDetails}) =
+      _$LoadedDetailsImpl;
+
+  News get newsDetails;
+  @JsonKey(ignore: true)
+  _$$LoadedDetailsImplCopyWith<_$LoadedDetailsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
