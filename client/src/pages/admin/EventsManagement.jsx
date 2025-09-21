@@ -5,12 +5,15 @@ import { useError } from "../../context/ErrorContext"
 import { eventsAPI } from "../../api"
 import { Plus, Edit, Trash2, Eye, Calendar, MapPin } from "lucide-react"
 import CreateEventSheet from "../../components/forms/CreateEventSheet"
+import EventDetailsDialog from "../../components/dialogs/EventDetailsDialog"
 
 const EventsManagement = () => {
     const [events, setEvents] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
     const [editingEvent, setEditingEvent] = useState(null)
+    const [selectedEvent, setSelectedEvent] = useState(null)
+    const [isEventDetailsOpen, setIsEventDetailsOpen] = useState(false)
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 })
     const { addError } = useError()
 
@@ -66,6 +69,16 @@ const EventsManagement = () => {
 
     const handleSheetSuccess = () => {
         fetchEvents()
+    }
+
+    const handleViewDetails = (event) => {
+        setSelectedEvent(event)
+        setIsEventDetailsOpen(true)
+    }
+
+    const handleCloseEventDetails = () => {
+        setIsEventDetailsOpen(false)
+        setSelectedEvent(null)
     }
 
     const formatDate = (dateString) => {
@@ -133,7 +146,7 @@ const EventsManagement = () => {
                                         </CardDescription>
                                     </div>
                                     <div className="flex space-x-2">
-                                        <Button variant="outline" size="sm">
+                                        <Button variant="outline" size="sm" onClick={() => handleViewDetails(event)}>
                                             <Eye className="h-4 w-4" />
                                         </Button>
                                         <Button variant="outline" size="sm" onClick={() => handleEdit(event)}>
@@ -194,6 +207,13 @@ const EventsManagement = () => {
 
             {/* Event Creation/Editing Sheet */}
             <CreateEventSheet isOpen={isSheetOpen} onClose={handleSheetClose} onSuccess={handleSheetSuccess} editingEvent={editingEvent} />
+
+            {/* Event Details Dialog */}
+            <EventDetailsDialog 
+                event={selectedEvent}
+                isOpen={isEventDetailsOpen}
+                onClose={handleCloseEventDetails}
+            />
         </div>
     )
 }

@@ -8,8 +8,9 @@ import { Input } from "../../components/ui/input"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "../../components/ui/sheet"
 import { useError } from "../../context/ErrorContext"
 import { usersAPI, positionsAPI } from "../../api"
-import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter } from "lucide-react"
+import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter, Download, Loader2 } from "lucide-react"
 import { EGYPT_GOVERNORATES } from "../../constants/governorates"
+import { exportUsersToExcel } from "../../utils/excelExport"
 
 // Backend User model validation schema
 const userSchema = z.object({
@@ -44,6 +45,7 @@ const UserManagement = () => {
     const [users, setUsers] = useState([])
     const [positions, setPositions] = useState([])
     const [isLoading, setIsLoading] = useState(false)
+    const [isExporting, setIsExporting] = useState(false)
     const [isSheetOpen, setIsSheetOpen] = useState(false)
     const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false)
     const [editingUser, setEditingUser] = useState(null)
@@ -268,6 +270,36 @@ const UserManagement = () => {
         }
     }
 
+    const handleExportUsers = async () => {
+        if (!filteredUsers.length) {
+            addError("No users to export")
+            return
+        }
+
+        try {
+            setIsExporting(true)
+            
+            // Create filename based on current filters
+            let filename = "users_export"
+            if (searchTerm) filename += `_search_${searchTerm.replace(/[^\w]/g, '_')}`
+            if (filterRole !== "all") filename += `_${filterRole}`
+            if (filterGovernorate !== "all") filename += `_${filterGovernorate.replace(/[^\w]/g, '_')}`
+            if (filterUniversity !== "all") filename += `_${filterUniversity.replace(/[^\w]/g, '_')}`
+            
+            const success = exportUsersToExcel(filteredUsers, filename)
+            
+            if (success) {
+                addError(`Successfully exported ${filteredUsers.length} users!`, "success")
+            } else {
+                addError("Failed to export users")
+            }
+        } catch (error) {
+            addError("Failed to export users")
+        } finally {
+            setIsExporting(false)
+        }
+    }
+
     return (
         <div className="space-y-6">
             {/* Header */}
@@ -276,10 +308,24 @@ const UserManagement = () => {
                     <h1 className="text-3xl font-bold text-gray-900"> إدارة المستخدمين</h1>
                     <p className="text-gray-600">إدارة المستخدمين وأدوارهم</p>
                 </div>
-                <Button onClick={() => setIsCreateSheetOpen(true)}>
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    إنشاء مستخدم
-                </Button>
+                <div className="flex space-x-2">
+                    <Button 
+                        onClick={handleExportUsers} 
+                        disabled={isExporting || !filteredUsers.length}
+                        variant="outline"
+                    >
+                        {isExporting ? (
+                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                        ) : (
+                            <Download className="h-4 w-4 mr-2" />
+                        )}
+                        تصدير Excel ({filteredUsers.length})
+                    </Button>
+                    <Button onClick={() => setIsCreateSheetOpen(true)}>
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        إنشاء مستخدم
+                    </Button>
+                </div>
             </div>
 
             {/* Filters */}
