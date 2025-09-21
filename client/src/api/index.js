@@ -97,6 +97,7 @@ export const newsAPI = {
 export const eventsAPI = {
     getAll: (params) => api.get("/events", { params }),
     getById: (id) => api.get(`/events/${id}`),
+    getRegisteredUsers: (id) => api.get(`/events/${id}/registered-users`),
     create: (formData) =>
         api.post("/events", formData, {
             headers: { "Content-Type": "multipart/form-data" },
