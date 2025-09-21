@@ -54,9 +54,8 @@ export const exportUsersToExcel = (users, filename = 'users_export') => {
  * Export event registered users to Excel
  * @param {Array} users - Array of registered user objects
  * @param {string} eventTitle - Title of the event
- * @param {string} eventDate - Date of the event
  */
-export const exportEventUsersToExcel = (users, eventTitle, eventDate) => {
+export const exportEventUsersToExcel = (users, eventTitle) => {
     const formattedData = users.map(user => ({
         'الاسم': user.name,
         'البريد الإلكتروني': user.email,

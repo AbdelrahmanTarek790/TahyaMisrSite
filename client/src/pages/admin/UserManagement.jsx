@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
@@ -77,9 +77,9 @@ const UserManagement = () => {
     useEffect(() => {
         fetchUsers()
         fetchPositions()
-    }, [pagination.page])
+    }, [fetchUsers])
 
-    const fetchUsers = async () => {
+    const fetchUsers = useCallback(async () => {
         try {
             setIsLoading(true)
             const response = await usersAPI.getAll({
@@ -92,11 +92,12 @@ const UserManagement = () => {
                 total: response.data?.total || 0,
             }))
         } catch (error) {
+            console.error('Failed to fetch users:', error)
             addError("Failed to fetch users")
         } finally {
             setIsLoading(false)
         }
-    }
+    }, [pagination.page, pagination.limit, addError])
 
     const fetchPositions = async () => {
         try {
@@ -116,6 +117,7 @@ const UserManagement = () => {
             addError("User deleted successfully!", "success")
             fetchUsers()
         } catch (error) {
+            console.error('Failed to delete user:', error)
             addError("Failed to delete user")
         }
     }
@@ -126,6 +128,7 @@ const UserManagement = () => {
             addError("User role updated successfully!", "success")
             fetchUsers()
         } catch (error) {
+            console.error('Failed to update user role:', error)
             addError("Failed to update user role")
         }
     }
@@ -294,6 +297,7 @@ const UserManagement = () => {
                 addError("Failed to export users")
             }
         } catch (error) {
+            console.error('Failed to export users:', error)
             addError("Failed to export users")
         } finally {
             setIsExporting(false)

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog"
 import { Button } from "../ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card"
@@ -18,9 +18,9 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
         if (isOpen && event?._id) {
             fetchRegisteredUsers()
         }
-    }, [isOpen, event?._id])
+    }, [isOpen, event?._id, fetchRegisteredUsers])
 
-    const fetchRegisteredUsers = async () => {
+    const fetchRegisteredUsers = useCallback(async () => {
         if (!event?._id) return
         
         try {
@@ -28,12 +28,13 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
             const response = await eventsAPI.getRegisteredUsers(event._id)
             setRegisteredUsers(response.data?.registeredUsers || [])
         } catch (error) {
+            console.error('Failed to fetch registered users:', error)
             addError("Failed to fetch registered users")
             setRegisteredUsers([])
         } finally {
             setIsLoading(false)
         }
-    }
+    }, [event?._id, addError])
 
     const handleExport = async () => {
         if (!registeredUsers.length) {
@@ -45,8 +46,7 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
             setIsExporting(true)
             const success = exportEventUsersToExcel(
                 registeredUsers,
-                event.title,
-                event.date
+                event.title
             )
             
             if (success) {
@@ -55,6 +55,7 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
                 addError("Failed to export users")
             }
         } catch (error) {
+            console.error('Failed to export users:', error)
             addError("Failed to export users")
         } finally {
             setIsExporting(false)
