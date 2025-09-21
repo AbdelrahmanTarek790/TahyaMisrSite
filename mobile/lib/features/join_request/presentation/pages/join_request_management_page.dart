@@ -4,7 +4,7 @@ import '../../../../gen_l10n/app_localizations.dart';
 import '../../domain/entities/join_request.dart';
 import '../../data/models/join_request_model.dart';
 import '../bloc/join_request_management_cubit.dart';
-import '../bloc/join_request_management_state.dart';
+import '../bloc/join_request_management_state_simple.dart';
 import '../widgets/join_request_card.dart';
 import '../widgets/join_request_action_dialog.dart';
 

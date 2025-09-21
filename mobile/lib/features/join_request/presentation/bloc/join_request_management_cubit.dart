@@ -4,7 +4,7 @@ import '../../data/models/join_request_model.dart';
 import '../../domain/usecases/get_join_requests.dart';
 import '../../domain/usecases/approve_join_request.dart';
 import '../../domain/usecases/deny_join_request.dart';
-import 'join_request_management_state.dart';
+import 'join_request_management_state_simple.dart';
 
 class JoinRequestManagementCubit extends Cubit<JoinRequestManagementState> {
   final GetJoinRequests getJoinRequestsUseCase;
@@ -15,14 +15,14 @@ class JoinRequestManagementCubit extends Cubit<JoinRequestManagementState> {
     required this.getJoinRequestsUseCase,
     required this.approveJoinRequestUseCase,
     required this.denyJoinRequestUseCase,
-  }) : super(const JoinRequestManagementState.initial());
+  }) : super(const JoinRequestManagementInitial());
 
   Future<void> loadJoinRequests({
     int page = 1,
     int limit = 10,
     String? status,
   }) async {
-    emit(const JoinRequestManagementState.loading());
+    emit(const JoinRequestManagementLoading());
 
     final result = await getJoinRequestsUseCase(
       GetJoinRequestsParams(
@@ -33,7 +33,7 @@ class JoinRequestManagementCubit extends Cubit<JoinRequestManagementState> {
     );
 
     result.fold(
-      (failure) => emit(JoinRequestManagementState.error(message: failure.message)),
+      (failure) => emit(JoinRequestManagementError(message: failure.message)),
       (data) {
         final joinRequestsData = data['joinRequests'] as List<dynamic>;
         final paginationData = data['pagination'] as Map<String, dynamic>;
@@ -42,7 +42,7 @@ class JoinRequestManagementCubit extends Cubit<JoinRequestManagementState> {
             .map((json) => JoinRequestModel.fromJson(json))
             .toList();
 
-        emit(JoinRequestManagementState.loaded(
+        emit(JoinRequestManagementLoaded(
           joinRequests: joinRequests,
           currentPage: paginationData['current'] ?? 1,
           totalPages: paginationData['total'] ?? 1,
@@ -59,7 +59,7 @@ class JoinRequestManagementCubit extends Cubit<JoinRequestManagementState> {
     String? university,
     String? membershipExpiry,
   }) async {
-    emit(JoinRequestManagementState.processing(requestId: requestId));
+    emit(JoinRequestManagementProcessing(requestId: requestId));
 
     final action = JoinRequestAction(
       notes: notes,
@@ -72,9 +72,9 @@ class JoinRequestManagementCubit extends Cubit<JoinRequestManagementState> {
     );
 
     result.fold(
-      (failure) => emit(JoinRequestManagementState.error(message: failure.message)),
+      (failure) => emit(JoinRequestManagementError(message: failure.message)),
       (joinRequest) {
-        emit(const JoinRequestManagementState.actionSuccess(
+        emit(const JoinRequestManagementActionSuccess(
           message: 'تم الموافقة على الطلب بنجاح',
         ));
         // Reload the list after successful action
@@ -87,7 +87,7 @@ class JoinRequestManagementCubit extends Cubit<JoinRequestManagementState> {
     required String requestId,
     required String notes,
   }) async {
-    emit(JoinRequestManagementState.processing(requestId: requestId));
+    emit(JoinRequestManagementProcessing(requestId: requestId));
 
     final action = JoinRequestAction(notes: notes);
 
@@ -96,9 +96,9 @@ class JoinRequestManagementCubit extends Cubit<JoinRequestManagementState> {
     );
 
     result.fold(
-      (failure) => emit(JoinRequestManagementState.error(message: failure.message)),
+      (failure) => emit(JoinRequestManagementError(message: failure.message)),
       (joinRequest) {
-        emit(const JoinRequestManagementState.actionSuccess(
+        emit(const JoinRequestManagementActionSuccess(
           message: 'تم رفض الطلب بنجاح',
         ));
         // Reload the list after successful action

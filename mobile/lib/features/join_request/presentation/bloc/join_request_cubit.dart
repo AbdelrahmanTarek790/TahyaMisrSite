@@ -1,14 +1,14 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/models/join_request_submission.dart';
 import '../../domain/usecases/create_join_request.dart';
-import 'join_request_state.dart';
+import 'join_request_state_simple.dart';
 
 class JoinRequestCubit extends Cubit<JoinRequestState> {
   final CreateJoinRequest createJoinRequestUseCase;
 
   JoinRequestCubit({
     required this.createJoinRequestUseCase,
-  }) : super(const JoinRequestState.initial());
+  }) : super(const JoinRequestInitial());
 
   Future<void> submitJoinRequest({
     required String name,
@@ -21,7 +21,7 @@ class JoinRequestCubit extends Cubit<JoinRequestState> {
     required String role,
     String? notes,
   }) async {
-    emit(const JoinRequestState.loading());
+    emit(const JoinRequestLoading());
 
     final request = JoinRequestSubmission(
       name: name,
@@ -40,14 +40,14 @@ class JoinRequestCubit extends Cubit<JoinRequestState> {
     );
 
     result.fold(
-      (failure) => emit(JoinRequestState.error(message: failure.message)),
-      (joinRequest) => emit(const JoinRequestState.success(
+      (failure) => emit(JoinRequestError(message: failure.message)),
+      (joinRequest) => emit(const JoinRequestSuccess(
         message: 'تم إرسال طلب الانضمام بنجاح',
       )),
     );
   }
 
   void reset() {
-    emit(const JoinRequestState.initial());
+    emit(const JoinRequestInitial());
   }
 }

@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/constants/governorates.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../bloc/join_request_cubit.dart';
-import '../bloc/join_request_state.dart';
+import '../bloc/join_request_state_simple.dart';
 
 class JoinRequestPage extends StatefulWidget {
   const JoinRequestPage({super.key});
@@ -321,7 +321,7 @@ class _JoinRequestPageState extends State<JoinRequestPage> {
   Widget _buildSubmitButton(BuildContext context, AppLocalizations l10n) {
     return BlocBuilder<JoinRequestCubit, JoinRequestState>(
       builder: (context, state) {
-        final isLoading = state is Loading;
+        final isLoading = state is JoinRequestLoading;
         
         return ElevatedButton(
           onPressed: isLoading ? null : () => _submitForm(context),
