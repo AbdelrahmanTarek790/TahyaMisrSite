@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../domain/entities/join_request.dart';
+import '../../data/models/join_request_model.dart';
 import '../bloc/join_request_management_cubit.dart';
 import '../bloc/join_request_management_state.dart';
 import '../widgets/join_request_card.dart';
@@ -305,15 +306,17 @@ class _JoinRequestManagementPageState extends State<JoinRequestManagementPage> {
         isApproval: isApproval,
         onAction: (notes, university, membershipExpiry) {
           if (isApproval) {
+            final joinRequestModel = request as JoinRequestModel;
             context.read<JoinRequestManagementCubit>().approveRequest(
-                  requestId: request.name, // Using name as ID for now, should use actual ID
+                  requestId: joinRequestModel.id ?? '',
                   notes: notes,
                   university: university,
                   membershipExpiry: membershipExpiry,
                 );
           } else {
+            final joinRequestModel = request as JoinRequestModel;
             context.read<JoinRequestManagementCubit>().denyRequest(
-                  requestId: request.name, // Using name as ID for now, should use actual ID
+                  requestId: joinRequestModel.id ?? '',
                   notes: notes,
                 );
           }

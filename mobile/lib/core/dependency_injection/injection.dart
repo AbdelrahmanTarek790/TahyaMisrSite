@@ -30,6 +30,15 @@ import '../../features/positions/domain/repositories/position_repository.dart';
 import '../../features/positions/data/repositories/position_repository_impl.dart';
 import '../../features/positions/data/datasources/position_remote_data_source.dart';
 import '../../features/positions/presentation/bloc/positions_bloc.dart';
+import '../../features/join_request/data/datasources/join_request_remote_data_source.dart';
+import '../../features/join_request/data/repositories/join_request_repository_impl.dart';
+import '../../features/join_request/domain/repositories/join_request_repository.dart';
+import '../../features/join_request/domain/usecases/create_join_request.dart';
+import '../../features/join_request/domain/usecases/get_join_requests.dart';
+import '../../features/join_request/domain/usecases/approve_join_request.dart';
+import '../../features/join_request/domain/usecases/deny_join_request.dart';
+import '../../features/join_request/presentation/bloc/join_request_cubit.dart';
+import '../../features/join_request/presentation/bloc/join_request_management_cubit.dart';
 import '../network/api_client.dart';
 import '../network/network_info.dart';
 import '../utils/app_router.dart';
@@ -218,6 +227,9 @@ Future<void> configureDependencies() async {
 
   // Positions dependencies
   _configurePositionsDependencies();
+
+  // Join Request dependencies
+  _configureJoinRequestDependencies();
 
   // Router
   getIt.registerLazySingleton<AppRouter>(AppRouter.new);
@@ -437,6 +449,53 @@ void _configurePositionsDependencies() {
       createPositionUseCase: getIt<CreatePositionUseCase>(),
       updatePositionUseCase: getIt<UpdatePositionUseCase>(),
       deletePositionUseCase: getIt<DeletePositionUseCase>(),
+    ),
+  );
+}
+
+void _configureJoinRequestDependencies() {
+  // Join Request data source
+  getIt.registerLazySingleton<JoinRequestRemoteDataSource>(
+    () => JoinRequestRemoteDataSourceImpl(getIt<ApiClient>()),
+  );
+
+  // Join Request repository
+  getIt.registerLazySingleton<JoinRequestRepository>(
+    () => JoinRequestRepositoryImpl(
+      remoteDataSource: getIt<JoinRequestRemoteDataSource>(),
+      networkInfo: getIt<NetworkInfo>(),
+    ),
+  );
+
+  // Join Request use cases
+  getIt.registerLazySingleton<CreateJoinRequest>(
+    () => CreateJoinRequest(getIt<JoinRequestRepository>()),
+  );
+
+  getIt.registerLazySingleton<GetJoinRequests>(
+    () => GetJoinRequests(getIt<JoinRequestRepository>()),
+  );
+
+  getIt.registerLazySingleton<ApproveJoinRequest>(
+    () => ApproveJoinRequest(getIt<JoinRequestRepository>()),
+  );
+
+  getIt.registerLazySingleton<DenyJoinRequest>(
+    () => DenyJoinRequest(getIt<JoinRequestRepository>()),
+  );
+
+  // Join Request cubits
+  getIt.registerFactory<JoinRequestCubit>(
+    () => JoinRequestCubit(
+      createJoinRequestUseCase: getIt<CreateJoinRequest>(),
+    ),
+  );
+
+  getIt.registerFactory<JoinRequestManagementCubit>(
+    () => JoinRequestManagementCubit(
+      getJoinRequestsUseCase: getIt<GetJoinRequests>(),
+      approveJoinRequestUseCase: getIt<ApproveJoinRequest>(),
+      denyJoinRequestUseCase: getIt<DenyJoinRequest>(),
     ),
   );
 }

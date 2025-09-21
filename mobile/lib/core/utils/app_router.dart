@@ -18,6 +18,8 @@ import '../../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../../features/user_management/presentation/pages/user_management_page.dart';
 import '../../features/content_management/presentation/pages/content_management_page.dart';
 import '../../features/positions/presentation/pages/position_management_page.dart';
+import '../../features/join_request/presentation/pages/join_request_page_wrapper.dart';
+import '../../features/join_request/presentation/pages/join_request_management_page_wrapper.dart';
 import '../../shared/widgets/main_navigation.dart';
 
 class AppRouter {
@@ -120,6 +122,18 @@ class AppRouter {
         GoRoute(
           path: '/position-management',
           builder: (context, state) => const PositionManagementPage(),
+        ),
+
+        // Join Request (Public)
+        GoRoute(
+          path: '/join-request',
+          builder: (context, state) => const JoinRequestPageWrapper(),
+        ),
+
+        // Join Request Management (Admin only)
+        GoRoute(
+          path: '/join-request-management',
+          builder: (context, state) => const JoinRequestManagementPageWrapper(),
         ),
 
         // ABOUT US
