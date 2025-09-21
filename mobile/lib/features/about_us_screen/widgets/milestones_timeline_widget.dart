@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_theme.dart';
 import '../../../gen_l10n/app_localizations.dart';
-import '../../home/presentation/widgets/custom_icon_widget.dart';
-import '../../home/presentation/widgets/custom_image_widget.dart';
 import 'build_milestones_widget.dart';
 
 

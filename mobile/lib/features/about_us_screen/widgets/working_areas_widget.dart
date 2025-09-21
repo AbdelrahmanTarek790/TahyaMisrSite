@@ -230,7 +230,7 @@ class _WorkingAreasWidgetState extends State<WorkingAreasWidget> {
                                             style: AppTheme.textTheme.bodyMedium
                                                 ?.copyWith(
                                                     fontWeight: FontWeight.bold,
-                                                    color: Colors.white),
+                                                    color: Colors.white,),
                                           ),
                                         ),
                                         const SizedBox(width: 3),

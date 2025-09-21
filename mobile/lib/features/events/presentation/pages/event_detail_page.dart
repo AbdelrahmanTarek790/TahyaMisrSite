@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:tahya_misr_app/features/events/domain/entities/event.dart';
 import 'package:tahya_misr_app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:tahya_misr_app/features/events/presentation/bloc/events_state.dart';
 

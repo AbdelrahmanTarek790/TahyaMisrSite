@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_state.dart';
 
-import '../../../../core/constants/app_constants.dart';
 import '../../domain/entities/event.dart';
 import '../bloc/events_bloc.dart';
 import '../bloc/events_state.dart';
