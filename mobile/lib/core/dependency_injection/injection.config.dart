@@ -44,6 +44,8 @@ import 'package:tahya_misr_app/features/events/domain/usecases/get_events_detail
     as _i806;
 import 'package:tahya_misr_app/features/events/domain/usecases/get_events_usecase.dart'
     as _i492;
+import 'package:tahya_misr_app/features/events/domain/usecases/register_event_usecase.dart'
+    as _i1067;
 import 'package:tahya_misr_app/features/events/presentation/bloc/events_bloc.dart'
     as _i525;
 import 'package:tahya_misr_app/features/media/data/datasources/media_remote_data_source.dart'
@@ -101,6 +103,7 @@ extension GetItInjectableX on _i174.GetIt {
           authRepository: gh<_i631.AuthRepository>(),
         ));
     gh.factory<_i525.EventsBloc>(() => _i525.EventsBloc(
+          registerEventUseCase: gh<_i1067.RegisterEventUseCase>(),
           getEventsUseCase: gh<_i492.GetEventsUseCase>(),
           getEventsDetailUseCase: gh<_i806.GetEventsDetailUseCase>(),
         ));

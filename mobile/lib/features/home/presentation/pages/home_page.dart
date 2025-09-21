@@ -25,7 +25,6 @@ import '../../../media/presentation/bloc/media_event.dart';
 import '../../../news/domain/entities/news.dart';
 import '../../../events/domain/entities/event.dart';
 import '../widgets/custom_icon_widget.dart';
-import '../widgets/custom_image_widget.dart';
 import '../widgets/hero_banner_widget.dart';
 
 class HomePage extends StatelessWidget {
@@ -251,6 +250,7 @@ class HomeView extends StatelessWidget {
                       eventsList.take(3).toList(),
                     ),
                     error: (message) => _buildErrorCard(context, message),
+                    registeredSuccessfully: (_) => const SizedBox.shrink(),
                   );
                 },
               ),
@@ -265,18 +265,6 @@ class HomeView extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               _buildMediaSection(context, achievementsData.take(4).toList()),
-
-      /*         BlocBuilder<MediaBloc, MediaState>(
-                builder: (context, state) {
-                  return state.when(
-                    initial: () => const SizedBox.shrink(),
-                    loading: _buildLoadingGrid,
-                    loaded: (achievementsData) =>
-                        _buildMediaSection(context, achievementsData.take(4).toList()),
-                    error: (message) => _buildErrorCard(context, message),
-                  );
-                },
-              ),*/
             ],
           ),
         ),
@@ -288,7 +276,8 @@ class HomeView extends StatelessWidget {
     BuildContext context, {
     required String title,
     required VoidCallback onViewAll,
-  }) {
+  })
+  {
     final l10n = AppLocalizations.of(context)!;
 
     return Row(
@@ -308,7 +297,8 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildNewsSection(BuildContext context, List<News> newsList) {
+  Widget _buildNewsSection(BuildContext context, List<News> newsList)
+  {
     // ناخد العرض من الشاشة (80% مثلا)
     final double cardWidth = MediaQuery.of(context).size.width * 0.8;
 
@@ -331,7 +321,8 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildNewsCard(BuildContext context, News news) {
+  Widget _buildNewsCard(BuildContext context, News news)
+  {
     final l10n = AppLocalizations.of(context)!;
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -466,7 +457,8 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildEventsSection(BuildContext context, List<Event> eventsList) {
+  Widget _buildEventsSection(BuildContext context, List<Event> eventsList)
+  {
     if (eventsList.isEmpty) {
       return _buildEmptyCard(context);
     }

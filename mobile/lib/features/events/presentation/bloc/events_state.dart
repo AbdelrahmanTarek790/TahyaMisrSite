@@ -17,4 +17,8 @@ class EventsState with _$EventsState {
   const factory EventsState.loadedDetails({
     required Event eventDetails,
   }) = _LoadedDetails;
+
+  const factory EventsState.registeredSuccessfully({
+    required String message,
+  }) = _RegisteredSuccessfully;
 }

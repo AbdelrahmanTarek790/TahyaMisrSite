@@ -178,6 +178,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
                 );
               },
               error: (message) => Center(child: Text('Error: $message')),
+              registeredSuccessfully: (_) => const SizedBox.shrink(),
             ),
           );
         },

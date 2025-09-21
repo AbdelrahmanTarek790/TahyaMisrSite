@@ -23,6 +23,7 @@ mixin _$EventsState {
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
     required TResult Function(Event eventDetails) loadedDetails,
+    required TResult Function(String message) registeredSuccessfully,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -32,6 +33,7 @@ mixin _$EventsState {
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
     TResult? Function(Event eventDetails)? loadedDetails,
+    TResult? Function(String message)? registeredSuccessfully,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -41,6 +43,7 @@ mixin _$EventsState {
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
     TResult Function(Event eventDetails)? loadedDetails,
+    TResult Function(String message)? registeredSuccessfully,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -51,6 +54,8 @@ mixin _$EventsState {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
     required TResult Function(_LoadedDetails value) loadedDetails,
+    required TResult Function(_RegisteredSuccessfully value)
+        registeredSuccessfully,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -60,6 +65,7 @@ mixin _$EventsState {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
     TResult? Function(_LoadedDetails value)? loadedDetails,
+    TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -69,6 +75,7 @@ mixin _$EventsState {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
     TResult Function(_LoadedDetails value)? loadedDetails,
+    TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -135,6 +142,7 @@ class _$InitialImpl implements _Initial {
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
     required TResult Function(Event eventDetails) loadedDetails,
+    required TResult Function(String message) registeredSuccessfully,
   }) {
     return initial();
   }
@@ -147,6 +155,7 @@ class _$InitialImpl implements _Initial {
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
     TResult? Function(Event eventDetails)? loadedDetails,
+    TResult? Function(String message)? registeredSuccessfully,
   }) {
     return initial?.call();
   }
@@ -159,6 +168,7 @@ class _$InitialImpl implements _Initial {
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
     TResult Function(Event eventDetails)? loadedDetails,
+    TResult Function(String message)? registeredSuccessfully,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -175,6 +185,8 @@ class _$InitialImpl implements _Initial {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
     required TResult Function(_LoadedDetails value) loadedDetails,
+    required TResult Function(_RegisteredSuccessfully value)
+        registeredSuccessfully,
   }) {
     return initial(this);
   }
@@ -187,6 +199,7 @@ class _$InitialImpl implements _Initial {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
     TResult? Function(_LoadedDetails value)? loadedDetails,
+    TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
   }) {
     return initial?.call(this);
   }
@@ -199,6 +212,7 @@ class _$InitialImpl implements _Initial {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
     TResult Function(_LoadedDetails value)? loadedDetails,
+    TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -255,6 +269,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
     required TResult Function(Event eventDetails) loadedDetails,
+    required TResult Function(String message) registeredSuccessfully,
   }) {
     return loading();
   }
@@ -267,6 +282,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
     TResult? Function(Event eventDetails)? loadedDetails,
+    TResult? Function(String message)? registeredSuccessfully,
   }) {
     return loading?.call();
   }
@@ -279,6 +295,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
     TResult Function(Event eventDetails)? loadedDetails,
+    TResult Function(String message)? registeredSuccessfully,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -295,6 +312,8 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
     required TResult Function(_LoadedDetails value) loadedDetails,
+    required TResult Function(_RegisteredSuccessfully value)
+        registeredSuccessfully,
   }) {
     return loading(this);
   }
@@ -307,6 +326,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
     TResult? Function(_LoadedDetails value)? loadedDetails,
+    TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
   }) {
     return loading?.call(this);
   }
@@ -319,6 +339,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
     TResult Function(_LoadedDetails value)? loadedDetails,
+    TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -407,6 +428,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
     required TResult Function(Event eventDetails) loadedDetails,
+    required TResult Function(String message) registeredSuccessfully,
   }) {
     return loaded(events);
   }
@@ -419,6 +441,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
     TResult? Function(Event eventDetails)? loadedDetails,
+    TResult? Function(String message)? registeredSuccessfully,
   }) {
     return loaded?.call(events);
   }
@@ -431,6 +454,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
     TResult Function(Event eventDetails)? loadedDetails,
+    TResult Function(String message)? registeredSuccessfully,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -447,6 +471,8 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
     required TResult Function(_LoadedDetails value) loadedDetails,
+    required TResult Function(_RegisteredSuccessfully value)
+        registeredSuccessfully,
   }) {
     return loaded(this);
   }
@@ -459,6 +485,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
     TResult? Function(_LoadedDetails value)? loadedDetails,
+    TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
   }) {
     return loaded?.call(this);
   }
@@ -471,6 +498,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
     TResult Function(_LoadedDetails value)? loadedDetails,
+    TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -558,6 +586,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
     required TResult Function(Event eventDetails) loadedDetails,
+    required TResult Function(String message) registeredSuccessfully,
   }) {
     return error(message);
   }
@@ -570,6 +599,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
     TResult? Function(Event eventDetails)? loadedDetails,
+    TResult? Function(String message)? registeredSuccessfully,
   }) {
     return error?.call(message);
   }
@@ -582,6 +612,7 @@ class _$ErrorImpl implements _Error {
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
     TResult Function(Event eventDetails)? loadedDetails,
+    TResult Function(String message)? registeredSuccessfully,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -598,6 +629,8 @@ class _$ErrorImpl implements _Error {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
     required TResult Function(_LoadedDetails value) loadedDetails,
+    required TResult Function(_RegisteredSuccessfully value)
+        registeredSuccessfully,
   }) {
     return error(this);
   }
@@ -610,6 +643,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
     TResult? Function(_LoadedDetails value)? loadedDetails,
+    TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
   }) {
     return error?.call(this);
   }
@@ -622,6 +656,7 @@ class _$ErrorImpl implements _Error {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
     TResult Function(_LoadedDetails value)? loadedDetails,
+    TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -710,6 +745,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     required TResult Function(List<Event> events) loaded,
     required TResult Function(String message) error,
     required TResult Function(Event eventDetails) loadedDetails,
+    required TResult Function(String message) registeredSuccessfully,
   }) {
     return loadedDetails(eventDetails);
   }
@@ -722,6 +758,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     TResult? Function(List<Event> events)? loaded,
     TResult? Function(String message)? error,
     TResult? Function(Event eventDetails)? loadedDetails,
+    TResult? Function(String message)? registeredSuccessfully,
   }) {
     return loadedDetails?.call(eventDetails);
   }
@@ -734,6 +771,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     TResult Function(List<Event> events)? loaded,
     TResult Function(String message)? error,
     TResult Function(Event eventDetails)? loadedDetails,
+    TResult Function(String message)? registeredSuccessfully,
     required TResult orElse(),
   }) {
     if (loadedDetails != null) {
@@ -750,6 +788,8 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
     required TResult Function(_LoadedDetails value) loadedDetails,
+    required TResult Function(_RegisteredSuccessfully value)
+        registeredSuccessfully,
   }) {
     return loadedDetails(this);
   }
@@ -762,6 +802,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
     TResult? Function(_LoadedDetails value)? loadedDetails,
+    TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
   }) {
     return loadedDetails?.call(this);
   }
@@ -774,6 +815,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
     TResult Function(_LoadedDetails value)? loadedDetails,
+    TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     required TResult orElse(),
   }) {
     if (loadedDetails != null) {
@@ -791,4 +833,166 @@ abstract class _LoadedDetails implements EventsState {
   @JsonKey(ignore: true)
   _$$LoadedDetailsImplCopyWith<_$LoadedDetailsImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$RegisteredSuccessfullyImplCopyWith<$Res> {
+  factory _$$RegisteredSuccessfullyImplCopyWith(
+          _$RegisteredSuccessfullyImpl value,
+          $Res Function(_$RegisteredSuccessfullyImpl) then) =
+      __$$RegisteredSuccessfullyImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String message});
+}
+
+/// @nodoc
+class __$$RegisteredSuccessfullyImplCopyWithImpl<$Res>
+    extends _$EventsStateCopyWithImpl<$Res, _$RegisteredSuccessfullyImpl>
+    implements _$$RegisteredSuccessfullyImplCopyWith<$Res> {
+  __$$RegisteredSuccessfullyImplCopyWithImpl(
+      _$RegisteredSuccessfullyImpl _value,
+      $Res Function(_$RegisteredSuccessfullyImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? message = null,
+  }) {
+    return _then(_$RegisteredSuccessfullyImpl(
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$RegisteredSuccessfullyImpl implements _RegisteredSuccessfully {
+  const _$RegisteredSuccessfullyImpl({required this.message});
+
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'EventsState.registeredSuccessfully(message: $message)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$RegisteredSuccessfullyImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$RegisteredSuccessfullyImplCopyWith<_$RegisteredSuccessfullyImpl>
+      get copyWith => __$$RegisteredSuccessfullyImplCopyWithImpl<
+          _$RegisteredSuccessfullyImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(List<Event> events) loaded,
+    required TResult Function(String message) error,
+    required TResult Function(Event eventDetails) loadedDetails,
+    required TResult Function(String message) registeredSuccessfully,
+  }) {
+    return registeredSuccessfully(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(List<Event> events)? loaded,
+    TResult? Function(String message)? error,
+    TResult? Function(Event eventDetails)? loadedDetails,
+    TResult? Function(String message)? registeredSuccessfully,
+  }) {
+    return registeredSuccessfully?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(List<Event> events)? loaded,
+    TResult Function(String message)? error,
+    TResult Function(Event eventDetails)? loadedDetails,
+    TResult Function(String message)? registeredSuccessfully,
+    required TResult orElse(),
+  }) {
+    if (registeredSuccessfully != null) {
+      return registeredSuccessfully(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
+    required TResult Function(_RegisteredSuccessfully value)
+        registeredSuccessfully,
+  }) {
+    return registeredSuccessfully(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
+    TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
+  }) {
+    return registeredSuccessfully?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
+    TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
+    required TResult orElse(),
+  }) {
+    if (registeredSuccessfully != null) {
+      return registeredSuccessfully(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _RegisteredSuccessfully implements EventsState {
+  const factory _RegisteredSuccessfully({required final String message}) =
+      _$RegisteredSuccessfullyImpl;
+
+  String get message;
+  @JsonKey(ignore: true)
+  _$$RegisteredSuccessfullyImplCopyWith<_$RegisteredSuccessfullyImpl>
+      get copyWith => throw _privateConstructorUsedError;
 }

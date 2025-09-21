@@ -9,6 +9,7 @@ import 'package:tahya_misr_app/features/events/domain/usecases/get_events_detail
 
 import '../../features/events/data/repositories/event_repository_impl.dart';
 import '../../features/events/domain/repositories/event_repository.dart';
+import '../../features/events/domain/usecases/register_event_usecase.dart';
 import '../../features/media/data/repositories/media_repository_impl.dart';
 import '../../features/media/domain/repositories/media_repository.dart';
 import '../../features/news/domain/usecases/get_news_detail_usecase.dart';
@@ -310,11 +311,17 @@ void _configureEventsDependencies() {
   getIt.registerLazySingleton<GetEventsDetailUseCase>(
     () => GetEventsDetailUseCase(getIt<EventRepository>()),
   );
+
+  //Events registration use case
+  getIt.registerLazySingleton<RegisterEventUseCase>(
+          () => RegisterEventUseCase(getIt<EventRepository>()),
+  );
   // Events bloc
   getIt.registerFactory<EventsBloc>(
     () => EventsBloc(
       getEventsUseCase: getIt<GetEventsUseCase>(),
       getEventsDetailUseCase: getIt<GetEventsDetailUseCase>(),
+      registerEventUseCase: getIt<RegisterEventUseCase>(),
     ),
   );
 }

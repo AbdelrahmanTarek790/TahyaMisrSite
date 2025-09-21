@@ -27,4 +27,6 @@ class AppConstants {
   static const int maxFileSize = 5 * 1024 * 1024; // 5MB
   static const List<String> allowedImageTypes = ['jpg', 'jpeg', 'png', 'webp'];
   static const List<String> allowedVideoTypes = ['mp4', 'mov', 'avi'];
+
+  String idUser  = '';
 }

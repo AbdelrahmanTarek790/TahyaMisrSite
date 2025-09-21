@@ -8,7 +8,7 @@ abstract class EventsRemoteDataSource {
     int limit = 10,
   });
   Future<EventModel> getEventById(String id);
-  Future<String> registerForEvent(String eventId);
+  Future<void> registerForEvent(String eventId);
 }
 
 class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
@@ -29,7 +29,6 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
       if (response.success && response.data != null) {
         final data = response.data as Map<String, dynamic>;
         final eventsList = data['events'] as List<dynamic>? ?? [];
-        
         print('Events list length: ${eventsList.length}'); // Debug logging
         
         final eventModels = <EventModel>[];
@@ -82,18 +81,35 @@ class EventsRemoteDataSourceImpl implements EventsRemoteDataSource {
   }
 
   @override
-  Future<String> registerForEvent(String eventId) async {
+  Future<void> registerForEvent(String eventId) async {
     try {
-      final response = await apiClient.registerForEvent(eventId);
-      
+      await apiClient.registerForEvent(eventId).then(
+            (value) {
+              print('Registered for event successfully');
 
-      if (response.success) {
-        return response.data?.toString() ?? 'Registration successful';
+            },
+        onError: (error, stackTrace) {
+          print('Error registering for event: $error');
+          throw ServerException('Failed to register for event: $error');
+        },
+      );
+      /*   if (response == null) {
+        return;
+
       } else {
         throw ServerException(
           response.error ?? 'Failed to register for event',
         );
       }
+    } catch (e) {
+      print('Event registration error: $e'); // Debug logging
+      if (e is ServerException) {
+        rethrow;
+      }
+      throw ServerException(
+        'Unexpected error occurred: ${e.toString()}',
+      );
+    }*/
     } catch (e) {
       print('Event registration error: $e'); // Debug logging
       if (e is ServerException) {

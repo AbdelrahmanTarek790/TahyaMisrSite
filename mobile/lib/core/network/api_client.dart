@@ -51,7 +51,7 @@ abstract class ApiClient {
   Future<ApiResponse<EventModel>> getEventById(@Path('id') String id);
 
   @POST('/events/{id}/register')
-  Future<ApiResponse<String>> registerForEvent(@Path('id') String id);
+  Future<void> registerForEvent(@Path('id') String id);
 
   // Media endpoints
   @GET('/media')

@@ -4,7 +4,9 @@ import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_state.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../domain/entities/event.dart';
 import '../bloc/events_bloc.dart';
 import '../bloc/events_state.dart';
@@ -105,6 +107,10 @@ class _EventsListPageState extends State<EventsListPage> {
                   ],
                 ),
               ),
+              registeredSuccessfully: (_) {
+                _eventsBloc.add(const EventsEvent.getEvents());
+                return const SizedBox.shrink();
+              },
             );
           },
         ),
@@ -137,7 +143,8 @@ class _EventCard extends StatelessWidget {
                   event.imageUrl!,
                   fit: BoxFit.cover,
                   errorBuilder: (context, error, stackTrace) => Container(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     child: Icon(
                       Icons.event,
                       color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -178,7 +185,9 @@ class _EventCard extends StatelessWidget {
                       Text(
                         _formatDate(event.eventDate),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurfaceVariant,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
                             ),
                       ),
                       const Spacer(),
@@ -194,8 +203,12 @@ class _EventCard extends StatelessWidget {
                           ),
                           child: Text(
                             'قادم',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   fontWeight: FontWeight.w600,
                                 ),
                           ),
@@ -215,9 +228,12 @@ class _EventCard extends StatelessWidget {
                         Expanded(
                           child: Text(
                             event.location,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                                ),
+                            style:
+                                Theme.of(context).textTheme.bodySmall?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant,
+                                    ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -228,22 +244,53 @@ class _EventCard extends StatelessWidget {
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-
-                        context.read<AuthBloc>().asGuest == true
-                            ? ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('يرجى تسجيل الدخول أولاً')),
-                              )
-                            :
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('تم التسجيل في الفعالية 🎉')),
+                    child: BlocConsumer<AuthBloc, AuthState>(
+                      listener: (context, state) {},
+                      builder: (context, state) {
+                        return state.when(
+                          initial: () => const SizedBox.shrink(),
+                          loading: () => const SizedBox.shrink(),
+                          authenticated: (user, token) {
+                            return event.registeredUsers.contains(user.id) ==
+                                    false
+                                ? ElevatedButton(
+                                    onPressed: () {
+                                      // Check if user is authenticated
+                                      if (user.id.isNotEmpty) {
+                                        // Register for the event
+                                        context.read<EventsBloc>().add(
+                                              EventsEvent.registerForEvent(
+                                                event.id,
+                                              ),
+                                            );
+                                      } else {
+                                        // Navigate to login page
+                                        context.go('/login');
+                                      }
+                                    },
+                                    child: const Text('سجل الآن'),
+                                  )
+                                : const Center(
+                                  child: Text('مسجل بالفعل',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green,
+                                        fontSize: 16,
+                                      ),),
+                                );
+                          },
+                          unauthenticated: () {
+                            return ElevatedButton(
+                              onPressed: () {
+                                // Navigate to login page
+                                context.go('/login');
+                              },
+                              child: const Text('تسجيل الدخول للتسجيل'),
+                            );
+                          },
+                          error: (message) => const SizedBox.shrink(),
                         );
-
-                        context.read<AuthBloc>().asGuest == true ?  context.go('/login'): null ;
                       },
-                      icon: const Icon(Icons.check_circle_outline),
-                      label: const Text('سجل الآن'),
                     ),
                   ),
                 ],

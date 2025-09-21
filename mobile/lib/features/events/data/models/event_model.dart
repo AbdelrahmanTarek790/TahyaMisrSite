@@ -22,8 +22,9 @@ class EventModel extends Event {
       final description = json['description'] as String? ?? '';
       
       // Handle image field - backend uses 'image', mobile expects 'imageUrl'
-      final imageUrl = json['image'] as String? ?? json['imageUrl'] as String?;
-      
+      final imageUrl ='https://form.codepeak.software/uploads/${json['image']}' as String? ??'https://form.codepeak.software/uploads/${json['image']}'  as String?;
+
+
       // Handle event date - backend uses 'date', mobile expects 'eventDate'
       final eventDate = json['date'] != null 
           ? DateTime.tryParse(json['date'] as String) ?? DateTime.now()
