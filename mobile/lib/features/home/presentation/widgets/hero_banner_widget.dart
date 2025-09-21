@@ -28,7 +28,7 @@ class _HeroBannerWidgetState extends State<HeroBannerWidget> {
       'title': 'إنجازات الشباب المصري',
       'subtitle': 'قصص نجاح ملهمة من أرض مصر',
       'image':
-          'https://images.pixabay.com/photo/2017/07/31/11/21/people-2557396_1280.jpg',
+          'https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
       'type': 'achievement',
     },
     {
