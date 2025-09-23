@@ -4,9 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
-import '../../../auth/presentation/bloc/auth_event.dart';
 import '../../../auth/domain/entities/user.dart';
 
 class EditProfilePage extends StatefulWidget {
@@ -120,7 +119,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ],
       ),
-      body: BlocListener<AuthBloc, AuthState>(
+      body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           state.when(
             initial: () {},
@@ -469,7 +468,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         data['membershipNumber'] = _membershipNumberController.text.trim();
       }*/
 
-      context.read<AuthBloc>().add(AuthEvent.updateProfile(data: data));
+      context.read<AuthCubit>().updateProfile(data);
     }
   }
 }

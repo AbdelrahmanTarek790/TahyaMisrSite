@@ -41,7 +41,7 @@ import '../../features/auth/domain/usecases/login_usecase.dart';
 import '../../features/auth/domain/usecases/register_usecase.dart';
 import '../../features/auth/domain/usecases/logout_usecase.dart';
 import '../../features/auth/domain/usecases/update_profile_usecase.dart';
-import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/auth/presentation/cubit/auth_cubit.dart';
 import '../../features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import '../../features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import '../../features/dashboard/domain/repositories/dashboard_repository.dart';
@@ -190,9 +190,9 @@ Future<void> configureDependencies() async {
     () => UpdateProfileUseCase(getIt<AuthRepository>()),
   );
 
-  // Blocs
-  getIt.registerFactory<AuthBloc>(
-    () => AuthBloc(
+  // Cubits
+  getIt.registerFactory<AuthCubit>(
+    () => AuthCubit(
       loginUseCase: getIt<LoginUseCase>(),
       registerUseCase: getIt<RegisterUseCase>(),
       logoutUseCase: getIt<LogoutUseCase>(),

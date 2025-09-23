@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:tahya_misr_app/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_state.dart';
 
 import '../../domain/entities/event.dart';
@@ -243,7 +243,7 @@ class _EventCard extends StatelessWidget {
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: BlocConsumer<AuthBloc, AuthState>(
+                    child: BlocConsumer<AuthCubit, AuthState>(
                       listener: (context, state) {},
                       builder: (context, state) {
                         return state.when(

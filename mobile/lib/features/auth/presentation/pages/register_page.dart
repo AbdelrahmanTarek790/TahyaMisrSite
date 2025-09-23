@@ -5,9 +5,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../../profile/presentation/pages/edit_profile_page.dart';
-import '../bloc/auth_bloc.dart';
+import '../cubit/auth_cubit.dart';
 import '../bloc/auth_state.dart';
-import '../bloc/auth_event.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -101,7 +100,7 @@ class _RegisterPageState extends State<RegisterPage> {
         ),
         title: const Text('تسجيل حساب جديد'),
       ),
-      body: BlocConsumer<AuthBloc, AuthState>(
+      body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           state.when(
             initial: () {},
@@ -509,21 +508,18 @@ class _RegisterPageState extends State<RegisterPage> {
   }
 
   void _handleRegister() {
-    context.read<AuthBloc>().setAsGuest(false);
+    context.read<AuthCubit>().setAsGuest(false);
     if (_formKey.currentState?.validate() ?? false) {
-      context.read<AuthBloc>().add(
-            AuthEvent.registerRequested(
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-              name: _nameController.text.trim(),
-              governorate: mapIdToNameAr(_selectedGovernorate!, AppLocalizations.of(context)!.localeName),
-              phone: _phoneController.text.trim(),
-              university: _universityController.text,
-              nationalId: _nationalIdController.text,
-              membershipNumber: '',
-              // position: _selectedRole,
-            ),
-          );
+      context.read<AuthCubit>().register(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+        name: _nameController.text.trim(),
+        governorate: mapIdToNameAr(_selectedGovernorate!, AppLocalizations.of(context)!.localeName),
+        phone: _phoneController.text.trim(),
+        university: _universityController.text,
+        nationalId: _nationalIdController.text,
+        membershipNumber: '',
+      );
     }
   }
 }

@@ -9,9 +9,8 @@ import '../../../../core/constants/app_theme.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../../../core/utils/settings_cubit.dart';
 import '../../../../core/utils/app_settings.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
-import '../../../auth/presentation/bloc/auth_event.dart';
 import 'edit_profile_page.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -27,7 +26,7 @@ class SettingsPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      body: BlocConsumer<AuthBloc, AuthState>(
+      body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           print('SettingsPage listener: $state');
           state.when(
@@ -361,8 +360,8 @@ class SettingsPage extends StatelessWidget {
                             .withValues(alpha: 0.7),
                       ),
                       onTap: () => context
-                          .read<AuthBloc>()
-                          .add(const AuthEvent.logoutRequested()),
+                          .read<AuthCubit>()
+                          .logout(),
                     ),
                   ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3, end: 0),
 
@@ -562,7 +561,7 @@ class SettingsPage extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   // Logout Button
-                  context.read<AuthBloc>().asGuest == false
+                  context.read<AuthCubit>().asGuest == false
                       ? Card(
                           child: ListTile(
                             leading: Icon(
@@ -588,8 +587,8 @@ class SettingsPage extends StatelessWidget {
                                   .withValues(alpha: 0.7),
                             ),
                             onTap: () => context
-                                .read<AuthBloc>()
-                                .add(const AuthEvent.logoutRequested()),
+                                .read<AuthCubit>()
+                                .logout(),
                           ),
                         )
                           .animate()
@@ -823,7 +822,7 @@ class SettingsPage extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   // Logout Button
-                  context.read<AuthBloc>().asGuest == false
+                  context.read<AuthCubit>().asGuest == false
                       ? Card(
                           child: ListTile(
                             leading: Icon(
@@ -849,8 +848,8 @@ class SettingsPage extends StatelessWidget {
                                   .withValues(alpha: 0.7),
                             ),
                             onTap: () => context
-                                .read<AuthBloc>()
-                                .add(const AuthEvent.logoutRequested()),
+                                .read<AuthCubit>()
+                                .logout(),
                           ),
                         )
                           .animate()
@@ -909,7 +908,7 @@ class SettingsPage extends StatelessWidget {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
-                          context.read<AuthBloc>().add(const AuthEvent.getCurrentUser());
+                          context.read<AuthCubit>().getCurrentUser();
                         },
                         child: const Text('إعادة المحاولة'),
                       ),

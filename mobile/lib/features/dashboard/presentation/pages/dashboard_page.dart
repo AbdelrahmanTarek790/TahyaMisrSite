@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../bloc/dashboard_bloc.dart';
 import '../bloc/dashboard_state.dart';
@@ -51,7 +51,7 @@ class _DashboardViewState extends State<DashboardView> {
           ),
         ],
       ),
-      body: BlocBuilder<AuthBloc, AuthState>(
+      body: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, authState) {
           return authState.maybeWhen(
             authenticated: (user, token) => BlocBuilder<DashboardBloc, DashboardState>(

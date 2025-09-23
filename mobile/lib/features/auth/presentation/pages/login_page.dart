@@ -4,9 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../gen_l10n/app_localizations.dart';
-import '../bloc/auth_bloc.dart';
+import '../cubit/auth_cubit.dart';
 import '../bloc/auth_state.dart';
-import '../bloc/auth_event.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -30,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<AuthBloc, AuthState>(
+    return BlocConsumer<AuthCubit, AuthState>(
       listener: (context, state) {
         state.when(
           initial: () {},
@@ -221,8 +220,8 @@ class _LoginPageState extends State<LoginPage> {
                       // Guest Login Button
                       OutlinedButton(
                         onPressed: () {
-                          context.read<AuthBloc>().setAsGuest(true);
-                          print(context.read<AuthBloc>().asGuest);
+                          context.read<AuthCubit>().setAsGuest(true);
+                          print(context.read<AuthCubit>().asGuest);
                           context.go('/home');
                         },
                         style: OutlinedButton.styleFrom(
@@ -275,14 +274,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _handleLogin() {
-    context.read<AuthBloc>().setAsGuest(false);
+    context.read<AuthCubit>().setAsGuest(false);
     if (_formKey.currentState?.validate() ?? false) {
-      context.read<AuthBloc>().add(
-            AuthEvent.loginRequested(
-              email: _emailController.text.trim(),
-              password: _passwordController.text,
-            ),
-          );
+      context.read<AuthCubit>().login(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
     }
   }
 }
