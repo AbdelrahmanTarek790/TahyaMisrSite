@@ -9,8 +9,10 @@ import '../../features/events/data/services/events_api_service.dart';
 import '../../features/events/data/local/events_local_storage.dart';
 import '../../features/events/data/repositories/events_repository.dart';
 import '../../features/events/presentation/cubits/events_cubit.dart';
-import '../../features/media/data/repositories/media_repository_impl.dart';
-import '../../features/media/domain/repositories/media_repository.dart';
+import '../../features/media/data/services/media_api_service.dart';
+import '../../features/media/data/local/media_local_storage.dart';
+import '../../features/media/data/repositories/media_repository.dart';
+import '../../features/media/presentation/cubits/media_cubit.dart';
 import '../../features/news/data/services/news_api_service.dart';
 import '../../features/news/data/local/news_local_storage.dart';
 import '../../features/news/data/repositories/news_repository.dart';
@@ -51,9 +53,7 @@ import '../../features/news/domain/repositories/news_repository.dart';
 import '../../features/news/domain/usecases/get_news_usecase.dart';
 import '../../features/news/presentation/bloc/news_bloc.dart';
 
-import '../../features/media/data/datasources/media_remote_data_source.dart';
-import '../../features/media/domain/usecases/get_media_usecase.dart';
-import '../../features/media/presentation/bloc/media_bloc.dart';
+
 import '../utils/settings_cubit.dart';
 
 
@@ -96,11 +96,13 @@ Future<void> configureDependencies() async {
   final cacheBox = await Hive.openBox('cache');
   final newsBox = await Hive.openBox('news');
   final eventsBox = await Hive.openBox('events');
+  final mediaBox = await Hive.openBox('media');
 
   getIt.registerLazySingleton<Box>(() => authBox, instanceName: 'authBox');
   getIt.registerLazySingleton<Box>(() => cacheBox, instanceName: 'cacheBox');
   getIt.registerLazySingleton<Box>(() => newsBox, instanceName: 'newsBox');
   getIt.registerLazySingleton<Box>(() => eventsBox, instanceName: 'eventsBox');
+  getIt.registerLazySingleton<Box>(() => mediaBox, instanceName: 'mediaBox');
 
   // Dio configuration
   getIt.registerLazySingleton<Dio>(() {
@@ -293,27 +295,29 @@ void _configureEventsDependencies() {
 }
 
 void _configureMediaDependencies() {
-  // Media data source
-  getIt.registerLazySingleton<MediaRemoteDataSource>(
-    () => MediaRemoteDataSourceImpl(getIt<ApiClient>()),
+  // Media API Service
+  getIt.registerLazySingleton<MediaApiService>(
+    () => MediaApiService(getIt<ApiClient>()),
+  );
+
+  // Media Local Storage
+  getIt.registerLazySingleton<MediaLocalStorage>(
+    () => MediaLocalStorage(getIt<Box>(instanceName: 'mediaBox')),
   );
 
   // Media repository
   getIt.registerLazySingleton<MediaRepository>(
     () => MediaRepositoryImpl(
-      remoteDataSource: getIt<MediaRemoteDataSource>(),
+      apiService: getIt<MediaApiService>(),
+      localStorage: getIt<MediaLocalStorage>(),
+      networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
-  // Media use case
-  getIt.registerLazySingleton<GetMediaUseCase>(
-    () => GetMediaUseCase(getIt<MediaRepository>()),
-  );
-
-  // Media bloc
-  getIt.registerFactory<MediaBloc>(
-    () => MediaBloc(
-      getMediaUseCase: getIt<GetMediaUseCase>(),
+  // Media cubit
+  getIt.registerFactory<MediaCubit>(
+    () => MediaCubit(
+      mediaRepository: getIt<MediaRepository>(),
     ),
   );
 }
