@@ -12,7 +12,10 @@ import '../../features/events/domain/repositories/event_repository.dart';
 import '../../features/events/domain/usecases/register_event_usecase.dart';
 import '../../features/media/data/repositories/media_repository_impl.dart';
 import '../../features/media/domain/repositories/media_repository.dart';
-import '../../features/news/domain/usecases/get_news_detail_usecase.dart';
+import '../../features/news/data/services/news_api_service.dart';
+import '../../features/news/data/local/news_local_storage.dart';
+import '../../features/news/data/repositories/news_repository.dart';
+import '../../features/news/presentation/cubits/news_cubit.dart';
 import '../../features/user_management/data/datasources/user_management_remote_data_source.dart';
 import '../../features/user_management/data/repositories/user_management_repository_impl.dart';
 import '../../features/user_management/domain/repositories/user_management_repository.dart';
@@ -33,15 +36,10 @@ import '../../features/positions/presentation/bloc/positions_bloc.dart';
 import '../network/api_client.dart';
 import '../network/network_info.dart';
 import '../utils/app_router.dart';
-import '../../features/auth/data/datasources/auth_local_data_source.dart';
-import '../../features/auth/data/datasources/auth_remote_data_source.dart';
-import '../../features/auth/data/repositories/auth_repository_impl.dart';
-import '../../features/auth/domain/repositories/auth_repository.dart';
-import '../../features/auth/domain/usecases/login_usecase.dart';
-import '../../features/auth/domain/usecases/register_usecase.dart';
-import '../../features/auth/domain/usecases/logout_usecase.dart';
-import '../../features/auth/domain/usecases/update_profile_usecase.dart';
-import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import '../../features/auth/data/services/auth_api_service.dart';
+import '../../features/auth/data/local/auth_local_storage.dart';
+import '../../features/auth/data/repositories/auth_repository.dart';
+import '../../features/auth/presentation/cubits/auth_cubit.dart';
 import '../../features/dashboard/data/datasources/dashboard_remote_data_source.dart';
 import '../../features/dashboard/data/repositories/dashboard_repository_impl.dart';
 import '../../features/dashboard/domain/repositories/dashboard_repository.dart';
@@ -99,9 +97,11 @@ Future<void> configureDependencies() async {
   // Hive boxes
   final authBox = await Hive.openBox('auth');
   final cacheBox = await Hive.openBox('cache');
+  final newsBox = await Hive.openBox('news');
 
   getIt.registerLazySingleton<Box>(() => authBox, instanceName: 'authBox');
   getIt.registerLazySingleton<Box>(() => cacheBox, instanceName: 'cacheBox');
+  getIt.registerLazySingleton<Box>(() => newsBox, instanceName: 'newsBox');
 
   // Dio configuration
   getIt.registerLazySingleton<Dio>(() {
@@ -152,51 +152,31 @@ Future<void> configureDependencies() async {
   // API Client
   getIt.registerLazySingleton<ApiClient>(() => ApiClient(getIt<Dio>()));
 
-  // Data sources
-  getIt.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(getIt<ApiClient>()),
+  // Auth API Service
+  getIt.registerLazySingleton<AuthApiService>(
+    () => AuthApiService(getIt<ApiClient>()),
   );
 
-  getIt.registerLazySingleton<AuthLocalDataSource>(
-    () => AuthLocalDataSourceImpl(
+  // Auth Local Storage
+  getIt.registerLazySingleton<AuthLocalStorage>(
+    () => AuthLocalStorage(
       getIt<FlutterSecureStorage>(),
       getIt<Box>(instanceName: 'authBox'),
     ),
   );
 
-  // Repositories
+  // Auth Repository
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
-      remoteDataSource: getIt<AuthRemoteDataSource>(),
-      localDataSource: getIt<AuthLocalDataSource>(),
+      apiService: getIt<AuthApiService>(),
+      localStorage: getIt<AuthLocalStorage>(),
       networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
-  // Use cases
-  getIt.registerLazySingleton<LoginUseCase>(
-    () => LoginUseCase(getIt<AuthRepository>()),
-  );
-
-  getIt.registerLazySingleton<RegisterUseCase>(
-    () => RegisterUseCase(getIt<AuthRepository>()),
-  );
-
-  getIt.registerLazySingleton<LogoutUseCase>(
-    () => LogoutUseCase(getIt<AuthRepository>()),
-  );
-
-  getIt.registerLazySingleton<UpdateProfileUseCase>(
-    () => UpdateProfileUseCase(getIt<AuthRepository>()),
-  );
-
-  // Blocs
-  getIt.registerFactory<AuthBloc>(
-    () => AuthBloc(
-      loginUseCase: getIt<LoginUseCase>(),
-      registerUseCase: getIt<RegisterUseCase>(),
-      logoutUseCase: getIt<LogoutUseCase>(),
-      updateProfileUseCase: getIt<UpdateProfileUseCase>(),
+  // Auth Cubit
+  getIt.registerFactory<AuthCubit>(
+    () => AuthCubit(
       authRepository: getIt<AuthRepository>(),
     ),
   );
@@ -258,33 +238,29 @@ void _configureDashboardDependencies() {
 }
 
 void _configureNewsDependencies() {
-  // News data source
-  getIt.registerLazySingleton<NewsRemoteDataSource>(
-    () => NewsRemoteDataSourceImpl(getIt<ApiClient>()),
+  // News API Service
+  getIt.registerLazySingleton<NewsApiService>(
+    () => NewsApiService(getIt<ApiClient>()),
+  );
+
+  // News Local Storage
+  getIt.registerLazySingleton<NewsLocalStorage>(
+    () => NewsLocalStorage(getIt<Box>(instanceName: 'newsBox')),
   );
 
   // News repository
   getIt.registerLazySingleton<NewsRepository>(
     () => NewsRepositoryImpl(
-      remoteDataSource: getIt<NewsRemoteDataSource>(),
+      apiService: getIt<NewsApiService>(),
+      localStorage: getIt<NewsLocalStorage>(),
+      networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
-  // News use cases
-  getIt.registerLazySingleton<GetNewsUseCase>(
-    () => GetNewsUseCase(getIt<NewsRepository>()),
-  );
-
-  //News detail use case
-  getIt.registerLazySingleton<GetNewsDetailUseCase>(
-    () => GetNewsDetailUseCase(getIt<NewsRepository>()),
-  );
-
-  // News bloc
-  getIt.registerFactory<NewsBloc>(
-    () => NewsBloc(
-      getNewsUseCase: getIt<GetNewsUseCase>(),
-      getNewsDetailUseCase: getIt<GetNewsDetailUseCase>(),
+  // News cubit
+  getIt.registerFactory<NewsCubit>(
+    () => NewsCubit(
+      newsRepository: getIt<NewsRepository>(),
     ),
   );
 }
