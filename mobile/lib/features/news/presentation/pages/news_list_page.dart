@@ -7,9 +7,8 @@ import 'package:skeletonizer/skeletonizer.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../domain/entities/news.dart';
-import '../bloc/news_bloc.dart';
+import '../cubit/news_cubit.dart';
 import '../bloc/news_state.dart';
-import '../bloc/news_event.dart';
 
 class NewsListPage extends StatefulWidget {
   const NewsListPage({super.key});
@@ -22,15 +21,15 @@ class _NewsListPageState extends State<NewsListPage> {
   final PagingController<int, News> _pagingController =
   PagingController(firstPageKey: 0);
 
-  late NewsBloc _newsBloc;
+  late NewsCubit _newsCubit;
 
   @override
   void initState() {
     super.initState();
-    _newsBloc = GetIt.instance<NewsBloc>();
+    _newsCubit = GetIt.instance<NewsCubit>();
 
     _pagingController.addPageRequestListener((pageKey) {
-      _newsBloc.add(const NewsEvent.getNews());
+      _newsCubit.getNews();
     });
   }
 
@@ -43,8 +42,8 @@ class _NewsListPageState extends State<NewsListPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _newsBloc,
-      child: BlocListener<NewsBloc, NewsState>(
+      value: _newsCubit,
+      child: BlocListener<NewsCubit, NewsState>(
         listener: (context, state) {
           state.whenOrNull(
             loaded: (news) {

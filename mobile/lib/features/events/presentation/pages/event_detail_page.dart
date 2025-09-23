@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:tahya_misr_app/features/events/presentation/bloc/events_bloc.dart';
+import 'package:tahya_misr_app/features/events/presentation/cubit/events_cubit.dart';
 import 'package:tahya_misr_app/features/events/presentation/bloc/events_state.dart';
-
-import '../bloc/events_event.dart';
 
 class EventDetailPage extends StatefulWidget {
   final String eventId;
@@ -20,21 +18,21 @@ class EventDetailPage extends StatefulWidget {
 }
 
 class _EventDetailPageState extends State<EventDetailPage> {
-  late EventsBloc _eventsBloc;
+  late EventsCubit _eventsCubit;
 
   @override
   void initState() {
     super.initState();
-    _eventsBloc = GetIt.instance<EventsBloc>();
+    _eventsCubit = GetIt.instance<EventsCubit>();
 
-    _eventsBloc.add(EventsEvent.getEventById(widget.eventId));
+    _eventsCubit.getEventById(widget.eventId);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _eventsBloc,
-      child: BlocConsumer<EventsBloc, EventsState>(
+      value: _eventsCubit,
+      child: BlocConsumer<EventsCubit, EventsState>(
         listener: (context, state) {
           state.whenOrNull(
             loaded: (event) {},

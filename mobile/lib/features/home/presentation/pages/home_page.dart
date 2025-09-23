@@ -14,14 +14,11 @@ import 'package:tahya_misr_app/features/home/presentation/widgets/quick_access_c
 import '../../../../core/constants/app_theme.dart';
 import '../../../../core/utils/app_settings.dart';
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../news/presentation/bloc/news_bloc.dart';
+import '../../../news/presentation/cubit/news_cubit.dart';
 import '../../../news/presentation/bloc/news_state.dart';
-import '../../../news/presentation/bloc/news_event.dart';
-import '../../../events/presentation/bloc/events_bloc.dart';
+import '../../../events/presentation/cubit/events_cubit.dart';
 import '../../../events/presentation/bloc/events_state.dart';
-import '../../../events/presentation/bloc/events_event.dart';
-import '../../../media/presentation/bloc/media_bloc.dart';
-import '../../../media/presentation/bloc/media_event.dart';
+import '../../../media/presentation/cubit/media_cubit.dart';
 import '../../../news/domain/entities/news.dart';
 import '../../../events/domain/entities/event.dart';
 import '../widgets/custom_icon_widget.dart';
@@ -36,15 +33,15 @@ class HomePage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) =>
-              GetIt.instance<NewsBloc>()..add(const NewsEvent.getNews()),
+              GetIt.instance<NewsCubit>()..getNews(),
         ),
         BlocProvider(
           create: (context) =>
-              GetIt.instance<EventsBloc>()..add(const EventsEvent.getEvents()),
+              GetIt.instance<EventsCubit>()..getEvents(),
         ),
         BlocProvider(
           create: (context) =>
-              GetIt.instance<MediaBloc>()..add(const MediaEvent.getMedia()),
+              GetIt.instance<MediaCubit>()..getMedia(),
         ),
       ],
       child: HomeView(),
@@ -129,9 +126,9 @@ class HomeView extends StatelessWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<NewsBloc>().add(const NewsEvent.getNews());
-          context.read<EventsBloc>().add(const EventsEvent.getEvents());
-          context.read<MediaBloc>().add(const MediaEvent.getMedia());
+          context.read<NewsCubit>().getNews();
+          context.read<EventsCubit>().getEvents();
+          context.read<MediaCubit>().getMedia();
         },
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -213,7 +210,7 @@ class HomeView extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
-              BlocBuilder<NewsBloc, NewsState>(
+              BlocBuilder<NewsCubit, NewsState>(
                 builder: (context, state) {
                   return state.when(
                     initial: () => const SizedBox.shrink(),
@@ -236,7 +233,7 @@ class HomeView extends StatelessWidget {
                 onViewAll: () => context.push('/events'),
               ),
               const SizedBox(height: 16),
-              BlocBuilder<EventsBloc, EventsState>(
+              BlocBuilder<EventsCubit, EventsState>(
                 builder: (context, state) {
                   return state.when(
                     initial: () => const SizedBox.shrink(),

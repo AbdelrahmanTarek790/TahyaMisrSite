@@ -11,8 +11,7 @@ import 'core/constants/app_theme.dart';
 import 'core/utils/bloc_observer.dart';
 import 'core/utils/settings_cubit.dart';
 import 'core/utils/app_settings.dart';
-import 'features/auth/presentation/bloc/auth_bloc.dart';
-import 'features/auth/presentation/bloc/auth_event.dart';
+import 'features/auth/presentation/cubit/auth_cubit.dart';
 import 'gen_l10n/app_localizations.dart';
 
 void main() async {
@@ -43,10 +42,8 @@ class TahyaMisrApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => GetIt.instance<AuthBloc>()
-            ..add(
-              const AuthEvent.getCurrentUser(),
-            ),
+          create: (context) => GetIt.instance<AuthCubit>()
+            ..getCurrentUser(),
         ),
         BlocProvider<SettingsCubit>(
           create: (context) => GetIt.instance<SettingsCubit>(),
