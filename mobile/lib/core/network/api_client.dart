@@ -9,6 +9,8 @@ import '../../features/auth/data/models/user_model.dart';
 import '../../features/news/data/models/news_model.dart';
 import '../../features/events/data/models/event_model.dart';
 import '../../features/media/data/models/media_model.dart';
+import '../../features/join_requests/data/models/create_join_request.dart';
+import '../../features/join_requests/data/models/join_request_action.dart';
 import 'api_response.dart';
 
 part 'api_client.g.dart';
@@ -132,4 +134,33 @@ abstract class ApiClient {
 
   // Dashboard data will be aggregated from other endpoints
   // No dedicated dashboard endpoints since dashboard.js was deleted
+
+  // Join Request endpoints
+  @POST('/join-requests')
+  Future<ApiResponse<dynamic>> createJoinRequest(@Body() CreateJoinRequest request);
+
+  @GET('/join-requests')
+  Future<ApiResponse<dynamic>> getJoinRequests(
+    @Query('page') int page,
+    @Query('limit') int limit,
+    @Query('status') String? status,
+  );
+
+  @GET('/join-requests/{id}')
+  Future<ApiResponse<dynamic>> getJoinRequestById(@Path('id') String id);
+
+  @PATCH('/join-requests/{id}/approve')
+  Future<ApiResponse<dynamic>> approveJoinRequest(
+    @Path('id') String id, 
+    @Body() JoinRequestAction action,
+  );
+
+  @PATCH('/join-requests/{id}/deny')
+  Future<ApiResponse<dynamic>> denyJoinRequest(
+    @Path('id') String id, 
+    @Body() JoinRequestAction action,
+  );
+
+  @DELETE('/join-requests/{id}')
+  Future<ApiResponse<dynamic>> deleteJoinRequest(@Path('id') String id);
 }
