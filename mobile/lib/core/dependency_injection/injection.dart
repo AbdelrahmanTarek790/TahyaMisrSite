@@ -21,7 +21,7 @@ import '../../features/user_management/domain/usecases/get_user_by_id.dart';
 import '../../features/user_management/domain/usecases/create_user.dart';
 import '../../features/user_management/domain/usecases/update_user.dart';
 import '../../features/user_management/domain/usecases/delete_user.dart';
-import '../../features/user_management/presentation/bloc/user_management_bloc.dart';
+import '../../features/user_management/presentation/cubit/user_management_cubit.dart';
 import '../../features/positions/domain/usecases/get_positions_usecase.dart';
 import '../../features/positions/domain/usecases/create_position_usecase.dart';
 import '../../features/positions/domain/usecases/update_position_usecase.dart';
@@ -29,7 +29,7 @@ import '../../features/positions/domain/usecases/delete_position_usecase.dart';
 import '../../features/positions/domain/repositories/position_repository.dart';
 import '../../features/positions/data/repositories/position_repository_impl.dart';
 import '../../features/positions/data/datasources/position_remote_data_source.dart';
-import '../../features/positions/presentation/bloc/positions_bloc.dart';
+import '../../features/positions/presentation/cubit/positions_cubit.dart';
 import '../network/api_client.dart';
 import '../network/network_info.dart';
 import '../utils/app_router.dart';
@@ -47,18 +47,18 @@ import '../../features/dashboard/data/repositories/dashboard_repository_impl.dar
 import '../../features/dashboard/domain/repositories/dashboard_repository.dart';
 import '../../features/dashboard/domain/usecases/get_dashboard_stats_usecase.dart';
 import '../../features/dashboard/domain/usecases/get_recent_activity_usecase.dart';
-import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
+import '../../features/dashboard/presentation/cubit/dashboard_cubit.dart';
 import '../../features/news/data/datasources/news_remote_data_source.dart';
 import '../../features/news/data/repositories/news_repository_impl.dart';
 import '../../features/news/domain/repositories/news_repository.dart';
 import '../../features/news/domain/usecases/get_news_usecase.dart';
-import '../../features/news/presentation/bloc/news_bloc.dart';
+import '../../features/news/presentation/cubit/news_cubit.dart';
 import '../../features/events/data/datasources/events_remote_data_source.dart';
 import '../../features/events/domain/usecases/get_events_usecase.dart';
-import '../../features/events/presentation/bloc/events_bloc.dart';
+import '../../features/events/presentation/cubit/events_cubit.dart';
 import '../../features/media/data/datasources/media_remote_data_source.dart';
 import '../../features/media/domain/usecases/get_media_usecase.dart';
-import '../../features/media/presentation/bloc/media_bloc.dart';
+import '../../features/media/presentation/cubit/media_cubit.dart';
 import '../utils/settings_cubit.dart';
 
 
@@ -248,9 +248,9 @@ void _configureDashboardDependencies() {
     () => GetRecentActivityUseCase(getIt<DashboardRepository>()),
   );
 
-  // Dashboard bloc
-  getIt.registerFactory<DashboardBloc>(
-    () => DashboardBloc(
+  // Dashboard cubit
+  getIt.registerFactory<DashboardCubit>(
+    () => DashboardCubit(
       getDashboardStatsUseCase: getIt<GetDashboardStatsUseCase>(),
       getRecentActivityUseCase: getIt<GetRecentActivityUseCase>(),
     ),
@@ -280,9 +280,9 @@ void _configureNewsDependencies() {
     () => GetNewsDetailUseCase(getIt<NewsRepository>()),
   );
 
-  // News bloc
-  getIt.registerFactory<NewsBloc>(
-    () => NewsBloc(
+  // News cubit
+  getIt.registerFactory<NewsCubit>(
+    () => NewsCubit(
       getNewsUseCase: getIt<GetNewsUseCase>(),
       getNewsDetailUseCase: getIt<GetNewsDetailUseCase>(),
     ),
@@ -316,9 +316,9 @@ void _configureEventsDependencies() {
   getIt.registerLazySingleton<RegisterEventUseCase>(
           () => RegisterEventUseCase(getIt<EventRepository>()),
   );
-  // Events bloc
-  getIt.registerFactory<EventsBloc>(
-    () => EventsBloc(
+  // Events cubit
+  getIt.registerFactory<EventsCubit>(
+    () => EventsCubit(
       getEventsUseCase: getIt<GetEventsUseCase>(),
       getEventsDetailUseCase: getIt<GetEventsDetailUseCase>(),
       registerEventUseCase: getIt<RegisterEventUseCase>(),
@@ -344,9 +344,9 @@ void _configureMediaDependencies() {
     () => GetMediaUseCase(getIt<MediaRepository>()),
   );
 
-  // Media bloc
-  getIt.registerFactory<MediaBloc>(
-    () => MediaBloc(
+  // Media cubit
+  getIt.registerFactory<MediaCubit>(
+    () => MediaCubit(
       getMediaUseCase: getIt<GetMediaUseCase>(),
     ),
   );
@@ -387,9 +387,9 @@ void _configureUserManagementDependencies() {
     () => DeleteUser(getIt<UserManagementRepository>()),
   );
 
-  // User Management bloc
-  getIt.registerFactory<UserManagementBloc>(
-    () => UserManagementBloc(
+  // User Management cubit
+  getIt.registerFactory<UserManagementCubit>(
+    () => UserManagementCubit(
       getUsers: getIt<GetUsers>(),
       getUserById: getIt<GetUserById>(),
       createUser: getIt<CreateUser>(),
@@ -430,13 +430,14 @@ void _configurePositionsDependencies() {
     () => DeletePositionUseCase(getIt<PositionRepository>()),
   );
 
-  // Positions bloc
-  getIt.registerFactory<PositionsBloc>(
-    () => PositionsBloc(
+  // Positions cubit
+  getIt.registerFactory<PositionsCubit>(
+    () => PositionsCubit(
       getPositionsUseCase: getIt<GetPositionsUseCase>(),
       createPositionUseCase: getIt<CreatePositionUseCase>(),
       updatePositionUseCase: getIt<UpdatePositionUseCase>(),
       deletePositionUseCase: getIt<DeletePositionUseCase>(),
     ),
+  );
   );
 }

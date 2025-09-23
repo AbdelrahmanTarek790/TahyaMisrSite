@@ -7,9 +7,8 @@ import 'package:tahya_misr_app/features/auth/presentation/cubit/auth_cubit.dart'
 import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_state.dart';
 
 import '../../domain/entities/event.dart';
-import '../bloc/events_bloc.dart';
+import '../cubit/events_cubit.dart';
 import '../bloc/events_state.dart';
-import '../bloc/events_event.dart';
 
 class EventsListPage extends StatefulWidget {
   const EventsListPage({super.key});
@@ -19,13 +18,13 @@ class EventsListPage extends StatefulWidget {
 }
 
 class _EventsListPageState extends State<EventsListPage> {
-  late EventsBloc _eventsBloc;
+  late EventsCubit _eventsCubit;
 
   @override
   void initState() {
     super.initState();
-    _eventsBloc = GetIt.instance<EventsBloc>();
-    _eventsBloc.add(const EventsEvent.getEvents());
+    _eventsCubit = GetIt.instance<EventsCubit>();
+    _eventsCubit.getEvents();
   }
 
   @override
@@ -39,14 +38,14 @@ class _EventsListPageState extends State<EventsListPage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              _eventsBloc.add(const EventsEvent.refreshEvents());
+              _eventsCubit.refreshEvents();
             },
           ),
         ],
       ),
       body: BlocProvider.value(
-        value: _eventsBloc,
-        child: BlocBuilder<EventsBloc, EventsState>(
+        value: _eventsCubit,
+        child: BlocBuilder<EventsCubit, EventsState>(
           builder: (context, state) {
             return state.when(
               loadedDetails: (_) => const SizedBox.shrink(),
@@ -62,7 +61,7 @@ class _EventsListPageState extends State<EventsListPage> {
                     )
                   : RefreshIndicator(
                       onRefresh: () async {
-                        _eventsBloc.add(const EventsEvent.refreshEvents());
+                        _eventsCubit.refreshEvents();
                       },
                       child: ListView.builder(
                         padding: const EdgeInsets.all(16),
@@ -99,7 +98,7 @@ class _EventsListPageState extends State<EventsListPage> {
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: () {
-                        _eventsBloc.add(const EventsEvent.refreshEvents());
+                        _eventsCubit.refreshEvents();
                       },
                       child: const Text('إعادة المحاولة'),
                     ),
@@ -107,7 +106,7 @@ class _EventsListPageState extends State<EventsListPage> {
                 ),
               ),
               registeredSuccessfully: (_) {
-                _eventsBloc.add(const EventsEvent.getEvents());
+                _eventsCubit.getEvents();
                 return const SizedBox.shrink();
               },
             );
@@ -257,7 +256,7 @@ class _EventCard extends StatelessWidget {
                                       // Check if user is authenticated
                                       if (user.id.isNotEmpty) {
                                         // Register for the event
-                                        context.read<EventsBloc>().add(
+                                        context.read<EventsCubit>().add(
                                               EventsEvent.registerForEvent(
                                                 event.id,
                                               ),
