@@ -4,8 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../../../dashboard/presentation/bloc/dashboard_event.dart';
+import '../../../dashboard/presentation/cubit/dashboard_cubit.dart';
 import '../../../dashboard/presentation/bloc/dashboard_state.dart';
 import 'create_news/create_news_page.dart';
 
@@ -17,23 +16,23 @@ class ContentManagementPage extends StatefulWidget {
 }
 
 class _ContentManagementPageState extends State<ContentManagementPage> {
-  late DashboardBloc _dashboardBloc;
+  late DashboardCubit _dashboardCubit;
 
   @override
   void initState() {
     super.initState();
-    _dashboardBloc = getIt<DashboardBloc>();
+    _dashboardCubit = getIt<DashboardCubit>();
     _loadDashboardStats();
   }
 
   @override
   void dispose() {
-    _dashboardBloc.close();
+    _dashboardCubit.close();
     super.dispose();
   }
 
   void _loadDashboardStats() {
-    _dashboardBloc.add(const GetRecentActivity());
+    _dashboardCubit.getRecentActivity();
   }
 
   @override
@@ -41,7 +40,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
     final l10n = AppLocalizations.of(context)!;
     
     return BlocProvider.value(
-      value: _dashboardBloc,
+      value: _dashboardCubit,
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.contentManagement),
@@ -162,7 +161,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
               ),
               const SizedBox(height: 16),
 
-              BlocBuilder<DashboardBloc, DashboardState>(
+              BlocBuilder<DashboardCubit, DashboardState>(
                 builder: (context, state) {
                   if (state is Loaded) {
                     return _buildStatsGrid(context, state);

@@ -18,8 +18,7 @@ import '../../../news/presentation/cubit/news_cubit.dart';
 import '../../../news/presentation/bloc/news_state.dart';
 import '../../../events/presentation/cubit/events_cubit.dart';
 import '../../../events/presentation/bloc/events_state.dart';
-import '../../../media/presentation/bloc/media_bloc.dart';
-import '../../../media/presentation/bloc/media_event.dart';
+import '../../../media/presentation/cubit/media_cubit.dart';
 import '../../../news/domain/entities/news.dart';
 import '../../../events/domain/entities/event.dart';
 import '../widgets/custom_icon_widget.dart';
@@ -42,7 +41,7 @@ class HomePage extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) =>
-              GetIt.instance<MediaBloc>()..add(const MediaEvent.getMedia()),
+              GetIt.instance<MediaCubit>()..getMedia(),
         ),
       ],
       child: HomeView(),
@@ -129,7 +128,7 @@ class HomeView extends StatelessWidget {
         onRefresh: () async {
           context.read<NewsCubit>().getNews();
           context.read<EventsCubit>().getEvents();
-          context.read<MediaBloc>().add(const MediaEvent.getMedia());
+          context.read<MediaCubit>().getMedia();
         },
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),

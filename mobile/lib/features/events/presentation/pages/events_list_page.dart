@@ -256,10 +256,8 @@ class _EventCard extends StatelessWidget {
                                       // Check if user is authenticated
                                       if (user.id.isNotEmpty) {
                                         // Register for the event
-                                        context.read<EventsCubit>().add(
-                                              EventsEvent.registerForEvent(
-                                                event.id,
-                                              ),
+                                        context.read<EventsCubit>().registerForEvent(
+                                              event.id,
                                             );
                                       } else {
                                         // Navigate to login page
