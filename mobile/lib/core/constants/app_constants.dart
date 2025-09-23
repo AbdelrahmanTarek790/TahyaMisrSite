@@ -12,6 +12,7 @@ class AppConstants {
   static const String tokenKey = 'auth_token';
   static const String userKey = 'user_data';
   static const String newsKey = 'news_cache';
+  static const String newsDetailKey = 'news_detail_cache';
   static const String eventsKey = 'events_cache';
   static const String mediaKey = 'media_cache';
   

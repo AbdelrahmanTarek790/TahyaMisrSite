@@ -2,35 +2,23 @@ import '../../../../core/network/api_client.dart';
 import '../../../../core/error/exceptions.dart';
 import '../models/news_model.dart';
 
-abstract class NewsRemoteDataSource {
-  Future<List<NewsModel>> getNews({
-    int page = 1,
-    int limit = 10,
-  });
-  Future<NewsModel> getNewsById(String id);
-}
-
-class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
+class NewsApiService {
   final ApiClient apiClient;
 
-  NewsRemoteDataSourceImpl(this.apiClient);
+  NewsApiService(this.apiClient);
 
-  @override
   Future<List<NewsModel>> getNews({
     int page = 1,
     int limit = 10,
-  }) async
-  {
+  }) async {
     try {
       final response = await apiClient.getNews(page, limit);
-      
-      // print('News API Response: ${response.toJson()}'); // Debug logging
       
       if (response.success && response.data != null) {
         final data = response.data as Map<String, dynamic>;
         final newsList = data['news'] as List<dynamic>? ?? [];
         
-        print('News list length: ${newsList.length}'); // Debug logging
+        print('News list length: ${newsList.length}');
         
         final newsModels = <NewsModel>[];
         for (final newsJson in newsList) {
@@ -38,7 +26,7 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
             final newsModel = NewsModel.fromJson(newsJson as Map<String, dynamic>);
             newsModels.add(newsModel);
           } catch (e) {
-            print('Error parsing news item: $e, Data: $newsJson'); // Debug logging
+            print('Error parsing news item: $e, Data: $newsJson');
           }
         }
         
@@ -49,7 +37,7 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
         );
       }
     } catch (e) {
-      print('News fetch error: $e'); // Debug logging
+      print('News fetch error: $e');
       if (e is ServerException) {
         rethrow;
       }
@@ -59,7 +47,6 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
     }
   }
 
-  @override
   Future<NewsModel> getNewsById(String id) async {
     try {
       final response = await apiClient.getNewsById(id);
@@ -73,7 +60,7 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
         );
       }
     } catch (e) {
-      print('NewDetails by ID fetch error: $e'); // Debug logging
+      print('NewsDetails by ID fetch error: $e');
       if (e is ServerException) {
         rethrow;
       }
