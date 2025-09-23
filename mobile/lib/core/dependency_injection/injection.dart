@@ -5,11 +5,10 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:logger/logger.dart';
-import 'package:tahya_misr_app/features/events/domain/usecases/get_events_detail_usecase.dart';
-
-import '../../features/events/data/repositories/event_repository_impl.dart';
-import '../../features/events/domain/repositories/event_repository.dart';
-import '../../features/events/domain/usecases/register_event_usecase.dart';
+import '../../features/events/data/services/events_api_service.dart';
+import '../../features/events/data/local/events_local_storage.dart';
+import '../../features/events/data/repositories/events_repository.dart';
+import '../../features/events/presentation/cubits/events_cubit.dart';
 import '../../features/media/data/repositories/media_repository_impl.dart';
 import '../../features/media/domain/repositories/media_repository.dart';
 import '../../features/news/data/services/news_api_service.dart';
@@ -51,9 +50,7 @@ import '../../features/news/data/repositories/news_repository_impl.dart';
 import '../../features/news/domain/repositories/news_repository.dart';
 import '../../features/news/domain/usecases/get_news_usecase.dart';
 import '../../features/news/presentation/bloc/news_bloc.dart';
-import '../../features/events/data/datasources/events_remote_data_source.dart';
-import '../../features/events/domain/usecases/get_events_usecase.dart';
-import '../../features/events/presentation/bloc/events_bloc.dart';
+
 import '../../features/media/data/datasources/media_remote_data_source.dart';
 import '../../features/media/domain/usecases/get_media_usecase.dart';
 import '../../features/media/presentation/bloc/media_bloc.dart';
@@ -98,10 +95,12 @@ Future<void> configureDependencies() async {
   final authBox = await Hive.openBox('auth');
   final cacheBox = await Hive.openBox('cache');
   final newsBox = await Hive.openBox('news');
+  final eventsBox = await Hive.openBox('events');
 
   getIt.registerLazySingleton<Box>(() => authBox, instanceName: 'authBox');
   getIt.registerLazySingleton<Box>(() => cacheBox, instanceName: 'cacheBox');
   getIt.registerLazySingleton<Box>(() => newsBox, instanceName: 'newsBox');
+  getIt.registerLazySingleton<Box>(() => eventsBox, instanceName: 'eventsBox');
 
   // Dio configuration
   getIt.registerLazySingleton<Dio>(() {
@@ -266,38 +265,29 @@ void _configureNewsDependencies() {
 }
 
 void _configureEventsDependencies() {
-  // Events data source
-  getIt.registerLazySingleton<EventsRemoteDataSource>(
-    () => EventsRemoteDataSourceImpl(getIt<ApiClient>()),
+  // Events API Service
+  getIt.registerLazySingleton<EventsApiService>(
+    () => EventsApiService(getIt<ApiClient>()),
+  );
+
+  // Events Local Storage
+  getIt.registerLazySingleton<EventsLocalStorage>(
+    () => EventsLocalStorage(getIt<Box>(instanceName: 'eventsBox')),
   );
 
   // Events repository
-  getIt.registerLazySingleton<EventRepository>(
-    () => EventRepositoryImpl(
-      remoteDataSource: getIt<EventsRemoteDataSource>(),
+  getIt.registerLazySingleton<EventsRepository>(
+    () => EventsRepositoryImpl(
+      apiService: getIt<EventsApiService>(),
+      localStorage: getIt<EventsLocalStorage>(),
+      networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
-  // Events use case
-  getIt.registerLazySingleton<GetEventsUseCase>(
-    () => GetEventsUseCase(getIt<EventRepository>()),
-  );
-
-//Events detail use case
-  getIt.registerLazySingleton<GetEventsDetailUseCase>(
-    () => GetEventsDetailUseCase(getIt<EventRepository>()),
-  );
-
-  //Events registration use case
-  getIt.registerLazySingleton<RegisterEventUseCase>(
-          () => RegisterEventUseCase(getIt<EventRepository>()),
-  );
-  // Events bloc
-  getIt.registerFactory<EventsBloc>(
-    () => EventsBloc(
-      getEventsUseCase: getIt<GetEventsUseCase>(),
-      getEventsDetailUseCase: getIt<GetEventsDetailUseCase>(),
-      registerEventUseCase: getIt<RegisterEventUseCase>(),
+  // Events cubit
+  getIt.registerFactory<EventsCubit>(
+    () => EventsCubit(
+      eventsRepository: getIt<EventsRepository>(),
     ),
   );
 }
