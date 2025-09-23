@@ -5,6 +5,7 @@ import '../../domain/usecases/create_join_request_usecase.dart';
 import '../../domain/usecases/get_join_requests_usecase.dart';
 import '../../domain/usecases/approve_join_request_usecase.dart';
 import '../../domain/usecases/deny_join_request_usecase.dart';
+import '../../domain/usecases/delete_join_request_usecase.dart';
 import 'join_request_event.dart';
 import 'join_request_state.dart';
 
@@ -14,17 +15,20 @@ class JoinRequestBloc extends Bloc<JoinRequestEvent, JoinRequestState> {
   final GetJoinRequestsUseCase getJoinRequestsUseCase;
   final ApproveJoinRequestUseCase approveJoinRequestUseCase;
   final DenyJoinRequestUseCase denyJoinRequestUseCase;
+  final DeleteJoinRequestUseCase deleteJoinRequestUseCase;
 
   JoinRequestBloc({
     required this.createJoinRequestUseCase,
     required this.getJoinRequestsUseCase,
     required this.approveJoinRequestUseCase,
     required this.denyJoinRequestUseCase,
-  }) : super(const JoinRequestState.initial()) {
+    required this.deleteJoinRequestUseCase,
+  }) : super(const Initial()) {
     on<CreateJoinRequestEvent>(_onCreateJoinRequest);
     on<GetJoinRequestsEvent>(_onGetJoinRequests);
     on<ApproveJoinRequestEvent>(_onApproveJoinRequest);
     on<DenyJoinRequestEvent>(_onDenyJoinRequest);
+    on<DeleteJoinRequestEvent>(_onDeleteJoinRequest);
     on<ResetStateEvent>(_onResetState);
   }
 
@@ -32,15 +36,15 @@ class JoinRequestBloc extends Bloc<JoinRequestEvent, JoinRequestState> {
     CreateJoinRequestEvent event,
     Emitter<JoinRequestState> emit,
   ) async {
-    emit(const JoinRequestState.loading());
+    emit(const Loading());
 
     final result = await createJoinRequestUseCase(
       CreateJoinRequestParams(request: event.request),
     );
 
     result.fold(
-      (failure) => emit(JoinRequestState.error(message: failure.message)),
-      (_) => emit(const JoinRequestState.actionCompleted(
+      (failure) => emit(Error(message: failure.message)),
+      (_) => emit(const ActionCompleted(
         message: 'تم إرسال طلب الانضمام بنجاح. سيتم مراجعته قريباً.',
       )),
     );
@@ -50,7 +54,7 @@ class JoinRequestBloc extends Bloc<JoinRequestEvent, JoinRequestState> {
     GetJoinRequestsEvent event,
     Emitter<JoinRequestState> emit,
   ) async {
-    emit(const JoinRequestState.loading());
+    emit(const Loading());
 
     final result = await getJoinRequestsUseCase(
       GetJoinRequestsParams(
@@ -61,8 +65,8 @@ class JoinRequestBloc extends Bloc<JoinRequestEvent, JoinRequestState> {
     );
 
     result.fold(
-      (failure) => emit(JoinRequestState.error(message: failure.message)),
-      (joinRequests) => emit(JoinRequestState.joinRequestsLoaded(
+      (failure) => emit(Error(message: failure.message)),
+      (joinRequests) => emit(JoinRequestsLoaded(
         joinRequests: joinRequests,
         currentPage: event.page,
         hasMore: joinRequests.length >= event.limit,
@@ -74,15 +78,15 @@ class JoinRequestBloc extends Bloc<JoinRequestEvent, JoinRequestState> {
     ApproveJoinRequestEvent event,
     Emitter<JoinRequestState> emit,
   ) async {
-    emit(const JoinRequestState.loading());
+    emit(const Loading());
 
     final result = await approveJoinRequestUseCase(
       ApproveJoinRequestParams(id: event.id, action: event.action),
     );
 
     result.fold(
-      (failure) => emit(JoinRequestState.error(message: failure.message)),
-      (_) => emit(const JoinRequestState.actionCompleted(
+      (failure) => emit(Error(message: failure.message)),
+      (_) => emit(const ActionCompleted(
         message: 'تم الموافقة على طلب الانضمام بنجاح',
       )),
     );
@@ -92,15 +96,15 @@ class JoinRequestBloc extends Bloc<JoinRequestEvent, JoinRequestState> {
     DenyJoinRequestEvent event,
     Emitter<JoinRequestState> emit,
   ) async {
-    emit(const JoinRequestState.loading());
+    emit(const Loading());
 
     final result = await denyJoinRequestUseCase(
       DenyJoinRequestParams(id: event.id, action: event.action),
     );
 
     result.fold(
-      (failure) => emit(JoinRequestState.error(message: failure.message)),
-      (_) => emit(const JoinRequestState.actionCompleted(
+      (failure) => emit(Error(message: failure.message)),
+      (_) => emit(const ActionCompleted(
         message: 'تم رفض طلب الانضمام',
       )),
     );
@@ -110,6 +114,24 @@ class JoinRequestBloc extends Bloc<JoinRequestEvent, JoinRequestState> {
     ResetStateEvent event,
     Emitter<JoinRequestState> emit,
   ) {
-    emit(const JoinRequestState.initial());
+    emit(const Initial());
+  }
+
+  Future<void> _onDeleteJoinRequest(
+    DeleteJoinRequestEvent event,
+    Emitter<JoinRequestState> emit,
+  ) async {
+    emit(const Loading());
+
+    final result = await deleteJoinRequestUseCase(
+      DeleteJoinRequestParams(id: event.id),
+    );
+
+    result.fold(
+      (failure) => emit(Error(message: failure.message)),
+      (_) => emit(const ActionCompleted(
+        message: 'تم حذف طلب الانضمام بنجاح',
+      )),
+    );
   }
 }

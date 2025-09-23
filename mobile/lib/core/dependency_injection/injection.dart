@@ -36,6 +36,7 @@ import '../../features/join_requests/domain/usecases/create_join_request_usecase
 import '../../features/join_requests/domain/usecases/get_join_requests_usecase.dart';
 import '../../features/join_requests/domain/usecases/approve_join_request_usecase.dart';
 import '../../features/join_requests/domain/usecases/deny_join_request_usecase.dart';
+import '../../features/join_requests/domain/usecases/delete_join_request_usecase.dart';
 import '../../features/join_requests/presentation/bloc/join_request_bloc.dart';
 import '../network/api_client.dart';
 import '../network/network_info.dart';

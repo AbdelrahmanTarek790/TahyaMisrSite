@@ -42,7 +42,7 @@ class _JoinRequestManagementBodyState extends State<_JoinRequestManagementBody> 
     super.initState();
     _pagingController.addPageRequestListener((pageKey) {
       context.read<JoinRequestBloc>().add(
-        JoinRequestEvent.getJoinRequests(
+        GetJoinRequestsEvent(
           page: pageKey,
           limit: _pageSize,
           status: _statusFilter == 'all' ? null : _statusFilter,
@@ -68,32 +68,25 @@ class _JoinRequestManagementBodyState extends State<_JoinRequestManagementBody> 
       ),
       body: BlocListener<JoinRequestBloc, JoinRequestState>(
         listener: (context, state) {
-          state.when(
-            initial: () {},
-            loading: () {},
-            joinRequestsLoaded: (joinRequests, currentPage, hasMore) {
-              if (currentPage == 1) {
-                _pagingController.refresh();
-              }
-              
-              final isLastPage = !hasMore;
-              if (isLastPage) {
-                _pagingController.appendLastPage(joinRequests);
-              } else {
-                final nextPageKey = currentPage + 1;
-                _pagingController.appendPage(joinRequests, nextPageKey);
-              }
-            },
-            joinRequestLoaded: (_) {},
-            actionCompleted: (message) {
-              _showSuccessSnackBar(message);
-              _refreshList();
-            },
-            error: (message) {
-              _pagingController.error = message;
-              _showErrorSnackBar(message);
-            },
-          );
+          if (state is JoinRequestsLoaded) {
+            if (state.currentPage == 1) {
+              _pagingController.refresh();
+            }
+            
+            final isLastPage = !state.hasMore;
+            if (isLastPage) {
+              _pagingController.appendLastPage(state.joinRequests);
+            } else {
+              final nextPageKey = state.currentPage + 1;
+              _pagingController.appendPage(state.joinRequests, nextPageKey);
+            }
+          } else if (state is ActionCompleted) {
+            _showSuccessSnackBar(state.message);
+            _refreshList();
+          } else if (state is Error) {
+            _pagingController.error = state.message;
+            _showErrorSnackBar(state.message);
+          }
         },
         child: Column(
           children: [
@@ -313,7 +306,7 @@ class _JoinRequestManagementBodyState extends State<_JoinRequestManagementBody> 
                 );
                 
                 context.read<JoinRequestBloc>().add(
-                  JoinRequestEvent.approveJoinRequest(id: request.id, action: action),
+                  ApproveJoinRequestEvent(id: request.id, action: action),
                 );
                 
                 Navigator.of(context).pop();
@@ -364,7 +357,7 @@ class _JoinRequestManagementBodyState extends State<_JoinRequestManagementBody> 
                 );
                 
                 context.read<JoinRequestBloc>().add(
-                  JoinRequestEvent.denyJoinRequest(id: request.id, action: action),
+                  DenyJoinRequestEvent(id: request.id, action: action),
                 );
                 
                 Navigator.of(context).pop();
@@ -394,7 +387,7 @@ class _JoinRequestManagementBodyState extends State<_JoinRequestManagementBody> 
           ElevatedButton(
             onPressed: () {
               context.read<JoinRequestBloc>().add(
-                JoinRequestEvent.deleteJoinRequest(id: request.id),
+                DeleteJoinRequestEvent(id: request.id),
               );
               Navigator.of(context).pop();
             },

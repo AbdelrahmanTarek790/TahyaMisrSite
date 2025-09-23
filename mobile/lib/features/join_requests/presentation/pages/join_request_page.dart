@@ -35,29 +35,23 @@ class _JoinRequestPageBody extends StatelessWidget {
       ),
       body: BlocListener<JoinRequestBloc, JoinRequestState>(
         listener: (context, state) {
-          state.when(
-            initial: () {},
-            loading: () {},
-            joinRequestsLoaded: (_, __, ___) {},
-            joinRequestLoaded: (_) {},
-            actionCompleted: (message) {
-              _showSuccessDialog(context, message);
-            },
-            error: (message) {
-              _showErrorSnackBar(context, message);
-            },
-          );
+          if (state is ActionCompleted) {
+            _showSuccessDialog(context, state.message);
+          } else if (state is Error) {
+            _showErrorSnackBar(context, state.message);
+          }
         },
         child: BlocBuilder<JoinRequestBloc, JoinRequestState>(
           builder: (context, state) {
-            return state.when(
-              initial: () => _buildForm(context),
-              loading: () => _buildLoadingState(),
-              joinRequestsLoaded: (_, __, ___) => _buildForm(context),
-              joinRequestLoaded: (_) => _buildForm(context),
-              actionCompleted: (_) => _buildSuccessState(context),
-              error: (_) => _buildForm(context),
-            );
+            if (state is Loading) {
+              return _buildLoadingState();
+            } else if (state is ActionCompleted) {
+              return _buildSuccessState(context);
+            } else if (state is Error) {
+              return _buildForm(context);
+            } else {
+              return _buildForm(context);
+            }
           },
         ),
       ),
@@ -75,7 +69,7 @@ class _JoinRequestPageBody extends StatelessWidget {
           JoinRequestForm(
             onSubmit: (request) {
               context.read<JoinRequestBloc>().add(
-                JoinRequestEvent.createJoinRequest(request: request),
+                CreateJoinRequestEvent(request: request),
               );
             },
           ),
