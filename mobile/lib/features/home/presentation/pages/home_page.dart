@@ -36,15 +36,15 @@ class HomePage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) =>
-              GetIt.instance<NewsBloc>()..add(const NewsEvent.getNews()),
+              GetIt.instance<NewsCubit>()..getNews(),
         ),
         BlocProvider(
           create: (context) =>
-              GetIt.instance<EventsBloc>()..add(const EventsEvent.getEvents()),
+              GetIt.instance<EventsCubit>()..getEvents(),
         ),
         BlocProvider(
           create: (context) =>
-              GetIt.instance<MediaBloc>()..add(const MediaEvent.getMedia()),
+              GetIt.instance<MediaCubit>()..getMedia(),
         ),
       ],
       child: HomeView(),
@@ -129,9 +129,9 @@ class HomeView extends StatelessWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<NewsBloc>().add(const NewsEvent.getNews());
-          context.read<EventsBloc>().add(const EventsEvent.getEvents());
-          context.read<MediaBloc>().add(const MediaEvent.getMedia());
+          context.read<NewsBloc>().getNews();
+          context.read<EventsBloc>().getEvents();
+          context.read<MediaBloc>().getMedia();
         },
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -213,7 +213,7 @@ class HomeView extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
-              BlocBuilder<NewsBloc, NewsState>(
+              BlocBuilder<NewsCubit, NewsState>(
                 builder: (context, state) {
                   return state.when(
                     initial: () => const SizedBox.shrink(),
@@ -236,7 +236,7 @@ class HomeView extends StatelessWidget {
                 onViewAll: () => context.push('/events'),
               ),
               const SizedBox(height: 16),
-              BlocBuilder<EventsBloc, EventsState>(
+              BlocBuilder<EventsCubit, EventsState>(
                 builder: (context, state) {
                   return state.when(
                     initial: () => const SizedBox.shrink(),

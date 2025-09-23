@@ -24,8 +24,8 @@ class _EventsListPageState extends State<EventsListPage> {
   @override
   void initState() {
     super.initState();
-    _eventsBloc = GetIt.instance<EventsBloc>();
-    _eventsBloc.add(const EventsEvent.getEvents());
+    _eventsBloc = GetIt.instance<EventsCubit>();
+    _eventsBloc.getEvents();
   }
 
   @override
@@ -46,7 +46,7 @@ class _EventsListPageState extends State<EventsListPage> {
       ),
       body: BlocProvider.value(
         value: _eventsBloc,
-        child: BlocBuilder<EventsBloc, EventsState>(
+        child: BlocBuilder<EventsCubit, EventsState>(
           builder: (context, state) {
             return state.when(
               loadedDetails: (_) => const SizedBox.shrink(),
@@ -107,7 +107,7 @@ class _EventsListPageState extends State<EventsListPage> {
                 ),
               ),
               registeredSuccessfully: (_) {
-                _eventsBloc.add(const EventsEvent.getEvents());
+                _eventsBloc.getEvents();
                 return const SizedBox.shrink();
               },
             );
@@ -243,7 +243,7 @@ class _EventCard extends StatelessWidget {
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: BlocConsumer<AuthBloc, AuthState>(
+                    child: BlocConsumer<AuthCubit, AuthState>(
                       listener: (context, state) {},
                       builder: (context, state) {
                         return state.when(
@@ -257,7 +257,7 @@ class _EventCard extends StatelessWidget {
                                       // Check if user is authenticated
                                       if (user.id.isNotEmpty) {
                                         // Register for the event
-                                        context.read<EventsBloc>().add(
+                                        context.read<EventsCubit>().add(
                                               EventsEvent.registerForEvent(
                                                 event.id,
                                               ),

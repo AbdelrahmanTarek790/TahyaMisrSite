@@ -90,7 +90,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
             ),
           ],
         ),
-        body: BlocListener<PositionsBloc, PositionsState>(
+        body: BlocListener<PositionsCubit, PositionsState>(
           listener: (context, state) {
             if (state is PositionsError) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -175,7 +175,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
               ),
               // Positions List Section
               Expanded(
-                child: BlocBuilder<PositionsBloc, PositionsState>(
+                child: BlocBuilder<PositionsCubit, PositionsState>(
                   builder: (context, state) {
                     if (state is PositionsLoading) {
                       return const Center(child: CircularProgressIndicator());

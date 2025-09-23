@@ -120,7 +120,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ],
       ),
-      body: BlocListener<AuthBloc, AuthState>(
+      body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           state.when(
             initial: () {},
@@ -469,7 +469,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         data['membershipNumber'] = _membershipNumberController.text.trim();
       }*/
 
-      context.read<AuthBloc>().add(AuthEvent.updateProfile(data: data));
+      context.read<AuthCubit>().updateProfile(data);
     }
   }
 }

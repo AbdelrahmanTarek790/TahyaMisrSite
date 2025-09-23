@@ -27,10 +27,10 @@ class _NewsListPageState extends State<NewsListPage> {
   @override
   void initState() {
     super.initState();
-    _newsBloc = GetIt.instance<NewsBloc>();
+    _newsBloc = GetIt.instance<NewsCubit>();
 
     _pagingController.addPageRequestListener((pageKey) {
-      _newsBloc.add(const NewsEvent.getNews());
+      _newsBloc.getNews();
     });
   }
 
@@ -44,7 +44,7 @@ class _NewsListPageState extends State<NewsListPage> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _newsBloc,
-      child: BlocListener<NewsBloc, NewsState>(
+      child: BlocListener<NewsCubit, NewsState>(
         listener: (context, state) {
           state.whenOrNull(
             loaded: (news) {

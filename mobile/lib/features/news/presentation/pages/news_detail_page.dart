@@ -25,7 +25,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   @override
   void initState() {
     super.initState();
-    _newsBloc = GetIt.instance<NewsBloc>();
+    _newsBloc = GetIt.instance<NewsCubit>();
 
     _newsBloc.add(NewsEvent.getNewsById(widget.newsId));
   }
@@ -34,7 +34,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _newsBloc,
-      child: BlocConsumer<NewsBloc, NewsState>(
+      child: BlocConsumer<NewsCubit, NewsState>(
         listener: (context, state) {
           state.whenOrNull(
             loaded: (news) {},

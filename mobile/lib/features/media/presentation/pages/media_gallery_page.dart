@@ -18,8 +18,8 @@ class _MediaGalleryPageState extends State<MediaGalleryPage> {
   @override
   void initState() {
     super.initState();
-  /*  _mediaBloc = GetIt.instance<MediaBloc>();
-    _mediaBloc.add(const MediaEvent.getMedia());*/
+  /*  _mediaBloc = GetIt.instance<MediaCubit>();
+    _mediaBloc.getMedia();*/
   }
   final List<Map<String, dynamic>> achievementsData = [
     {
@@ -172,7 +172,7 @@ class _MediaGalleryPageState extends State<MediaGalleryPage> {
 /*
 BlocProvider.value(
         value: _mediaBloc,
-        child: BlocBuilder<MediaBloc, MediaState>(
+        child: BlocBuilder<MediaCubit, MediaState>(
           builder: (context, state) {
             return state.when(
               initial: () => const Center(

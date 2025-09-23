@@ -162,7 +162,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
               ),
               const SizedBox(height: 16),
 
-              BlocBuilder<DashboardBloc, DashboardState>(
+              BlocBuilder<DashboardCubit, DashboardState>(
                 builder: (context, state) {
                   if (state is Loaded) {
                     return _buildStatsGrid(context, state);

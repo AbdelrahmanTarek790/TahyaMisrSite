@@ -64,7 +64,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
             ),
           ],
         ),
-        body: BlocListener<UserManagementBloc, UserManagementState>(
+        body: BlocListener<UserManagementCubit, UserManagementState>(
           listener: (context, state) {
             if (state is UserManagementError) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -185,7 +185,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
               ),
               // Users List Section
               Expanded(
-                child: BlocBuilder<UserManagementBloc, UserManagementState>(
+                child: BlocBuilder<UserManagementCubit, UserManagementState>(
                   builder: (context, state) {
                     if (state is UserManagementLoading) {
                       return const Center(child: CircularProgressIndicator());

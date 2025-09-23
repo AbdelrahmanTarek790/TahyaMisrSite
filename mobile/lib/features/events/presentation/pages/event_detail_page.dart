@@ -25,7 +25,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
   @override
   void initState() {
     super.initState();
-    _eventsBloc = GetIt.instance<EventsBloc>();
+    _eventsBloc = GetIt.instance<EventsCubit>();
 
     _eventsBloc.add(EventsEvent.getEventById(widget.eventId));
   }
@@ -34,7 +34,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _eventsBloc,
-      child: BlocConsumer<EventsBloc, EventsState>(
+      child: BlocConsumer<EventsCubit, EventsState>(
         listener: (context, state) {
           state.whenOrNull(
             loaded: (event) {},
