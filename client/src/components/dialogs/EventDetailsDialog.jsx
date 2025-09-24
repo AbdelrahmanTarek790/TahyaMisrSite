@@ -14,28 +14,26 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
     const [isExporting, setIsExporting] = useState(false)
     const { addError } = useError()
 
-    useEffect(() => {
-        if (isOpen && event?._id) {
-            fetchRegisteredUsers()
-        }
-    }, [isOpen, event?._id, fetchRegisteredUsers])
-
     const fetchRegisteredUsers = useCallback(async () => {
         if (!event?._id) return
-        
+
         try {
             setIsLoading(true)
             const response = await eventsAPI.getRegisteredUsers(event._id)
             setRegisteredUsers(response.data?.registeredUsers || [])
         } catch (error) {
-            console.error('Failed to fetch registered users:', error)
+            console.error("Failed to fetch registered users:", error)
             addError("Failed to fetch registered users")
             setRegisteredUsers([])
         } finally {
             setIsLoading(false)
         }
     }, [event?._id, addError])
-
+    useEffect(() => {
+        if (isOpen && event?._id) {
+            fetchRegisteredUsers()
+        }
+    }, [isOpen, event?._id, fetchRegisteredUsers])
     const handleExport = async () => {
         if (!registeredUsers.length) {
             addError("No registered users to export")
@@ -44,18 +42,15 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
 
         try {
             setIsExporting(true)
-            const success = exportEventUsersToExcel(
-                registeredUsers,
-                event.title
-            )
-            
+            const success = exportEventUsersToExcel(registeredUsers, event.title)
+
             if (success) {
                 addError("Users exported successfully!", "success")
             } else {
                 addError("Failed to export users")
             }
         } catch (error) {
-            console.error('Failed to export users:', error)
+            console.error("Failed to export users:", error)
             addError("Failed to export users")
         } finally {
             setIsExporting(false)
@@ -135,16 +130,8 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
                                 <CardTitle>المستخدمين المسجلين ({registeredUsers.length})</CardTitle>
                                 <CardDescription>قائمة بالمستخدمين المسجلين في هذه الفعالية</CardDescription>
                             </div>
-                            <Button 
-                                onClick={handleExport}
-                                disabled={isExporting || !registeredUsers.length}
-                                variant="outline"
-                            >
-                                {isExporting ? (
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                ) : (
-                                    <Download className="mr-2 h-4 w-4" />
-                                )}
+                            <Button onClick={handleExport} disabled={isExporting || !registeredUsers.length} variant="outline">
+                                {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
                                 تصدير Excel
                             </Button>
                         </CardHeader>
@@ -184,9 +171,7 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
                                                     <td className="py-4 text-sm">{user.university}</td>
                                                     <td className="py-4 text-sm">{user.governorate}</td>
                                                     <td className="py-4 text-sm">{user.position?.name || "N/A"}</td>
-                                                    <td className="py-4 text-sm">
-                                                        {new Date(user.createdAt).toLocaleDateString("ar-EG")}
-                                                    </td>
+                                                    <td className="py-4 text-sm">{new Date(user.createdAt).toLocaleDateString("ar-EG")}</td>
                                                 </tr>
                                             ))}
                                         </tbody>

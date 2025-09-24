@@ -4,6 +4,7 @@ import { Calendar, Clock, ArrowRight } from "lucide-react"
 import { Button } from "../ui/enhanced-button"
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
+import Logo from "@/assets/Logo.png"
 
 const News = () => {
     const [newsItems, setNewsItems] = useState([])
@@ -29,7 +30,7 @@ const News = () => {
                     category: "News",
                     image: item.image
                         ? `https://form.codepeak.software/uploads/${item.image}`
-                        : "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop",
+                        : Logo,
                     featured: index === 0, // Mark first item as featured
                 }))
                 setNewsItems(transformedNews)
@@ -107,7 +108,7 @@ const News = () => {
                                         crossOrigin="anonymous"
                                         className="w-full object-cover group-hover:scale-110 transition-transform duration-700"
                                         onError={(e) => {
-                                            e.target.src = "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop"
+                                            e.target.src = Logo
                                         }}
                                     />
                                     <div className="absolute top-4 left-4">
@@ -158,7 +159,7 @@ const News = () => {
                                                 crossOrigin="anonymous"
                                                 className="w-24 h-24 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                                                 onError={(e) => {
-                                                    e.target.src = "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop"
+                                                    e.target.src = Logo
                                                 }}
                                             />
                                             <div className="flex-1">

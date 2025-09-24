@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
 import { Search, Calendar, MapPin, Users, ArrowLeft } from "lucide-react"
+import Logo from "@/assets/Logo.png"
 
 const PublicEventsPage = () => {
     const [events, setEvents] = useState([])
@@ -161,8 +162,7 @@ const PublicEventsPage = () => {
                                                     alt={event.title}
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                                     onError={(e) => {
-                                                        e.target.src =
-                                                            "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&h=400&fit=crop"
+                                                        e.target.src = Logo
                                                     }}
                                                 />
                                                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/enhanced-button"
 import { SimpleInViewStagger } from "@/components/ui/SimpleMotionComponents"
 import { Link } from "react-router-dom"
-import heroImage from "@/assets/1758267543110-78fd503d-f9e8-47a2-9933-7db0dab1aa98.png"
+// import heroImage from "@/assets/1758267543110-78fd503d-f9e8-47a2-9933-7db0dab1aa98.png"
+import heroImage from "@/assets/hero.jpg"
 
 const Hero = () => {
     return (

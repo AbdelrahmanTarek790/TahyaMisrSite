@@ -74,11 +74,6 @@ const UserManagement = () => {
         resolver: zodResolver(createUserSchema),
     })
 
-    useEffect(() => {
-        fetchUsers()
-        fetchPositions()
-    }, [fetchUsers])
-
     const fetchUsers = useCallback(async () => {
         try {
             setIsLoading(true)
@@ -92,7 +87,7 @@ const UserManagement = () => {
                 total: response.data?.total || 0,
             }))
         } catch (error) {
-            console.error('Failed to fetch users:', error)
+            console.error("Failed to fetch users:", error)
             addError("Failed to fetch users")
         } finally {
             setIsLoading(false)
@@ -109,6 +104,10 @@ const UserManagement = () => {
         }
     }
 
+    useEffect(() => {
+        fetchUsers()
+        fetchPositions()
+    }, [fetchUsers])
     const handleDeleteUser = async (userId) => {
         if (!confirm("Are you sure you want to delete this user?")) return
 
@@ -117,7 +116,7 @@ const UserManagement = () => {
             addError("User deleted successfully!", "success")
             fetchUsers()
         } catch (error) {
-            console.error('Failed to delete user:', error)
+            console.error("Failed to delete user:", error)
             addError("Failed to delete user")
         }
     }
@@ -128,7 +127,7 @@ const UserManagement = () => {
             addError("User role updated successfully!", "success")
             fetchUsers()
         } catch (error) {
-            console.error('Failed to update user role:', error)
+            console.error("Failed to update user role:", error)
             addError("Failed to update user role")
         }
     }
@@ -159,7 +158,6 @@ const UserManagement = () => {
                 ...data,
                 membershipExpiry: data.membershipExpiry ? new Date(data.membershipExpiry).toISOString() : undefined,
                 position: data.position || undefined, // Don't send empty string
-              
             }
 
             // Remove undefined fields
@@ -281,23 +279,23 @@ const UserManagement = () => {
 
         try {
             setIsExporting(true)
-            
+
             // Create filename based on current filters
             let filename = "users_export"
-            if (searchTerm) filename += `_search_${searchTerm.replace(/[^\w]/g, '_')}`
+            if (searchTerm) filename += `_search_${searchTerm.replace(/[^\w]/g, "_")}`
             if (filterRole !== "all") filename += `_${filterRole}`
-            if (filterGovernorate !== "all") filename += `_${filterGovernorate.replace(/[^\w]/g, '_')}`
-            if (filterUniversity !== "all") filename += `_${filterUniversity.replace(/[^\w]/g, '_')}`
-            
+            if (filterGovernorate !== "all") filename += `_${filterGovernorate.replace(/[^\w]/g, "_")}`
+            if (filterUniversity !== "all") filename += `_${filterUniversity.replace(/[^\w]/g, "_")}`
+
             const success = exportUsersToExcel(filteredUsers, filename)
-            
+
             if (success) {
                 addError(`Successfully exported ${filteredUsers.length} users!`, "success")
             } else {
                 addError("Failed to export users")
             }
         } catch (error) {
-            console.error('Failed to export users:', error)
+            console.error("Failed to export users:", error)
             addError("Failed to export users")
         } finally {
             setIsExporting(false)
@@ -313,16 +311,8 @@ const UserManagement = () => {
                     <p className="text-gray-600">إدارة المستخدمين وأدوارهم</p>
                 </div>
                 <div className="flex space-x-2">
-                    <Button 
-                        onClick={handleExportUsers} 
-                        disabled={isExporting || !filteredUsers.length}
-                        variant="outline"
-                    >
-                        {isExporting ? (
-                            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                        ) : (
-                            <Download className="h-4 w-4 mr-2" />
-                        )}
+                    <Button onClick={handleExportUsers} disabled={isExporting || !filteredUsers.length} variant="outline">
+                        {isExporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
                         تصدير Excel ({filteredUsers.length})
                     </Button>
                     <Button onClick={() => setIsCreateSheetOpen(true)}>

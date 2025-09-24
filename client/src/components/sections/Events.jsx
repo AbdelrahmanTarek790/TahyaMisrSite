@@ -4,7 +4,7 @@ import { Button } from "../ui/enhanced-button"
 import { Calendar, MapPin, Users, Clock, ArrowRight, Star } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-
+import Logo from "@/assets/Logo.png"
 const Events = () => {
     const [events, setEvents] = useState([])
     const [isLoading, setIsLoading] = useState(true)
@@ -32,9 +32,7 @@ const Events = () => {
                     category: "Event",
                     price: "Free",
                     featured: index === 0,
-                    image: item.image
-                        ? `https://form.codepeak.software/uploads/${item.image}`
-                        : "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&h=400&fit=crop",
+                    image: item.image ? `https://form.codepeak.software/uploads/${item.image}` : Logo,
                 }))
                 setEvents(transformedEvents)
             }
@@ -196,7 +194,7 @@ const Events = () => {
                                             crossOrigin="anonymous"
                                             className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
                                             onError={(e) => {
-                                                e.target.src = "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&h=400&fit=crop"
+                                                e.target.src = Logo
                                             }}
                                         />
                                         <div className="absolute top-4 left-4">

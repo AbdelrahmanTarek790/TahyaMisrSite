@@ -17,10 +17,6 @@ const EventsManagement = () => {
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 })
     const { addError } = useError()
 
-    useEffect(() => {
-        fetchEvents()
-    }, [pagination.page])
-
     const fetchEvents = async () => {
         try {
             setIsLoading(true)
@@ -39,6 +35,9 @@ const EventsManagement = () => {
             setIsLoading(false)
         }
     }
+    useEffect(() => {
+        fetchEvents()
+    }, [pagination.page])
 
     const handleEdit = (event) => {
         setEditingEvent(event)
@@ -209,11 +208,7 @@ const EventsManagement = () => {
             <CreateEventSheet isOpen={isSheetOpen} onClose={handleSheetClose} onSuccess={handleSheetSuccess} editingEvent={editingEvent} />
 
             {/* Event Details Dialog */}
-            <EventDetailsDialog 
-                event={selectedEvent}
-                isOpen={isEventDetailsOpen}
-                onClose={handleCloseEventDetails}
-            />
+            <EventDetailsDialog event={selectedEvent} isOpen={isEventDetailsOpen} onClose={handleCloseEventDetails} />
         </div>
     )
 }
