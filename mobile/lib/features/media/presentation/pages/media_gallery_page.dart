@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../gen_l10n/app_localizations.dart';
-import '../bloc/media_bloc.dart';
 
 class MediaGalleryPage extends StatefulWidget {
   const MediaGalleryPage({super.key});
@@ -13,7 +12,7 @@ class MediaGalleryPage extends StatefulWidget {
 }
 
 class _MediaGalleryPageState extends State<MediaGalleryPage> {
-  late MediaBloc _mediaBloc;
+  late NewsCubit _newsCubit;
 
   @override
   void initState() {

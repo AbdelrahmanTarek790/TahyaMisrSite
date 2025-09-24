@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../domain/entities/dashboard_stats.dart';
-import '../../domain/entities/recent_activity.dart';
 import 'stats_card.dart';
 import 'recent_activity_list.dart';
 

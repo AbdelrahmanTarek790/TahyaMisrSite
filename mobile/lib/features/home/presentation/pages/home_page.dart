@@ -15,15 +15,9 @@ import '../../../../core/constants/app_theme.dart';
 import '../../../../core/utils/app_settings.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../../news/presentation/bloc/news_bloc.dart';
-import '../../../news/presentation/bloc/news_state.dart';
-import '../../../news/presentation/bloc/news_event.dart';
 import '../../../events/presentation/bloc/events_bloc.dart';
-import '../../../events/presentation/bloc/events_state.dart';
-import '../../../events/presentation/bloc/events_event.dart';
 import '../../../media/presentation/bloc/media_bloc.dart';
-import '../../../media/presentation/bloc/media_event.dart';
 import '../../../news/domain/entities/news.dart';
-import '../../../events/domain/entities/event.dart';
 import '../widgets/custom_icon_widget.dart';
 import '../widgets/hero_banner_widget.dart';
 

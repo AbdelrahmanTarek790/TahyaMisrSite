@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:tahya_misr_app/features/events/presentation/bloc/events_bloc.dart';
-import 'package:tahya_misr_app/features/events/presentation/bloc/events_state.dart';
 
-import '../bloc/events_event.dart';
+import '../cubits/events_cubit.dart';
+import '../../data/models/event_model.dart';
+
 
 class EventDetailPage extends StatefulWidget {
   final String eventId;
@@ -20,7 +20,7 @@ class EventDetailPage extends StatefulWidget {
 }
 
 class _EventDetailPageState extends State<EventDetailPage> {
-  late EventsBloc _eventsBloc;
+  late NewsCubit _newsCubit;
 
   @override
   void initState() {

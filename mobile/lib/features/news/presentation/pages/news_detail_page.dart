@@ -3,9 +3,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '../bloc/news_bloc.dart';
-import '../bloc/news_event.dart';
-import '../bloc/news_state.dart';
+import '../cubits/news_cubit.dart';
+import '../../data/models/news_model.dart';
 
 class NewsDetailPage extends StatefulWidget {
   final String newsId;
@@ -20,20 +19,20 @@ class NewsDetailPage extends StatefulWidget {
 }
 
 class _NewsDetailPageState extends State<NewsDetailPage> {
-  late NewsBloc _newsBloc;
+  late NewsCubit _newsCubit;
 
   @override
   void initState() {
     super.initState();
-    _newsBloc = GetIt.instance<NewsCubit>();
+    _newsCubit = GetIt.instance<NewsCubit>();
 
-    _newsBloc.add(NewsEvent.getNewsById(widget.newsId));
+    _newsCubit.getNewsById(widget.newsId);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _newsBloc,
+      value: _newsCubit,
       child: BlocConsumer<NewsCubit, NewsState>(
         listener: (context, state) {
           state.whenOrNull(

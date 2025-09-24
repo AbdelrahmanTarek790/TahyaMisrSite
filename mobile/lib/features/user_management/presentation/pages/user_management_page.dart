@@ -5,9 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../../auth/data/models/user_model.dart';
-import '../bloc/user_management_bloc.dart';
-import '../bloc/user_management_event.dart';
-import '../bloc/user_management_state.dart';
 
 class UserManagementPage extends StatefulWidget {
   const UserManagementPage({super.key});
@@ -19,7 +16,7 @@ class UserManagementPage extends StatefulWidget {
 class _UserManagementPageState extends State<UserManagementPage> {
   String _selectedRole = 'All';
   final TextEditingController _searchController = TextEditingController();
-  late UserManagementBloc _userManagementBloc;
+  late NewsCubit _newsCubit;
 
   final List<String> _roles = ['All', 'admin', 'volunteer', 'student'];
 

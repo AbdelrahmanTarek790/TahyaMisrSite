@@ -10,8 +10,6 @@ import '../../../../gen_l10n/app_localizations.dart';
 import '../../../../core/utils/settings_cubit.dart';
 import '../../../../core/utils/app_settings.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
-import '../../../auth/presentation/bloc/auth_state.dart';
-import '../../../auth/presentation/bloc/auth_event.dart';
 import 'edit_profile_page.dart';
 
 class SettingsPage extends StatelessWidget {

@@ -5,8 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../../dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../../../dashboard/presentation/bloc/dashboard_event.dart';
-import '../../../dashboard/presentation/bloc/dashboard_state.dart';
 import 'create_news/create_news_page.dart';
 
 class ContentManagementPage extends StatefulWidget {
@@ -17,7 +15,7 @@ class ContentManagementPage extends StatefulWidget {
 }
 
 class _ContentManagementPageState extends State<ContentManagementPage> {
-  late DashboardBloc _dashboardBloc;
+  late NewsCubit _newsCubit;
 
   @override
   void initState() {

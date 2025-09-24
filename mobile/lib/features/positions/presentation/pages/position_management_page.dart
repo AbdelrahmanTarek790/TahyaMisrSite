@@ -5,9 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../data/models/position_model.dart';
-import '../bloc/positions_bloc.dart';
-import '../bloc/positions_event.dart';
-import '../bloc/positions_state.dart';
 
 class PositionManagementPage extends StatefulWidget {
   const PositionManagementPage({super.key});
@@ -19,7 +16,7 @@ class PositionManagementPage extends StatefulWidget {
 class _PositionManagementPageState extends State<PositionManagementPage> {
   String _selectedGovernorate = 'All';
   final TextEditingController _searchController = TextEditingController();
-  late PositionsBloc _positionsBloc;
+  late NewsCubit _newsCubit;
 
   final List<String> _governorates = [
     'All',

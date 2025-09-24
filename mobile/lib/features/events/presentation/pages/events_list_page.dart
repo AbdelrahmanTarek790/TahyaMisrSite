@@ -3,13 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_state.dart';
 
-import '../../domain/entities/event.dart';
-import '../bloc/events_bloc.dart';
-import '../bloc/events_state.dart';
-import '../bloc/events_event.dart';
+import '../cubits/events_cubit.dart';
+import '../../data/models/event_model.dart';
+import '../../../auth/presentation/cubits/auth_cubit.dart';
+
 
 class EventsListPage extends StatefulWidget {
   const EventsListPage({super.key});
@@ -19,7 +17,7 @@ class EventsListPage extends StatefulWidget {
 }
 
 class _EventsListPageState extends State<EventsListPage> {
-  late EventsBloc _eventsBloc;
+  late EventsCubit _eventsCubit;
 
   @override
   void initState() {
