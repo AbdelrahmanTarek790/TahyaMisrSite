@@ -1,21 +1,44 @@
 import 'package:json_annotation/json_annotation.dart';
-import '../../domain/entities/position.dart';
+import 'package:equatable/equatable.dart';
 
 part 'position_model.g.dart';
 
 @JsonSerializable()
-class PositionModel extends Position {
+class PositionModel extends Equatable {
+  final String id;
+  final String name;
+  final String? description;
+  final bool isActive;
+  final bool isGlobal;
+  final String? governorate;
+  final String? createdBy;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
   const PositionModel({
-    required super.id,
-    required super.name,
-    super.description,
-    required super.isActive,
-    required super.isGlobal,
-    super.governorate,
-    super.createdBy,
-    required super.createdAt,
-    required super.updatedAt,
+    required this.id,
+    required this.name,
+    this.description,
+    required this.isActive,
+    required this.isGlobal,
+    this.governorate,
+    this.createdBy,
+    required this.createdAt,
+    required this.updatedAt,
   });
+
+  @override
+  List<Object?> get props => [
+        id,
+        name,
+        description,
+        isActive,
+        isGlobal,
+        governorate,
+        createdBy,
+        createdAt,
+        updatedAt,
+      ];
 
   factory PositionModel.fromJson(Map<String, dynamic> json) {
     try {

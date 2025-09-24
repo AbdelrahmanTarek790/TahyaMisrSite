@@ -106,7 +106,7 @@ class CustomIconWidget extends StatelessWidget {
       'aod': Icons.aod,
       'apartment': Icons.apartment,
       'api': Icons.api,
-      'app_blocking': Icons.app_blocking,
+      'app_mediaCubitking,
       'app_registration': Icons.app_registration,
       'app_settings_alt': Icons.app_settings_alt,
       'app_shortcut': Icons.app_shortcut,

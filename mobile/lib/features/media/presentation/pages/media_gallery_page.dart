@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../gen_l10n/app_localizations.dart';
-import '../bloc/media_bloc.dart';
 
 class MediaGalleryPage extends StatefulWidget {
   const MediaGalleryPage({super.key});
@@ -13,13 +12,13 @@ class MediaGalleryPage extends StatefulWidget {
 }
 
 class _MediaGalleryPageState extends State<MediaGalleryPage> {
-  late MediaBloc _mediaBloc;
+  late NewsCubit _newsCubit;
 
   @override
   void initState() {
     super.initState();
-  /*  _mediaBloc = GetIt.instance<MediaBloc>();
-    _mediaBloc.add(const MediaEvent.getMedia());*/
+  /*  _eventsCubit = GetIt.instance<MediaCubit>();
+    _eventsCubit.getMedia();*/
   }
   final List<Map<String, dynamic>> achievementsData = [
     {
@@ -171,8 +170,8 @@ class _MediaGalleryPageState extends State<MediaGalleryPage> {
 
 /*
 BlocProvider.value(
-        value: _mediaBloc,
-        child: BlocBuilder<MediaBloc, MediaState>(
+        value: _eventsCubit,
+        child: BlocBuilder<MediaCubit, MediaState>(
           builder: (context, state) {
             return state.when(
               initial: () => const Center(
@@ -187,7 +186,7 @@ BlocProvider.value(
                     )
                   : RefreshIndicator(
                       onRefresh: () async {
-                        _mediaBloc.add(const MediaEvent.refreshMedia());
+                        _eventsCubit.getEvents()
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8),

@@ -1,32 +1,38 @@
 import 'package:json_annotation/json_annotation.dart';
-import '../../domain/entities/dashboard_stats.dart';
+import 'package:equatable/equatable.dart';
 
 part 'dashboard_stats_model.g.dart';
 
 @JsonSerializable()
-class DashboardStatsModel extends DashboardStats {
+class DashboardStatsModel extends Equatable {
+  final int totalUsers;
+  final int totalNews;
+  final int totalEvents;
+  final int totalMedia;
+  final int activeUsers;
+  final int pendingEvents;
+
   const DashboardStatsModel({
-    required super.totalUsers,
-    required super.totalNews,
-    required super.totalEvents,
-    required super.totalMedia,
-    required super.activeUsers,
-    required super.pendingEvents,
+    required this.totalUsers,
+    required this.totalNews,
+    required this.totalEvents,
+    required this.totalMedia,
+    required this.activeUsers,
+    required this.pendingEvents,
   });
+
+  @override
+  List<Object?> get props => [
+    totalUsers,
+    totalNews,
+    totalEvents,
+    totalMedia,
+    activeUsers,
+    pendingEvents,
+  ];
 
   factory DashboardStatsModel.fromJson(Map<String, dynamic> json) =>
       _$DashboardStatsModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$DashboardStatsModelToJson(this);
-
-  factory DashboardStatsModel.fromEntity(DashboardStats stats) {
-    return DashboardStatsModel(
-      totalUsers: stats.totalUsers,
-      totalNews: stats.totalNews,
-      totalEvents: stats.totalEvents,
-      totalMedia: stats.totalMedia,
-      activeUsers: stats.activeUsers,
-      pendingEvents: stats.pendingEvents,
-    );
-  }
 }

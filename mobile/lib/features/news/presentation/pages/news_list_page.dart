@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mediaCubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
-import '../../domain/entities/news.dart';
-import '../bloc/news_bloc.dart';
-import '../bloc/news_state.dart';
-import '../bloc/news_event.dart';
+import '../../data/models/news_model.dart';
+import '../cubits/news_cubit.dart';
 
 class NewsListPage extends StatefulWidget {
   const NewsListPage({super.key});
@@ -22,15 +20,15 @@ class _NewsListPageState extends State<NewsListPage> {
   final PagingController<int, News> _pagingController =
   PagingController(firstPageKey: 0);
 
-  late NewsBloc _newsBloc;
+  late NewsCubit _newsCubit;
 
   @override
   void initState() {
     super.initState();
-    _newsBloc = GetIt.instance<NewsBloc>();
+    _eventsCubit = GetIt.instance<NewsCubit>();
 
     _pagingController.addPageRequestListener((pageKey) {
-      _newsBloc.add(const NewsEvent.getNews());
+      _eventsCubit.getNews();
     });
   }
 
@@ -43,8 +41,8 @@ class _NewsListPageState extends State<NewsListPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: _newsBloc,
-      child: BlocListener<NewsBloc, NewsState>(
+      value: _newsCubit,
+      child: BlocListener<NewsCubit, NewsState>(
         listener: (context, state) {
           state.whenOrNull(
             loaded: (news) {
@@ -166,7 +164,7 @@ class _NewsListPageState extends State<NewsListPage> {
 }
 
 class NewsCard extends StatelessWidget {
-  final News news;
+  final NewsModel news;
   final int index;
 
   const NewsCard({

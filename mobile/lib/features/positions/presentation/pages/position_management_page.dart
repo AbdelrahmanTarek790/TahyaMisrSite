@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mediaCubit.dart';
 
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../data/models/position_model.dart';
-import '../bloc/positions_bloc.dart';
-import '../bloc/positions_event.dart';
-import '../bloc/positions_state.dart';
 
 class PositionManagementPage extends StatefulWidget {
   const PositionManagementPage({super.key});
@@ -19,7 +16,7 @@ class PositionManagementPage extends StatefulWidget {
 class _PositionManagementPageState extends State<PositionManagementPage> {
   String _selectedGovernorate = 'All';
   final TextEditingController _searchController = TextEditingController();
-  late PositionsBloc _positionsBloc;
+  late NewsCubit _newsCubit;
 
   final List<String> _governorates = [
     'All',
@@ -55,19 +52,19 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
   @override
   void initState() {
     super.initState();
-    _positionsBloc = getIt<PositionsBloc>();
+    _eventsCubit>();
     _loadPositions();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
-    _positionsBloc.close();
+    _eventsCubit.close();
     super.dispose();
   }
 
   void _loadPositions() {
-    _positionsBloc.add(GetPositionsEvent(
+    _eventsCubit.add(GetPositionsEvent(
       governorate: _selectedGovernorate != 'All' ? _selectedGovernorate : null,
     ),);
   }
@@ -77,7 +74,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
     final l10n = AppLocalizations.of(context)!;
     
     return BlocProvider.value(
-      value: _positionsBloc,
+      value: _eventsCubit,
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.positionManagement),
@@ -90,7 +87,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
             ),
           ],
         ),
-        body: BlocListener<PositionsBloc, PositionsState>(
+        body: BlocListener<PositionsCubit, PositionsState>(
           listener: (context, state) {
             if (state is PositionsError) {
               ScaffoldMessenger.of(context).showSnackBar(
@@ -175,7 +172,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
               ),
               // Positions List Section
               Expanded(
-                child: BlocBuilder<PositionsBloc, PositionsState>(
+                child: BlocBuilder<PositionsCubit, PositionsState>(
                   builder: (context, state) {
                     if (state is PositionsLoading) {
                       return const Center(child: CircularProgressIndicator());
@@ -512,7 +509,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                   positionData['governorate'] = selectedGovernorate;
                 }
 
-                _positionsBloc.add(CreatePositionEvent(positionData: positionData));
+                _eventsCubit.add(CreatePositionEvent(positionData: positionData));
                 Navigator.of(context).pop();
               },
               child: const Text('Create'),
@@ -614,7 +611,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                   positionData['governorate'] = selectedGovernorate;
                 }
 
-                _positionsBloc.add(UpdatePositionEvent(
+                _eventsCubit.add(UpdatePositionEvent(
                   positionId: position.id,
                   positionData: positionData,
                 ),);
@@ -645,7 +642,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
               foregroundColor: Colors.white,
             ),
             onPressed: () {
-              _positionsBloc.add(DeletePositionEvent(positionId: position.id));
+              _eventsCubit.add(DeletePositionEvent(positionId: position.id));
               Navigator.of(context).pop();
             },
             child: const Text('Delete'),
