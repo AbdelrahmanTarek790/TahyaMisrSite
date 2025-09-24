@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mediaCubit.dart';
 
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
@@ -23,19 +23,19 @@ class _UserManagementPageState extends State<UserManagementPage> {
   @override
   void initState() {
     super.initState();
-    _userManagementBloc = getIt<UserManagementBloc>();
+    _eventsCubit>();
     _loadUsers();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
-    _userManagementBloc.close();
+    _eventsCubit.close();
     super.dispose();
   }
 
   void _loadUsers() {
-    _userManagementBloc.add(GetUsersEvent(
+    _eventsCubit.add(GetUsersEvent(
       page: 1,
       limit: 20,
       search: _searchController.text.isNotEmpty ? _searchController.text : null,
@@ -48,7 +48,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
     final l10n = AppLocalizations.of(context)!;
     
     return BlocProvider.value(
-      value: _userManagementBloc,
+      value: _eventsCubit,
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.userManagement),
@@ -530,7 +530,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                _userManagementBloc.add(UpdateUserEvent(
+                _eventsCubit.add(UpdateUserEvent(
                   userId: user.id,
                   userData: {'role': selectedRole},
                 ),);
@@ -561,7 +561,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
               foregroundColor: Colors.white,
             ),
             onPressed: () {
-              _userManagementBloc.add(DeleteUserEvent(userId: user.id));
+              _eventsCubit.add(DeleteUserEvent(userId: user.id));
               Navigator.of(context).pop();
             },
             child: const Text('Delete'),

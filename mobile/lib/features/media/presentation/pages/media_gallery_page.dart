@@ -17,8 +17,8 @@ class _MediaGalleryPageState extends State<MediaGalleryPage> {
   @override
   void initState() {
     super.initState();
-  /*  _mediaBloc = GetIt.instance<MediaCubit>();
-    _mediaBloc.getMedia();*/
+  /*  _eventsCubit = GetIt.instance<MediaCubit>();
+    _eventsCubit.getMedia();*/
   }
   final List<Map<String, dynamic>> achievementsData = [
     {
@@ -170,7 +170,7 @@ class _MediaGalleryPageState extends State<MediaGalleryPage> {
 
 /*
 BlocProvider.value(
-        value: _mediaBloc,
+        value: _eventsCubit,
         child: BlocBuilder<MediaCubit, MediaState>(
           builder: (context, state) {
             return state.when(
@@ -186,7 +186,7 @@ BlocProvider.value(
                     )
                   : RefreshIndicator(
                       onRefresh: () async {
-                        _mediaBloc.add(const MediaEvent.refreshMedia());
+                        _eventsCubit.getEvents()
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(8),

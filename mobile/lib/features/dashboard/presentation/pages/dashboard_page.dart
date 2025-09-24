@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mediaCubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_mediaCubit.dart';
 import '../widgets/admin_dashboard_view.dart';
 import '../widgets/volunteer_dashboard_view.dart';
 import '../widgets/student_dashboard_view.dart';
@@ -41,7 +41,7 @@ class _DashboardViewState extends State<DashboardView> {
             icon: const Icon(Icons.refresh),
             onPressed: () {
               context.read<DashboardCubit>().add(
-                    const DashboardEvent.refreshDashboard(),
+                    const cubit.refreshDashboard(),
                   );
             },
           ),
@@ -62,7 +62,7 @@ class _DashboardViewState extends State<DashboardView> {
                   loaded: (stats, activity) => RefreshIndicator(
                     onRefresh: () async {
                       context.read<DashboardCubit>().add(
-                            const DashboardEvent.refreshDashboard(),
+                            const cubit.refreshDashboard(),
                           );
                     },
                     child: _buildRoleBasedDashboard(user.role, stats, activity)
@@ -94,7 +94,7 @@ class _DashboardViewState extends State<DashboardView> {
                         ElevatedButton(
                           onPressed: () {
                             context.read<DashboardCubit>().add(
-                                  const DashboardEvent.refreshDashboard(),
+                                  const cubit.refreshDashboard(),
                                 );
                           },
                           child: const Text('إعادة المحاولة'),

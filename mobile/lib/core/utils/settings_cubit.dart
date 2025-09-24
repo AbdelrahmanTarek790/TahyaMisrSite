@@ -1,4 +1,4 @@
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mediaCubit.dart';
 import '../utils/app_settings.dart';
 
 class SettingsCubit extends Cubit<AppSettings> {

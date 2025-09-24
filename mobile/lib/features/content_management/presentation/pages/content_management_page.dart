@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mediaCubit.dart';
 
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../dashboard/presentation/bloc/dashboard_bloc.dart';
+import '../../../dashboard/presentation/bloc/dashboard_mediaCubit.dart';
 import 'create_news/create_news_page.dart';
 
 class ContentManagementPage extends StatefulWidget {
@@ -20,18 +20,18 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
   @override
   void initState() {
     super.initState();
-    _dashboardBloc = getIt<DashboardBloc>();
+    _eventsCubit>();
     _loadDashboardStats();
   }
 
   @override
   void dispose() {
-    _dashboardBloc.close();
+    _eventsCubit.close();
     super.dispose();
   }
 
   void _loadDashboardStats() {
-    _dashboardBloc.add(const GetRecentActivity());
+    _eventsCubit.add(const GetRecentActivity());
   }
 
   @override
@@ -39,7 +39,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
     final l10n = AppLocalizations.of(context)!;
     
     return BlocProvider.value(
-      value: _dashboardBloc,
+      value: _eventsCubit,
       child: Scaffold(
         appBar: AppBar(
           title: Text(l10n.contentManagement),

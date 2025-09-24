@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mediaCubit.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:get_it/get_it.dart';
@@ -14,9 +14,9 @@ import 'package:tahya_misr_app/features/home/presentation/widgets/quick_access_c
 import '../../../../core/constants/app_theme.dart';
 import '../../../../core/utils/app_settings.dart';
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../news/presentation/bloc/news_bloc.dart';
-import '../../../events/presentation/bloc/events_bloc.dart';
-import '../../../media/presentation/bloc/media_bloc.dart';
+import '../../../news/presentation/bloc/news_mediaCubit.dart';
+import '../../../events/presentation/bloc/events_mediaCubit.dart';
+import '../../../media/presentation/bloc/media_mediaCubit.dart';
 import '../../../news/domain/entities/news.dart';
 import '../widgets/custom_icon_widget.dart';
 import '../widgets/hero_banner_widget.dart';

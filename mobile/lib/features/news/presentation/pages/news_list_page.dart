@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mediaCubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
@@ -25,10 +25,10 @@ class _NewsListPageState extends State<NewsListPage> {
   @override
   void initState() {
     super.initState();
-    _newsBloc = GetIt.instance<NewsCubit>();
+    _eventsCubit = GetIt.instance<NewsCubit>();
 
     _pagingController.addPageRequestListener((pageKey) {
-      _newsBloc.getNews();
+      _eventsCubit.getNews();
     });
   }
 

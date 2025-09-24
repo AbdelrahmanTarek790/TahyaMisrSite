@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_mediaCubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
@@ -22,8 +22,8 @@ class _EventsListPageState extends State<EventsListPage> {
   @override
   void initState() {
     super.initState();
-    _eventsBloc = GetIt.instance<EventsCubit>();
-    _eventsBloc.getEvents();
+    _eventsCubit = GetIt.instance<EventsCubit>();
+    _eventsCubit.getEvents();
   }
 
   @override
@@ -37,13 +37,13 @@ class _EventsListPageState extends State<EventsListPage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              _eventsBloc.add(const EventsEvent.refreshEvents());
+              _eventsCubit.getEvents();
             },
           ),
         ],
       ),
       body: BlocProvider.value(
-        value: _eventsBloc,
+        value: _eventsCubit,
         child: BlocBuilder<EventsCubit, EventsState>(
           builder: (context, state) {
             return state.when(
@@ -60,7 +60,7 @@ class _EventsListPageState extends State<EventsListPage> {
                     )
                   : RefreshIndicator(
                       onRefresh: () async {
-                        _eventsBloc.add(const EventsEvent.refreshEvents());
+                        _eventsCubit.getEvents();
                       },
                       child: ListView.builder(
                         padding: const EdgeInsets.all(16),
@@ -97,7 +97,7 @@ class _EventsListPageState extends State<EventsListPage> {
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: () {
-                        _eventsBloc.add(const EventsEvent.refreshEvents());
+                        _eventsCubit.getEvents();
                       },
                       child: const Text('إعادة المحاولة'),
                     ),
@@ -105,7 +105,7 @@ class _EventsListPageState extends State<EventsListPage> {
                 ),
               ),
               registeredSuccessfully: (_) {
-                _eventsBloc.getEvents();
+                _eventsCubit.getEvents();
                 return const SizedBox.shrink();
               },
             );
@@ -255,11 +255,7 @@ class _EventCard extends StatelessWidget {
                                       // Check if user is authenticated
                                       if (user.id.isNotEmpty) {
                                         // Register for the event
-                                        context.read<EventsCubit>().add(
-                                              EventsEvent.registerForEvent(
-                                                event.id,
-                                              ),
-                                            );
+                                        context.read<EventsCubit>().registerForEvent(event.id);
                                       } else {
                                         // Navigate to login page
                                         context.go('/login');
