@@ -27,10 +27,9 @@ const News = () => {
                     title: item.title,
                     excerpt: item.content.length > 150 ? item.content.substring(0, 150) + "..." : item.content,
                     date: formatDate(item.createdAt),
+                    slug: item.slug,
                     category: "News",
-                    image: item.image
-                        ? `https://form.codepeak.software/uploads/${item.image}`
-                        : Logo,
+                    image: item.image ? `https://form.codepeak.software/uploads/${item.image}` : Logo,
                     featured: index === 0, // Mark first item as featured
                 }))
                 setNewsItems(transformedNews)
@@ -130,7 +129,7 @@ const News = () => {
                                         {newsItems[0].title}
                                     </h3>
                                     <p className="text-muted-foreground mb-4 leading-relaxed">{newsItems[0].excerpt}</p>
-                                    <Link to={`/news/${newsItems[0].id}`}>
+                                    <Link to={`/news/${newsItems[0].slug || newsItems[0].id}`} className="inline-block">
                                         <Button
                                             variant="outline"
                                             className="group-hover:bg-egypt-red group-hover:text-egypt-white group-hover:border-egypt-red transition-all duration-300"
@@ -152,7 +151,7 @@ const News = () => {
                                     style={{ animationDelay: `${(index + 1) * 0.1}s` }}
                                 >
                                     <CardContent className="p-6">
-                                        <Link to={`/news/${item.id}`} className="flex space-x-4">
+                                        <Link to={`/news/${item.slug || item.id}`} className="flex space-x-4">
                                             <img
                                                 src={item.image}
                                                 alt={item.title}

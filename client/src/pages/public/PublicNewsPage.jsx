@@ -133,7 +133,7 @@ const PublicNewsPage = () => {
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {filteredNews.map((newsItem, index) => (
-                                <Link to={`/news/${newsItem._id}`} key={newsItem._id}>
+                                <Link to={`/news/${newsItem.slug || newsItem._id}`} key={newsItem._id}>
                                     <Card
                                         className="group overflow-hidden h-full hover:shadow-elegant hover:-translate-y-2 transition-all duration-500 bg-white border-gray-200 animate-slide-up"
                                         style={{ animationDelay: `${index * 0.1}s` }}

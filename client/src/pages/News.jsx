@@ -108,7 +108,9 @@ const News = () => {
                     <CardContent className="flex items-center justify-center py-12">
                         <div className="text-center">
                             <h3 className="text-lg font-medium text-gray-900 mb-2">{searchTerm ? "لا توجد أخبار" : "لا توجد أخبار متاحة"}</h3>
-                            <p className="text-gray-600">{searchTerm ? "حاول تعديل مصطلحات البحث الخاصة بك" : "تحقق مرة أخرى لاحقًا للحصول على تحديثات"}</p>
+                            <p className="text-gray-600">
+                                {searchTerm ? "حاول تعديل مصطلحات البحث الخاصة بك" : "تحقق مرة أخرى لاحقًا للحصول على تحديثات"}
+                            </p>
                         </div>
                     </CardContent>
                 </Card>

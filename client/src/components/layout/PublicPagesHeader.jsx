@@ -191,12 +191,12 @@ export default function PublicPagesHeader() {
                     isScrolled ? "bg-background/95 backdrop-blur-sm shadow-sm" : "bg-background"
                 )}
             >
-                <div className="container mx-auto">
+                <div className="container mx-auto py-2 ">
                     {/* Top bar with logo and auth buttons */}
                     <div className="flex items-center  justify-between">
                         {/* Logo */}
                         <Link to="/" className="flex items-center justify-between py-4 lg:py-0 space-x-2">
-                            <img src={Logo} alt="Logo" className=" w-16 h-16 lg:h-28 lg:w-28" />
+                            <img src={Logo} alt="Logo" className=" w-16 h-16 lg:w-20 lg:h-20" />
                             <span className="text-2xl font-bold">أتحاد شباب تحيا مصر</span>
                         </Link>
 
