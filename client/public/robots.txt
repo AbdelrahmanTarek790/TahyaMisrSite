@@ -1,0 +1,8 @@
+# robots.txt for https://tahyamisryu.com/
+
+User-agent: *
+# Allow all crawlers to index everything
+Disallow:
+
+# Point crawlers to your sitemap
+Sitemap: https://tahyamisryu.com/sitemap.xml

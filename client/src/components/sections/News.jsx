@@ -4,6 +4,7 @@ import { Calendar, Clock, ArrowRight } from "lucide-react"
 import { Button } from "../ui/enhanced-button"
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
+import Logo from "@/assets/Logo.png"
 
 const News = () => {
     const [newsItems, setNewsItems] = useState([])
@@ -26,10 +27,9 @@ const News = () => {
                     title: item.title,
                     excerpt: item.content.length > 150 ? item.content.substring(0, 150) + "..." : item.content,
                     date: formatDate(item.createdAt),
+                    slug: item.slug,
                     category: "News",
-                    image: item.image
-                        ? `https://form.codepeak.software/uploads/${item.image}`
-                        : "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop",
+                    image: item.image ? `https://form.codepeak.software/uploads/${item.image}` : Logo,
                     featured: index === 0, // Mark first item as featured
                 }))
                 setNewsItems(transformedNews)
@@ -107,7 +107,7 @@ const News = () => {
                                         crossOrigin="anonymous"
                                         className="w-full object-cover group-hover:scale-110 transition-transform duration-700"
                                         onError={(e) => {
-                                            e.target.src = "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop"
+                                            e.target.src = Logo
                                         }}
                                     />
                                     <div className="absolute top-4 left-4">
@@ -129,7 +129,7 @@ const News = () => {
                                         {newsItems[0].title}
                                     </h3>
                                     <p className="text-muted-foreground mb-4 leading-relaxed">{newsItems[0].excerpt}</p>
-                                    <Link to={`/news/${newsItems[0].id}`}>
+                                    <Link to={`/news/${newsItems[0].slug || newsItems[0].id}`} className="inline-block">
                                         <Button
                                             variant="outline"
                                             className="group-hover:bg-egypt-red group-hover:text-egypt-white group-hover:border-egypt-red transition-all duration-300"
@@ -151,14 +151,14 @@ const News = () => {
                                     style={{ animationDelay: `${(index + 1) * 0.1}s` }}
                                 >
                                     <CardContent className="p-6">
-                                        <Link to={`/news/${item.id}`} className="flex space-x-4">
+                                        <Link to={`/news/${item.slug || item.id}`} className="flex space-x-4">
                                             <img
                                                 src={item.image}
                                                 alt={item.title}
                                                 crossOrigin="anonymous"
                                                 className="w-24 h-24 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                                                 onError={(e) => {
-                                                    e.target.src = "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop"
+                                                    e.target.src = Logo
                                                 }}
                                             />
                                             <div className="flex-1">

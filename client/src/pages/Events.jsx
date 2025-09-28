@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext"
 import { eventsAPI } from "../api"
 import { Search, Calendar, MapPin, Users, Plus } from "lucide-react"
 import CreateEventSheet from "../components/forms/CreateEventSheet"
-
+import Logo from "@/assets/Logo.png"
 const Events = () => {
     const [events, setEvents] = useState([])
     const [isLoading, setIsLoading] = useState(false)
@@ -151,7 +151,7 @@ const Events = () => {
                                         alt={event.title}
                                         className="w-full h-full object-cover hover:scale-105 transition-transform"
                                         onError={(e) => {
-                                            e.target.src = "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&h=400&fit=crop"
+                                            e.target.src = Logo
                                         }}
                                     />
                                     {isEventToday(event.date) && (

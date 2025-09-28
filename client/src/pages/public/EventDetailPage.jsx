@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { Button } from "../../components/ui/button"
 import { ArrowLeft, Calendar, MapPin, Clock, Share2, Facebook, Twitter, Linkedin, Users, User } from "lucide-react"
 import { eventsAPI } from "../../api"
+import Logo from "../../assets/logo.png"
 
 const EventDetailPage = () => {
     const { id } = useParams()
@@ -191,7 +192,15 @@ const EventDetailPage = () => {
                 {/* Hero Image */}
                 {event.image && (
                     <div className="mb-8 rounded-xl overflow-hidden shadow-elegant">
-                        <img src={`${event.image}`} crossOrigin="anonymous" alt={event.title} className="w-full h-64 md:h-96 object-cover" />
+                        <img
+                            src={`https://form.codepeak.software/uploads/${event.image}`}
+                            crossOrigin="anonymous"
+                            alt={event.title}
+                            className="w-full h-64 md:h-96 object-cover"
+                            onError={(e) => {
+                                e.target.src = "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&h=400&fit=crop"
+                            }}
+                        />
                     </div>
                 )}
 
