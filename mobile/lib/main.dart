@@ -31,7 +31,7 @@ void main() async {
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
-  
+
   runApp(const TahyaMisrApp());
 }
 
@@ -43,13 +43,11 @@ class TahyaMisrApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => GetIt.instance<AuthCubit>()
-            ..checkAuthStatus(),
+          create: (context) => GetIt.instance<AuthCubit>()..checkAuthStatus(),
         ),
         BlocProvider<SettingsCubit>(
           create: (context) => GetIt.instance<SettingsCubit>(),
         ),
-
         BlocProvider<DashboardCubit>(
           create: (context) => GetIt.instance<DashboardCubit>(),
         ),

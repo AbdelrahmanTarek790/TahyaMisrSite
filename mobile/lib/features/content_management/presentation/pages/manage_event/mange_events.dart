@@ -78,7 +78,7 @@ class _MangeEventsState extends State<MangeEvents> {
                         itemCount: eventsList.length,
                         itemBuilder: (context, index) {
                           final event = eventsList[index];
-                          return _EventCard(event: event)
+                          return _EventCard(event: event, eventsCubit: _eventsBloc,)
                               .animate(delay: (index * 100).ms)
                               .slideX(begin: 0.1)
                               .fadeIn();
@@ -134,8 +134,8 @@ class _MangeEventsState extends State<MangeEvents> {
 
 class _EventCard extends StatelessWidget {
   final EventModel event;
-
-  const _EventCard({required this.event});
+  final EventsCubit eventsCubit ;
+  const _EventCard({required this.event, required this.eventsCubit});
 
   @override
   Widget build(BuildContext context) {
@@ -144,7 +144,7 @@ class _EventCard extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: () {
-          context.go('/events/detail/${event.id}');
+
         },
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -251,61 +251,41 @@ class _EventCard extends StatelessWidget {
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
+                        Row(
+                          children: [
+                            IconButton(
+                              icon: const Icon(Icons.edit, size: 20),
+                              onPressed: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) =>  BlocProvider.value(
+                                      value: eventsCubit,
+                                      child: SizedBox(),
+                                      // child: EditNewsPage(newsId: news.id,newsBloc: newsCubit,),),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.delete, size: 20),
+                              onPressed: () {
+                                // context.read<EventsCubit>().deleteNews(news.id);
+                              },
+                            ),
+                            IconButton(
+                              icon: const Icon(Icons.remove_red_eye, size: 16),
+                              onPressed: () {
+                                context.push('/events/detail/${event.id}');
+                              },
+                            ),
+                          ],
+                        ),
                       ],
                     ),
                   ],
                   const SizedBox(height: 16),
-                  SizedBox(
-                    width: double.infinity,
-                    child: BlocConsumer<AuthCubit, AuthState>(
-                      listener: (context, state) {},
-                      builder: (context, state) {
-                        return state.when(
-                          initial: () => const SizedBox.shrink(),
-                          loading: () => const SizedBox.shrink(),
-                          authenticated: (user, token) {
-                            return event.registeredUsers.contains(user.id) ==
-                                    false
-                                ? ElevatedButton(
-                                    onPressed: () {
-                                      // Check if user is authenticated
-                                      if (user.id.isNotEmpty) {
-                                        // Register for the event
-                                        context
-                                            .read<EventsCubit>()
-                                            .registerForEvent(event.id);
-                                      } else {
-                                        // Navigate to login page
-                                        context.go('/login');
-                                      }
-                                    },
-                                    child: const Text('سجل الآن'),
-                                  )
-                                : const Center(
-                                    child: Text(
-                                      'مسجل بالفعل',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  );
-                          },
-                          unauthenticated: () {
-                            return ElevatedButton(
-                              onPressed: () {
-                                // Navigate to login page
-                                context.go('/login');
-                              },
-                              child: const Text('تسجيل الدخول للتسجيل'),
-                            );
-                          },
-                          error: (message) => const SizedBox.shrink(),
-                        );
-                      },
-                    ),
-                  ),
+
                 ],
               ),
             ),
