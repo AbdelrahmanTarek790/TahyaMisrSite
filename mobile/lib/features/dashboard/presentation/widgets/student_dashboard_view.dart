@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tahya_misr_app/features/dashboard/data/models/dashboard_stats_model.dart';
+import 'package:tahya_misr_app/features/dashboard/data/models/recent_activity_model.dart';
 
-import '../../domain/entities/dashboard_stats.dart';
-import '../../domain/entities/recent_activity.dart';
+
 import 'stats_card.dart';
 import 'recent_activity_list.dart';
 
 class StudentDashboardView extends StatelessWidget {
-  final DashboardStats stats;
-  final List<RecentActivity> recentActivity;
+  final DashboardStatsModel stats;
+  final List<RecentActivityModel> recentActivity;
 
   const StudentDashboardView({
     super.key,

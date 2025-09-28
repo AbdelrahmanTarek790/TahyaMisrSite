@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-
-import '../../features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:toastification/toastification.dart';
+import '../../features/auth/presentation/cubits/auth_cubit.dart';
 import '../../gen_l10n/app_localizations.dart';
 
 class MainNavigation extends StatefulWidget {
@@ -23,7 +23,7 @@ class _MainNavigationState extends State<MainNavigation> {
 
   List<NavigationItem> _getNavigationItems(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final bool isGuest = context.read<AuthBloc>().asGuest;
+    final bool isGuest = context.read<AuthCubit>().asGuest;
     final items = [
       NavigationItem(
         icon: Icons.home_outlined,
@@ -63,7 +63,6 @@ class _MainNavigationState extends State<MainNavigation> {
     }
 
     return items;
-
   }
 
   @override
@@ -151,4 +150,19 @@ class NavigationItem {
     required this.label,
     required this.route,
   });
+}
+
+class ShowToast {
+  ToastificationItem showToast(
+      {required BuildContext context,required String message,required ToastificationType type,}) {
+    return toastification.show(
+      context: context,
+      type: type,
+      style: ToastificationStyle.flat,
+      title: Text(message),
+      alignment: Alignment.topLeft,
+      autoCloseDuration: const Duration(seconds: 4),
+      borderRadius: BorderRadius.circular(12.0),
+    );
+  }
 }

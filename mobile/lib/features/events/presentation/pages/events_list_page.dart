@@ -3,13 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
-import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:tahya_misr_app/features/auth/presentation/bloc/auth_state.dart';
+import 'package:tahya_misr_app/features/events/data/models/event_model.dart';
+import 'package:tahya_misr_app/features/events/presentation/cubits/events_cubit.dart';
 
-import '../../domain/entities/event.dart';
-import '../bloc/events_bloc.dart';
-import '../bloc/events_state.dart';
-import '../bloc/events_event.dart';
+import '../../../auth/presentation/cubits/auth_cubit.dart';
 
 class EventsListPage extends StatefulWidget {
   const EventsListPage({super.key});
@@ -19,13 +16,13 @@ class EventsListPage extends StatefulWidget {
 }
 
 class _EventsListPageState extends State<EventsListPage> {
-  late EventsBloc _eventsBloc;
+  late EventsCubit _eventsBloc;
 
   @override
   void initState() {
     super.initState();
-    _eventsBloc = GetIt.instance<EventsBloc>();
-    _eventsBloc.add(const EventsEvent.getEvents());
+    _eventsBloc = GetIt.instance<EventsCubit>();
+    _eventsBloc.getEvents();
   }
 
   @override
@@ -39,14 +36,14 @@ class _EventsListPageState extends State<EventsListPage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              _eventsBloc.add(const EventsEvent.refreshEvents());
+              _eventsBloc.refreshEvents();
             },
           ),
         ],
       ),
       body: BlocProvider.value(
         value: _eventsBloc,
-        child: BlocBuilder<EventsBloc, EventsState>(
+        child: BlocBuilder<EventsCubit, EventsState>(
           builder: (context, state) {
             return state.when(
               loadedDetails: (_) => const SizedBox.shrink(),
@@ -62,7 +59,7 @@ class _EventsListPageState extends State<EventsListPage> {
                     )
                   : RefreshIndicator(
                       onRefresh: () async {
-                        _eventsBloc.add(const EventsEvent.refreshEvents());
+                        _eventsBloc.refreshEvents();
                       },
                       child: ListView.builder(
                         padding: const EdgeInsets.all(16),
@@ -99,7 +96,7 @@ class _EventsListPageState extends State<EventsListPage> {
                     const SizedBox(height: 24),
                     ElevatedButton(
                       onPressed: () {
-                        _eventsBloc.add(const EventsEvent.refreshEvents());
+                        _eventsBloc.refreshEvents();
                       },
                       child: const Text('إعادة المحاولة'),
                     ),
@@ -107,7 +104,11 @@ class _EventsListPageState extends State<EventsListPage> {
                 ),
               ),
               registeredSuccessfully: (_) {
-                _eventsBloc.add(const EventsEvent.getEvents());
+                _eventsBloc.getEvents();
+                return const SizedBox.shrink();
+              },
+              eventCreated: (_) {
+                _eventsBloc.getEvents();
                 return const SizedBox.shrink();
               },
             );
@@ -119,7 +120,7 @@ class _EventsListPageState extends State<EventsListPage> {
 }
 
 class _EventCard extends StatelessWidget {
-  final Event event;
+  final EventModel event;
 
   const _EventCard({required this.event});
 
@@ -243,7 +244,7 @@ class _EventCard extends StatelessWidget {
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: BlocConsumer<AuthBloc, AuthState>(
+                    child: BlocConsumer<AuthCubit, AuthState>(
                       listener: (context, state) {},
                       builder: (context, state) {
                         return state.when(
@@ -257,11 +258,7 @@ class _EventCard extends StatelessWidget {
                                       // Check if user is authenticated
                                       if (user.id.isNotEmpty) {
                                         // Register for the event
-                                        context.read<EventsBloc>().add(
-                                              EventsEvent.registerForEvent(
-                                                event.id,
-                                              ),
-                                            );
+                                        context.read<EventsCubit>().registerForEvent(event.id);
                                       } else {
                                         // Navigate to login page
                                         context.go('/login');

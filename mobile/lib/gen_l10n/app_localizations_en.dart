@@ -44,7 +44,13 @@ class   AppLocalizationsEn extends AppLocalizations {
   String get contentManagement => 'Content Management';
 
   @override
+  String get contentManagementDescription => 'Manage news, events, and media content';
+
+  @override
   String get manageNews => 'Manage News';
+
+  @override
+  String get mangeNewsDescription => 'Create, edit, and manage news articles';
 
   @override
   String get manageEvents => 'Manage Events';
@@ -538,5 +544,18 @@ class   AppLocalizationsEn extends AppLocalizations {
     'Entertainment and hobbies',
     'Technological development and artificial intelligence',
   ];
+
+  @override
+  String get successLogin => 'Login successful! Welcome,';
+
+  @override
+  String get addNews => 'Add News';
+
+  @override
+  String get manageEventsDescription => 'Create, edit, and manage events';
+
+  @override
+  String get addEvent => 'Add Event';
+
 
 }

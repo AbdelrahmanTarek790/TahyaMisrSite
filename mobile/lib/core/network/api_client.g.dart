@@ -481,7 +481,7 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<ApiResponse<UserModel>> updateUser(
+  Future<ApiResponse<UserManagementModel>> updateUser(
     String id,
     Map<String, dynamic> userData,
   ) async {
@@ -491,7 +491,7 @@ class _ApiClient implements ApiClient {
     final _data = <String, dynamic>{};
     _data.addAll(userData);
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ApiResponse<UserModel>>(Options(
+        _setStreamType<ApiResponse<UserManagementModel>>(Options(
       method: 'PUT',
       headers: _headers,
       extra: _extra,
@@ -507,9 +507,9 @@ class _ApiClient implements ApiClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = ApiResponse<UserModel>.fromJson(
+    final value = ApiResponse<UserManagementModel>.fromJson(
       _result.data!,
-      (json) => UserModel.fromJson(json as Map<String, dynamic>),
+      (json) => UserManagementModel.fromJson(json as Map<String, dynamic>),
     );
     return value;
   }
@@ -702,18 +702,17 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<ApiResponse<NewsModel>> createNews(
-      Map<String, dynamic> newsData) async {
+  Future<ApiResponse<NewsModel>> createNews(FormData body) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(newsData);
+    final _data = body;
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<NewsModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
+      contentType: 'multipart/form-data',
     )
             .compose(
               _dio.options,
@@ -736,18 +735,18 @@ class _ApiClient implements ApiClient {
   @override
   Future<ApiResponse<NewsModel>> updateNews(
     String id,
-    Map<String, dynamic> newsData,
+    FormData body,
   ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(newsData);
+    final _data = body;
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<NewsModel>>(Options(
       method: 'PUT',
       headers: _headers,
       extra: _extra,
+      contentType: 'multipart/form-data',
     )
             .compose(
               _dio.options,
@@ -798,18 +797,17 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<ApiResponse<EventModel>> createEvent(
-      Map<String, dynamic> eventData) async {
+  Future<ApiResponse<EventModel>> createEvent(FormData body) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(eventData);
+    final _data = body;
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<EventModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
+      contentType: 'multipart/form-data',
     )
             .compose(
               _dio.options,

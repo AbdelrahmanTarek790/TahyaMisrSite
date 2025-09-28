@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tahya_misr_app/core/dependency_injection/injection.dart';
+import 'package:tahya_misr_app/features/auth/data/models/user_model.dart';
+import 'package:tahya_misr_app/shared/widgets/main_navigation.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
-import '../../../auth/presentation/bloc/auth_state.dart';
-import '../../../auth/presentation/bloc/auth_event.dart';
-import '../../../auth/domain/entities/user.dart';
+import '../../../auth/presentation/cubits/auth_cubit.dart';
+
 
 class EditProfilePage extends StatefulWidget {
-  final User user;
+  final UserModel user;
 
   const EditProfilePage({super.key, required this.user});
 
@@ -120,7 +122,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ],
       ),
-      body: BlocListener<AuthBloc, AuthState>(
+      body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           state.when(
             initial: () {},
@@ -133,11 +135,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
               setState(() {
                 _isLoading = false;
               });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('تم تحديث الملف الشخصي بنجاح'),
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                ),
+              getIt<ShowToast>().showToast(
+                context: context,
+                message: 'تم تحديث الملف الشخصي بنجاح',
+                type: ToastificationType.success,
               );
               context.pop();
             },
@@ -145,17 +146,21 @@ class _EditProfilePageState extends State<EditProfilePage> {
               setState(() {
                 _isLoading = false;
               });
+              getIt<ShowToast>().showToast(
+                context: context,
+                message: 'تم تسجيل الخروج، يرجى تسجيل الدخول مرة أخرى',
+                type: ToastificationType.warning,
+              );
               context.go('/login');
             },
             error: (message) {
               setState(() {
                 _isLoading = false;
               });
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(message),
-                  backgroundColor: Theme.of(context).colorScheme.error,
-                ),
+              getIt<ShowToast>().showToast(
+                context: context,
+                message: message ,
+                type: ToastificationType.error,
               );
             },
           );
@@ -469,7 +474,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
         data['membershipNumber'] = _membershipNumberController.text.trim();
       }*/
 
-      context.read<AuthBloc>().add(AuthEvent.updateProfile(data: data));
+      context.read<AuthCubit>().updateProfile(data);
     }
   }
 }

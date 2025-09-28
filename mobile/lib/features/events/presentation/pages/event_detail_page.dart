@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
-import 'package:tahya_misr_app/features/events/presentation/bloc/events_bloc.dart';
-import 'package:tahya_misr_app/features/events/presentation/bloc/events_state.dart';
-
-import '../bloc/events_event.dart';
+import 'package:tahya_misr_app/features/events/presentation/cubits/events_cubit.dart';
 
 class EventDetailPage extends StatefulWidget {
   final String eventId;
@@ -20,21 +17,21 @@ class EventDetailPage extends StatefulWidget {
 }
 
 class _EventDetailPageState extends State<EventDetailPage> {
-  late EventsBloc _eventsBloc;
+  late EventsCubit _eventsBloc;
 
   @override
   void initState() {
     super.initState();
-    _eventsBloc = GetIt.instance<EventsBloc>();
+    _eventsBloc = GetIt.instance<EventsCubit>();
 
-    _eventsBloc.add(EventsEvent.getEventById(widget.eventId));
+    _eventsBloc.getEventById(widget.eventId);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _eventsBloc,
-      child: BlocConsumer<EventsBloc, EventsState>(
+      child: BlocConsumer<EventsCubit, EventsState>(
         listener: (context, state) {
           state.whenOrNull(
             loaded: (event) {},
@@ -178,6 +175,7 @@ class _EventDetailPageState extends State<EventDetailPage> {
               },
               error: (message) => Center(child: Text('Error: $message')),
               registeredSuccessfully: (_) => const SizedBox.shrink(),
+              eventCreated: (_) => const SizedBox.shrink(),
             ),
           );
         },

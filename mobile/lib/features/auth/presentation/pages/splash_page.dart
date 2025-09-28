@@ -5,9 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_theme.dart';
 import '../../../../gen_l10n/app_localizations.dart';
-import '../bloc/auth_bloc.dart';
-import '../bloc/auth_state.dart';
-import '../bloc/auth_event.dart';
+import '../cubits/auth_cubit.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -23,7 +21,7 @@ class _SplashPageState extends State<SplashPage> {
     // Check authentication status after a delay
     Future.delayed(const Duration(seconds: 5), () {
       if (mounted) {
-        context.read<AuthBloc>().add(const AuthEvent.checkAuthStatus());
+        context.read<AuthCubit>().checkAuthStatus();
       }
     });
   }
@@ -32,7 +30,7 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      body: BlocListener<AuthBloc, AuthState>(
+      body: BlocListener<AuthCubit, AuthState>(
         listener: (context, state) {
           state.when(
             initial: () {},

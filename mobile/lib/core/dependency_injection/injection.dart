@@ -5,78 +5,72 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:logger/logger.dart';
-import 'package:tahya_misr_app/features/events/domain/usecases/get_events_detail_usecase.dart';
+import 'package:tahya_misr_app/shared/widgets/main_navigation.dart';
 
-import '../../features/events/data/repositories/event_repository_impl.dart';
-import '../../features/events/domain/repositories/event_repository.dart';
-import '../../features/events/domain/usecases/register_event_usecase.dart';
-import '../../features/media/data/repositories/media_repository_impl.dart';
-import '../../features/media/domain/repositories/media_repository.dart';
-import '../../features/news/domain/usecases/get_news_detail_usecase.dart';
-import '../../features/user_management/data/datasources/user_management_remote_data_source.dart';
-import '../../features/user_management/data/repositories/user_management_repository_impl.dart';
-import '../../features/user_management/domain/repositories/user_management_repository.dart';
-import '../../features/user_management/domain/usecases/get_users.dart';
-import '../../features/user_management/domain/usecases/get_user_by_id.dart';
-import '../../features/user_management/domain/usecases/create_user.dart';
-import '../../features/user_management/domain/usecases/update_user.dart';
-import '../../features/user_management/domain/usecases/delete_user.dart';
-import '../../features/user_management/presentation/bloc/user_management_bloc.dart';
-import '../../features/positions/domain/usecases/get_positions_usecase.dart';
-import '../../features/positions/domain/usecases/create_position_usecase.dart';
-import '../../features/positions/domain/usecases/update_position_usecase.dart';
-import '../../features/positions/domain/usecases/delete_position_usecase.dart';
-import '../../features/positions/domain/repositories/position_repository.dart';
-import '../../features/positions/data/repositories/position_repository_impl.dart';
-import '../../features/positions/data/datasources/position_remote_data_source.dart';
-import '../../features/positions/presentation/bloc/positions_bloc.dart';
+// Auth imports
+import '../../features/auth/data/services/auth_api_service.dart';
+import '../../features/auth/data/local/auth_local_storage.dart';
+import '../../features/auth/data/repositories/auth_repository.dart';
+import '../../features/auth/presentation/cubits/auth_cubit.dart';
+
+// News imports
+import '../../features/news/data/services/news_api_service.dart';
+import '../../features/news/data/local/news_local_storage.dart';
+import '../../features/news/data/repositories/news_repository.dart';
+import '../../features/news/presentation/cubits/news_cubit.dart';
+
+// Events imports
+import '../../features/events/data/services/events_api_service.dart';
+import '../../features/events/data/local/events_local_storage.dart';
+import '../../features/events/data/repositories/events_repository.dart';
+import '../../features/events/presentation/cubits/events_cubit.dart';
+
+// Media imports
+import '../../features/media/data/services/media_api_service.dart';
+import '../../features/media/data/local/media_local_storage.dart';
+import '../../features/media/data/repositories/media_repository.dart';
+import '../../features/media/presentation/cubits/media_cubit.dart';
+
+// Dashboard imports
+import '../../features/dashboard/data/services/dashboard_api_service.dart';
+import '../../features/dashboard/data/local/dashboard_local_storage.dart';
+import '../../features/dashboard/data/repositories/dashboard_repository.dart';
+import '../../features/dashboard/presentation/cubits/dashboard_cubit.dart';
+
+// Positions imports
+import '../../features/positions/data/services/positions_api_service.dart';
+import '../../features/positions/data/local/positions_local_storage.dart';
+import '../../features/positions/data/repositories/positions_repository.dart';
+import '../../features/positions/presentation/cubits/positions_cubit.dart';
+
+// User Management imports
+import '../../features/user_management/data/repositories/user_management_repository.dart';
+import '../../features/user_management/data/services/user_management_api_service.dart';
+import '../../features/user_management/presentation/cubits/user_management_cubit.dart';
+
+// Core imports
 import '../network/api_client.dart';
 import '../network/network_info.dart';
 import '../utils/app_router.dart';
-import '../../features/auth/data/datasources/auth_local_data_source.dart';
-import '../../features/auth/data/datasources/auth_remote_data_source.dart';
-import '../../features/auth/data/repositories/auth_repository_impl.dart';
-import '../../features/auth/domain/repositories/auth_repository.dart';
-import '../../features/auth/domain/usecases/login_usecase.dart';
-import '../../features/auth/domain/usecases/register_usecase.dart';
-import '../../features/auth/domain/usecases/logout_usecase.dart';
-import '../../features/auth/domain/usecases/update_profile_usecase.dart';
-import '../../features/auth/presentation/bloc/auth_bloc.dart';
-import '../../features/dashboard/data/datasources/dashboard_remote_data_source.dart';
-import '../../features/dashboard/data/repositories/dashboard_repository_impl.dart';
-import '../../features/dashboard/domain/repositories/dashboard_repository.dart';
-import '../../features/dashboard/domain/usecases/get_dashboard_stats_usecase.dart';
-import '../../features/dashboard/domain/usecases/get_recent_activity_usecase.dart';
-import '../../features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../../features/news/data/datasources/news_remote_data_source.dart';
-import '../../features/news/data/repositories/news_repository_impl.dart';
-import '../../features/news/domain/repositories/news_repository.dart';
-import '../../features/news/domain/usecases/get_news_usecase.dart';
-import '../../features/news/presentation/bloc/news_bloc.dart';
-import '../../features/events/data/datasources/events_remote_data_source.dart';
-import '../../features/events/domain/usecases/get_events_usecase.dart';
-import '../../features/events/presentation/bloc/events_bloc.dart';
-import '../../features/media/data/datasources/media_remote_data_source.dart';
-import '../../features/media/domain/usecases/get_media_usecase.dart';
-import '../../features/media/presentation/bloc/media_bloc.dart';
 import '../utils/settings_cubit.dart';
-
 
 final GetIt getIt = GetIt.instance;
 
 @InjectableInit()
 Future<void> configureDependencies() async {
   // Core dependencies
-  getIt.registerLazySingleton<Logger>(() => Logger(
-        printer: PrettyPrinter(
-          methodCount: 2,
-          errorMethodCount: 8,
-          lineLength: 120,
-          colors: true,
-          printEmojis: true,
-          dateTimeFormat: DateTimeFormat.none,
-        ),
-      ),);
+  getIt.registerLazySingleton<Logger>(
+    () => Logger(
+      printer: PrettyPrinter(
+        methodCount: 2,
+        errorMethodCount: 8,
+        lineLength: 120,
+        colors: true,
+        printEmojis: true,
+        dateTimeFormat: DateTimeFormat.none,
+      ),
+    ),
+  );
 
   getIt.registerLazySingleton<Connectivity>(Connectivity.new);
 
@@ -99,9 +93,25 @@ Future<void> configureDependencies() async {
   // Hive boxes
   final authBox = await Hive.openBox('auth');
   final cacheBox = await Hive.openBox('cache');
+  final newsBox = await Hive.openBox('news');
+  final eventsBox = await Hive.openBox('events');
+  final mediaBox = await Hive.openBox('media');
+  final dashboardBox = await Hive.openBox('dashboard');
+  final positionsBox = await Hive.openBox('positions');
 
   getIt.registerLazySingleton<Box>(() => authBox, instanceName: 'authBox');
   getIt.registerLazySingleton<Box>(() => cacheBox, instanceName: 'cacheBox');
+  getIt.registerLazySingleton<Box>(() => newsBox, instanceName: 'newsBox');
+  getIt.registerLazySingleton<Box>(() => eventsBox, instanceName: 'eventsBox');
+  getIt.registerLazySingleton<Box>(() => mediaBox, instanceName: 'mediaBox');
+  getIt.registerLazySingleton<Box>(
+    () => dashboardBox,
+    instanceName: 'dashboardBox',
+  );
+  getIt.registerLazySingleton<Box>(
+    () => positionsBox,
+    instanceName: 'positionsBox',
+  );
 
   // Dio configuration
   getIt.registerLazySingleton<Dio>(() {
@@ -115,36 +125,40 @@ Future<void> configureDependencies() async {
     };
 
     // Add interceptors for logging and token management
-    dio.interceptors.add(LogInterceptor(
-      requestBody: true,
-      responseBody: true,
-      logPrint: (object) => getIt<Logger>().d(object),
-    ),);
+    dio.interceptors.add(
+      LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        logPrint: (object) => getIt<Logger>().d(object),
+      ),
+    );
 
     // Add token interceptor
-    dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        // Add Authorization header if token exists
-        try {
-          final storage = getIt<FlutterSecureStorage>();
-          final token = await storage.read(key: 'auth_token');
-          if (token != null) {
-            options.headers['Authorization'] = 'Bearer $token';
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          // Add Authorization header if token exists
+          try {
+            final storage = getIt<FlutterSecureStorage>();
+            final token = await storage.read(key: 'auth_token');
+            if (token != null) {
+              options.headers['Authorization'] = 'Bearer $token';
+            }
+          } catch (e) {
+            getIt<Logger>().e('Error getting token: $e');
           }
-        } catch (e) {
-          getIt<Logger>().e('Error getting token: $e');
-        }
-        handler.next(options);
-      },
-      onError: (error, handler) {
-        // Handle 401 errors (unauthorized)
-        if (error.response?.statusCode == 401) {
-          // Token might be expired, could trigger logout here
-          getIt<Logger>().w('Unauthorized request: ${error.response?.data}');
-        }
-        handler.next(error);
-      },
-    ),);
+          handler.next(options);
+        },
+        onError: (error, handler) {
+          // Handle 401 errors (unauthorized)
+          if (error.response?.statusCode == 401) {
+            // Token might be expired, could trigger logout here
+            getIt<Logger>().w('Unauthorized request: ${error.response?.data}');
+          }
+          handler.next(error);
+        },
+      ),
+    );
 
     return dio;
   });
@@ -152,55 +166,39 @@ Future<void> configureDependencies() async {
   // API Client
   getIt.registerLazySingleton<ApiClient>(() => ApiClient(getIt<Dio>()));
 
-  // Data sources
-  getIt.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSourceImpl(getIt<ApiClient>()),
+  // Auth API Service
+  getIt.registerLazySingleton<AuthApiService>(
+    () => AuthApiService(getIt<ApiClient>()),
   );
 
-  getIt.registerLazySingleton<AuthLocalDataSource>(
-    () => AuthLocalDataSourceImpl(
+  // Auth Local Storage
+  getIt.registerLazySingleton<AuthLocalStorage>(
+    () => AuthLocalStorage(
       getIt<FlutterSecureStorage>(),
       getIt<Box>(instanceName: 'authBox'),
     ),
   );
 
-  // Repositories
+  // Auth Repository
   getIt.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
-      remoteDataSource: getIt<AuthRemoteDataSource>(),
-      localDataSource: getIt<AuthLocalDataSource>(),
+      apiService: getIt<AuthApiService>(),
+      localStorage: getIt<AuthLocalStorage>(),
       networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
-  // Use cases
-  getIt.registerLazySingleton<LoginUseCase>(
-    () => LoginUseCase(getIt<AuthRepository>()),
-  );
-
-  getIt.registerLazySingleton<RegisterUseCase>(
-    () => RegisterUseCase(getIt<AuthRepository>()),
-  );
-
-  getIt.registerLazySingleton<LogoutUseCase>(
-    () => LogoutUseCase(getIt<AuthRepository>()),
-  );
-
-  getIt.registerLazySingleton<UpdateProfileUseCase>(
-    () => UpdateProfileUseCase(getIt<AuthRepository>()),
-  );
-
-  // Blocs
-  getIt.registerFactory<AuthBloc>(
-    () => AuthBloc(
-      loginUseCase: getIt<LoginUseCase>(),
-      registerUseCase: getIt<RegisterUseCase>(),
-      logoutUseCase: getIt<LogoutUseCase>(),
-      updateProfileUseCase: getIt<UpdateProfileUseCase>(),
+  // Auth Cubit
+  getIt.registerFactory<AuthCubit>(
+    () => AuthCubit(
       authRepository: getIt<AuthRepository>(),
     ),
   );
 
+  // Show Toast Notifications
+  getIt.registerLazySingleton<ShowToast> (
+    () => ShowToast(),
+  );
   // Dashboard dependencies
   _configureDashboardDependencies();
 
@@ -227,216 +225,160 @@ Future<void> configureDependencies() async {
 }
 
 void _configureDashboardDependencies() {
-  // Dashboard data source
-  getIt.registerLazySingleton<DashboardRemoteDataSource>(
-    () => DashboardRemoteDataSourceImpl(getIt<ApiClient>()),
+  // Dashboard API Service
+  getIt.registerLazySingleton<DashboardApiService>(
+    () => DashboardApiService(getIt<ApiClient>()),
+  );
+
+  // Dashboard Local Storage
+  getIt.registerLazySingleton<DashboardLocalStorage>(
+    () => DashboardLocalStorage(getIt<Box>(instanceName: 'dashboardBox')),
   );
 
   // Dashboard repository
   getIt.registerLazySingleton<DashboardRepository>(
     () => DashboardRepositoryImpl(
-      remoteDataSource: getIt<DashboardRemoteDataSource>(),
+      apiService: getIt<DashboardApiService>(),
+      localStorage: getIt<DashboardLocalStorage>(),
+      networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
-  // Dashboard use cases
-  getIt.registerLazySingleton<GetDashboardStatsUseCase>(
-    () => GetDashboardStatsUseCase(getIt<DashboardRepository>()),
-  );
-
-  getIt.registerLazySingleton<GetRecentActivityUseCase>(
-    () => GetRecentActivityUseCase(getIt<DashboardRepository>()),
-  );
-
-  // Dashboard bloc
-  getIt.registerFactory<DashboardBloc>(
-    () => DashboardBloc(
-      getDashboardStatsUseCase: getIt<GetDashboardStatsUseCase>(),
-      getRecentActivityUseCase: getIt<GetRecentActivityUseCase>(),
+  // Dashboard cubit
+  getIt.registerFactory<DashboardCubit>(
+    () => DashboardCubit(
+      dashboardRepository: getIt<DashboardRepository>(),
     ),
   );
 }
 
 void _configureNewsDependencies() {
-  // News data source
-  getIt.registerLazySingleton<NewsRemoteDataSource>(
-    () => NewsRemoteDataSourceImpl(getIt<ApiClient>()),
+  // News API Service
+  getIt.registerLazySingleton<NewsApiService>(
+    () => NewsApiService(getIt<ApiClient>()),
+  );
+
+  // News Local Storage
+  getIt.registerLazySingleton<NewsLocalStorage>(
+    () => NewsLocalStorage(getIt<Box>(instanceName: 'newsBox')),
   );
 
   // News repository
   getIt.registerLazySingleton<NewsRepository>(
     () => NewsRepositoryImpl(
-      remoteDataSource: getIt<NewsRemoteDataSource>(),
+      apiService: getIt<NewsApiService>(),
+      localStorage: getIt<NewsLocalStorage>(),
+      networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
-  // News use cases
-  getIt.registerLazySingleton<GetNewsUseCase>(
-    () => GetNewsUseCase(getIt<NewsRepository>()),
-  );
-
-  //News detail use case
-  getIt.registerLazySingleton<GetNewsDetailUseCase>(
-    () => GetNewsDetailUseCase(getIt<NewsRepository>()),
-  );
-
-  // News bloc
-  getIt.registerFactory<NewsBloc>(
-    () => NewsBloc(
-      getNewsUseCase: getIt<GetNewsUseCase>(),
-      getNewsDetailUseCase: getIt<GetNewsDetailUseCase>(),
+  // News cubit
+  getIt.registerFactory<NewsCubit>(
+    () => NewsCubit(
+      newsRepository: getIt<NewsRepository>(),
     ),
   );
 }
 
 void _configureEventsDependencies() {
-  // Events data source
-  getIt.registerLazySingleton<EventsRemoteDataSource>(
-    () => EventsRemoteDataSourceImpl(getIt<ApiClient>()),
+  // Events API Service
+  getIt.registerLazySingleton<EventsApiService>(
+    () => EventsApiService(getIt<ApiClient>()),
+  );
+
+  // Events Local Storage
+  getIt.registerLazySingleton<EventsLocalStorage>(
+    () => EventsLocalStorage(getIt<Box>(instanceName: 'eventsBox')),
   );
 
   // Events repository
-  getIt.registerLazySingleton<EventRepository>(
-    () => EventRepositoryImpl(
-      remoteDataSource: getIt<EventsRemoteDataSource>(),
+  getIt.registerLazySingleton<EventsRepository>(
+    () => EventsRepositoryImpl(
+      apiService: getIt<EventsApiService>(),
+      localStorage: getIt<EventsLocalStorage>(),
+      networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
-  // Events use case
-  getIt.registerLazySingleton<GetEventsUseCase>(
-    () => GetEventsUseCase(getIt<EventRepository>()),
-  );
-
-//Events detail use case
-  getIt.registerLazySingleton<GetEventsDetailUseCase>(
-    () => GetEventsDetailUseCase(getIt<EventRepository>()),
-  );
-
-  //Events registration use case
-  getIt.registerLazySingleton<RegisterEventUseCase>(
-          () => RegisterEventUseCase(getIt<EventRepository>()),
-  );
-  // Events bloc
-  getIt.registerFactory<EventsBloc>(
-    () => EventsBloc(
-      getEventsUseCase: getIt<GetEventsUseCase>(),
-      getEventsDetailUseCase: getIt<GetEventsDetailUseCase>(),
-      registerEventUseCase: getIt<RegisterEventUseCase>(),
+  // Events cubit
+  getIt.registerFactory<EventsCubit>(
+    () => EventsCubit(
+      eventsRepository: getIt<EventsRepository>(),
     ),
   );
 }
 
 void _configureMediaDependencies() {
-  // Media data source
-  getIt.registerLazySingleton<MediaRemoteDataSource>(
-    () => MediaRemoteDataSourceImpl(getIt<ApiClient>()),
+  // Media API Service
+  getIt.registerLazySingleton<MediaApiService>(
+    () => MediaApiService(getIt<ApiClient>()),
+  );
+
+  // Media Local Storage
+  getIt.registerLazySingleton<MediaLocalStorage>(
+    () => MediaLocalStorage(getIt<Box>(instanceName: 'mediaBox')),
   );
 
   // Media repository
   getIt.registerLazySingleton<MediaRepository>(
     () => MediaRepositoryImpl(
-      remoteDataSource: getIt<MediaRemoteDataSource>(),
+      apiService: getIt<MediaApiService>(),
+      localStorage: getIt<MediaLocalStorage>(),
+      networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
-  // Media use case
-  getIt.registerLazySingleton<GetMediaUseCase>(
-    () => GetMediaUseCase(getIt<MediaRepository>()),
-  );
-
-  // Media bloc
-  getIt.registerFactory<MediaBloc>(
-    () => MediaBloc(
-      getMediaUseCase: getIt<GetMediaUseCase>(),
+  // Media cubit
+  getIt.registerFactory<MediaCubit>(
+    () => MediaCubit(
+      mediaRepository: getIt<MediaRepository>(),
     ),
   );
 }
 
 void _configureUserManagementDependencies() {
-  // User Management data source
-  getIt.registerLazySingleton<UserManagementRemoteDataSource>(
-    () => UserManagementRemoteDataSourceImpl(apiClient: getIt<ApiClient>()),
+  // User Management API Service
+  getIt.registerLazySingleton<UserManagementApiService>(
+    () => UserManagementApiService(getIt<ApiClient>()),
   );
 
   // User Management repository
   getIt.registerLazySingleton<UserManagementRepository>(
     () => UserManagementRepositoryImpl(
-      remoteDataSource: getIt<UserManagementRemoteDataSource>(),
+      apiService: getIt<UserManagementApiService>(),
       networkInfo: getIt<NetworkInfo>(),
     ),
   );
-
-  // User Management use cases
-  getIt.registerLazySingleton<GetUsers>(
-    () => GetUsers(getIt<UserManagementRepository>()),
-  );
-
-  getIt.registerLazySingleton<GetUserById>(
-    () => GetUserById(getIt<UserManagementRepository>()),
-  );
-
-  getIt.registerLazySingleton<CreateUser>(
-    () => CreateUser(getIt<UserManagementRepository>()),
-  );
-
-  getIt.registerLazySingleton<UpdateUser>(
-    () => UpdateUser(getIt<UserManagementRepository>()),
-  );
-
-  getIt.registerLazySingleton<DeleteUser>(
-    () => DeleteUser(getIt<UserManagementRepository>()),
-  );
-
-  // User Management bloc
-  getIt.registerFactory<UserManagementBloc>(
-    () => UserManagementBloc(
-      getUsers: getIt<GetUsers>(),
-      getUserById: getIt<GetUserById>(),
-      createUser: getIt<CreateUser>(),
-      updateUser: getIt<UpdateUser>(),
-      deleteUser: getIt<DeleteUser>(),
-    ),
+  // User Management cubit
+  getIt.registerFactory<UserManagementCubit>(
+    () => UserManagementCubit(getIt<UserManagementRepository>()),
   );
 }
 
 void _configurePositionsDependencies() {
-  // Positions data source
-  getIt.registerLazySingleton<PositionRemoteDataSource>(
-    () => PositionRemoteDataSourceImpl(apiClient: getIt<ApiClient>()),
+  // Positions API Service
+  getIt.registerLazySingleton<PositionsApiService>(
+    () => PositionsApiService(getIt<ApiClient>()),
+  );
+
+  // Positions Local Storage
+  getIt.registerLazySingleton<PositionsLocalStorage>(
+    () => PositionsLocalStorage(getIt<Box>(instanceName: 'positionsBox')),
   );
 
   // Positions repository
-  getIt.registerLazySingleton<PositionRepository>(
-    () => PositionRepositoryImpl(
-      remoteDataSource: getIt<PositionRemoteDataSource>(),
+  getIt.registerLazySingleton<PositionsRepository>(
+    () => PositionsRepositoryImpl(
+      apiService: getIt<PositionsApiService>(),
+      localStorage: getIt<PositionsLocalStorage>(),
       networkInfo: getIt<NetworkInfo>(),
     ),
   );
 
-  // Positions use cases
-  getIt.registerLazySingleton<GetPositionsUseCase>(
-    () => GetPositionsUseCase(getIt<PositionRepository>()),
-  );
-
-  getIt.registerLazySingleton<CreatePositionUseCase>(
-    () => CreatePositionUseCase(getIt<PositionRepository>()),
-  );
-
-  getIt.registerLazySingleton<UpdatePositionUseCase>(
-    () => UpdatePositionUseCase(getIt<PositionRepository>()),
-  );
-
-  getIt.registerLazySingleton<DeletePositionUseCase>(
-    () => DeletePositionUseCase(getIt<PositionRepository>()),
-  );
-
-  // Positions bloc
-  getIt.registerFactory<PositionsBloc>(
-    () => PositionsBloc(
-      getPositionsUseCase: getIt<GetPositionsUseCase>(),
-      createPositionUseCase: getIt<CreatePositionUseCase>(),
-      updatePositionUseCase: getIt<UpdatePositionUseCase>(),
-      deletePositionUseCase: getIt<DeletePositionUseCase>(),
+  // Positions cubit
+  getIt.registerFactory<PositionsCubit>(
+    () => PositionsCubit(
+      positionsRepository: getIt<PositionsRepository>(),
     ),
   );
 }

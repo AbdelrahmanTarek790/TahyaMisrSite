@@ -5,11 +5,11 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:tahya_misr_app/features/news/data/models/news_model.dart';
 
-import '../../domain/entities/news.dart';
-import '../bloc/news_bloc.dart';
-import '../bloc/news_state.dart';
-import '../bloc/news_event.dart';
+import '../cubits/news_cubit.dart';
+
+
 
 class NewsListPage extends StatefulWidget {
   const NewsListPage({super.key});
@@ -19,18 +19,18 @@ class NewsListPage extends StatefulWidget {
 }
 
 class _NewsListPageState extends State<NewsListPage> {
-  final PagingController<int, News> _pagingController =
+  final PagingController<int, NewsModel> _pagingController =
   PagingController(firstPageKey: 0);
 
-  late NewsBloc _newsBloc;
+  late NewsCubit _newsBloc;
 
   @override
   void initState() {
     super.initState();
-    _newsBloc = GetIt.instance<NewsBloc>();
+    _newsBloc = GetIt.instance<NewsCubit>();
 
     _pagingController.addPageRequestListener((pageKey) {
-      _newsBloc.add(const NewsEvent.getNews());
+      _newsBloc.getNews();
     });
   }
 
@@ -44,7 +44,7 @@ class _NewsListPageState extends State<NewsListPage> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _newsBloc,
-      child: BlocListener<NewsBloc, NewsState>(
+      child: BlocListener<NewsCubit, NewsState>(
         listener: (context, state) {
           state.whenOrNull(
             loaded: (news) {
@@ -73,9 +73,9 @@ class _NewsListPageState extends State<NewsListPage> {
           ),
           body: RefreshIndicator(
             onRefresh: () => Future.sync(_pagingController.refresh),
-            child: PagedListView<int, News>(
+            child: PagedListView<int, NewsModel>(
               pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<News>(
+              builderDelegate: PagedChildBuilderDelegate<NewsModel>(
                 itemBuilder: (context, news, index) => NewsCard(
                   news: news,
                   index: index,
@@ -150,7 +150,7 @@ class _NewsListPageState extends State<NewsListPage> {
       child: ListView.builder(
         itemCount: 5,
         itemBuilder: (context, index) => NewsCard(
-          news: News(
+          news: NewsModel(
             id: 'skeleton',
             title: 'عنوان الخبر التجريبي',
             content: 'محتوى الخبر التجريبي للعرض التوضيحي',
@@ -166,7 +166,7 @@ class _NewsListPageState extends State<NewsListPage> {
 }
 
 class NewsCard extends StatelessWidget {
-  final News news;
+  final NewsModel news;
   final int index;
 
   const NewsCard({

@@ -9,21 +9,16 @@ import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:tahya_misr_app/core/utils/settings_cubit.dart';
+import 'package:tahya_misr_app/features/events/data/models/event_model.dart';
 import 'package:tahya_misr_app/features/home/presentation/widgets/quick_access_cards_widget.dart';
+import 'package:tahya_misr_app/features/news/data/models/news_model.dart';
 
 import '../../../../core/constants/app_theme.dart';
 import '../../../../core/utils/app_settings.dart';
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../news/presentation/bloc/news_bloc.dart';
-import '../../../news/presentation/bloc/news_state.dart';
-import '../../../news/presentation/bloc/news_event.dart';
-import '../../../events/presentation/bloc/events_bloc.dart';
-import '../../../events/presentation/bloc/events_state.dart';
-import '../../../events/presentation/bloc/events_event.dart';
-import '../../../media/presentation/bloc/media_bloc.dart';
-import '../../../media/presentation/bloc/media_event.dart';
-import '../../../news/domain/entities/news.dart';
-import '../../../events/domain/entities/event.dart';
+import '../../../media/presentation/cubits/media_cubit.dart';
+import '../../../events/presentation/cubits/events_cubit.dart';
+import '../../../news/presentation/cubits/news_cubit.dart';
 import '../widgets/custom_icon_widget.dart';
 import '../widgets/hero_banner_widget.dart';
 
@@ -36,15 +31,15 @@ class HomePage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) =>
-              GetIt.instance<NewsBloc>()..add(const NewsEvent.getNews()),
+              GetIt.instance<NewsCubit>()..getNews(),
         ),
         BlocProvider(
           create: (context) =>
-              GetIt.instance<EventsBloc>()..add(const EventsEvent.getEvents()),
+              GetIt.instance<EventsCubit>()..getEvents(),
         ),
         BlocProvider(
           create: (context) =>
-              GetIt.instance<MediaBloc>()..add(const MediaEvent.getMedia()),
+              GetIt.instance<MediaCubit>()..getMedia(),
         ),
       ],
       child: HomeView(),
@@ -129,9 +124,9 @@ class HomeView extends StatelessWidget {
       ),
       body: RefreshIndicator(
         onRefresh: () async {
-          context.read<NewsBloc>().add(const NewsEvent.getNews());
-          context.read<EventsBloc>().add(const EventsEvent.getEvents());
-          context.read<MediaBloc>().add(const MediaEvent.getMedia());
+          context.read<NewsCubit>().getNews();
+          context.read<EventsCubit>().getEvents();
+          context.read<MediaCubit>().getMedia();
         },
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(16),
@@ -213,7 +208,7 @@ class HomeView extends StatelessWidget {
               ),
 
               const SizedBox(height: 16),
-              BlocBuilder<NewsBloc, NewsState>(
+              BlocBuilder<NewsCubit, NewsState>(
                 builder: (context, state) {
                   return state.when(
                     initial: () => const SizedBox.shrink(),
@@ -222,7 +217,10 @@ class HomeView extends StatelessWidget {
                         _buildNewsSection(context, newsList.toList()),
                     loadedDetails:  (_) =>
                         const SizedBox.shrink(),
+                    newsCreated: (data) => const SizedBox.shrink(),
+                    deletingNews: (id) => const SizedBox.shrink(),
                     error: (message) => _buildErrorCard(context, message),
+                    newsUpdated: (data) => const SizedBox.shrink(),
                   );
                 },
               ),
@@ -236,7 +234,7 @@ class HomeView extends StatelessWidget {
                 onViewAll: () => context.push('/events'),
               ),
               const SizedBox(height: 16),
-              BlocBuilder<EventsBloc, EventsState>(
+              BlocBuilder<EventsCubit, EventsState>(
                 builder: (context, state) {
                   return state.when(
                     initial: () => const SizedBox.shrink(),
@@ -251,6 +249,7 @@ class HomeView extends StatelessWidget {
                     ),
                     error: (message) => _buildErrorCard(context, message),
                     registeredSuccessfully: (_) => const SizedBox.shrink(),
+                    eventCreated: (_) => const SizedBox.shrink(),
                   );
                 },
               ),
@@ -297,7 +296,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildNewsSection(BuildContext context, List<News> newsList)
+  Widget _buildNewsSection(BuildContext context, List<NewsModel> newsList)
   {
     // ناخد العرض من الشاشة (80% مثلا)
     final double cardWidth = MediaQuery.of(context).size.width * 0.8;
@@ -321,7 +320,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildNewsCard(BuildContext context, News news)
+  Widget _buildNewsCard(BuildContext context, NewsModel news)
   {
     final l10n = AppLocalizations.of(context)!;
     return LayoutBuilder(
@@ -457,7 +456,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildEventsSection(BuildContext context, List<Event> eventsList)
+  Widget _buildEventsSection(BuildContext context, List<EventModel> eventsList)
   {
     if (eventsList.isEmpty) {
       return _buildEmptyCard(context);
@@ -473,7 +472,7 @@ class HomeView extends StatelessWidget {
     );
   }
 
-  Widget _buildEventCard(BuildContext context, Event event) {
+  Widget _buildEventCard(BuildContext context, EventModel event) {
     final l10n = AppLocalizations.of(context)!;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),

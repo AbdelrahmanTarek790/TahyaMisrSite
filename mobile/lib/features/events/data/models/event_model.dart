@@ -1,18 +1,43 @@
-import '../../domain/entities/event.dart';
+import 'package:equatable/equatable.dart';
 
-class EventModel extends Event {
+class EventModel extends Equatable {
+  final String id;
+  final String title;
+  final String description;
+  final String? imageUrl;
+  final DateTime eventDate;
+  final String location;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final List<String> registeredUsers;
+  final String? createdBy;
+
   const EventModel({
-    required super.id,
-    required super.title,
-    required super.description,
-    super.imageUrl,
-    required super.eventDate,
-    required super.location,
-    required super.createdAt,
-    required super.updatedAt,
-    required super.registeredUsers,
-    super.createdBy,
+    required this.id,
+    required this.title,
+    required this.description,
+    this.imageUrl,
+    required this.eventDate,
+    required this.location,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.registeredUsers,
+    this.createdBy,
   });
+
+  @override
+  List<Object?> get props => [
+    id,
+    title,
+    description,
+    imageUrl,
+    eventDate,
+    location,
+    createdAt,
+    updatedAt,
+    registeredUsers,
+    createdBy,
+  ];
 
   factory EventModel.fromJson(Map<String, dynamic> json) {
     try {
@@ -106,19 +131,4 @@ class EventModel extends Event {
     'registeredUsers': registeredUsers,
     'createdBy': createdBy,
   };
-
-  factory EventModel.fromEntity(Event event) {
-    return EventModel(
-      id: event.id,
-      title: event.title,
-      description: event.description,
-      imageUrl: event.imageUrl,
-      eventDate: event.eventDate,
-      location: event.location,
-      createdAt: event.createdAt,
-      updatedAt: event.updatedAt,
-      registeredUsers: event.registeredUsers,
-      createdBy: event.createdBy,
-    );
-  }
 }

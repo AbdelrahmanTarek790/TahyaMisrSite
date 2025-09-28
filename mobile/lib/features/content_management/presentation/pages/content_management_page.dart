@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tahya_misr_app/features/content_management/presentation/pages/manage_event/mange_events.dart';
+import 'package:tahya_misr_app/features/dashboard/presentation/cubits/dashboard_cubit.dart';
 
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../../../dashboard/presentation/bloc/dashboard_event.dart';
-import '../../../dashboard/presentation/bloc/dashboard_state.dart';
-import 'create_news/create_news_page.dart';
+import 'manage_news/mange_news.dart';
 
 class ContentManagementPage extends StatefulWidget {
   const ContentManagementPage({super.key});
@@ -17,13 +16,16 @@ class ContentManagementPage extends StatefulWidget {
 }
 
 class _ContentManagementPageState extends State<ContentManagementPage> {
-  late DashboardBloc _dashboardBloc;
-
+  late DashboardCubit _dashboardBloc;
   @override
   void initState() {
     super.initState();
-    _dashboardBloc = getIt<DashboardBloc>();
+    _dashboardBloc = getIt<DashboardCubit>();
     _loadDashboardStats();
+  }
+
+  void _loadDashboardStats() {
+    _dashboardBloc.getDashboardStats();
   }
 
   @override
@@ -32,14 +34,10 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
     super.dispose();
   }
 
-  void _loadDashboardStats() {
-    _dashboardBloc.add(const GetRecentActivity());
-  }
-
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return BlocProvider.value(
       value: _dashboardBloc,
       child: Scaffold(
@@ -61,7 +59,10 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                   gradient: LinearGradient(
                     colors: [
                       Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+                      Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.7),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -69,7 +70,10 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                      color: Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.3),
                       blurRadius: 8,
                       offset: const Offset(0, 4),
                     ),
@@ -80,14 +84,15 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                   children: [
                     Text(
                       l10n.contentManagement,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      style:
+                          Theme.of(context).textTheme.headlineSmall?.copyWith(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Manage news, events, and media content',
+                      l10n.contentManagementDescription,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             color: Colors.white70,
                           ),
@@ -100,7 +105,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
 
               // Management Options
               Text(
-                'Content Management',
+                l10n.contentManagement.toUpperCase(),
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
@@ -111,13 +116,13 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
               _buildManagementCard(
                 context,
                 title: l10n.manageNews,
-                subtitle: 'Create, edit, and manage news articles',
+                subtitle: l10n.mangeNewsDescription,
                 icon: Icons.article,
                 color: Colors.blue,
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const CreateNewsPage(),
+                      builder: (context) =>  const MangeNews(),
                     ),
                   );
                 },
@@ -129,11 +134,16 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
               _buildManagementCard(
                 context,
                 title: l10n.manageEvents,
-                subtitle: 'Create, edit, and manage events',
+                subtitle: l10n.manageEventsDescription,
                 icon: Icons.event,
                 color: Colors.orange,
                 onTap: () {
-                  _showCreateEventDialog(context, l10n);
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) =>  const MangeEvents(),
+                    ),
+                  );
+                 /* _showCreateEventDialog(context, l10n);*/
                 },
               ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.3, end: 0),
 
@@ -162,38 +172,49 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
               ),
               const SizedBox(height: 16),
 
-              BlocBuilder<DashboardBloc, DashboardState>(
+              BlocBuilder<DashboardCubit, DashboardState>(
                 builder: (context, state) {
-                  if (state is Loaded) {
-                    return _buildStatsGrid(context, state);
-                  } else if (state is Loading) {
-                    return const Center(child: CircularProgressIndicator());
-                  } else if (state is Error) {
-                    return Center(
-                      child: Column(
-                        children: [
-                          Icon(
-                            Icons.error_outline,
-                            size: 48,
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                          const SizedBox(height: 16),
-                          Text(
-                            state.message,
-                            style: Theme.of(context).textTheme.bodyMedium,
-                            textAlign: TextAlign.center,
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: _loadDashboardStats,
-                            child: const Text('Retry'),
-                          ),
-                        ],
-                      ),
-                    );
-                  } else {
-                    return _buildStatsGrid(context, null);
-                  }
+                  return state.when(
+                    initial: () {
+                      return _buildStatsGrid(context, null);
+                    },
+                    loading: () {
+                      return const Center(child: CircularProgressIndicator());
+                    },
+                    loaded: (stats, activities) {
+                      return _buildStatsGrid(context, state);
+                    },
+                    statsLoaded: (stats) {
+                      return _buildStatsGrid(context, state);
+                    },
+                    activitiesLoaded: (activities) {
+                      return const SizedBox(); /*_buildStatsGrid(context, null);*/
+                    },
+                    error: (message) {
+                      return Center(
+                        child: Column(
+                          children: [
+                            Icon(
+                              Icons.error_outline,
+                              size: 48,
+                              color: Theme.of(context).colorScheme.error,
+                            ),
+                            const SizedBox(height: 16),
+                            Text(
+                              message,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                              textAlign: TextAlign.center,
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: _loadDashboardStats,
+                              child: const Text('Retry'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  );
                 },
               ),
             ],
@@ -203,7 +224,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
     );
   }
 
-  Widget _buildStatsGrid(BuildContext context,state) {
+  Widget _buildStatsGrid(BuildContext context, state) {
     return Column(
       children: [
         Row(
@@ -215,7 +236,10 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                 count: state?.stats.totalNews.toString() ?? '0',
                 icon: Icons.article,
                 color: Colors.blue,
-              ).animate().fadeIn(delay: 800.ms).scale(begin: const Offset(0.8, 0.8)),
+              )
+                  .animate()
+                  .fadeIn(delay: 800.ms)
+                  .scale(begin: const Offset(0.8, 0.8)),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -225,7 +249,10 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                 count: state?.stats.totalEvents.toString() ?? '0',
                 icon: Icons.event,
                 color: Colors.orange,
-              ).animate().fadeIn(delay: 1000.ms).scale(begin: const Offset(0.8, 0.8)),
+              )
+                  .animate()
+                  .fadeIn(delay: 1000.ms)
+                  .scale(begin: const Offset(0.8, 0.8)),
             ),
           ],
         ),
@@ -239,7 +266,10 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                 count: state?.stats.totalMedia.toString() ?? '0',
                 icon: Icons.photo_library,
                 color: Colors.purple,
-              ).animate().fadeIn(delay: 1200.ms).scale(begin: const Offset(0.8, 0.8)),
+              )
+                  .animate()
+                  .fadeIn(delay: 1200.ms)
+                  .scale(begin: const Offset(0.8, 0.8)),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -249,7 +279,10 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                 count: state?.stats.totalUsers.toString() ?? '0',
                 icon: Icons.people,
                 color: Colors.green,
-              ).animate().fadeIn(delay: 1400.ms).scale(begin: const Offset(0.8, 0.8)),
+              )
+                  .animate()
+                  .fadeIn(delay: 1400.ms)
+                  .scale(begin: const Offset(0.8, 0.8)),
             ),
           ],
         ),
@@ -423,7 +456,8 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                 const SizedBox(height: 16),
                 ListTile(
                   title: Text(l10n.date),
-                  subtitle: Text('${selectedDate.day}/${selectedDate.month}/${selectedDate.year}'),
+                  subtitle: Text(
+                      '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}',),
                   trailing: const Icon(Icons.calendar_today),
                   onTap: () async {
                     final date = await showDatePicker(
@@ -452,7 +486,8 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                 // TODO: Create event using EventsBloc
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Event creation will be implemented with backend integration'),
+                    content: Text(
+                        'Event creation will be implemented with backend integration',),
                     backgroundColor: Colors.orange,
                   ),
                 );
@@ -519,7 +554,9 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
               // TODO: Upload media using MediaBloc
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
-                  content: Text('Media upload will be implemented with backend integration'),
+                  content: Text(
+                    'Media upload will be implemented with backend integration',
+                  ),
                   backgroundColor: Colors.orange,
                 ),
               );

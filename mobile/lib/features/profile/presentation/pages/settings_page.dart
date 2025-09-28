@@ -9,9 +9,7 @@ import '../../../../core/constants/app_theme.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../../../core/utils/settings_cubit.dart';
 import '../../../../core/utils/app_settings.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
-import '../../../auth/presentation/bloc/auth_state.dart';
-import '../../../auth/presentation/bloc/auth_event.dart';
+import '../../../auth/presentation/cubits/auth_cubit.dart';
 import 'edit_profile_page.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -27,7 +25,7 @@ class SettingsPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.primary,
         foregroundColor: Colors.white,
       ),
-      body: BlocConsumer<AuthBloc, AuthState>(
+      body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           print('SettingsPage listener: $state');
           state.when(
@@ -212,15 +210,21 @@ class SettingsPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         RadioListTile<AppLanguage>(
-                                          title: Text(l10n.arabic,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.arabic,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppLanguage.arabic,
                                         ),
                                         RadioListTile<AppLanguage>(
-                                          title: Text(l10n.english,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.english,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppLanguage.english,
                                         ),
                                       ],
@@ -268,21 +272,30 @@ class SettingsPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         RadioListTile<AppThemeMode>(
-                                          title: Text(l10n.lightTheme,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.lightTheme,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppThemeMode.light,
                                         ),
                                         RadioListTile<AppThemeMode>(
-                                          title: Text(l10n.darkTheme,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.darkTheme,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppThemeMode.dark,
                                         ),
                                         RadioListTile<AppThemeMode>(
-                                          title: Text(l10n.systemTheme,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.systemTheme,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppThemeMode.system,
                                         ),
                                       ],
@@ -360,9 +373,7 @@ class SettingsPage extends StatelessWidget {
                             .error
                             .withValues(alpha: 0.7),
                       ),
-                      onTap: () => context
-                          .read<AuthBloc>()
-                          .add(const AuthEvent.logoutRequested()),
+                      onTap: () => context.read<AuthCubit>().logout(),
                     ),
                   ).animate().fadeIn(delay: 800.ms).slideY(begin: 0.3, end: 0),
 
@@ -436,15 +447,21 @@ class SettingsPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         RadioListTile<AppLanguage>(
-                                          title: Text(l10n.arabic,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.arabic,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppLanguage.arabic,
                                         ),
                                         RadioListTile<AppLanguage>(
-                                          title: Text(l10n.english,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.english,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppLanguage.english,
                                         ),
                                       ],
@@ -492,21 +509,30 @@ class SettingsPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         RadioListTile<AppThemeMode>(
-                                          title: Text(l10n.lightTheme,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.lightTheme,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppThemeMode.light,
                                         ),
                                         RadioListTile<AppThemeMode>(
-                                          title: Text(l10n.darkTheme,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.darkTheme,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppThemeMode.dark,
                                         ),
                                         RadioListTile<AppThemeMode>(
-                                          title: Text(l10n.systemTheme,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.systemTheme,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppThemeMode.system,
                                         ),
                                       ],
@@ -562,7 +588,7 @@ class SettingsPage extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   // Logout Button
-                  context.read<AuthBloc>().asGuest == false
+                  context.read<AuthCubit>().asGuest == false
                       ? Card(
                           child: ListTile(
                             leading: Icon(
@@ -587,9 +613,7 @@ class SettingsPage extends StatelessWidget {
                                   .error
                                   .withValues(alpha: 0.7),
                             ),
-                            onTap: () => context
-                                .read<AuthBloc>()
-                                .add(const AuthEvent.logoutRequested()),
+                            onTap: () => context.read<AuthCubit>().logout(),
                           ),
                         )
                           .animate()
@@ -697,15 +721,21 @@ class SettingsPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         RadioListTile<AppLanguage>(
-                                          title: Text(l10n.arabic,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.arabic,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppLanguage.arabic,
                                         ),
                                         RadioListTile<AppLanguage>(
-                                          title: Text(l10n.english,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.english,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppLanguage.english,
                                         ),
                                       ],
@@ -753,21 +783,30 @@ class SettingsPage extends StatelessWidget {
                                     child: Column(
                                       children: [
                                         RadioListTile<AppThemeMode>(
-                                          title: Text(l10n.lightTheme,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.lightTheme,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppThemeMode.light,
                                         ),
                                         RadioListTile<AppThemeMode>(
-                                          title: Text(l10n.darkTheme,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.darkTheme,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppThemeMode.dark,
                                         ),
                                         RadioListTile<AppThemeMode>(
-                                          title: Text(l10n.systemTheme,
-                                              style: const TextStyle(
-                                                  color: Colors.white)),
+                                          title: Text(
+                                            l10n.systemTheme,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                           value: AppThemeMode.system,
                                         ),
                                       ],
@@ -823,7 +862,7 @@ class SettingsPage extends StatelessWidget {
                   const SizedBox(height: 32),
 
                   // Logout Button
-                  context.read<AuthBloc>().asGuest == false
+                  context.read<AuthCubit>().asGuest == false
                       ? Card(
                           child: ListTile(
                             leading: Icon(
@@ -848,9 +887,7 @@ class SettingsPage extends StatelessWidget {
                                   .error
                                   .withValues(alpha: 0.7),
                             ),
-                            onTap: () => context
-                                .read<AuthBloc>()
-                                .add(const AuthEvent.logoutRequested()),
+                            onTap: () => context.read<AuthCubit>().logout(),
                           ),
                         )
                           .animate()
@@ -909,7 +946,7 @@ class SettingsPage extends StatelessWidget {
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () {
-                          context.read<AuthBloc>().add(const AuthEvent.getCurrentUser());
+                          context.read<AuthCubit>().getCurrentUser();
                         },
                         child: const Text('إعادة المحاولة'),
                       ),
@@ -1085,21 +1122,24 @@ class SettingsPage extends StatelessWidget {
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               Text(
-                  'ج: يمكنك الضغط على "تعديل الملف الشخصي" من الصفحة الرئيسية للملف الشخصي.'),
+                'ج: يمكنك الضغط على "تعديل الملف الشخصي" من الصفحة الرئيسية للملف الشخصي.',
+              ),
               SizedBox(height: 12),
               Text(
                 'س: كيف يمكنني تسجيل الخروج؟',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               Text(
-                  'ج: يمكنك الضغط على "تسجيل الخروج" من الإعدادات أو من الملف الشخصي.'),
+                'ج: يمكنك الضغط على "تسجيل الخروج" من الإعدادات أو من الملف الشخصي.',
+              ),
               SizedBox(height: 12),
               Text(
                 'س: كيف يمكنني التسجيل في الأحداث؟',
                 style: TextStyle(fontWeight: FontWeight.w600),
               ),
               Text(
-                  'ج: يمكنك تصفح الأحداث من تبويب الأحداث والضغط على الحدث للتسجيل فيه.'),
+                'ج: يمكنك تصفح الأحداث من تبويب الأحداث والضغط على الحدث للتسجيل فيه.',
+              ),
             ],
           ),
         ),
@@ -1155,7 +1195,8 @@ class SettingsPage extends StatelessWidget {
         const Text('تطبيق تحيا مصر هو منصة للأنشطة الطلابية والتطوعية.'),
         const SizedBox(height: 8),
         const Text(
-            'يهدف التطبيق إلى ربط الطلاب والمتطوعين وتنظيم الأنشطة والفعاليات.'),
+          'يهدف التطبيق إلى ربط الطلاب والمتطوعين وتنظيم الأنشطة والفعاليات.',
+        ),
       ],
     );
   }
@@ -1185,7 +1226,8 @@ class SettingsPage extends StatelessWidget {
                 borderRadius:
                     const BorderRadius.vertical(top: Radius.circular(28)),
                 border: Border.all(
-                    color: AppTheme.primaryColor.withValues(alpha: 0.3)),
+                  color: AppTheme.primaryColor.withValues(alpha: 0.3),
+                ),
               ),
               padding: const EdgeInsets.all(16),
               child: SafeArea(

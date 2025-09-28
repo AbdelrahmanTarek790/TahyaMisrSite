@@ -4,9 +4,8 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
-import '../../../auth/presentation/bloc/auth_state.dart';
-import '../../../auth/presentation/bloc/auth_event.dart';
+
+import '../../../auth/presentation/cubits/auth_cubit.dart';
 import 'edit_profile_page.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -27,7 +26,7 @@ class ProfilePage extends StatelessWidget {
           ),
         ],
       ),
-      body: BlocConsumer<AuthBloc, AuthState>(
+      body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
           state.when(
             initial: () {},
@@ -47,7 +46,6 @@ class ProfilePage extends StatelessWidget {
           );
         },
         builder: (context, state) {
-
           return state.when(
             initial: () => const Center(child: CircularProgressIndicator()),
             loading: () => const Center(child: CircularProgressIndicator()),
@@ -199,7 +197,7 @@ class ProfilePage extends StatelessWidget {
                         context,
                         l10n.logout,
                         Icons.logout,
-                        () => context.read<AuthBloc>().add(const AuthEvent.logoutRequested()),
+                        () => context.read<AuthCubit>().logout(),
                         isDestructive: true,
                       ).animate().fadeIn(delay: 1200.ms).slideY(begin: 0.3, end: 0),
                     ],
@@ -260,11 +258,11 @@ class ProfilePage extends StatelessWidget {
 
                       const SizedBox(height: 12),
 
-                      context.read<AuthBloc>().asGuest == false ? _buildActionButton(
+                      context.read<AuthCubit>().asGuest == false ? _buildActionButton(
                         context,
                         l10n.logout,
                         Icons.logout,
-                            () => context.read<AuthBloc>().add(const AuthEvent.logoutRequested()),
+                            () => context.read<AuthCubit>().logout(),
                         isDestructive: true,
                       ).animate().fadeIn(delay: 1200.ms).slideY(begin: 0.3, end: 0) :
                       _buildActionButton(
@@ -332,11 +330,11 @@ class ProfilePage extends StatelessWidget {
 
                       const SizedBox(height: 12),
 
-                      context.read<AuthBloc>().asGuest == false ? _buildActionButton(
+                      context.read<AuthCubit>().asGuest == false ? _buildActionButton(
                         context,
                         l10n.logout,
                         Icons.logout,
-                            () => context.read<AuthBloc>().add(const AuthEvent.logoutRequested()),
+                            () => context.read<AuthCubit>().logout(),
                         isDestructive: true,
                       ).animate().fadeIn(delay: 1200.ms).slideY(begin: 0.3, end: 0) :
                       _buildActionButton(
@@ -351,30 +349,6 @@ class ProfilePage extends StatelessWidget {
                 ],
               ),
             ),
-            /*error: (message) => Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    'حدث خطأ في تحميل الملف الشخصي',
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      context.read<AuthBloc>().add(const AuthEvent.getCurrentUser());
-                    },
-                    child: const Text('إعادة المحاولة'),
-                  ),
-                ],
-              ),
-            ),*/
           );
         },
       ),

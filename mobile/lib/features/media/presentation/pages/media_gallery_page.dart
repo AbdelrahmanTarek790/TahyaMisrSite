@@ -3,7 +3,6 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../gen_l10n/app_localizations.dart';
-import '../bloc/media_bloc.dart';
 
 class MediaGalleryPage extends StatefulWidget {
   const MediaGalleryPage({super.key});
@@ -13,13 +12,12 @@ class MediaGalleryPage extends StatefulWidget {
 }
 
 class _MediaGalleryPageState extends State<MediaGalleryPage> {
-  late MediaBloc _mediaBloc;
+
 
   @override
   void initState() {
     super.initState();
-  /*  _mediaBloc = GetIt.instance<MediaBloc>();
-    _mediaBloc.add(const MediaEvent.getMedia());*/
+
   }
   final List<Map<String, dynamic>> achievementsData = [
     {
@@ -168,48 +166,3 @@ class _MediaGalleryPageState extends State<MediaGalleryPage> {
     );
   }
 }
-
-/*
-BlocProvider.value(
-        value: _mediaBloc,
-        child: BlocBuilder<MediaBloc, MediaState>(
-          builder: (context, state) {
-            return state.when(
-              initial: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              loading: () => const Center(
-                child: CircularProgressIndicator(),
-              ),
-              loaded: (mediaList) => mediaList.isEmpty
-                  ? const Center(
-                      child: Text('لا توجد انجازات و مشروعات متاحة'),
-                    )
-                  : RefreshIndicator(
-                      onRefresh: () async {
-                        _mediaBloc.add(const MediaEvent.refreshMedia());
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8),
-                        child: GridView.builder(
-                          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 8,
-                            mainAxisSpacing: 8,
-                          ),
-                          itemCount: mediaList.length,
-                          itemBuilder: (context, index) {
-                            final media = mediaList[index];
-                            return _MediaCard(media: media)
-                                .animate(delay: (index * 50).ms)
-                                .scale(begin: const Offset(0.8, 0.8))
-                                .fadeIn();
-                          },
-                        ),
-                      ),
-                    ),
-            );
-          },
-        ),
-      )
- */

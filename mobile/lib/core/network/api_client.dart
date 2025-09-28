@@ -9,6 +9,7 @@ import '../../features/auth/data/models/user_model.dart';
 import '../../features/news/data/models/news_model.dart';
 import '../../features/events/data/models/event_model.dart';
 import '../../features/media/data/models/media_model.dart';
+import '../../features/user_management/data/models/user_management_model.dart';
 import 'api_response.dart';
 
 part 'api_client.g.dart';
@@ -87,7 +88,7 @@ abstract class ApiClient {
   // @POST('/users') - No direct user creation endpoint, use register
 
   @PUT('/users/{id}')
-  Future<ApiResponse<UserModel>> updateUser(@Path('id') String id, @Body() Map<String, dynamic> userData);
+  Future<ApiResponse<UserManagementModel>> updateUser(@Path('id') String id, @Body() Map<String, dynamic> userData);
 
   @DELETE('/users/{id}')
   Future<ApiResponse<dynamic>> deleteUser(@Path('id') String id);
@@ -109,17 +110,20 @@ abstract class ApiClient {
   Future<ApiResponse<dynamic>> deletePosition(@Path('id') String id);
 
   // Content Creation endpoints (Admin only)
+  @MultiPart()
   @POST('/news')
-  Future<ApiResponse<NewsModel>> createNews(@Body() Map<String, dynamic> newsData);
+  Future<ApiResponse<NewsModel>> createNews(@Body() FormData body);
 
+  @MultiPart()
   @PUT('/news/{id}')
-  Future<ApiResponse<NewsModel>> updateNews(@Path('id') String id, @Body() Map<String, dynamic> newsData);
+  Future<ApiResponse<NewsModel>> updateNews(@Path('id') String id, @Body() FormData body);
 
   @DELETE('/news/{id}')
   Future<ApiResponse<dynamic>> deleteNews(@Path('id') String id);
 
+  @MultiPart()
   @POST('/events')
-  Future<ApiResponse<EventModel>> createEvent(@Body() Map<String, dynamic> eventData);
+  Future<ApiResponse<EventModel>> createEvent(@Body() FormData body);
 
   @PUT('/events/{id}')
   Future<ApiResponse<EventModel>> updateEvent(@Path('id') String id, @Body() Map<String, dynamic> eventData);

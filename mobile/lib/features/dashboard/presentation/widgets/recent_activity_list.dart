@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:tahya_misr_app/features/dashboard/data/models/recent_activity_model.dart';
 
-import '../../domain/entities/recent_activity.dart';
 
 class RecentActivityList extends StatelessWidget {
-  final List<RecentActivity> activities;
+  final List<RecentActivityModel> activities;
 
   const RecentActivityList({
     super.key,
@@ -69,7 +69,7 @@ class RecentActivityList extends StatelessWidget {
 }
 
 class _ActivityItem extends StatelessWidget {
-  final RecentActivity activity;
+  final RecentActivityModel activity;
 
   const _ActivityItem({required this.activity});
 

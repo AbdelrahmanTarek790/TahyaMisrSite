@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tahya_misr_app/features/user_management/presentation/cubits/user_management_cubit.dart';
+import 'package:tahya_misr_app/shared/widgets/main_navigation.dart';
+import 'package:toastification/toastification.dart';
 
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
-import '../../../auth/data/models/user_model.dart';
-import '../bloc/user_management_bloc.dart';
-import '../bloc/user_management_event.dart';
-import '../bloc/user_management_state.dart';
+import '../../data/models/user_management_model.dart';
 
 class UserManagementPage extends StatefulWidget {
   const UserManagementPage({super.key});
@@ -19,14 +19,14 @@ class UserManagementPage extends StatefulWidget {
 class _UserManagementPageState extends State<UserManagementPage> {
   String _selectedRole = 'All';
   final TextEditingController _searchController = TextEditingController();
-  late UserManagementBloc _userManagementBloc;
+  late UserManagementCubit _userManagementBloc;
 
-  final List<String> _roles = ['All', 'admin', 'volunteer', 'student'];
+  final List<String> _roles = ['All', 'admin', 'volunteer', 'member'];
 
   @override
   void initState() {
     super.initState();
-    _userManagementBloc = getIt<UserManagementBloc>();
+    _userManagementBloc = getIt<UserManagementCubit>();
     _loadUsers();
   }
 
@@ -38,12 +38,12 @@ class _UserManagementPageState extends State<UserManagementPage> {
   }
 
   void _loadUsers() {
-    _userManagementBloc.add(GetUsersEvent(
+    _userManagementBloc.fetchUsers(
       page: 1,
       limit: 20,
       search: _searchController.text.isNotEmpty ? _searchController.text : null,
       role: _selectedRole != 'All' ? _selectedRole : null,
-    ),);
+    );
   }
 
   @override
@@ -64,37 +64,33 @@ class _UserManagementPageState extends State<UserManagementPage> {
             ),
           ],
         ),
-        body: BlocListener<UserManagementBloc, UserManagementState>(
+        body: BlocListener<UserManagementCubit, UserManagementState>(
           listener: (context, state) {
             if (state is UserManagementError) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.message),
-                  backgroundColor: Colors.red,
-                ),
+              getIt<ShowToast>().showToast(
+                message: state.message,
+                context: context,
+                type: ToastificationType.error,
               );
             } else if (state is UserCreated) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('User created successfully'),
-                  backgroundColor: Colors.green,
-                ),
+              getIt<ShowToast>().showToast(
+                message: 'User created successfully ${state.user.name}',
+                context: context,
+                type: ToastificationType.success,
               );
               _loadUsers(); // Refresh the list
             } else if (state is UserUpdated) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('User updated successfully'),
-                  backgroundColor: Colors.green,
-                ),
+              getIt<ShowToast>().showToast(
+                message: 'User updated successfully ${state.user.name}',
+                context: context,
+                type: ToastificationType.success,
               );
               _loadUsers(); // Refresh the list
             } else if (state is UserDeleted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('User deleted successfully'),
-                  backgroundColor: Colors.green,
-                ),
+              getIt<ShowToast>().showToast(
+                message: 'User deleted successfully',
+                context: context,
+                type: ToastificationType.success,
               );
               _loadUsers(); // Refresh the list
             }
@@ -145,7 +141,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                         });
                       },
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 10),
                     // Role Filter
                     Row(
                       children: [
@@ -153,7 +149,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                           'Role:',
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
-                        const SizedBox(width: 16),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: DropdownButtonFormField<String>(
                             initialValue: _selectedRole,
@@ -185,11 +181,11 @@ class _UserManagementPageState extends State<UserManagementPage> {
               ),
               // Users List Section
               Expanded(
-                child: BlocBuilder<UserManagementBloc, UserManagementState>(
+                child: BlocBuilder<UserManagementCubit, UserManagementState>(
                   builder: (context, state) {
                     if (state is UserManagementLoading) {
                       return const Center(child: CircularProgressIndicator());
-                    } else if (state is UsersLoaded) {
+                    } else if (state is UserManagementLoaded) {
                       return _buildUsersList(context, state, l10n);
                     } else if (state is UserManagementError) {
                       return Center(
@@ -249,7 +245,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
     );
   }
 
-  Widget _buildUsersList(BuildContext context, UsersLoaded state, AppLocalizations l10n) {
+  Widget _buildUsersList(BuildContext context, UserManagementLoaded state, AppLocalizations l10n) {
     return RefreshIndicator(
       onRefresh: () async => _loadUsers(),
       child: ListView.builder(
@@ -259,8 +255,8 @@ class _UserManagementPageState extends State<UserManagementPage> {
           if (index == 0) {
             // Statistics header
             return Container(
-              margin: const EdgeInsets.only(bottom: 16),
-              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   colors: [
@@ -275,7 +271,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildStatItem('Total Users', '${state.totalUsers}', Icons.people),
+                  _buildStatItem('Total Users', '${state.users.length}', Icons.people),
                   _buildStatItem('Current Page', '${state.currentPage}', Icons.pages),
                   _buildStatItem('Total Pages', '${state.totalPages}', Icons.library_books),
                 ],
@@ -314,7 +310,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
     );
   }
 
-  Widget _buildUserCard(BuildContext context, UserModel user, AppLocalizations l10n, int index) {
+  Widget _buildUserCard(BuildContext context, UserManagementModel user, AppLocalizations l10n, int index) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 4,
@@ -375,7 +371,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
                     color: Theme.of(context).colorScheme.secondary,
                   ),
                   const SizedBox(width: 8),
-                  Text(user.phone ?? 'Not provided'),
+                  Text(user.phone),
                   const Spacer(),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -447,7 +443,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
     ).animate();
   }
 
-  void _handleUserAction(BuildContext context, String action, UserModel user, AppLocalizations l10n) {
+  void _handleUserAction(BuildContext context, String action, UserManagementModel user, AppLocalizations l10n) {
     switch (action) {
       case 'edit':
         _showEditUserDialog(context, user, l10n);
@@ -477,7 +473,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
     );
   }
 
-  void _showEditUserDialog(BuildContext context, UserModel user, AppLocalizations l10n) {
+  void _showEditUserDialog(BuildContext context, UserManagementModel user, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -493,7 +489,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
     );
   }
 
-  void _showChangeRoleDialog(BuildContext context, UserModel user, AppLocalizations l10n) {
+  void _showChangeRoleDialog(BuildContext context, UserManagementModel user, AppLocalizations l10n) {
     String selectedRole = user.role;
     
     showDialog(
@@ -533,10 +529,12 @@ class _UserManagementPageState extends State<UserManagementPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                _userManagementBloc.add(UpdateUserEvent(
-                  userId: user.id,
-                  userData: {'role': selectedRole},
-                ),);
+                _userManagementBloc.updateUser(
+                  user.id,
+                  {
+                    'role': selectedRole,
+                  },
+                );
                 Navigator.of(context).pop();
               },
               child: const Text('Save'),
@@ -547,7 +545,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
     );
   }
 
-  void _showDeleteUserDialog(BuildContext context, UserModel user, AppLocalizations l10n) {
+  void _showDeleteUserDialog(BuildContext context, UserManagementModel user, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -564,7 +562,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
               foregroundColor: Colors.white,
             ),
             onPressed: () {
-              _userManagementBloc.add(DeleteUserEvent(userId: user.id));
+              _userManagementBloc.deleteUser(user.id);
               Navigator.of(context).pop();
             },
             child: const Text('Delete'),
@@ -580,8 +578,8 @@ class _UserManagementPageState extends State<UserManagementPage> {
         return 'Admin';
       case 'volunteer':
         return 'Volunteer';
-      case 'student':
-        return 'Student';
+      case 'member':
+        return 'Member';
       case 'all':
         return 'All';
       default:
@@ -595,7 +593,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
         return Colors.red;
       case 'volunteer':
         return Colors.blue;
-      case 'student':
+      case 'member':
         return Colors.green;
       default:
         return Colors.grey;

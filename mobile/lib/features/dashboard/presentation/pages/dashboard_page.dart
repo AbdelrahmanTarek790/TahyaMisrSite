@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
-import '../../../auth/presentation/bloc/auth_bloc.dart';
-import '../../../auth/presentation/bloc/auth_state.dart';
-import '../bloc/dashboard_bloc.dart';
-import '../bloc/dashboard_state.dart';
-import '../bloc/dashboard_event.dart';
+
+import '../../../auth/presentation/cubits/auth_cubit.dart';
+import '../../data/models/dashboard_stats_model.dart';
+import '../../data/models/recent_activity_model.dart';
+import '../cubits/dashboard_cubit.dart';
 import '../widgets/admin_dashboard_view.dart';
 import '../widgets/volunteer_dashboard_view.dart';
 import '../widgets/student_dashboard_view.dart';
@@ -18,8 +18,8 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GetIt.instance<DashboardBloc>()
-        ..add(const DashboardEvent.getDashboardStats()),
+      create: (context) => GetIt.instance<DashboardCubit>()
+        ..getDashboardData(),
       child: const DashboardView(),
     );
   }
@@ -44,17 +44,15 @@ class _DashboardViewState extends State<DashboardView> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              context.read<DashboardBloc>().add(
-                    const DashboardEvent.refreshDashboard(),
-                  );
+              context.read<DashboardCubit>().refreshDashboard();
             },
           ),
         ],
       ),
-      body: BlocBuilder<AuthBloc, AuthState>(
+      body: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, authState) {
           return authState.maybeWhen(
-            authenticated: (user, token) => BlocBuilder<DashboardBloc, DashboardState>(
+            authenticated: (user, token) => BlocBuilder<DashboardCubit, DashboardState>(
               builder: (context, dashboardState) {
                 return dashboardState.when(
                   initial: () => const Center(
@@ -65,9 +63,7 @@ class _DashboardViewState extends State<DashboardView> {
                   ),
                   loaded: (stats, activity) => RefreshIndicator(
                     onRefresh: () async {
-                      context.read<DashboardBloc>().add(
-                            const DashboardEvent.refreshDashboard(),
-                          );
+                      context.read<DashboardCubit>().refreshDashboard();
                     },
                     child: _buildRoleBasedDashboard(user.role, stats, activity)
                         .animate()
@@ -97,15 +93,23 @@ class _DashboardViewState extends State<DashboardView> {
                         const SizedBox(height: 24),
                         ElevatedButton(
                           onPressed: () {
-                            context.read<DashboardBloc>().add(
-                                  const DashboardEvent.refreshDashboard(),
-                                );
+                            context.read<DashboardCubit>().refreshDashboard();
                           },
                           child: const Text('إعادة المحاولة'),
                         ),
                       ],
                     ),
                   ),
+                  statsLoaded: (DashboardStatsModel stats) => RefreshIndicator(
+                    onRefresh: () async {
+                      context.read<DashboardCubit>().refreshDashboard();
+                    },
+                    child: _buildRoleBasedDashboard(user.role, stats, stats.activeUsers)
+                        .animate()
+                        .fadeIn(duration: 300.ms)
+                        .slideY(begin: 0.1, end: 0),
+                  ),
+                  activitiesLoaded: (List<RecentActivityModel> activities) => const Text('sdasdasadsda'),
                 );
               },
             ),

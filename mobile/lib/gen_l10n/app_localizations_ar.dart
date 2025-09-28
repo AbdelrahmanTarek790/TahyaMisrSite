@@ -44,7 +44,13 @@ class  AppLocalizationsAr extends AppLocalizations {
   String get contentManagement => 'إدارة المحتوى';
 
   @override
+  String get contentManagementDescription => 'إدارة الأخبار، الفعاليات، والوسائط الخاصة بالاتحاد';
+
+  @override
   String get manageNews => 'إدارة الأخبار';
+
+  @override
+  String get mangeNewsDescription => 'إنشاء، تعديل، وحذف الأخبار المنشورة';
 
   @override
   String get manageEvents => 'إدارة الفعاليات';
@@ -540,4 +546,16 @@ class  AppLocalizationsAr extends AppLocalizations {
     'الترفيه والهوايات',
     'التطوير التكنولوجي والذكاء الاصطناعي',
   ];
+
+  @override
+  String get successLogin => 'تم تسجيل الدخول بنجاح';
+
+  @override
+  String get addNews => 'إضافة خبر جديد';
+
+  @override
+  String get manageEventsDescription => 'إنشاء، تعديل، وحذف الفعاليات المنشورة';
+
+  @override
+  String get addEvent => 'إضافة فعالية جديدة';
 }

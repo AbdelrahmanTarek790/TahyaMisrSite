@@ -1,15 +1,34 @@
-import '../../domain/entities/news.dart';
+import 'package:equatable/equatable.dart';
 
-class NewsModel extends News {
+class NewsModel extends Equatable {
+  final String id;
+  final String title;
+  final String content;
+  final String? imageUrl;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final String author;
+
   const NewsModel({
-    required super.id,
-    required super.title,
-    required super.content,
-    super.imageUrl,
-    required super.createdAt,
-    required super.updatedAt,
-    required super.author,
+    required this.id,
+    required this.title,
+    required this.content,
+    this.imageUrl,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.author,
   });
+
+  @override
+  List<Object?> get props => [
+    id,
+    title,
+    content,
+    imageUrl,
+    createdAt,
+    updatedAt,
+    author,
+  ];
 
   factory NewsModel.fromJson(Map<String, dynamic> json) {
     try {
@@ -75,16 +94,4 @@ class NewsModel extends News {
     'updatedAt': updatedAt.toIso8601String(),
     'author': author,
   };
-
-  factory NewsModel.fromEntity(News news) {
-    return NewsModel(
-      id: news.id,
-      title: news.title,
-      content: news.content,
-      imageUrl: news.imageUrl,
-      createdAt: news.createdAt,
-      updatedAt: news.updatedAt,
-      author: news.author,
-    );
-  }
 }

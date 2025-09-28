@@ -3,9 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get_it/get_it.dart';
 
-import '../bloc/news_bloc.dart';
-import '../bloc/news_event.dart';
-import '../bloc/news_state.dart';
+import '../cubits/news_cubit.dart';
 
 class NewsDetailPage extends StatefulWidget {
   final String newsId;
@@ -20,21 +18,21 @@ class NewsDetailPage extends StatefulWidget {
 }
 
 class _NewsDetailPageState extends State<NewsDetailPage> {
-  late NewsBloc _newsBloc;
+  late NewsCubit _newsBloc;
 
   @override
   void initState() {
     super.initState();
-    _newsBloc = GetIt.instance<NewsBloc>();
+    _newsBloc = GetIt.instance<NewsCubit>();
 
-    _newsBloc.add(NewsEvent.getNewsById(widget.newsId));
+    _newsBloc.getNewsById(widget.newsId);
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: _newsBloc,
-      child: BlocConsumer<NewsBloc, NewsState>(
+      child: BlocConsumer<NewsCubit, NewsState>(
         listener: (context, state) {
           state.whenOrNull(
             loaded: (news) {},
@@ -182,6 +180,9 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                     ],
                   );
                 },
+                deletingNews: (id) => const Center(child: CircularProgressIndicator()),
+                newsCreated: (data) => const Center(child: CircularProgressIndicator()),
+                newsUpdated: (data) => const Center(child: CircularProgressIndicator()),
                 error: (String message) {
                   return null;
                 },

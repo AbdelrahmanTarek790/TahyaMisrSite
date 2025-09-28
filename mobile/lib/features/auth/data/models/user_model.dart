@@ -1,28 +1,57 @@
 import 'package:json_annotation/json_annotation.dart';
-import '../../domain/entities/user.dart';
+import 'package:equatable/equatable.dart';
 
 part 'user_model.g.dart';
 
 @JsonSerializable()
-class UserModel extends User {
+class UserModel extends Equatable {
+  final String id;
+  final String email;
+  final String name;
+  final String role;
+  final String? governorate;
+  final String? phone;
+  final String? university;
+  final String? nationalId;
+  final String? membershipNumber;
+  final DateTime? membershipExpiry;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+
   const UserModel({
-    required super.id,
-    required super.email,
-    required super.name,
-    required super.role,
-    super.governorate,
-    super.phone,
-    super.university,
-    super.nationalId,
-    super.membershipNumber,
-    super.membershipExpiry,
-    required super.createdAt,
-    required super.updatedAt,
+    required this.id,
+    required this.email,
+    required this.name,
+    required this.role,
+    this.governorate,
+    this.phone,
+    this.university,
+    this.nationalId,
+    this.membershipNumber,
+    this.membershipExpiry,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) {
-    try {
+  @override
+  List<Object?> get props => [
+    id,
+    email,
+    name,
+    role,
+    governorate,
+    phone,
+    university,
+    nationalId,
+    membershipNumber,
+    membershipExpiry,
+    createdAt,
+    updatedAt,
+  ];
 
+  factory UserModel.fromJson(Map<String, dynamic> jsonData) {
+    final json = jsonData['user'] ?? jsonData;
+    try {
       final userModel = UserModel(
         id: json['_id']?.toString() ?? json['id']?.toString() ?? 'unknown_id',
         email: json['email']?.toString() ?? '',
@@ -67,21 +96,4 @@ class UserModel extends User {
   }
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
-
-  factory UserModel.fromEntity(User user) {
-    return UserModel(
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      role: user.role,
-      governorate: user.governorate,
-      phone: user.phone,
-      university: user.university,
-      nationalId: user.nationalId,
-      membershipNumber: user.membershipNumber,
-      membershipExpiry: user.membershipExpiry,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
-    );
-  }
 }

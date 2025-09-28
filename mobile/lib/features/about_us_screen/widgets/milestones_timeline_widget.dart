@@ -15,57 +15,6 @@ class MilestonesTimelineWidget extends StatefulWidget {
 
 class _MilestonesTimelineWidgetState extends State<MilestonesTimelineWidget> {
 
-  final List<Map<String, dynamic>> _milestones = [
-    {
-      'year': '2014',
-      'title': 'تأسيس تحيا مصر الشباب',
-      'description': 'إطلاق المبادرة الرئاسية لتمكين الشباب المصري',
-      'icon': 'flag',
-      'isCompleted': true,
-    },
-    {
-      'year': '2016',
-      'title': 'أول مؤتمر شبابي وطني',
-      'description': 'تنظيم أكبر تجمع شبابي في تاريخ مصر الحديث',
-      'icon': 'event',
-      'isCompleted': true,
-    },
-    {
-      'year': '2018',
-      'title': 'إطلاق برنامج رواد المستقبل',
-      'description': 'تدريب 10,000 شاب على ريادة الأعمال والابتكار',
-      'icon': 'rocket_launch',
-      'isCompleted': true,
-    },
-    {
-      'year': '2020',
-      'title': 'التحول الرقمي',
-      'description': 'رقمنة جميع الخدمات والبرامج الشبابية',
-      'icon': 'computer',
-      'isCompleted': true,
-    },
-    {
-      'year': '2022',
-      'title': 'مبادرة مصر الخضراء',
-      'description': 'إطلاق أكبر مبادرة بيئية شبابية في الشرق الأوسط',
-      'icon': 'eco',
-      'isCompleted': true,
-    },
-    {
-      'year': '2024',
-      'title': 'الذكاء الاصطناعي للشباب',
-      'description': 'تدريب 50,000 شاب على تقنيات الذكاء الاصطناعي',
-      'icon': 'psychology',
-      'isCompleted': true,
-    },
-    {
-      'year': '2025',
-      'title': 'رؤية مصر 2030',
-      'description': 'تحقيق أهداف التنمية المستدامة للشباب',
-      'icon': 'visibility',
-      'isCompleted': false,
-    }
-  ];
 
   @override
   Widget build(BuildContext context) {

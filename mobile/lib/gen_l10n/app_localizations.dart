@@ -117,8 +117,13 @@ abstract class AppLocalizations {
   String get logout;
   String get userManagement;
   String get contentManagement;
+  String get contentManagementDescription;
   String get manageNews;
+  String get mangeNewsDescription;
+  String get addNews;
   String get manageEvents;
+  String get manageEventsDescription;
+  String get addEvent;
   String get manageMedia;
   String get welcomeAdmin;
   String get comprehensiveManagement;
@@ -312,6 +317,8 @@ abstract class AppLocalizations {
   String get unionJourneyItemDescription3;
 
   List<String> get unionJourneyItemBulletPoints3;
+
+  String get successLogin ;
 
 }
 
