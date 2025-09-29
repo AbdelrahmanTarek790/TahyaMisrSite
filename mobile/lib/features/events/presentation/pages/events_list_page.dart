@@ -108,7 +108,11 @@ class _EventsListPageState extends State<EventsListPage> {
                 return const SizedBox.shrink();
               },
               eventCreated: (_) {
-                _eventsBloc.getEvents();
+                // _eventsBloc.getEvents();
+                return const SizedBox.shrink();
+              },
+              eventDeleted: (_) {
+                // _eventsBloc.getEvents();
                 return const SizedBox.shrink();
               },
             );
@@ -258,7 +262,9 @@ class _EventCard extends StatelessWidget {
                                       // Check if user is authenticated
                                       if (user.id.isNotEmpty) {
                                         // Register for the event
-                                        context.read<EventsCubit>().registerForEvent(event.id);
+                                        context
+                                            .read<EventsCubit>()
+                                            .registerForEvent(event.id);
                                       } else {
                                         // Navigate to login page
                                         context.go('/login');
@@ -267,13 +273,15 @@ class _EventCard extends StatelessWidget {
                                     child: const Text('سجل الآن'),
                                   )
                                 : const Center(
-                                  child: Text('مسجل بالفعل',
+                                    child: Text(
+                                      'مسجل بالفعل',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: Colors.green,
                                         fontSize: 16,
-                                      ),),
-                                );
+                                      ),
+                                    ),
+                                  );
                           },
                           unauthenticated: () {
                             return ElevatedButton(

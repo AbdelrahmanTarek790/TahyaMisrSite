@@ -29,6 +29,8 @@ abstract class EventsRepository {
     required String location,
     required String imagePath,
   });
+
+  Future<Either<Failure,void>> deleteEvent({required String eventId});
 }
 
 class EventsRepositoryImpl implements EventsRepository {
@@ -185,6 +187,23 @@ class EventsRepositoryImpl implements EventsRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, void>> deleteEvent({required String eventId}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        await apiService.deleteEvent(eventId);
+        return const Right(null);
+      } on DioException catch (e) {
+        return Left(_handleDioError(e));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(ServerFailure('Unexpected error occurred: $e'));
+      }
+    } else {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+  }
 
   Failure _handleDioError(DioException e) {
     switch (e.type) {

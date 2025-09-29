@@ -6,7 +6,6 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../../core/constants/app_theme.dart';
 import '../../../../../gen_l10n/app_localizations.dart';
-import '../../../../auth/presentation/cubits/auth_cubit.dart';
 import '../../../../events/data/models/event_model.dart';
 import '../../../../events/presentation/cubits/events_cubit.dart';
 import 'create_event_page.dart';
@@ -119,9 +118,13 @@ class _MangeEventsState extends State<MangeEvents> {
                 _eventsBloc.getEvents();
                 return const SizedBox.shrink();
               },
-              eventCreated: (_) {
+              eventCreated: (event) {
                 _eventsBloc.getEvents();
                 Navigator.of(context).pop();
+                return const SizedBox.shrink();
+              },
+              eventDeleted: (id) {
+                _eventsBloc.getEvents();
                 return const SizedBox.shrink();
               },
             );
@@ -260,7 +263,7 @@ class _EventCard extends StatelessWidget {
                                   MaterialPageRoute(
                                     builder: (context) =>  BlocProvider.value(
                                       value: eventsCubit,
-                                      child: SizedBox(),
+                                      child: const SizedBox(),
                                       // child: EditNewsPage(newsId: news.id,newsBloc: newsCubit,),),
                                     ),
                                   ),
@@ -270,7 +273,7 @@ class _EventCard extends StatelessWidget {
                             IconButton(
                               icon: const Icon(Icons.delete, size: 20),
                               onPressed: () {
-                                // context.read<EventsCubit>().deleteNews(news.id);
+                                context.read<EventsCubit>().deleteEvent(event.id);
                               },
                             ),
                             IconButton(

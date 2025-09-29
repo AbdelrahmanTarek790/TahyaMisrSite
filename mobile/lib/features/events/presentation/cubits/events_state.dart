@@ -22,4 +22,8 @@ class EventsState with _$EventsState {
   const factory EventsState.eventCreated({
     required EventModel newEvent,
   }) = _EventCreated;
+
+  const factory EventsState.eventDeleted({
+    required String message,
+  }) = _EventDeleted;
 }

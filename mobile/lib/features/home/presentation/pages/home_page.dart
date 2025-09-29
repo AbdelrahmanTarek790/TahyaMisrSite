@@ -250,6 +250,7 @@ class HomeView extends StatelessWidget {
                     error: (message) => _buildErrorCard(context, message),
                     registeredSuccessfully: (_) => const SizedBox.shrink(),
                     eventCreated: (_) => const SizedBox.shrink(),
+                    eventDeleted: (id) => const SizedBox.shrink(),
                   );
                 },
               ),

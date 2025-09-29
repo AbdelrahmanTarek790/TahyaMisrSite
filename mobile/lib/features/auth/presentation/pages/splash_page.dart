@@ -67,16 +67,15 @@ class _SplashPageState extends State<SplashPage> {
                   width: 250,
                   height: 250,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
                     image: const DecorationImage(
-                      image: AssetImage('assets/images/Logo.jpg'),
+                      image: AssetImage('assets/images/Logo.png'),
                       fit: BoxFit.cover,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.3),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
+                        color: Colors.white.withValues(alpha: 0.2),
+                        blurRadius: 10,
+                        offset: const Offset(0, 5),
                       ),
                     ],
                   ),

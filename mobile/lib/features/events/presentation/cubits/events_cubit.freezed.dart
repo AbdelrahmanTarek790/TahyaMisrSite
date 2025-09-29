@@ -25,6 +25,7 @@ mixin _$EventsState {
     required TResult Function(EventModel eventDetails) loadedDetails,
     required TResult Function(String message) registeredSuccessfully,
     required TResult Function(EventModel newEvent) eventCreated,
+    required TResult Function(String message) eventDeleted,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -36,6 +37,7 @@ mixin _$EventsState {
     TResult? Function(EventModel eventDetails)? loadedDetails,
     TResult? Function(String message)? registeredSuccessfully,
     TResult? Function(EventModel newEvent)? eventCreated,
+    TResult? Function(String message)? eventDeleted,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -47,6 +49,7 @@ mixin _$EventsState {
     TResult Function(EventModel eventDetails)? loadedDetails,
     TResult Function(String message)? registeredSuccessfully,
     TResult Function(EventModel newEvent)? eventCreated,
+    TResult Function(String message)? eventDeleted,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -60,6 +63,7 @@ mixin _$EventsState {
     required TResult Function(_RegisteredSuccessfully value)
         registeredSuccessfully,
     required TResult Function(_EventCreated value) eventCreated,
+    required TResult Function(_EventDeleted value) eventDeleted,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -71,6 +75,7 @@ mixin _$EventsState {
     TResult? Function(_LoadedDetails value)? loadedDetails,
     TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult? Function(_EventCreated value)? eventCreated,
+    TResult? Function(_EventDeleted value)? eventDeleted,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -82,6 +87,7 @@ mixin _$EventsState {
     TResult Function(_LoadedDetails value)? loadedDetails,
     TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult Function(_EventCreated value)? eventCreated,
+    TResult Function(_EventDeleted value)? eventDeleted,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -150,6 +156,7 @@ class _$InitialImpl implements _Initial {
     required TResult Function(EventModel eventDetails) loadedDetails,
     required TResult Function(String message) registeredSuccessfully,
     required TResult Function(EventModel newEvent) eventCreated,
+    required TResult Function(String message) eventDeleted,
   }) {
     return initial();
   }
@@ -164,6 +171,7 @@ class _$InitialImpl implements _Initial {
     TResult? Function(EventModel eventDetails)? loadedDetails,
     TResult? Function(String message)? registeredSuccessfully,
     TResult? Function(EventModel newEvent)? eventCreated,
+    TResult? Function(String message)? eventDeleted,
   }) {
     return initial?.call();
   }
@@ -178,6 +186,7 @@ class _$InitialImpl implements _Initial {
     TResult Function(EventModel eventDetails)? loadedDetails,
     TResult Function(String message)? registeredSuccessfully,
     TResult Function(EventModel newEvent)? eventCreated,
+    TResult Function(String message)? eventDeleted,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -197,6 +206,7 @@ class _$InitialImpl implements _Initial {
     required TResult Function(_RegisteredSuccessfully value)
         registeredSuccessfully,
     required TResult Function(_EventCreated value) eventCreated,
+    required TResult Function(_EventDeleted value) eventDeleted,
   }) {
     return initial(this);
   }
@@ -211,6 +221,7 @@ class _$InitialImpl implements _Initial {
     TResult? Function(_LoadedDetails value)? loadedDetails,
     TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult? Function(_EventCreated value)? eventCreated,
+    TResult? Function(_EventDeleted value)? eventDeleted,
   }) {
     return initial?.call(this);
   }
@@ -225,6 +236,7 @@ class _$InitialImpl implements _Initial {
     TResult Function(_LoadedDetails value)? loadedDetails,
     TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult Function(_EventCreated value)? eventCreated,
+    TResult Function(_EventDeleted value)? eventDeleted,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -283,6 +295,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(EventModel eventDetails) loadedDetails,
     required TResult Function(String message) registeredSuccessfully,
     required TResult Function(EventModel newEvent) eventCreated,
+    required TResult Function(String message) eventDeleted,
   }) {
     return loading();
   }
@@ -297,6 +310,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(EventModel eventDetails)? loadedDetails,
     TResult? Function(String message)? registeredSuccessfully,
     TResult? Function(EventModel newEvent)? eventCreated,
+    TResult? Function(String message)? eventDeleted,
   }) {
     return loading?.call();
   }
@@ -311,6 +325,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function(EventModel eventDetails)? loadedDetails,
     TResult Function(String message)? registeredSuccessfully,
     TResult Function(EventModel newEvent)? eventCreated,
+    TResult Function(String message)? eventDeleted,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -330,6 +345,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(_RegisteredSuccessfully value)
         registeredSuccessfully,
     required TResult Function(_EventCreated value) eventCreated,
+    required TResult Function(_EventDeleted value) eventDeleted,
   }) {
     return loading(this);
   }
@@ -344,6 +360,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(_LoadedDetails value)? loadedDetails,
     TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult? Function(_EventCreated value)? eventCreated,
+    TResult? Function(_EventDeleted value)? eventDeleted,
   }) {
     return loading?.call(this);
   }
@@ -358,6 +375,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function(_LoadedDetails value)? loadedDetails,
     TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult Function(_EventCreated value)? eventCreated,
+    TResult Function(_EventDeleted value)? eventDeleted,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -449,6 +467,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function(EventModel eventDetails) loadedDetails,
     required TResult Function(String message) registeredSuccessfully,
     required TResult Function(EventModel newEvent) eventCreated,
+    required TResult Function(String message) eventDeleted,
   }) {
     return loaded(events);
   }
@@ -463,6 +482,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function(EventModel eventDetails)? loadedDetails,
     TResult? Function(String message)? registeredSuccessfully,
     TResult? Function(EventModel newEvent)? eventCreated,
+    TResult? Function(String message)? eventDeleted,
   }) {
     return loaded?.call(events);
   }
@@ -477,6 +497,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function(EventModel eventDetails)? loadedDetails,
     TResult Function(String message)? registeredSuccessfully,
     TResult Function(EventModel newEvent)? eventCreated,
+    TResult Function(String message)? eventDeleted,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -496,6 +517,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function(_RegisteredSuccessfully value)
         registeredSuccessfully,
     required TResult Function(_EventCreated value) eventCreated,
+    required TResult Function(_EventDeleted value) eventDeleted,
   }) {
     return loaded(this);
   }
@@ -510,6 +532,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function(_LoadedDetails value)? loadedDetails,
     TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult? Function(_EventCreated value)? eventCreated,
+    TResult? Function(_EventDeleted value)? eventDeleted,
   }) {
     return loaded?.call(this);
   }
@@ -524,6 +547,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function(_LoadedDetails value)? loadedDetails,
     TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult Function(_EventCreated value)? eventCreated,
+    TResult Function(_EventDeleted value)? eventDeleted,
     required TResult orElse(),
   }) {
     if (loaded != null) {
@@ -614,6 +638,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function(EventModel eventDetails) loadedDetails,
     required TResult Function(String message) registeredSuccessfully,
     required TResult Function(EventModel newEvent) eventCreated,
+    required TResult Function(String message) eventDeleted,
   }) {
     return error(message);
   }
@@ -628,6 +653,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function(EventModel eventDetails)? loadedDetails,
     TResult? Function(String message)? registeredSuccessfully,
     TResult? Function(EventModel newEvent)? eventCreated,
+    TResult? Function(String message)? eventDeleted,
   }) {
     return error?.call(message);
   }
@@ -642,6 +668,7 @@ class _$ErrorImpl implements _Error {
     TResult Function(EventModel eventDetails)? loadedDetails,
     TResult Function(String message)? registeredSuccessfully,
     TResult Function(EventModel newEvent)? eventCreated,
+    TResult Function(String message)? eventDeleted,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -661,6 +688,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function(_RegisteredSuccessfully value)
         registeredSuccessfully,
     required TResult Function(_EventCreated value) eventCreated,
+    required TResult Function(_EventDeleted value) eventDeleted,
   }) {
     return error(this);
   }
@@ -675,6 +703,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function(_LoadedDetails value)? loadedDetails,
     TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult? Function(_EventCreated value)? eventCreated,
+    TResult? Function(_EventDeleted value)? eventDeleted,
   }) {
     return error?.call(this);
   }
@@ -689,6 +718,7 @@ class _$ErrorImpl implements _Error {
     TResult Function(_LoadedDetails value)? loadedDetails,
     TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult Function(_EventCreated value)? eventCreated,
+    TResult Function(_EventDeleted value)? eventDeleted,
     required TResult orElse(),
   }) {
     if (error != null) {
@@ -779,6 +809,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     required TResult Function(EventModel eventDetails) loadedDetails,
     required TResult Function(String message) registeredSuccessfully,
     required TResult Function(EventModel newEvent) eventCreated,
+    required TResult Function(String message) eventDeleted,
   }) {
     return loadedDetails(eventDetails);
   }
@@ -793,6 +824,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     TResult? Function(EventModel eventDetails)? loadedDetails,
     TResult? Function(String message)? registeredSuccessfully,
     TResult? Function(EventModel newEvent)? eventCreated,
+    TResult? Function(String message)? eventDeleted,
   }) {
     return loadedDetails?.call(eventDetails);
   }
@@ -807,6 +839,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     TResult Function(EventModel eventDetails)? loadedDetails,
     TResult Function(String message)? registeredSuccessfully,
     TResult Function(EventModel newEvent)? eventCreated,
+    TResult Function(String message)? eventDeleted,
     required TResult orElse(),
   }) {
     if (loadedDetails != null) {
@@ -826,6 +859,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     required TResult Function(_RegisteredSuccessfully value)
         registeredSuccessfully,
     required TResult Function(_EventCreated value) eventCreated,
+    required TResult Function(_EventDeleted value) eventDeleted,
   }) {
     return loadedDetails(this);
   }
@@ -840,6 +874,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     TResult? Function(_LoadedDetails value)? loadedDetails,
     TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult? Function(_EventCreated value)? eventCreated,
+    TResult? Function(_EventDeleted value)? eventDeleted,
   }) {
     return loadedDetails?.call(this);
   }
@@ -854,6 +889,7 @@ class _$LoadedDetailsImpl implements _LoadedDetails {
     TResult Function(_LoadedDetails value)? loadedDetails,
     TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult Function(_EventCreated value)? eventCreated,
+    TResult Function(_EventDeleted value)? eventDeleted,
     required TResult orElse(),
   }) {
     if (loadedDetails != null) {
@@ -947,6 +983,7 @@ class _$RegisteredSuccessfullyImpl implements _RegisteredSuccessfully {
     required TResult Function(EventModel eventDetails) loadedDetails,
     required TResult Function(String message) registeredSuccessfully,
     required TResult Function(EventModel newEvent) eventCreated,
+    required TResult Function(String message) eventDeleted,
   }) {
     return registeredSuccessfully(message);
   }
@@ -961,6 +998,7 @@ class _$RegisteredSuccessfullyImpl implements _RegisteredSuccessfully {
     TResult? Function(EventModel eventDetails)? loadedDetails,
     TResult? Function(String message)? registeredSuccessfully,
     TResult? Function(EventModel newEvent)? eventCreated,
+    TResult? Function(String message)? eventDeleted,
   }) {
     return registeredSuccessfully?.call(message);
   }
@@ -975,6 +1013,7 @@ class _$RegisteredSuccessfullyImpl implements _RegisteredSuccessfully {
     TResult Function(EventModel eventDetails)? loadedDetails,
     TResult Function(String message)? registeredSuccessfully,
     TResult Function(EventModel newEvent)? eventCreated,
+    TResult Function(String message)? eventDeleted,
     required TResult orElse(),
   }) {
     if (registeredSuccessfully != null) {
@@ -994,6 +1033,7 @@ class _$RegisteredSuccessfullyImpl implements _RegisteredSuccessfully {
     required TResult Function(_RegisteredSuccessfully value)
         registeredSuccessfully,
     required TResult Function(_EventCreated value) eventCreated,
+    required TResult Function(_EventDeleted value) eventDeleted,
   }) {
     return registeredSuccessfully(this);
   }
@@ -1008,6 +1048,7 @@ class _$RegisteredSuccessfullyImpl implements _RegisteredSuccessfully {
     TResult? Function(_LoadedDetails value)? loadedDetails,
     TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult? Function(_EventCreated value)? eventCreated,
+    TResult? Function(_EventDeleted value)? eventDeleted,
   }) {
     return registeredSuccessfully?.call(this);
   }
@@ -1022,6 +1063,7 @@ class _$RegisteredSuccessfullyImpl implements _RegisteredSuccessfully {
     TResult Function(_LoadedDetails value)? loadedDetails,
     TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult Function(_EventCreated value)? eventCreated,
+    TResult Function(_EventDeleted value)? eventDeleted,
     required TResult orElse(),
   }) {
     if (registeredSuccessfully != null) {
@@ -1113,6 +1155,7 @@ class _$EventCreatedImpl implements _EventCreated {
     required TResult Function(EventModel eventDetails) loadedDetails,
     required TResult Function(String message) registeredSuccessfully,
     required TResult Function(EventModel newEvent) eventCreated,
+    required TResult Function(String message) eventDeleted,
   }) {
     return eventCreated(newEvent);
   }
@@ -1127,6 +1170,7 @@ class _$EventCreatedImpl implements _EventCreated {
     TResult? Function(EventModel eventDetails)? loadedDetails,
     TResult? Function(String message)? registeredSuccessfully,
     TResult? Function(EventModel newEvent)? eventCreated,
+    TResult? Function(String message)? eventDeleted,
   }) {
     return eventCreated?.call(newEvent);
   }
@@ -1141,6 +1185,7 @@ class _$EventCreatedImpl implements _EventCreated {
     TResult Function(EventModel eventDetails)? loadedDetails,
     TResult Function(String message)? registeredSuccessfully,
     TResult Function(EventModel newEvent)? eventCreated,
+    TResult Function(String message)? eventDeleted,
     required TResult orElse(),
   }) {
     if (eventCreated != null) {
@@ -1160,6 +1205,7 @@ class _$EventCreatedImpl implements _EventCreated {
     required TResult Function(_RegisteredSuccessfully value)
         registeredSuccessfully,
     required TResult Function(_EventCreated value) eventCreated,
+    required TResult Function(_EventDeleted value) eventDeleted,
   }) {
     return eventCreated(this);
   }
@@ -1174,6 +1220,7 @@ class _$EventCreatedImpl implements _EventCreated {
     TResult? Function(_LoadedDetails value)? loadedDetails,
     TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult? Function(_EventCreated value)? eventCreated,
+    TResult? Function(_EventDeleted value)? eventDeleted,
   }) {
     return eventCreated?.call(this);
   }
@@ -1188,6 +1235,7 @@ class _$EventCreatedImpl implements _EventCreated {
     TResult Function(_LoadedDetails value)? loadedDetails,
     TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
     TResult Function(_EventCreated value)? eventCreated,
+    TResult Function(_EventDeleted value)? eventDeleted,
     required TResult orElse(),
   }) {
     if (eventCreated != null) {
@@ -1204,5 +1252,176 @@ abstract class _EventCreated implements EventsState {
   EventModel get newEvent;
   @JsonKey(ignore: true)
   _$$EventCreatedImplCopyWith<_$EventCreatedImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$EventDeletedImplCopyWith<$Res> {
+  factory _$$EventDeletedImplCopyWith(
+          _$EventDeletedImpl value, $Res Function(_$EventDeletedImpl) then) =
+      __$$EventDeletedImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String message});
+}
+
+/// @nodoc
+class __$$EventDeletedImplCopyWithImpl<$Res>
+    extends _$EventsStateCopyWithImpl<$Res, _$EventDeletedImpl>
+    implements _$$EventDeletedImplCopyWith<$Res> {
+  __$$EventDeletedImplCopyWithImpl(
+      _$EventDeletedImpl _value, $Res Function(_$EventDeletedImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? message = null,
+  }) {
+    return _then(_$EventDeletedImpl(
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$EventDeletedImpl implements _EventDeleted {
+  const _$EventDeletedImpl({required this.message});
+
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'EventsState.eventDeleted(message: $message)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$EventDeletedImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$EventDeletedImplCopyWith<_$EventDeletedImpl> get copyWith =>
+      __$$EventDeletedImplCopyWithImpl<_$EventDeletedImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(List<EventModel> events) loaded,
+    required TResult Function(String message) error,
+    required TResult Function(EventModel eventDetails) loadedDetails,
+    required TResult Function(String message) registeredSuccessfully,
+    required TResult Function(EventModel newEvent) eventCreated,
+    required TResult Function(String message) eventDeleted,
+  }) {
+    return eventDeleted(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(List<EventModel> events)? loaded,
+    TResult? Function(String message)? error,
+    TResult? Function(EventModel eventDetails)? loadedDetails,
+    TResult? Function(String message)? registeredSuccessfully,
+    TResult? Function(EventModel newEvent)? eventCreated,
+    TResult? Function(String message)? eventDeleted,
+  }) {
+    return eventDeleted?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(List<EventModel> events)? loaded,
+    TResult Function(String message)? error,
+    TResult Function(EventModel eventDetails)? loadedDetails,
+    TResult Function(String message)? registeredSuccessfully,
+    TResult Function(EventModel newEvent)? eventCreated,
+    TResult Function(String message)? eventDeleted,
+    required TResult orElse(),
+  }) {
+    if (eventDeleted != null) {
+      return eventDeleted(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Initial value) initial,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Error value) error,
+    required TResult Function(_LoadedDetails value) loadedDetails,
+    required TResult Function(_RegisteredSuccessfully value)
+        registeredSuccessfully,
+    required TResult Function(_EventCreated value) eventCreated,
+    required TResult Function(_EventDeleted value) eventDeleted,
+  }) {
+    return eventDeleted(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Initial value)? initial,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Error value)? error,
+    TResult? Function(_LoadedDetails value)? loadedDetails,
+    TResult? Function(_RegisteredSuccessfully value)? registeredSuccessfully,
+    TResult? Function(_EventCreated value)? eventCreated,
+    TResult? Function(_EventDeleted value)? eventDeleted,
+  }) {
+    return eventDeleted?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Initial value)? initial,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_Error value)? error,
+    TResult Function(_LoadedDetails value)? loadedDetails,
+    TResult Function(_RegisteredSuccessfully value)? registeredSuccessfully,
+    TResult Function(_EventCreated value)? eventCreated,
+    TResult Function(_EventDeleted value)? eventDeleted,
+    required TResult orElse(),
+  }) {
+    if (eventDeleted != null) {
+      return eventDeleted(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _EventDeleted implements EventsState {
+  const factory _EventDeleted({required final String message}) =
+      _$EventDeletedImpl;
+
+  String get message;
+  @JsonKey(ignore: true)
+  _$$EventDeletedImplCopyWith<_$EventDeletedImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

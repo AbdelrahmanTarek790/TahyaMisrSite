@@ -253,7 +253,7 @@ class _CreateEventPageState extends State<CreateEventPage> {
 
   Future<void> _pickImage() async {
     final ImagePicker picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.camera); // or ImageSource.gallery
+    final image = await picker.pickImage(source: ImageSource.gallery); // or ImageSource.gallery
     if (image != null) {
       setState(() {
         _pickedImage = image;

@@ -73,11 +73,9 @@ class _LoginPageState extends State<LoginPage> {
                       Container(
                         width: 150,
                         height: 150,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.primary,
-                          shape: BoxShape.circle,
-                          image: const DecorationImage(
-                            image: AssetImage('assets/images/Logo.jpg'),
+                        decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('assets/images/Logo.png'),
                             fit: BoxFit.cover,
                           ),
                         ),

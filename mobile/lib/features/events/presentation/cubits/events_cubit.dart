@@ -82,4 +82,15 @@ class EventsCubit extends Cubit<EventsState> {
       (newEvent) => emit(EventsState.eventCreated(newEvent: newEvent)),
     );
   }
+
+  Future<void> deleteEvent(String eventId) async {
+    emit(const EventsState.loading());
+
+    final result = await eventsRepository.deleteEvent(eventId:eventId);
+
+    result.fold(
+      (failure) => emit(EventsState.error(message: failure.message)),
+      (_) => emit(const EventsState.eventDeleted(message: 'Event deleted successfully')),
+    );
+  }
 }

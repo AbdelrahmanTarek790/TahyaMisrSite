@@ -131,4 +131,12 @@ class EventsApiService {
       throw ServerException('Unexpected error occurred: ${e.toString()}');
     }
   }
+
+  Future<void> deleteEvent(String eventId) async {
+    try {
+      await apiClient.deleteEvent(eventId);
+    } catch (e) {
+      throw ServerException('Unexpected error occurred: ${e.toString()}');
+    }
+  }
 }
