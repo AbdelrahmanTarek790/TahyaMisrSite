@@ -330,7 +330,7 @@ class _UserManagementPageState extends State<UserManagementPage> {
         child: ListTile(
           contentPadding: const EdgeInsets.all(16),
           leading: CircleAvatar(
-            radius: 30,
+            radius: 20,
             backgroundColor: Theme.of(context).colorScheme.primary,
             child: Text(
               user.name.isNotEmpty ? user.name[0].toUpperCase() : 'U',
@@ -371,7 +371,11 @@ class _UserManagementPageState extends State<UserManagementPage> {
                     color: Theme.of(context).colorScheme.secondary,
                   ),
                   const SizedBox(width: 8),
-                  Text(user.phone),
+                  Flexible(
+                    child: Text(user.phone,
+
+                    ),
+                  ),
                   const Spacer(),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
