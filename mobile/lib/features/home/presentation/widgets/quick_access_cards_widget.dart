@@ -43,6 +43,14 @@ class QuickAccessCardsWidget extends StatelessWidget {
         'icon': 'priority_high',
         'color': Colors.yellow,
         'route': '/about-us',
+      },
+      {
+        'id': 5,
+        'title': 'طلب انضمام',
+        'subtitle': 'انضم إلى اتحاد شباب تحيا مصر',
+        'icon': 'person_add',
+        'color': Colors.green,
+        'route': '/join-request',
       }
     ];
     final l10n = AppLocalizations.of(context)!;

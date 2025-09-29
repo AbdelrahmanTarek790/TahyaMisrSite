@@ -21,6 +21,7 @@ import '../../features/positions/presentation/pages/position_management_page.dar
 import '../../features/join_request/presentation/pages/join_request_page.dart';
 import '../../features/join_request/presentation/pages/join_request_management_page.dart';
 import '../../shared/widgets/main_navigation.dart';
+import 'route_guard.dart';
 
 class AppRouter {
   late final GoRouter router;
@@ -28,6 +29,7 @@ class AppRouter {
   AppRouter() {
     router = GoRouter(
       initialLocation: '/splash',
+      redirect: RouteGuard.redirect,
       routes: [
         // Splash screen
         GoRoute(
@@ -109,25 +111,33 @@ class AppRouter {
         // User Management (Admin only)
         GoRoute(
           path: '/user-management',
-          builder: (context, state) => const UserManagementPage(),
+          builder: (context, state) => const AdminGuard(
+            child: UserManagementPage(),
+          ),
         ),
 
         // Content Management (Admin only)
         GoRoute(
           path: '/content-management',
-          builder: (context, state) => const ContentManagementPage(),
+          builder: (context, state) => const AdminGuard(
+            child: ContentManagementPage(),
+          ),
         ),
 
         // Position Management (Admin only)
         GoRoute(
           path: '/position-management',
-          builder: (context, state) => const PositionManagementPage(),
+          builder: (context, state) => const AdminGuard(
+            child: PositionManagementPage(),
+          ),
         ),
 
         // Join Request Management (Admin only)
         GoRoute(
           path: '/join-request-management',
-          builder: (context, state) => const JoinRequestManagementPage(),
+          builder: (context, state) => const AdminGuard(
+            child: JoinRequestManagementPage(),
+          ),
         ),
 
         // Join Request (Public)
