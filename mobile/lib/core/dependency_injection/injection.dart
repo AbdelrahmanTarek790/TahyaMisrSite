@@ -48,6 +48,11 @@ import '../../features/user_management/data/repositories/user_management_reposit
 import '../../features/user_management/data/services/user_management_api_service.dart';
 import '../../features/user_management/presentation/cubits/user_management_cubit.dart';
 
+// Join Request imports
+import '../../features/join_request/data/services/join_request_api_service.dart';
+import '../../features/join_request/data/repositories/join_request_repository.dart';
+import '../../features/join_request/presentation/cubits/join_request_cubit.dart';
+
 // Core imports
 import '../network/api_client.dart';
 import '../network/network_info.dart';
@@ -98,6 +103,7 @@ Future<void> configureDependencies() async {
   final mediaBox = await Hive.openBox('media');
   final dashboardBox = await Hive.openBox('dashboard');
   final positionsBox = await Hive.openBox('positions');
+  final joinRequestBox = await Hive.openBox('joinRequest');
 
   getIt.registerLazySingleton<Box>(() => authBox, instanceName: 'authBox');
   getIt.registerLazySingleton<Box>(() => cacheBox, instanceName: 'cacheBox');
@@ -111,6 +117,10 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton<Box>(
     () => positionsBox,
     instanceName: 'positionsBox',
+  );
+  getIt.registerLazySingleton<Box>(
+    () => joinRequestBox,
+    instanceName: 'joinRequestBox',
   );
 
   // Dio configuration
@@ -379,6 +389,26 @@ void _configurePositionsDependencies() {
   getIt.registerFactory<PositionsCubit>(
     () => PositionsCubit(
       positionsRepository: getIt<PositionsRepository>(),
+    ),
+  );
+
+  // Join Request API Service
+  getIt.registerLazySingleton<JoinRequestApiService>(
+    () => JoinRequestApiService(getIt<ApiClient>()),
+  );
+
+  // Join Request Repository
+  getIt.registerLazySingleton<JoinRequestRepository>(
+    () => JoinRequestRepositoryImpl(
+      apiService: getIt<JoinRequestApiService>(),
+      networkInfo: getIt<NetworkInfo>(),
+    ),
+  );
+
+  // Join Request Cubit
+  getIt.registerFactory<JoinRequestCubit>(
+    () => JoinRequestCubit(
+      repository: getIt<JoinRequestRepository>(),
     ),
   );
 }
