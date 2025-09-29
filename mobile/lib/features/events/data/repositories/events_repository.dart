@@ -29,6 +29,14 @@ abstract class EventsRepository {
     required String location,
     required String imagePath,
   });
+  Future<Either<Failure, EventModel>> updateNews({
+    required String eventId,
+    required String title,
+    required String description,
+    required DateTime date,
+    required String location,
+    String? imagePath,
+  });
 
   Future<Either<Failure,void>> deleteEvent({required String eventId});
 }
@@ -175,6 +183,38 @@ class EventsRepositoryImpl implements EventsRepository {
           imagePath: imagePath,
         );
         return Right(newEvent);
+      } on DioException catch (e) {
+        return Left(_handleDioError(e));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(ServerFailure('Unexpected error occurred: $e'));
+      }
+    } else {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, EventModel>> updateNews({
+    required String eventId,
+    required String title,
+    required String description,
+    required DateTime date,
+    required String location,
+    String? imagePath,
+  }) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final updatedEvent = await apiService.updateEvent(
+          eventId: eventId,
+          title: title,
+          description: description,
+          date: date,
+          location: location,
+          imagePath: imagePath,
+        );
+        return Right(updatedEvent);
       } on DioException catch (e) {
         return Left(_handleDioError(e));
       } on ServerException catch (e) {

@@ -83,6 +83,30 @@ class EventsCubit extends Cubit<EventsState> {
     );
   }
 
+  Future<void> updateEvent({
+    required String eventId,
+    required String title,
+    required String description,
+    required DateTime date,
+    required String location,
+    String? imagePath,
+  }) async {
+    emit(const EventsState.loading());
+
+    final result = await eventsRepository.updateNews(
+      eventId: eventId,
+      title: title,
+      description: description,
+      date: date,
+      location: location,
+      imagePath: imagePath,
+    );
+
+    result.fold(
+      (failure) => emit(EventsState.error(message: failure.message)),
+      (updatedEvent) => emit(EventsState.eventCreated(newEvent: updatedEvent)),
+    );
+  }
   Future<void> deleteEvent(String eventId) async {
     emit(const EventsState.loading());
 

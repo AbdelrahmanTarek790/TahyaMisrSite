@@ -125,8 +125,9 @@ abstract class ApiClient {
   @POST('/events')
   Future<ApiResponse<EventModel>> createEvent(@Body() FormData body);
 
+  @MultiPart()
   @PUT('/events/{id}')
-  Future<ApiResponse<EventModel>> updateEvent(@Path('id') String id, @Body() Map<String, dynamic> eventData);
+  Future<ApiResponse<EventModel>> updateEvent(@Path('id') String id, @Body() FormData body);
 
   @DELETE('/events/{id}')
   Future<ApiResponse<dynamic>> deleteEvent(@Path('id') String id);

@@ -830,18 +830,18 @@ class _ApiClient implements ApiClient {
   @override
   Future<ApiResponse<EventModel>> updateEvent(
     String id,
-    Map<String, dynamic> eventData,
+    FormData body,
   ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(eventData);
+    final _data = body;
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<ApiResponse<EventModel>>(Options(
       method: 'PUT',
       headers: _headers,
       extra: _extra,
+      contentType: 'multipart/form-data',
     )
             .compose(
               _dio.options,

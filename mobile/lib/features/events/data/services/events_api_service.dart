@@ -132,6 +132,56 @@ class EventsApiService {
     }
   }
 
+  Future<EventModel> updateEvent({
+    required String eventId,
+    required String title,
+    required String description,
+    required DateTime date,
+    required String location,
+    String? imagePath,
+  }) async {
+    try {
+      final FormData formData  ;
+      if(imagePath != null){
+        final file = File(imagePath);
+
+        final allowedExtensions = ['jpg', 'jpeg', 'png'];
+        final ext = file.path.split('.').last.toLowerCase();
+
+        if (!allowedExtensions.contains(ext)) {
+          throw const ServerException('Only image files are allowed');
+        }
+
+        final multipartFile = await MultipartFile.fromFile(
+          file.path,
+          filename: file.path.split('/').last,
+          contentType: MediaType('image', ext),
+        );
+
+        // FormData
+        formData = FormData.fromMap({
+          'title': title,
+          'description': description,
+          'date': date.toIso8601String(),
+          'location': location,
+          'image': multipartFile,
+        });
+        final result = await apiClient.updateEvent(eventId, formData);
+        return result.data as EventModel ;
+      }
+      formData = FormData.fromMap({
+        'title': title,
+        'description': description,
+        'date': date.toIso8601String(),
+        'location': location,
+      });
+      final result = await apiClient.updateEvent(eventId, formData);
+      return result.data as EventModel ;
+    } catch (e) {
+      throw ServerException('Unexpected error occurred: ${e.toString()}');
+    }
+  }
+
   Future<void> deleteEvent(String eventId) async {
     try {
       await apiClient.deleteEvent(eventId);

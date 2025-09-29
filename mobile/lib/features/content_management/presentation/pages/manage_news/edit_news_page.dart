@@ -224,7 +224,7 @@ class _EditNewsPageState extends State<EditNewsPage> {
                               const SizedBox(),
                               const Spacer(),
                               IconButton(
-                                icon:  Icon(isEditingContent ? Icons.close : Icons.edit),
+                                icon:  Icon(isEditingTitle ? Icons.close : Icons.edit),
                                 onPressed: () {
                                   setState(() {
                                     isEditingTitle = !isEditingTitle;
