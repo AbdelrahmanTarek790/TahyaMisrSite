@@ -149,7 +149,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
 
               const SizedBox(height: 12),
 
-              // Media Management
+        /*      // Media Management
               _buildManagementCard(
                 context,
                 title: l10n.manageMedia,
@@ -159,7 +159,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                 onTap: () {
                   _showUploadMediaDialog(context, l10n);
                 },
-              ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
+              ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),*/
 
               const SizedBox(height: 24),
 
@@ -415,7 +415,7 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
   }
 
 
-  void _showUploadMediaDialog(BuildContext context, AppLocalizations l10n) {
+/*  void _showUploadMediaDialog(BuildContext context, AppLocalizations l10n) {
     final captionController = TextEditingController();
 
     showDialog(
@@ -481,5 +481,5 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
         ],
       ),
     );
-  }
+  }*/
 }

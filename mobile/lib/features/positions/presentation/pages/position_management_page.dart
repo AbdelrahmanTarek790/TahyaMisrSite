@@ -7,7 +7,6 @@ import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../data/models/position_model.dart';
 
-
 class PositionManagementPage extends StatefulWidget {
   const PositionManagementPage({super.key});
 
@@ -16,40 +15,7 @@ class PositionManagementPage extends StatefulWidget {
 }
 
 class _PositionManagementPageState extends State<PositionManagementPage> {
-  String _selectedGovernorate = 'All';
-  final TextEditingController _searchController = TextEditingController();
   late PositionsCubit _positionsBloc;
-
-  final List<String> _governorates = [
-    'All',
-    'القاهرة',
-    'الجيزة',
-    'الإسكندرية',
-    'البحيرة',
-    'المنوفية',
-    'القليوبية',
-    'الشرقية',
-    'الدقهلية',
-    'كفر الشيخ',
-    'الغربية',
-    'دمياط',
-    'بورسعيد',
-    'الإسماعيلية',
-    'السويس',
-    'شمال سيناء',
-    'جنوب سيناء',
-    'البحر الأحمر',
-    'الوادي الجديد',
-    'مطروح',
-    'أسوان',
-    'الأقصر',
-    'قنا',
-    'سوهاج',
-    'أسيوط',
-    'المنيا',
-    'بني سويف',
-    'الفيوم',
-  ];
 
   @override
   void initState() {
@@ -60,21 +26,21 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
 
   @override
   void dispose() {
-    _searchController.dispose();
     _positionsBloc.close();
     super.dispose();
   }
 
   void _loadPositions() {
-    _positionsBloc.getPositions(
-      governorate: _selectedGovernorate != 'All' ? _selectedGovernorate : null,
-    );
+    _positionsBloc.getPositions();
   }
 
+  TextEditingController searchController = TextEditingController();
+  String statusFilter = 'All'; // All, Active, Inactive
+  String typeFilter = 'All'; // All, Global, Local
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    
+
     return BlocProvider.value(
       value: _positionsBloc,
       child: Scaffold(
@@ -98,7 +64,8 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                   backgroundColor: Colors.red,
                 ),
               );
-            } else if (state is PositionCreated) {
+            }
+            else if (state is PositionCreated) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Position created successfully'),
@@ -106,7 +73,8 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                 ),
               );
               _loadPositions(); // Refresh the list
-            } else if (state is PositionUpdated) {
+            }
+            else if (state is PositionUpdated) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Position updated successfully'),
@@ -114,7 +82,8 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                 ),
               );
               _loadPositions(); // Refresh the list
-            } else if (state is PositionDeleted) {
+            }
+            else if (state is PositionDeleted) {
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(
                   content: Text('Position deleted successfully'),
@@ -126,82 +95,141 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
           },
           child: Column(
             children: [
-              // Filters Section
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  border: Border(
-                    bottom: BorderSide(
-                      color: Theme.of(context).dividerColor,
-                      width: 1,
-                    ),
-                  ),
-                ),
-                child: Row(
+              //Search by name positon , filter by (All - Active - Inactive) or filter by (Global - Local)
+              Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
                   children: [
-                    Text(
-                      'Governorate:',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: DropdownButtonFormField<String>(
-                        initialValue: _selectedGovernorate,
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          filled: true,
-                          fillColor: Theme.of(context).colorScheme.surface,
-                        ),
-                        items: _governorates.map((governorate) {
-                          return DropdownMenuItem(
-                            value: governorate,
-                            child: Text(governorate),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedGovernorate = value!;
-                          });
-                          _loadPositions();
-                        },
+                    // 🔍 Search Bar
+                    TextField(
+                      controller: searchController,
+                      decoration: const InputDecoration(
+                        labelText: 'Search by name or position',
+                        border: OutlineInputBorder(),
+                        prefixIcon: Icon(Icons.search),
                       ),
+                      onChanged: (val) {
+                        _positionsBloc.getPositions(
+                          name: searchController.text,
+                          isActive: typeFilter == 'All'
+                              ? null
+                              : typeFilter == 'Active'
+                                  ? true
+                                  : false,
+                          isGlobal: statusFilter == 'All'
+                              ? null
+                              : statusFilter == 'Global'
+                                  ? true
+                                  : false,
+                        );
+
+                      },
+                    ),
+                    const SizedBox(height: 12),
+
+                    // 🟢 Status Filter
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            const Text('Status: '),
+                            const SizedBox(width: 8),
+                            DropdownButton<String>(
+                              value: statusFilter,
+                              items: ['All', 'Active', 'Inactive']
+                                  .map((e) =>
+                                      DropdownMenuItem(value: e, child: Text(e)),)
+                                  .toList(),
+                              onChanged: (val) {
+                                setState(() => statusFilter = val!);
+                                _positionsBloc.getPositions(
+                                  name: searchController.text,
+                                  isActive: typeFilter == 'All'
+                                      ? null
+                                      : typeFilter == 'Active'
+                                          ? true
+                                          : false,
+                                  isGlobal: statusFilter == 'All'
+                                      ? null
+                                      : statusFilter == 'Global'
+                                          ? true
+                                          : false,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+
+                        // 🌍 Type Filter
+                        Row(
+                          children: [
+                            const Text('Type: '),
+                            const SizedBox(width: 8),
+                            DropdownButton<String>(
+                              value: typeFilter,
+                              items: ['All', 'Global', 'Local']
+                                  .map((e) =>
+                                      DropdownMenuItem(value: e, child: Text(e)),)
+                                  .toList(),
+                              onChanged: (val) {
+                                setState(() => typeFilter = val!);
+                                _positionsBloc.getPositions(
+                                  name: searchController.text,
+                                  isActive: statusFilter == 'All'
+                                      ? null
+                                      : statusFilter == 'Active'
+                                          ? true
+                                          : false,
+                                  isGlobal: typeFilter == 'All'
+                                      ? null
+                                      : typeFilter == 'Global'
+                                          ? true
+                                          : false,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
+
               // Positions List Section
               Expanded(
                 child: BlocBuilder<PositionsCubit, PositionsState>(
                   builder: (context, state) {
                     if (state is PositionsLoading) {
                       return const Center(child: CircularProgressIndicator());
-                    } else if (state is PositionsLoaded) {
+                    }
+                    else if (state is PositionsLoaded) {
                       return _buildPositionsList(context, state, l10n);
                     } else if (state is PositionsError) {
-                      return Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.error_outline,
-                              size: 64,
-                              color: Theme.of(context).colorScheme.error,
-                            ),
-                            const SizedBox(height: 16),
-                            Text(
-                              state.message,
-                              style: Theme.of(context).textTheme.titleMedium,
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: _loadPositions,
-                              child: const Text('Retry'),
-                            ),
-                          ],
+                      return SingleChildScrollView(
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.error_outline,
+                                size: 64,
+                                color: Theme.of(context).colorScheme.error,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                state.message,
+                                style: Theme.of(context).textTheme.titleMedium,
+                                textAlign: TextAlign.center,
+                              ),
+                              const SizedBox(height: 16),
+                              ElevatedButton(
+                                onPressed: _loadPositions,
+                                child: const Text('Retry'),
+                              ),
+                            ],
+                          ),
                         ),
                       );
                     } else {
@@ -238,7 +266,11 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
     );
   }
 
-  Widget _buildPositionsList(BuildContext context, PositionsLoaded state, AppLocalizations l10n) {
+  Widget _buildPositionsList(
+    BuildContext context,
+    PositionsLoaded state,
+    AppLocalizations l10n,
+  ) {
     return RefreshIndicator(
       onRefresh: () async => _loadPositions(),
       child: ListView.builder(
@@ -254,7 +286,10 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                 gradient: LinearGradient(
                   colors: [
                     Theme.of(context).colorScheme.primary,
-                    Theme.of(context).colorScheme.primary.withValues(alpha: 0.7),
+                    Theme.of(context)
+                        .colorScheme
+                        .primary
+                        .withValues(alpha: 0.7),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -264,9 +299,21 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildStatItem('Total Positions', '${state.positions.length}', Icons.work),
-                  _buildStatItem('Active', '${state.positions.where((p) => p.isActive).length}', Icons.check_circle),
-                  _buildStatItem('Global', '${state.positions.where((p) => p.isGlobal).length}', Icons.public),
+                  _buildStatItem(
+                    'Total Positions',
+                    '${state.positions.length}',
+                    Icons.work,
+                  ),
+                  _buildStatItem(
+                    'Active',
+                    '${state.positions.where((p) => p.isActive).length}',
+                    Icons.check_circle,
+                  ),
+                  _buildStatItem(
+                    'Global',
+                    '${state.positions.where((p) => p.isGlobal).length}',
+                    Icons.public,
+                  ),
                 ],
               ),
             ).animate();
@@ -303,7 +350,12 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
     );
   }
 
-  Widget _buildPositionCard(BuildContext context, PositionModel position, AppLocalizations l10n, int index) {
+  Widget _buildPositionCard(
+    BuildContext context,
+    PositionModel position,
+    AppLocalizations l10n,
+    int index,
+  ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       elevation: 4,
@@ -348,16 +400,32 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                   overflow: TextOverflow.ellipsis,
                 ),
               const SizedBox(height: 8),
+              if (!position.isGlobal)
+                Row(
+                  children: [
+                    const Icon(Icons.place, size: 16),
+                    const SizedBox(
+                      width: 4,
+                    ),
+                    Text(
+                      position.governorate!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              const SizedBox(height: 8),
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: position.isGlobal ? Colors.purple : Colors.orange,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
-                      position.isGlobal ? 'Global' : (position.governorate ?? 'Local'),
+                      position.isGlobal ? 'Global' : 'Local',
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 12,
@@ -367,7 +435,8 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                   ),
                   const SizedBox(width: 8),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
                       color: position.isActive ? Colors.green : Colors.red,
                       borderRadius: BorderRadius.circular(12),
@@ -390,13 +459,17 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
               Icons.more_vert,
               color: Theme.of(context).colorScheme.primary,
             ),
-            onSelected: (action) => _handlePositionAction(context, action, position, l10n),
+            onSelected: (action) =>
+                _handlePositionAction(context, action, position, l10n),
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: 'edit',
                 child: Row(
                   children: [
-                    Icon(Icons.edit, color: Theme.of(context).colorScheme.primary),
+                    Icon(
+                      Icons.edit,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
                     const SizedBox(width: 8),
                     const Text('Edit'),
                   ],
@@ -419,7 +492,12 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
     ).animate();
   }
 
-  void _handlePositionAction(BuildContext context, String action, PositionModel position, AppLocalizations l10n) {
+  void _handlePositionAction(
+    BuildContext context,
+    String action,
+    PositionModel position,
+    AppLocalizations l10n,
+  ) {
     switch (action) {
       case 'edit':
         _showEditPositionDialog(context, position, l10n);
@@ -433,9 +511,9 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
   void _showCreatePositionDialog(BuildContext context, AppLocalizations l10n) {
     final nameController = TextEditingController();
     final descriptionController = TextEditingController();
+    final governorateController = TextEditingController();
     bool isGlobal = false;
-    String selectedGovernorate = _governorates[1]; // Skip 'All'
-
+    bool isActive = false;
     showDialog(
       context: context,
       builder: (context) => StatefulBuilder(
@@ -471,25 +549,32 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                     });
                   },
                 ),
-                if (!isGlobal)
-                  DropdownButtonFormField<String>(
-                    initialValue: selectedGovernorate,
+                const SizedBox(height: 16),
+                CheckboxListTile(
+                  title: const Text('Active'),
+                  value: isActive,
+                  onChanged: (value) {
+                    setState(() {
+                      isActive = value!;
+                    });
+                  },
+                ),
+                DropdownButtonFormField(
                     decoration: const InputDecoration(
                       labelText: 'Governorate',
                       border: OutlineInputBorder(),
                     ),
-                    items: _governorates.skip(1).map((governorate) {
-                      return DropdownMenuItem(
-                        value: governorate,
-                        child: Text(governorate),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedGovernorate = value!;
-                      });
+                    items: l10n.governorates
+                        .map((gov) => DropdownMenuItem(
+                              value: gov,
+                              child: Text(gov),
+                            ),)
+                        .toList(),
+
+                    onChanged: (val) {
+                      governorateController.text = val!;
                     },
-                  ),
+                 ),
               ],
             ),
           ),
@@ -504,12 +589,9 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                   'name': nameController.text,
                   'description': descriptionController.text,
                   'isGlobal': isGlobal,
-                  'isActive': true,
+                  'isActive': isActive,
+                  'governorate': governorateController.text,
                 };
-                
-                if (!isGlobal) {
-                  positionData['governorate'] = selectedGovernorate;
-                }
 
                 _positionsBloc.createPosition(positionData);
                 Navigator.of(context).pop();
@@ -522,12 +604,16 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
     );
   }
 
-  void _showEditPositionDialog(BuildContext context, PositionModel position, AppLocalizations l10n) {
+  void _showEditPositionDialog(
+    BuildContext context,
+    PositionModel position,
+    AppLocalizations l10n,
+  ) {
     final nameController = TextEditingController(text: position.name);
     final descriptionController = TextEditingController(text: position.description ?? '');
+    final governorateController = TextEditingController(text: position.governorate ?? '');
     bool isGlobal = position.isGlobal;
     bool isActive = position.isActive;
-    String selectedGovernorate = position.governorate ?? _governorates[1];
 
     showDialog(
       context: context,
@@ -564,6 +650,7 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                     });
                   },
                 ),
+                const SizedBox(height: 16),
                 CheckboxListTile(
                   title: const Text('Active'),
                   value: isActive,
@@ -573,25 +660,23 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                     });
                   },
                 ),
-                if (!isGlobal)
-                  DropdownButtonFormField<String>(
-                    initialValue: selectedGovernorate,
-                    decoration: const InputDecoration(
-                      labelText: 'Governorate',
-                      border: OutlineInputBorder(),
-                    ),
-                    items: _governorates.skip(1).map((governorate) {
-                      return DropdownMenuItem(
-                        value: governorate,
-                        child: Text(governorate),
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selectedGovernorate = value!;
-                      });
-                    },
+                DropdownButtonFormField(
+                  initialValue:governorateController.text,
+                  decoration: const InputDecoration(
+                    labelText: 'Governorate',
+                    border: OutlineInputBorder(),
                   ),
+                  items: l10n.governorates
+                      .map((gov) => DropdownMenuItem(
+                    value: gov,
+                    child: Text(gov),
+                  ),)
+                      .toList(),
+
+                  onChanged: (val) {
+                    governorateController.text = val!;
+                  },
+                ),
               ],
             ),
           ),
@@ -605,13 +690,10 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
                 final positionData = {
                   'name': nameController.text,
                   'description': descriptionController.text,
+                  'governorate': governorateController.text,
                   'isGlobal': isGlobal,
                   'isActive': isActive,
                 };
-                
-                if (!isGlobal) {
-                  positionData['governorate'] = selectedGovernorate;
-                }
 
                 _positionsBloc.updatePosition(
                   position.id,
@@ -627,7 +709,11 @@ class _PositionManagementPageState extends State<PositionManagementPage> {
     );
   }
 
-  void _showDeletePositionDialog(BuildContext context, PositionModel position, AppLocalizations l10n) {
+  void _showDeletePositionDialog(
+    BuildContext context,
+    PositionModel position,
+    AppLocalizations l10n,
+  ) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(

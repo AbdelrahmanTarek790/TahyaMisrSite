@@ -175,7 +175,7 @@ class AdminDashboardView extends StatelessWidget {
 
           Row(
             children: [
-              Expanded(
+     /*         Expanded(
                 child: ElevatedButton.icon(
                   onPressed: () {
                     // Navigate to send notifications
@@ -186,7 +186,7 @@ class AdminDashboardView extends StatelessWidget {
                     padding: const EdgeInsets.all(16),
                   ),
                 ),
-              ),
+              ),*/
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton.icon(
@@ -206,7 +206,7 @@ class AdminDashboardView extends StatelessWidget {
 
           const SizedBox(height: 16),
 
-          ElevatedButton.icon(
+/*          ElevatedButton.icon(
             onPressed: () {
               // Navigate to analytics
             },
@@ -216,7 +216,7 @@ class AdminDashboardView extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               minimumSize: const Size(double.infinity, 48),
             ),
-          ).animate(delay: 900.ms).slideY(begin: 0.2),
+          ).animate(delay: 900.ms).slideY(begin: 0.2),*/
 
           const SizedBox(height: 24),
 

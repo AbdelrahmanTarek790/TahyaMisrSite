@@ -8,7 +8,11 @@ import '../services/positions_api_service.dart';
 import '../local/positions_local_storage.dart';
 
 abstract class PositionsRepository {
-  Future<Either<Failure, List<PositionModel>>> getPositions({String? governorate});
+  Future<Either<Failure, List<PositionModel>>> getPositions({
+  String? name ,
+  bool? isActive,
+  bool? isGlobal,
+  });
   Future<Either<Failure, PositionModel>> getPositionById(String id);
   Future<Either<Failure, PositionModel>> createPosition(Map<String, dynamic> positionData);
   Future<Either<Failure, PositionModel>> updatePosition(String id, Map<String, dynamic> positionData);
@@ -27,10 +31,18 @@ class PositionsRepositoryImpl implements PositionsRepository {
   });
 
   @override
-  Future<Either<Failure, List<PositionModel>>> getPositions({String? governorate}) async {
+  Future<Either<Failure, List<PositionModel>>> getPositions({
+    String? name,
+    bool? isActive,
+    bool? isGlobal,
+  }) async {
     if (await networkInfo.isConnected) {
       try {
-        final positions = await apiService.getPositions(governorate: governorate);
+        final positions = await apiService.getPositions(
+          name: name,
+          isActive: isActive,
+          isGlobal: isGlobal,
+        );
         await localStorage.cachePositions(positions);
         return Right(positions);
       } on DioException catch (e) {

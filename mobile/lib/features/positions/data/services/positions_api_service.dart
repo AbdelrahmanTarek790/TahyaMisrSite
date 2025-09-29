@@ -7,13 +7,22 @@ class PositionsApiService {
 
   PositionsApiService(this.apiClient);
 
-  Future<List<PositionModel>> getPositions({String? governorate}) async {
+  Future<List<PositionModel>> getPositions({
+    String? name ,
+    bool? isActive,
+    bool? isGlobal,
+}) async {
     try {
-      final response = await apiClient.getPositions(governorate);
+      final response = await apiClient.getPositions(
+        name,
+        isActive,
+        isGlobal,
+      );
       if (response.success && response.data != null) {
-        final data = response.data as Map<String, dynamic>;
-        final positionsList = data['positions'] as List<dynamic>? ?? [];
-        return positionsList.map((json) => PositionModel.fromJson(json as Map<String, dynamic>)).toList();
+        final data = response.data as List<dynamic>;
+        return data
+            .map((item) => PositionModel.fromJson(item as Map<String, dynamic>))
+            .toList();
       } else {
         throw ServerException(response.error ?? 'Failed to fetch positions');
       }

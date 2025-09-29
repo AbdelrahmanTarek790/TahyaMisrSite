@@ -29,14 +29,15 @@ abstract class ApiClient {
   Future<ApiResponse<UserModel>> getCurrentUser();
 
   @PUT('/users/me')
-  Future<ApiResponse<UserModel>> updateProfile(@Body() Map<String, dynamic> data);
+  Future<ApiResponse<UserModel>> updateProfile(
+      @Body() Map<String, dynamic> data,);
 
   // News endpoints
   @GET('/news')
   Future<ApiResponse<dynamic>> getNews(
-      @Query('page') int page,
-      @Query('limit') int limit,
-      );
+    @Query('page') int page,
+    @Query('limit') int limit,
+  );
 
   @GET('/news/{id}')
   Future<ApiResponse<dynamic>> getNewsById(@Path('id') String id);
@@ -44,9 +45,9 @@ abstract class ApiClient {
   // Events endpoints
   @GET('/events')
   Future<ApiResponse<dynamic>> getEvents(
-      @Query('page') int page,
-      @Query('limit') int limit,
-      );
+    @Query('page') int page,
+    @Query('limit') int limit,
+  );
 
   @GET('/events/{id}')
   Future<ApiResponse<EventModel>> getEventById(@Path('id') String id);
@@ -57,9 +58,9 @@ abstract class ApiClient {
   // Media endpoints
   @GET('/media')
   Future<ApiResponse<dynamic>> getMedia(
-      @Query('page') int page,
-      @Query('limit') int limit,
-      );
+    @Query('page') int page,
+    @Query('limit') int limit,
+  );
 
   @GET('/media/{id}')
   Future<ApiResponse<MediaModel>> getMediaById(@Path('id') String id);
@@ -68,9 +69,9 @@ abstract class ApiClient {
   @POST('/media')
   @MultiPart()
   Future<ApiResponse<MediaModel>> uploadMedia(
-      @Part() File file,
-      @Part() String caption,
-      );
+    @Part() File file,
+    @Part() String caption,
+  );
 
   // User Management endpoints (Admin only)
   @GET('/users')
@@ -88,23 +89,27 @@ abstract class ApiClient {
   // @POST('/users') - No direct user creation endpoint, use register
 
   @PUT('/users/{id}')
-  Future<ApiResponse<UserManagementModel>> updateUser(@Path('id') String id, @Body() Map<String, dynamic> userData);
+  Future<ApiResponse<UserManagementModel>> updateUser(
+      @Path('id') String id, @Body() Map<String, dynamic> userData,);
 
   @DELETE('/users/{id}')
   Future<ApiResponse<dynamic>> deleteUser(@Path('id') String id);
 
   // Position Management endpoints
+  // search by name or isActive or isGlobal
   @GET('/positions')
-  Future<ApiResponse<dynamic>> getPositions(@Query('governorate') String? governorate);
+  Future<ApiResponse<dynamic>> getPositions(@Query('name') String? name, @Query('isActive') bool? isActive, @Query('isGlobal') bool? isGlobal,);
 
   @GET('/positions/{id}')
   Future<ApiResponse<dynamic>> getPositionById(@Path('id') String id);
 
   @POST('/positions')
-  Future<ApiResponse<dynamic>> createPosition(@Body() Map<String, dynamic> positionData);
+  Future<ApiResponse<dynamic>> createPosition(
+      @Body() Map<String, dynamic> positionData,);
 
   @PUT('/positions/{id}')
-  Future<ApiResponse<dynamic>> updatePosition(@Path('id') String id, @Body() Map<String, dynamic> positionData);
+  Future<ApiResponse<dynamic>> updatePosition(
+      @Path('id') String id, @Body() Map<String, dynamic> positionData,);
 
   @DELETE('/positions/{id}')
   Future<ApiResponse<dynamic>> deletePosition(@Path('id') String id);
@@ -116,7 +121,8 @@ abstract class ApiClient {
 
   @MultiPart()
   @PUT('/news/{id}')
-  Future<ApiResponse<NewsModel>> updateNews(@Path('id') String id, @Body() FormData body);
+  Future<ApiResponse<NewsModel>> updateNews(
+      @Path('id') String id, @Body() FormData body,);
 
   @DELETE('/news/{id}')
   Future<ApiResponse<dynamic>> deleteNews(@Path('id') String id);
@@ -127,7 +133,8 @@ abstract class ApiClient {
 
   @MultiPart()
   @PUT('/events/{id}')
-  Future<ApiResponse<EventModel>> updateEvent(@Path('id') String id, @Body() FormData body);
+  Future<ApiResponse<EventModel>> updateEvent(
+      @Path('id') String id, @Body() FormData body,);
 
   @DELETE('/events/{id}')
   Future<ApiResponse<dynamic>> deleteEvent(@Path('id') String id);
@@ -135,6 +142,6 @@ abstract class ApiClient {
   @DELETE('/media/{id}')
   Future<ApiResponse<dynamic>> deleteMedia(@Path('id') String id);
 
-  // Dashboard data will be aggregated from other endpoints
-  // No dedicated dashboard endpoints since dashboard.js was deleted
+// Dashboard data will be aggregated from other endpoints
+// No dedicated dashboard endpoints since dashboard.js was deleted
 }

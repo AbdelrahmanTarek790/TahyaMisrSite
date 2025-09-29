@@ -545,9 +545,17 @@ class _ApiClient implements ApiClient {
   }
 
   @override
-  Future<ApiResponse<dynamic>> getPositions(String? governorate) async {
+  Future<ApiResponse<dynamic>> getPositions(
+    String? name,
+    bool? isActive,
+    bool? isGlobal,
+  ) async {
     const _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{r'governorate': governorate};
+    final queryParameters = <String, dynamic>{
+      r'name': name,
+      r'isActive': isActive,
+      r'isGlobal': isGlobal,
+    };
     queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final Map<String, dynamic>? _data = null;

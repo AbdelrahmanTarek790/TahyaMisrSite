@@ -10,11 +10,23 @@ part 'positions_state.dart';
 class PositionsCubit extends Cubit<PositionsState> {
   final PositionsRepository positionsRepository;
 
-  PositionsCubit({required this.positionsRepository}) : super( PositionsInitial());
+  PositionsCubit({required this.positionsRepository})
+      : super(PositionsInitial());
 
-  Future<void> getPositions({String? governorate}) async {
+  Future<void> getPositions({
+    String? name,
+    bool? isActive,
+    bool? isGlobal,
+  }) async {
+    print(name);
+    print(isActive);
+    print(isGlobal);
     emit(PositionsLoading());
-    final result = await positionsRepository.getPositions(governorate: governorate);
+    final result = await positionsRepository.getPositions(
+      name: name,
+      isActive: isActive,
+      isGlobal: isGlobal,
+    );
     result.fold(
       (failure) => emit(PositionsError(message: failure.message)),
       (positions) => emit(PositionsLoaded(positions: positions)),
@@ -39,7 +51,8 @@ class PositionsCubit extends Cubit<PositionsState> {
     );
   }
 
-  Future<void> updatePosition(String id, Map<String, dynamic> positionData) async {
+  Future<void> updatePosition(
+      String id, Map<String, dynamic> positionData) async {
     emit(PositionsLoading());
     final result = await positionsRepository.updatePosition(id, positionData);
     result.fold(
@@ -57,7 +70,15 @@ class PositionsCubit extends Cubit<PositionsState> {
     );
   }
 
-  Future<void> refreshPositions({String? governorate}) async {
-    await getPositions(governorate: governorate);
+  Future<void> refreshPositions({
+    String? name,
+    bool? isActive,
+    bool? isGlobal,
+  }) async {
+    await getPositions(
+      name: name,
+      isActive: isActive,
+      isGlobal: isGlobal,
+    );
   }
 }
