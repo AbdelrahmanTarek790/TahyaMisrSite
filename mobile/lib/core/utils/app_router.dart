@@ -12,6 +12,7 @@ import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/join_request/presentation/cubits/join_request_cubit.dart';
 import '../../features/join_request/presentation/pages/join_request_management_page.dart';
 import '../../features/join_request/presentation/pages/join_request_page.dart';
+import '../../features/timeline/presentation/cubits/timeline_cubit.dart';
 import '../../features/news/presentation/pages/news_list_page.dart';
 import '../../features/news/presentation/pages/news_detail_page.dart';
 import '../../features/events/presentation/pages/events_list_page.dart';
@@ -148,7 +149,10 @@ class AppRouter {
         // ABOUT US
         GoRoute(
           path: '/about-us',
-          builder: (context, state) => const AboutUsScreen(),
+          builder: (context, state) => BlocProvider(
+            create: (_) => getIt<TimelineCubit>(),
+            child: const AboutUsScreen(),
+          ),
         ),
       ],
       errorBuilder: (context, state) => Scaffold(

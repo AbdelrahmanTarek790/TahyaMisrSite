@@ -190,6 +190,17 @@ abstract class ApiClient {
 
   @DELETE('/join-requests/{id}')
   Future<ApiResponse<dynamic>> deleteJoinRequest(@Path('id') String id);
+
+  // Timeline endpoints
+  @GET('/timeline')
+  Future<ApiResponse<dynamic>> getTimeline(
+    @Query('page') int page,
+    @Query('limit') int limit,
+  );
+
+  @GET('/timeline/{id}')
+  Future<ApiResponse<dynamic>> getTimelineById(@Path('id') String id);
+
 // Dashboard data will be aggregated from other endpoints
 // No dedicated dashboard endpoints since dashboard.js was deleted
 }
