@@ -47,6 +47,9 @@ import '../../features/positions/data/repositories/positions_repository.dart';
 import '../../features/positions/presentation/cubits/positions_cubit.dart';
 
 // User Management imports
+import '../../features/timeline/data/repositories/timeline_repository.dart';
+import '../../features/timeline/data/services/timeline_api_service.dart';
+import '../../features/timeline/presentation/cubits/timeline_cubit.dart';
 import '../../features/user_management/data/repositories/user_management_repository.dart';
 import '../../features/user_management/data/services/user_management_api_service.dart';
 import '../../features/user_management/presentation/cubits/user_management_cubit.dart';
@@ -219,6 +222,9 @@ Future<void> configureDependencies() async {
 
   // Positions dependencies
   _configurePositionsDependencies();
+
+  // Timeline dependencies
+  _configureTimelineDependencies();
 
   // Router
   getIt.registerLazySingleton<AppRouter>(AppRouter.new);
@@ -402,6 +408,25 @@ void _configurePositionsDependencies() {
   getIt.registerFactory<JoinRequestCubit>(
         () => JoinRequestCubit(
       repository: getIt<JoinRequestRepository>(),
+    ),
+  );
+}
+
+void _configureTimelineDependencies() {
+  // Timeline API Service
+  getIt.registerLazySingleton<TimelineApiService>(
+        () => TimelineApiService(getIt<ApiClient>()),
+  );
+
+  // Timeline repository
+  getIt.registerLazySingleton<TimelineRepository>(
+        () => TimelineRepository(getIt<TimelineApiService>()),
+  );
+
+  // Timeline cubit
+  getIt.registerFactory<TimelineCubit>(
+        () => TimelineCubit(
+      timelineRepository: getIt<TimelineRepository>(),
     ),
   );
 }

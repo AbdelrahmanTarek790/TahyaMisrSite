@@ -20,6 +20,7 @@ import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/settings_page.dart';
 import '../../features/media/presentation/pages/media_gallery_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/timeline/presentation/cubits/timeline_cubit.dart';
 import '../../features/user_management/presentation/pages/user_management_page.dart';
 import '../../features/content_management/presentation/pages/content_management_page.dart';
 import '../../features/positions/presentation/pages/position_management_page.dart';
@@ -148,7 +149,10 @@ class AppRouter {
         // ABOUT US
         GoRoute(
           path: '/about-us',
-          builder: (context, state) => const AboutUsScreen(),
+          builder: (context, state) => BlocProvider(
+            create: (_) => getIt<TimelineCubit>(),
+            child: const AboutUsScreen(),
+          ),
         ),
       ],
       errorBuilder: (context, state) => Scaffold(
