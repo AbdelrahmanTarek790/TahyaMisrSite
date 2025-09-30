@@ -205,6 +205,20 @@ class AdminDashboardView extends StatelessWidget {
           ).animate(delay: 800.ms).slideY(begin: 0.2),
 
           const SizedBox(height: 16),
+          ElevatedButton.icon(
+            onPressed: () {
+              // Navigate to join request management
+              context.push('/join-request-management');
+            },
+            icon: const Icon(Icons.person_add),
+            label: const Text('إدارة طلبات الانضمام'),
+            style: ElevatedButton.styleFrom(
+              padding: const EdgeInsets.all(16),
+              minimumSize: const Size(double.infinity, 48),
+            ),
+          ).animate(delay: 850.ms).slideY(begin: 0.2),
+
+          const SizedBox(height: 16),
 
 /*          ElevatedButton.icon(
             onPressed: () {

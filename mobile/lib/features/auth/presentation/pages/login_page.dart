@@ -262,9 +262,9 @@ class _LoginPageState extends State<LoginPage> {
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           TextButton(
-                            onPressed: () => context.go('/register'),
+                            onPressed: () => context.push('/join-request'),
                             child: Text(
-                              l10n.register,
+                              'انضم الان',
                               style: TextStyle(
                                 color:
                                     Theme.of(context).colorScheme.primary,

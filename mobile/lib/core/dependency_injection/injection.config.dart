@@ -10,6 +10,7 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:tahya_misr_app/core/network/network_info.dart' as _i568;
 import 'package:tahya_misr_app/features/auth/data/repositories/auth_repository.dart'
     as _i593;
 import 'package:tahya_misr_app/features/auth/presentation/cubits/auth_cubit.dart'
@@ -22,6 +23,12 @@ import 'package:tahya_misr_app/features/events/data/repositories/events_reposito
     as _i30;
 import 'package:tahya_misr_app/features/events/presentation/cubits/events_cubit.dart'
     as _i302;
+import 'package:tahya_misr_app/features/join_request/data/repositories/join_request_repository.dart'
+    as _i511;
+import 'package:tahya_misr_app/features/join_request/data/services/join_request_api_service.dart'
+    as _i859;
+import 'package:tahya_misr_app/features/join_request/presentation/cubits/join_request_cubit.dart'
+    as _i717;
 import 'package:tahya_misr_app/features/media/data/repositories/media_repository.dart'
     as _i301;
 import 'package:tahya_misr_app/features/media/presentation/cubits/media_cubit.dart'
@@ -64,6 +71,13 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i299.AuthCubit(authRepository: gh<_i593.AuthRepository>()));
     gh.factory<_i502.MediaCubit>(
         () => _i502.MediaCubit(mediaRepository: gh<_i301.MediaRepository>()));
+    gh.factory<_i511.JoinRequestRepository>(
+        () => _i511.JoinRequestRepositoryImpl(
+              apiService: gh<_i859.JoinRequestApiService>(),
+              networkInfo: gh<_i568.NetworkInfo>(),
+            ));
+    gh.factory<_i717.JoinRequestCubit>(() =>
+        _i717.JoinRequestCubit(repository: gh<_i511.JoinRequestRepository>()));
     return this;
   }
 }

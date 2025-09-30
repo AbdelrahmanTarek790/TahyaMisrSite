@@ -14,6 +14,9 @@ import '../../features/auth/data/repositories/auth_repository.dart';
 import '../../features/auth/presentation/cubits/auth_cubit.dart';
 
 // News imports
+import '../../features/join_request/data/repositories/join_request_repository.dart';
+import '../../features/join_request/data/services/join_request_api_service.dart';
+import '../../features/join_request/presentation/cubits/join_request_cubit.dart';
 import '../../features/news/data/services/news_api_service.dart';
 import '../../features/news/data/local/news_local_storage.dart';
 import '../../features/news/data/repositories/news_repository.dart';
@@ -379,6 +382,26 @@ void _configurePositionsDependencies() {
   getIt.registerFactory<PositionsCubit>(
     () => PositionsCubit(
       positionsRepository: getIt<PositionsRepository>(),
+    ),
+  );
+
+  // Join Request API Service
+  getIt.registerLazySingleton<JoinRequestApiService>(
+        () => JoinRequestApiService(getIt<ApiClient>()),
+  );
+
+  // Join Request Repository
+  getIt.registerLazySingleton<JoinRequestRepository>(
+        () => JoinRequestRepositoryImpl(
+      apiService: getIt<JoinRequestApiService>(),
+      networkInfo: getIt<NetworkInfo>(),
+    ),
+  );
+
+  // Join Request Cubit
+  getIt.registerFactory<JoinRequestCubit>(
+        () => JoinRequestCubit(
+      repository: getIt<JoinRequestRepository>(),
     ),
   );
 }

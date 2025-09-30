@@ -248,4 +248,109 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get date => 'Date';
+
+  @override
+  String get joinRequest => 'Join Request';
+
+  @override
+  String get joinRequestManagement => 'Join Request Management';
+
+  @override
+  String get joinUs => 'Join Tahya Misr Students Union';
+
+  @override
+  String get submitJoinRequest => 'Submit Join Request';
+
+  @override
+  String get personalInfo => 'Personal Information';
+
+  @override
+  String get membershipInfo => 'Membership Information';
+
+  @override
+  String get additionalNotes => 'Additional Notes';
+
+  @override
+  String get fullName => 'Full Name';
+
+  @override
+  String get phoneNumber => 'Phone Number';
+
+  @override
+  String get nationalId => 'National ID';
+
+  @override
+  String get membershipType => 'Membership Type';
+
+  @override
+  String get member => 'Member';
+
+  @override
+  String get volunteer => 'Volunteer';
+
+  @override
+  String get position => 'Position';
+
+  @override
+  String get membershipNumber => 'Membership Number';
+
+  @override
+  String get notes => 'Notes';
+
+  @override
+  String get pending => 'Pending';
+
+  @override
+  String get approved => 'Approved';
+
+  @override
+  String get denied => 'Denied';
+
+  @override
+  String get approve => 'Approve';
+
+  @override
+  String get deny => 'Deny';
+
+  @override
+  String get approveRequest => 'Approve Request';
+
+  @override
+  String get denyRequest => 'Deny Request';
+
+  @override
+  String get deleteRequest => 'Delete Request';
+
+  @override
+  String get requestSubmitted => 'Request submitted successfully';
+
+  @override
+  String get requestApproved => 'Request approved';
+
+  @override
+  String get requestDenied => 'Request denied';
+
+  @override
+  String get requestDeleted => 'Request deleted';
+
+  @override
+  String get noJoinRequests => 'No join requests';
+
+  @override
+  String get searchRequests => 'Search requests';
+
+  @override
+  String get filterByStatus => 'Filter by status';
+
+  @override
+  String get allRequests => 'All requests';
+
+  @override
+  String get adminNotes => 'Admin Notes';
+
+  @override
+  String get reviewDate => 'Review Date';
+
+  @override
+  String get requestDate => 'Request Date';
 }
