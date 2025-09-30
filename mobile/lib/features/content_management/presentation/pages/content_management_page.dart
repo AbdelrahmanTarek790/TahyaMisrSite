@@ -7,6 +7,7 @@ import 'package:tahya_misr_app/features/dashboard/presentation/cubits/dashboard_
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import 'manage_news/mange_news.dart';
+import 'manage_timeline/manage_timeline.dart';
 
 class ContentManagementPage extends StatefulWidget {
   const ContentManagementPage({super.key});
@@ -146,6 +147,24 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                  /* _showCreateEventDialog(context, l10n);*/
                 },
               ).animate().fadeIn(delay: 400.ms).slideX(begin: 0.3, end: 0),
+
+              const SizedBox(height: 12),
+
+              // Timeline Management
+              _buildManagementCard(
+                context,
+                title: 'إدارة خط الزمن',
+                subtitle: 'إضافة وتعديل أحداث خط الزمن',
+                icon: Icons.timeline,
+                color: Colors.green,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ManageTimeline(),
+                    ),
+                  );
+                },
+              ).animate().fadeIn(delay: 600.ms).slideX(begin: -0.3, end: 0),
 
               const SizedBox(height: 12),
 
