@@ -5,6 +5,7 @@ import 'package:tahya_misr_app/core/dependency_injection/injection.dart';
 import 'package:tahya_misr_app/shared/widgets/main_navigation.dart';
 import 'package:toastification/toastification.dart';
 
+import '../../../../core/constants/app_theme.dart';
 import '../../../../shared/widgets/custom_text_field.dart';
 import '../../../../shared/widgets/custom_button.dart';
 import '../../../../shared/widgets/loading_overlay.dart';
@@ -36,7 +37,7 @@ class _JoinRequestPageState extends State<JoinRequestPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('طلب الانضمام'),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor:AppTheme.primaryColor,
         foregroundColor: Colors.white,
       ),
       body: BlocListener<JoinRequestCubit, JoinRequestState>(
@@ -89,14 +90,14 @@ class _JoinRequestPageState extends State<JoinRequestPage> {
                             children: [
                               Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.person_add,
-                                    color: Theme.of(context).primaryColor,
+                                    color: AppTheme.primaryColor,
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
                                     'معلومات شخصية',
-                                    style: Theme.of(context).textTheme.titleLarge,
+                                    style: AppTheme.textTheme.titleLarge,
                                   ),
                                 ],
                               ),
@@ -185,21 +186,21 @@ class _JoinRequestPageState extends State<JoinRequestPage> {
                             children: [
                               Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.work,
-                                    color: Theme.of(context).primaryColor,
+                                    color: AppTheme.primaryColor,
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
                                     'معلومات العضوية',
-                                    style: Theme.of(context).textTheme.titleLarge,
+                                    style: AppTheme.textTheme.titleLarge,
                                   ),
                                 ],
                               ),
                               const SizedBox(height: 16),
                               Text(
                                 'نوع العضوية',
-                                style: Theme.of(context).textTheme.titleMedium,
+                                style: AppTheme.textTheme.titleMedium,
                               ),
                               const SizedBox(height: 8),
                               Column(
@@ -256,14 +257,14 @@ class _JoinRequestPageState extends State<JoinRequestPage> {
                             children: [
                               Row(
                                 children: [
-                                  Icon(
+                                  const Icon(
                                     Icons.notes,
-                                    color: Theme.of(context).primaryColor,
+                                    color: AppTheme.primaryColor,
                                   ),
                                   const SizedBox(width: 8),
                                   Text(
                                     'ملاحظات إضافية',
-                                    style: Theme.of(context).textTheme.titleLarge,
+                                    style: AppTheme.textTheme.titleLarge,
                                   ),
                                 ],
                               ),

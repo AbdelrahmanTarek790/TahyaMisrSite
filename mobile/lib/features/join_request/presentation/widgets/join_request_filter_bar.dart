@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tahya_misr_app/core/constants/app_theme.dart';
 
 class JoinRequestFilterBar extends StatelessWidget {
   final String selectedStatus;
@@ -19,7 +20,7 @@ class JoinRequestFilterBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppTheme.background.withOpacity(0.05),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.1),
@@ -41,7 +42,7 @@ class JoinRequestFilterBar extends StatelessWidget {
                 borderSide: BorderSide(color: Colors.grey[300]!),
               ),
               filled: true,
-              fillColor: Colors.grey[50],
+              // fillColor: Colors.grey[50],
             ),
           ),
           const SizedBox(height: 12),

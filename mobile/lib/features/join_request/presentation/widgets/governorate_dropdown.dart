@@ -45,7 +45,8 @@ class GovernorateDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: selectedGovernorate.isNotEmpty ? selectedGovernorate : null,
+      initialValue: selectedGovernorate.isNotEmpty ? selectedGovernorate : null,
+      hint: const Text('اختر المحافظة'),
       decoration: InputDecoration(
         labelText: 'المحافظة',
         prefixIcon: const Icon(Icons.location_on),
@@ -53,7 +54,7 @@ class GovernorateDropdown extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         filled: true,
-        fillColor: Colors.grey[50],
+        // fillColor: Colors.grey[50],
       ),
       items: _governorates.map((governorate) {
         return DropdownMenuItem<String>(

@@ -82,7 +82,7 @@ class _ManageTimelineState extends State<ManageTimeline> {
           return Scaffold(
             appBar: AppBar(
               title: const Text('إدارة خط الزمن'),
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: AppTheme.primaryColor,
               foregroundColor: Colors.white,
             ),
             body: RefreshIndicator(
@@ -144,12 +144,12 @@ class _ManageTimelineState extends State<ManageTimeline> {
                         const SizedBox(height: 16),
                         Text(
                           'لا توجد أحداث خط زمن',
-                          style: Theme.of(context).textTheme.titleLarge,
+                          style: AppTheme.textTheme.titleLarge,
                         ),
                         const SizedBox(height: 8),
                         Text(
                           'ابدأ بإضافة أول حدث',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          style: AppTheme.textTheme.bodyMedium?.copyWith(
                                 color: Colors.grey[600],
                               ),
                         ),
@@ -172,7 +172,7 @@ class _ManageTimelineState extends State<ManageTimeline> {
               },
               icon: const Icon(Icons.add),
               label: const Text('إضافة حدث'),
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: AppTheme.primaryColor,
             ),
           );
         },
@@ -249,14 +249,14 @@ class _ManageTimelineState extends State<ManageTimeline> {
             const SizedBox(height: 12),
             Text(
               timeline.title,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+              style: AppTheme.textTheme.titleLarge?.copyWith(
                     fontWeight: FontWeight.bold,
                   ),
             ),
             const SizedBox(height: 8),
             Text(
               timeline.description,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              style:AppTheme.textTheme.bodyMedium?.copyWith(
                     color: Colors.grey[600],
                   ),
               maxLines: 2,
@@ -274,7 +274,7 @@ class _ManageTimelineState extends State<ManageTimeline> {
                 Expanded(
                   child: Text(
                     timeline.achievement.split('\n').first,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    style: AppTheme.textTheme.bodySmall?.copyWith(
                           color: Colors.grey[700],
                         ),
                     maxLines: 1,
@@ -288,12 +288,12 @@ class _ManageTimelineState extends State<ManageTimeline> {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.grey[200],
+                    color: AppTheme.primaryColor.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
                     'الترتيب: ${timeline.order}',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    style: AppTheme.textTheme.bodySmall?.copyWith(
                           fontWeight: FontWeight.w500,
                         ),
                   ),

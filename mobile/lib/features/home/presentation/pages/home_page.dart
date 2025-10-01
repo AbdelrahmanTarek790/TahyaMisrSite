@@ -670,11 +670,16 @@ class HomeView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: Image.asset(
-                media['image'] as String,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.fill,
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(10),
+                ),
+                child: Image.asset(
+                  media['image'] as String,
+                  width: double.infinity,
+                  height: double.infinity,
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
             const SizedBox(height: 8),

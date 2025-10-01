@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tahya_misr_app/core/constants/app_theme.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -47,7 +48,6 @@ class CustomTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         filled: true,
-        fillColor: enabled ? Colors.grey[50] : Colors.grey[100],
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 16,
