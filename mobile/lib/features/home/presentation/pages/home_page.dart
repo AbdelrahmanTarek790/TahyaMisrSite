@@ -9,6 +9,7 @@ import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:readmore/readmore.dart';
 import 'package:sizer/sizer.dart';
+import 'package:tahya_misr_app/core/constants/app_constants.dart';
 import 'package:tahya_misr_app/core/utils/settings_cubit.dart';
 import 'package:tahya_misr_app/features/events/data/models/event_model.dart';
 import 'package:tahya_misr_app/features/home/presentation/widgets/quick_access_cards_widget.dart';
@@ -55,22 +56,22 @@ class HomeView extends StatelessWidget {
     {
       'id': 1,
       'title': 'منتدي الطريق الى الجمهوريه الجديدة ',
-      'image': 'assets/images/Achievements1.jpg',
+      'image':  AppConstants.achievements1,
     },
     {
       'id': 2,
       'title': ' القمه الشبابية العربيه',
-      'image': 'assets/images/Achievements2.jpg',
+      'image':   AppConstants.achievements2,
     },
     {
       'id': 3,
       'title': 'المنتدي الوطني لبناء الوعي',
-      'image': 'assets/images/Achievements3.jpg',
+      'image':   AppConstants.achievements3,
     },
     {
       'id': 4,
       'title': 'المبادرة الوطنية للبناء والتمكين',
-      'image': 'assets/images/Achievements4.jpg',
+      'image':  AppConstants.achievements4,
     }
   ];
 
@@ -119,7 +120,7 @@ class HomeView extends StatelessWidget {
         leading: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4.0),
           child: Image.asset(
-              'assets/images/Logo.png',
+              AppConstants.logoPng,
           ),
         ),
       ),
@@ -304,7 +305,7 @@ class HomeView extends StatelessWidget {
       return _buildEmptyCard(context);
     }
     return SizedBox(
-      height: 60.h,
+      height: 50.h,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: min(newsList.length, 5),
@@ -383,7 +384,7 @@ class HomeView extends StatelessWidget {
                         Text(
                           news.title,
                           style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
+                             AppTheme.textTheme.titleLarge?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
                           maxLines: 1,
@@ -392,7 +393,7 @@ class HomeView extends StatelessWidget {
                         const SizedBox(height: 8),
                         Text(
                           news.content,
-                          style: Theme.of(context).textTheme.bodySmall,
+                          style: AppTheme.textTheme.bodyMedium,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -402,14 +403,14 @@ class HomeView extends StatelessWidget {
                             children: [
                               Icon(
                                 Icons.person,
-                                size: 16,
+                                size: 5.w,
                                 color:
                                     Theme.of(context).colorScheme.onSurfaceVariant,
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 news.author,
-                                style: Theme.of(context).textTheme.bodySmall,
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             ],
                           ),
@@ -422,12 +423,12 @@ class HomeView extends StatelessWidget {
                                 iconName: 'access_time',
                                 color:
                                     Theme.of(context).colorScheme.onSurfaceVariant,
-                                size: 16,
+                                size: 5.w,
                               ),
-                              const SizedBox(width: 1),
+                              const SizedBox(width: 2),
                               Text(
                                 news.createdAt.toString().split(' ')[0],
-                                style: AppTheme.textTheme.labelSmall,
+                                style: AppTheme.textTheme.labelLarge,
                               ),
                               const Spacer(),
                               TextButton(
@@ -435,9 +436,8 @@ class HomeView extends StatelessWidget {
                                     context.push('/news/detail/${news.id}'),
                                 child: Text(
                                   l10n.readMore,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall
+                                  style:AppTheme.textTheme
+                                      .bodyMedium
                                       ?.copyWith(
                                         color:
                                             Theme.of(context).colorScheme.primary,

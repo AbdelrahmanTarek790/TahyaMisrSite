@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tahya_misr_app/core/utils/app_settings.dart';
 
+import '../../../../core/constants/app_constants.dart';
 import '../../../../core/constants/app_theme.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../cubits/auth_cubit.dart';
@@ -15,15 +17,23 @@ class SplashPage extends StatefulWidget {
 }
 
 class _SplashPageState extends State<SplashPage> {
+
+  @override
+  void didChangeDependencies() {
+    precacheImage(const AssetImage(AppConstants.logoPng), context);
+    super.didChangeDependencies();
+  }
   @override
   void initState() {
     super.initState();
+
     // Check authentication status after a delay
     Future.delayed(const Duration(seconds: 5), () {
       if (mounted) {
         context.read<AuthCubit>().checkAuthStatus();
       }
     });
+
   }
 
   @override
@@ -48,12 +58,12 @@ class _SplashPageState extends State<SplashPage> {
         },
         child: Container(
           width: double.infinity,
-          decoration:  const BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
               colors: [
-               AppTheme.primaryColor,
+                AppTheme.primaryColor,
                 AppTheme.secondaryColor,
               ],
             ),
@@ -66,38 +76,31 @@ class _SplashPageState extends State<SplashPage> {
                 Container(
                   width: 250,
                   height: 250,
-                  decoration: BoxDecoration(
-                    image: const DecorationImage(
-                      image: AssetImage('assets/images/Logo.png'),
-                      fit: BoxFit.cover,
+                  decoration: const BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(AppConstants.logoPng,),
+                      filterQuality: FilterQuality.high,
+                      fit: BoxFit.fill,
                     ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.white.withValues(alpha: 0.2),
-                        blurRadius: 10,
-                        offset: const Offset(0, 5),
-                      ),
-                    ],
                   ),
-                ).animate()
-                  .scale(duration: 800.ms, curve: Curves.elasticOut)
-                  .fadeIn(),
+                )
+                    .animate()
+                    .scale(duration: 800.ms, curve: Curves.elasticOut)
+                    .fadeIn(),
 
                 const SizedBox(height: 32),
 
                 // App Title
                 Text(
                   l10n.appTitle,
-                  style: Theme.of(context)
-                      .textTheme
-                      .displayMedium
-                      ?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ).animate()
-                  .fadeIn(delay: 400.ms, duration: 600.ms)
-                  .slideY(begin: 0.3, end: 0),
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                )
+                    .animate()
+                    .fadeIn(delay: 400.ms, duration: 600.ms)
+                    .slideY(begin: 0.3, end: 0),
 
                 const SizedBox(height: 8),
 
@@ -105,7 +108,10 @@ class _SplashPageState extends State<SplashPage> {
                 Text(
                   l10n.appSubTitle,
                   style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                    color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.9), // Red (Accent)
+                    color: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withValues(alpha: 0.9), // Red (Accent)
                     fontWeight: FontWeight.w200,
                     fontSize: 15,
                     shadows: [
@@ -116,9 +122,10 @@ class _SplashPageState extends State<SplashPage> {
                       ),
                     ],
                   ),
-                ).animate()
-                  .fadeIn(delay: 600.ms, duration: 600.ms)
-                  .slideY(begin: 0.3, end: 0),
+                )
+                    .animate()
+                    .fadeIn(delay: 600.ms, duration: 600.ms)
+                    .slideY(begin: 0.3, end: 0),
 
                 const SizedBox(height: 30),
 
@@ -129,19 +136,23 @@ class _SplashPageState extends State<SplashPage> {
                   child: CircularProgressIndicator(
                     strokeWidth: 4,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).colorScheme.primary.withValues(alpha: 0.8), // Red Accent
+                      Theme.of(context)
+                          .colorScheme
+                          .primary
+                          .withValues(alpha: 0.8), // Red Accent
                     ),
                   ),
-                ).animate()
-                  .fadeIn(delay: 1000.ms)
-                  .scale(delay: 1000.ms, duration: 400.ms),
+                )
+                    .animate()
+                    .fadeIn(delay: 1000.ms)
+                    .scale(delay: 1000.ms, duration: 400.ms),
 
                 const SizedBox(height: 24),
 
-                MovingEgyptFlagWords(text: l10n.welcomeTitle).animate()
+                MovingEgyptFlagWords(text: l10n.welcomeTitle)
+                    .animate()
                     .fadeIn(delay: 1200.ms)
                     .slideY(begin: 0.2, end: 0),
-
               ],
             ),
           ),
@@ -151,9 +162,9 @@ class _SplashPageState extends State<SplashPage> {
   }
 }
 
-
 class EgyptFlagText extends StatelessWidget {
   final String text;
+
   const EgyptFlagText({super.key, required this.text});
 
   @override
@@ -164,10 +175,10 @@ class EgyptFlagText extends StatelessWidget {
         ShimmerEffect(
           duration: 2500.ms,
           colors: const [
-            Colors.red,     // أحمر
-            Colors.white,   // أبيض
-            Colors.black,   // أسود
-            Colors.red,     // يعيد الأحمر عشان الـ loop
+            Colors.red, // أحمر
+            Colors.white, // أبيض
+            Colors.black, // أسود
+            Colors.red, // يعيد الأحمر عشان الـ loop
           ],
         ),
       ],
@@ -175,20 +186,17 @@ class EgyptFlagText extends StatelessWidget {
         text,
         textAlign: TextAlign.center,
         style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-          fontWeight: FontWeight.bold,
-          fontSize: 22,
-        ),
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
       ),
     );
   }
 }
 
-
-
-
-
 class MovingEgyptFlagWords extends StatelessWidget {
   final String text;
+
   const MovingEgyptFlagWords({super.key, required this.text});
 
   @override
@@ -211,24 +219,25 @@ class MovingEgyptFlagWords extends StatelessWidget {
           ),
         )
             .animate(
-          onPlay: (controller) => controller.repeat(), // حركة متكررة
-        )
+              onPlay: (controller) => controller.repeat(), // حركة متكررة
+            )
             .moveY(
-          begin: 0,
-          end: -12, // الكلمة تطلع لفوق
-          delay: (index * 300).ms, // كل كلمة تتأخر شوية
-          duration: 700.ms,
-          curve: Curves.easeInOut,
-        )
+              begin: 0,
+              end: -12,
+              // الكلمة تطلع لفوق
+              delay: (index * 300).ms,
+              // كل كلمة تتأخر شوية
+              duration: 700.ms,
+              curve: Curves.easeInOut,
+            )
             .then()
             .moveY(
-          begin: -12,
-          end: 0,
-          duration: 700.ms,
-          curve: Curves.easeInOut,
-        );
+              begin: -12,
+              end: 0,
+              duration: 700.ms,
+              curve: Curves.easeInOut,
+            );
       }).toList(),
     );
   }
 }
-
