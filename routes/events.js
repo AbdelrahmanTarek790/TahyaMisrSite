@@ -9,7 +9,7 @@ const {
   getEventRegisteredUsers
 } = require('../controllers/eventController');
 const { protect, admin } = require('../middleware/auth');
-const upload = require('../utils/upload');
+const { upload } = require("../utils/upload")
 
 const router = express.Router();
 
@@ -21,8 +21,8 @@ router.post('/:id/register', protect, registerForEvent);
 
 // Admin only routes
 router.get('/:id/registered-users', protect, admin, getEventRegisteredUsers);
-router.post('/', protect, admin, upload.single('image'), createEvent);
-router.put('/:id', protect, admin, upload.single('image'), updateEvent);
+router.post('/', protect, admin, ...upload.news(), createEvent);
+router.put('/:id', protect, admin, ...upload.news(), updateEvent);
 router.delete('/:id', protect, admin, deleteEvent);
 
 module.exports = router;

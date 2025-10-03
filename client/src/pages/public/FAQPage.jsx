@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
+import { QuickSEO } from "../../components/QuickSEO"
 import { Input } from "../../components/ui/input"
 import { Button } from "../../components/ui/button"
 import {
@@ -138,163 +139,166 @@ const FAQPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-background" dir="rtl">
-            {/* Hero Section */}
-            <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">
-                <div className="container mx-auto px-6 text-center">
-                    <div className="max-w-4xl mx-auto">
-                        <HelpCircle className="w-16 h-16 mx-auto mb-6 animate-float" />
-                        <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">الأسئلة الشائعة</h1>
-                        <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-                            إجابات شاملة على أكثر الأسئلة شيوعًا حول خدماتنا وأنشطتنا
-                        </p>
+        <>
+            <QuickSEO pageKey="faq" locale="ar" />
+            <div className="min-h-screen bg-background" dir="rtl">
+                {/* Hero Section */}
+                <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">
+                    <div className="container mx-auto px-6 text-center">
+                        <div className="max-w-4xl mx-auto">
+                            <HelpCircle className="w-16 h-16 mx-auto mb-6 animate-float" />
+                            <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight">الأسئلة الشائعة</h1>
+                            <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
+                                إجابات شاملة على أكثر الأسئلة شيوعًا حول خدماتنا وأنشطتنا
+                            </p>
 
-                        {/* Search Bar */}
-                        <div className="max-w-2xl mx-auto relative">
-                            <div className="relative">
-                                <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                                <Input
-                                    type="text"
-                                    placeholder="ابحث في الأسئلة الشائعة..."
-                                    value={searchTerm}
-                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pr-12 pl-4 py-4 text-lg bg-white/10 border-white/20 text-white placeholder:text-white/70 focus:bg-white/20"
-                                />
+                            {/* Search Bar */}
+                            <div className="max-w-2xl mx-auto relative">
+                                <div className="relative">
+                                    <Search className="absolute right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                                    <Input
+                                        type="text"
+                                        placeholder="ابحث في الأسئلة الشائعة..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="pr-12 pl-4 py-4 text-lg bg-white/10 border-white/20 text-white placeholder:text-white/70 focus:bg-white/20"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* Categories */}
-            <section className="py-12 bg-[linear-gradient(180deg,_rgb(245,245,245),_rgb(255,255,255))]">
-                <div className="container mx-auto px-6">
-                    <div className="flex flex-wrap gap-4 justify-center">
-                        {categories.map((category) => (
-                            <Button
-                                key={category.id}
-                                variant={selectedCategory === category.id ? "default" : "outline"}
-                                onClick={() => setSelectedCategory(category.id)}
-                                className={`flex items-center gap-2 ${
-                                    selectedCategory === category.id
-                                        ? "bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white"
-                                        : "hover:bg-egypt-red hover:text-white"
-                                }`}
-                            >
-                                <category.icon className="w-4 h-4" />
-                                {category.name}
-                            </Button>
-                        ))}
+                {/* Categories */}
+                <section className="py-12 bg-[linear-gradient(180deg,_rgb(245,245,245),_rgb(255,255,255))]">
+                    <div className="container mx-auto px-6">
+                        <div className="flex flex-wrap gap-4 justify-center">
+                            {categories.map((category) => (
+                                <Button
+                                    key={category.id}
+                                    variant={selectedCategory === category.id ? "default" : "outline"}
+                                    onClick={() => setSelectedCategory(category.id)}
+                                    className={`flex items-center gap-2 ${
+                                        selectedCategory === category.id
+                                            ? "bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white"
+                                            : "hover:bg-egypt-red hover:text-white"
+                                    }`}
+                                >
+                                    <category.icon className="w-4 h-4" />
+                                    {category.name}
+                                </Button>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* FAQ List */}
-            <section className="py-20">
-                <div className="container mx-auto px-6">
-                    <div className="max-w-4xl mx-auto">
-                        {filteredFAQs.length === 0 ? (
-                            <Card className="text-center py-16">
-                                <CardContent>
-                                    <HelpCircle className="w-16 h-16 mx-auto mb-6 text-muted-foreground" />
-                                    <h3 className="text-2xl font-bold text-foreground mb-4">لم نجد أسئلة مطابقة</h3>
-                                    <p className="text-muted-foreground mb-6">جرب تغيير الفئة أو مصطلح البحث للعثور على الإجابة التي تبحث عنها</p>
-                                    <Button
-                                        onClick={() => {
-                                            setSearchTerm("")
-                                            setSelectedCategory("all")
-                                        }}
-                                    >
-                                        عرض جميع الأسئلة
+                {/* FAQ List */}
+                <section className="py-20">
+                    <div className="container mx-auto px-6">
+                        <div className="max-w-4xl mx-auto">
+                            {filteredFAQs.length === 0 ? (
+                                <Card className="text-center py-16">
+                                    <CardContent>
+                                        <HelpCircle className="w-16 h-16 mx-auto mb-6 text-muted-foreground" />
+                                        <h3 className="text-2xl font-bold text-foreground mb-4">لم نجد أسئلة مطابقة</h3>
+                                        <p className="text-muted-foreground mb-6">جرب تغيير الفئة أو مصطلح البحث للعثور على الإجابة التي تبحث عنها</p>
+                                        <Button
+                                            onClick={() => {
+                                                setSearchTerm("")
+                                                setSelectedCategory("all")
+                                            }}
+                                        >
+                                            عرض جميع الأسئلة
+                                        </Button>
+                                    </CardContent>
+                                </Card>
+                            ) : (
+                                <div className="space-y-4">
+                                    {filteredFAQs.map((faq) => (
+                                        <Card key={faq.id} className="hover:shadow-elegant transition-all duration-300">
+                                            <CardHeader className="cursor-pointer select-none" onClick={() => toggleFAQ(faq.id)}>
+                                                <CardTitle className="text-right flex items-center justify-between">
+                                                    <span className="text-lg">{faq.question}</span>
+                                                    {expandedFAQ === faq.id ? (
+                                                        <ChevronUp className="w-5 h-5 text-muted-foreground" />
+                                                    ) : (
+                                                        <ChevronDown className="w-5 h-5 text-muted-foreground" />
+                                                    )}
+                                                </CardTitle>
+                                            </CardHeader>
+                                            {expandedFAQ === faq.id && (
+                                                <CardContent className="pt-0">
+                                                    <div className="border-t pt-6">
+                                                        <p className="text-muted-foreground text-right leading-relaxed">{faq.answer}</p>
+                                                    </div>
+                                                </CardContent>
+                                            )}
+                                        </Card>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </section>
+
+                {/* Still Need Help */}
+                <section className="py-20 bg-[linear-gradient(180deg,_rgb(245,245,245),_rgb(255,255,255))]">
+                    <div className="container mx-auto px-6">
+                        <div className="text-center mb-16">
+                            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">لم تجد الإجابة؟</h2>
+                            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">فريق الدعم جاهز لمساعدتك على مدار الساعة</p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                            <Card className="text-center hover:shadow-elegant transition-all duration-300 hover:-translate-y-2">
+                                <CardContent className="p-8">
+                                    <div className="w-16 h-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <MessageCircle className="w-8 h-8 text-white" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-foreground mb-4">الدردشة المباشرة</h3>
+                                    <p className="text-muted-foreground mb-6">تحدث مع أحد ممثلي الدعم فورًا</p>
+                                    <Button className="w-full">ابدأ الدردشة</Button>
+                                </CardContent>
+                            </Card>
+
+                            <Card className="text-center hover:shadow-elegant transition-all duration-300 hover:-translate-y-2">
+                                <CardContent className="p-8">
+                                    <div className="w-16 h-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <Phone className="w-8 h-8 text-white" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-foreground mb-4">الخط الساخن</h3>
+                                    <p className="text-muted-foreground mb-6">
+                                        اتصل بنا على الرقم المجاني
+                                        <br />
+                                        <strong className="text-foreground">16295</strong>
+                                    </p>
+                                    <Button variant="outline" className="w-full">
+                                        اتصل الآن
                                     </Button>
                                 </CardContent>
                             </Card>
-                        ) : (
-                            <div className="space-y-4">
-                                {filteredFAQs.map((faq) => (
-                                    <Card key={faq.id} className="hover:shadow-elegant transition-all duration-300">
-                                        <CardHeader className="cursor-pointer select-none" onClick={() => toggleFAQ(faq.id)}>
-                                            <CardTitle className="text-right flex items-center justify-between">
-                                                <span className="text-lg">{faq.question}</span>
-                                                {expandedFAQ === faq.id ? (
-                                                    <ChevronUp className="w-5 h-5 text-muted-foreground" />
-                                                ) : (
-                                                    <ChevronDown className="w-5 h-5 text-muted-foreground" />
-                                                )}
-                                            </CardTitle>
-                                        </CardHeader>
-                                        {expandedFAQ === faq.id && (
-                                            <CardContent className="pt-0">
-                                                <div className="border-t pt-6">
-                                                    <p className="text-muted-foreground text-right leading-relaxed">{faq.answer}</p>
-                                                </div>
-                                            </CardContent>
-                                        )}
-                                    </Card>
-                                ))}
-                            </div>
-                        )}
+
+                            <Card className="text-center hover:shadow-elegant transition-all duration-300 hover:-translate-y-2">
+                                <CardContent className="p-8">
+                                    <div className="w-16 h-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mx-auto mb-6">
+                                        <Mail className="w-8 h-8 text-white" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-foreground mb-4">البريد الإلكتروني</h3>
+                                    <p className="text-muted-foreground mb-6">
+                                        راسلنا على
+                                        <br />
+                                        <strong className="text-foreground">support@tahyamisr.org</strong>
+                                    </p>
+                                    <Button variant="outline" className="w-full">
+                                        إرسال رسالة
+                                    </Button>
+                                </CardContent>
+                            </Card>
+                        </div>
                     </div>
-                </div>
-            </section>
-
-            {/* Still Need Help */}
-            <section className="py-20 bg-[linear-gradient(180deg,_rgb(245,245,245),_rgb(255,255,255))]">
-                <div className="container mx-auto px-6">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">لم تجد الإجابة؟</h2>
-                        <p className="text-xl text-muted-foreground max-w-2xl mx-auto">فريق الدعم جاهز لمساعدتك على مدار الساعة</p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-                        <Card className="text-center hover:shadow-elegant transition-all duration-300 hover:-translate-y-2">
-                            <CardContent className="p-8">
-                                <div className="w-16 h-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <MessageCircle className="w-8 h-8 text-white" />
-                                </div>
-                                <h3 className="text-xl font-bold text-foreground mb-4">الدردشة المباشرة</h3>
-                                <p className="text-muted-foreground mb-6">تحدث مع أحد ممثلي الدعم فورًا</p>
-                                <Button className="w-full">ابدأ الدردشة</Button>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="text-center hover:shadow-elegant transition-all duration-300 hover:-translate-y-2">
-                            <CardContent className="p-8">
-                                <div className="w-16 h-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <Phone className="w-8 h-8 text-white" />
-                                </div>
-                                <h3 className="text-xl font-bold text-foreground mb-4">الخط الساخن</h3>
-                                <p className="text-muted-foreground mb-6">
-                                    اتصل بنا على الرقم المجاني
-                                    <br />
-                                    <strong className="text-foreground">16295</strong>
-                                </p>
-                                <Button variant="outline" className="w-full">
-                                    اتصل الآن
-                                </Button>
-                            </CardContent>
-                        </Card>
-
-                        <Card className="text-center hover:shadow-elegant transition-all duration-300 hover:-translate-y-2">
-                            <CardContent className="p-8">
-                                <div className="w-16 h-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mx-auto mb-6">
-                                    <Mail className="w-8 h-8 text-white" />
-                                </div>
-                                <h3 className="text-xl font-bold text-foreground mb-4">البريد الإلكتروني</h3>
-                                <p className="text-muted-foreground mb-6">
-                                    راسلنا على
-                                    <br />
-                                    <strong className="text-foreground">support@tahyamisr.org</strong>
-                                </p>
-                                <Button variant="outline" className="w-full">
-                                    إرسال رسالة
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    </div>
-                </div>
-            </section>
-        </div>
+                </section>
+            </div>
+        </>
     )
 }
 

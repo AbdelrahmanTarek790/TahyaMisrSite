@@ -80,18 +80,18 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) =
 
   return (
     <Sheet open={isOpen} onOpenChange={handleClose}>
-      <SheetContent className="w-[600px] sm:max-w-[600px]">
+      <SheetContent className="w-[95%] sm:max-w-[600px]">
         <SheetHeader>
-          <SheetTitle>{editingEvent ? 'Edit Event' : 'Create Event'}</SheetTitle>
+          <SheetTitle>{editingEvent ? 'تعديل الحدث' : 'إنشاء حدث'}</SheetTitle>
         </SheetHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6 px-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Event Title
+              عنوان الحدث
             </label>
             <Input
               {...register('title')}
-              placeholder="Enter event title"
+              placeholder="أدخل عنوان الحدث"
             />
             {errors.title && (
               <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
@@ -100,12 +100,12 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) =
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description
+              الوصف
             </label>
             <textarea
               {...register('description')}
               className="w-full min-h-[120px] p-3 border border-gray-300 rounded-md"
-              placeholder="Enter event description"
+              placeholder="أدخل وصف الحدث"
             />
             {errors.description && (
               <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
@@ -115,7 +115,7 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) =
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Date & Time
+                التاريخ والوقت
               </label>
               <Input
                 {...register('date')}
@@ -128,11 +128,11 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) =
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Location
+                الموقع
               </label>
               <Input
                 {...register('location')}
-                placeholder="Enter event location"
+                placeholder="أدخل موقع الحدث"
               />
               {errors.location && (
                 <p className="text-red-500 text-sm mt-1">{errors.location.message}</p>
@@ -142,7 +142,7 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) =
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image (Optional)
+              الصورة (اختياري)
             </label>
             <Input
               {...register('image')}
@@ -156,10 +156,10 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) =
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={handleClose}>
-              Cancel
+              إلغاء
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? `${editingEvent ? 'Updating...' : 'Creating...'}` : `${editingEvent ? 'Update Event' : 'Create Event'}`}
+              {isLoading ? `${editingEvent ? 'جارٍ التحديث...' : 'جارٍ الإنشاء...'}` : `${editingEvent ? 'تحديث الحدث' : 'إنشاء حدث'}`}
             </Button>
           </div>
         </form>

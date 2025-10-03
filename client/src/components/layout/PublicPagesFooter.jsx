@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from "lucide-react"
-import Logo from "@/assets/Logo.png"
+import Logo from "@/assets/Logo.webp"
 export default function PublicPagesFooter() {
     const socialLinks = [
         { icon: Facebook, href: "#", label: "Facebook" },
@@ -41,7 +41,7 @@ export default function PublicPagesFooter() {
                             <div className="w-16 h-16    bg-white rounded-lg flex items-center justify-center">
                                 <img src={Logo} alt="Logo" className="w-12 h-12" />
                             </div>
-                            <div className="text-right pr-2" >
+                            <div className="text-right pr-2">
                                 <span className="text-xl font-bold font-arabic">اتحاد شباب تحيا مصر</span>
                                 <div className="text-sm text-egypt-white/70 font-arabic">منظمة شبابية</div>
                             </div>

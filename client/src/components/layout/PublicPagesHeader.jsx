@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
+import { usePreloadRoutes } from "@/hooks/usePreloadRoutes"
 import { Button } from "@/components/ui/button"
-import Logo from "@/assets/Logo.png"
+import Logo from "@/assets/Logo.webp"
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -41,6 +42,9 @@ export default function PublicPagesHeader() {
     const navigate = useNavigate()
     const { user, logout } = useAuth()
     const [isScrolled, setIsScrolled] = useState(false)
+
+    // Initialize route preloading
+    usePreloadRoutes()
 
     // Handle scroll event to change header styling
     useEffect(() => {
@@ -201,9 +205,9 @@ export default function PublicPagesHeader() {
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <div className="hidden md:flex md:items-center md:space-x-4 ">
+                        <div className="hidden lg:flex md:items-center md:space-x-4 ">
                             <NavigationMenu>
-                                <NavigationMenuList className={" md:flex-row-reverse "}>
+                                <NavigationMenuList className={" lg:flex-row-reverse "}>
                                     <NavigationMenuItem>
                                         <NavLink to="/" className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}>
                                             الرئيسية
@@ -268,9 +272,9 @@ export default function PublicPagesHeader() {
 
                             {/* Render auth buttons based on login state */}
                         </div>
-                        <div className="hidden md:flex md:items-center md:flex-row-reverse md:space-x-4">{renderAuthButtons()}</div>
+                        <div className="hidden lg:flex md:items-center md:flex-row-reverse md:space-x-4">{renderAuthButtons()}</div>
                         {/* Mobile menu and search buttons */}
-                        <div className="flex items-center md:hidden">
+                        <div className="flex items-center lg:hidden">
                             {user && (
                                 <Button variant="ghost" size="icon" className="relative mr-1" aria-label="Notifications">
                                     <Bell size={18} />

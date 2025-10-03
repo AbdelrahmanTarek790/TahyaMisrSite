@@ -2,6 +2,7 @@ import React from "react"
 import { Outlet } from "react-router-dom"
 import PublicPagesHeader from "./PublicPagesHeader"
 import PublicPagesFooter from "./PublicPagesFooter"
+import FloatingScrollToTop from "../ui/FloatingScrollToTop"
 
 export default function PublicLayout() {
     return (
@@ -11,6 +12,7 @@ export default function PublicLayout() {
                 <Outlet />
             </main>
             <PublicPagesFooter />
+            <FloatingScrollToTop />
         </div>
     )
 }

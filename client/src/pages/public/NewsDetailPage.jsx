@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { Button } from "../../components/ui/button"
 import { ArrowLeft, Calendar, User, Clock, Share2, Facebook, Twitter, Linkedin } from "lucide-react"
 import { newsAPI } from "../../api"
+import { SEOMetadata } from "../../components/SEOMetadata"
 
 const NewsDetailPage = () => {
     const { id } = useParams()
@@ -12,6 +13,46 @@ const NewsDetailPage = () => {
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
     const [relatedNews, setRelatedNews] = useState([])
+
+    // Create SEO props for dynamic content
+    const seoProps = newsItem
+        ? {
+              title: `${newsItem.title} - اتحاد شباب تحيا مصر`,
+              description: newsItem.content?.substring(0, 160) || "اقرأ المزيد من أخبار اتحاد شباب تحيا مصر",
+              keywords: `${newsItem.title}, أخبار, اتحاد شباب تحيا مصر, ${newsItem.category || ""}`,
+              image: newsItem.image ? `https://form.codepeak.software/uploads/${newsItem.image}` : `https://tahyamisryu.com/Logo.webp`,
+              url: `/news/${id}`,
+              type: "article",
+              structuredData: {
+                  "@context": "https://schema.org",
+                  "@type": "NewsArticle",
+                  headline: newsItem.title,
+                  description: newsItem.content?.substring(0, 200),
+                  image: newsItem.image ? `https://form.codepeak.software/uploads/${newsItem.image}` : `https://tahyamisryu.com/Logo.webp`,
+                  author: {
+                      "@type": "Organization",
+                      name: "اتحاد شباب تحيا مصر",
+                  },
+                  publisher: {
+                      "@type": "Organization",
+                      name: "اتحاد شباب تحيا مصر",
+                      logo: {
+                          "@type": "ImageObject",
+                          url: `https://tahyamisryu.com/Logo.webp`,
+                      },
+                  },
+                  datePublished: newsItem.createdAt,
+                  dateModified: newsItem.updatedAt || newsItem.createdAt,
+                  url: `https://tahyamisryu.com/news/${id}`,
+              },
+          }
+        : {
+              // Default SEO while loading
+              title: "تفاصيل الخبر - اتحاد شباب تحيا مصر",
+              description: "اقرأ تفاصيل الخبر من اتحاد شباب تحيا مصر",
+              url: `/news/${id}`,
+              type: "article",
+          }
 
     useEffect(() => {
         fetchNews()
@@ -42,7 +83,8 @@ const NewsDetailPage = () => {
             const response = await fetch(`https://form.codepeak.software/api/v1/news?limit=3`)
             if (response.ok) {
                 const data = await response.json()
-                setRelatedNews((data.news || data.data || []).filter((item) => item._id !== id).slice(0, 3))
+
+                setRelatedNews((data.data.news || data.data || []).filter((item) => item._id !== id).slice(0, 3))
             }
         } catch (error) {
             console.error("Failed to fetch related news:", error)
@@ -126,128 +168,151 @@ const NewsDetailPage = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-yellow-50">
-            {/* Header Navigation */}
-            <div className="bg-white border-b border-gray-200">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4 font-arabic">
-                        <ArrowLeft className="ml-2 h-4 w-4" />
-                        العودة
-                    </Button>
-                </div>
-            </div>
-
-            {/* Article Content */}
-            <article className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                {/* Hero Image */}
-                {newsItem.image && (
-                    <div className="mb-8 rounded-xl overflow-hidden shadow-elegant">
-                        <img
-                            src={`https://form.codepeak.software/uploads/${newsItem.image}`}
-                            crossOrigin="anonymous"
-                            alt={newsItem.title}
-                            className=" w-1/2 mx-auto object-cover"
-                        />
-                    </div>
-                )}
-
-                {/* Article Header */}
-                <div className="bg-white rounded-xl shadow-elegant p-8 mb-8">
-                    <header className="mb-6">
-                        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight font-arabic text-right">{newsItem.title}</h1>
-
-                        <div className="flex flex-wrap items-center justify-end gap-4 text-sm text-gray-600 mb-6">
-                            <div className="flex items-center font-arabic">
-                                <span>{formatDate(newsItem.createdAt)}</span>
-                                <Calendar className="ml-2 h-4 w-4" />
-                            </div>
-
-                            <div className="flex items-center font-arabic">
-                                <span>بواسطة {newsItem.author?.name || "الإدارة"}</span>
-                                <User className="ml-2 h-4 w-4" />
-                            </div>
-
-                            <div className="flex items-center font-arabic">
-                                <span>{getReadingTime(newsItem.content)}</span>
-                                <Clock className="ml-2 h-4 w-4" />
-                            </div>
-                        </div>
-
-                        {/* Share Buttons */}
-                        <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
-                            <span className="text-sm text-gray-600 ml-2 font-arabic">شارك:</span>
-                            <Button variant="outline" size="sm" onClick={() => shareOnSocial("facebook")} className="text-blue-600 hover:bg-blue-50">
-                                <Facebook className="h-4 w-4" />
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => shareOnSocial("twitter")} className="text-blue-400 hover:bg-blue-50">
-                                <Twitter className="h-4 w-4" />
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => shareOnSocial("linkedin")} className="text-blue-700 hover:bg-blue-50">
-                                <Linkedin className="h-4 w-4" />
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={copyToClipboard} className="text-gray-600 hover:bg-gray-50">
-                                <Share2 className="h-4 w-4" />
-                            </Button>
-                        </div>
-                    </header>
-
-                    {/* Article Content */}
-                    <div className="prose prose-lg max-w-none">
-                        <div className="whitespace-pre-wrap text-gray-700 leading-relaxed font-arabic text-right">{newsItem.content}</div>
-                    </div>
-                </div>
-
-                {/* Related Articles */}
-                {relatedNews.length > 0 && (
-                    <section className="bg-white rounded-xl shadow-elegant p-8">
-                        <h2 className="text-2xl font-bold text-gray-900 mb-6 font-arabic text-right">مقالات ذات صلة</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            {relatedNews.map((article) => (
-                                <Card key={article._id} className="hover:shadow-elegant transition-shadow cursor-pointer bg-white border-gray-200">
-                                    <Link to={`/news/${article._id}`}>
-                                        {article.image && (
-                                            <div className="aspect-video overflow-hidden rounded-t-lg">
-                                                <img
-                                                    crossOrigin="anonymous"
-                                                    src={`https://form.codepeak.software/uploads/${article.image}`}
-                                                    alt={article.title}
-                                                    className="w-full h-full object-cover hover:scale-105 transition-transform"
-                                                />
-                                            </div>
-                                        )}
-                                        <CardHeader className="pb-2">
-                                            <CardTitle className="text-lg line-clamp-2 font-arabic text-right">{article.title}</CardTitle>
-                                        </CardHeader>
-                                        <CardContent>
-                                            <p className="text-sm text-gray-600 line-clamp-3 mb-2 font-arabic text-right">{article.content}</p>
-                                            <div className="flex items-center justify-end text-xs text-gray-500 font-arabic">
-                                                <span>{formatDate(article.createdAt)}</span>
-                                                <Calendar className="ml-1 h-3 w-3" />
-                                            </div>
-                                        </CardContent>
-                                    </Link>
-                                </Card>
-                            ))}
-                        </div>
-                    </section>
-                )}
-            </article>
-
-            {/* Call to Action */}
-            <section className="py-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white mt-12">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl font-bold mb-6 font-arabic">هل تريد البقاء على اطلاع؟</h2>
-                    <p className="text-xl mb-8 max-w-2xl mx-auto font-arabic text-right leading-relaxed">
-                        انضم إلى مجتمعنا للحصول على آخر الأخبار والتحديثات مباشرة في لوحة التحكم الخاصة بك
-                    </p>
-                    <Link to="/register">
-                        <Button size="lg" className="bg-white text-egypt-red hover:bg-gray-100 hover:text-egypt-red px-8 py-3 font-arabic">
-                            انضم إلى مجتمعنا
+        <>
+            <SEOMetadata {...seoProps} />
+            <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-yellow-50">
+                {/* Header Navigation */}
+                <div className="bg-white border-b border-gray-200">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                        <Button variant="ghost" onClick={() => navigate(-1)} className="mb-4 font-arabic">
+                            <ArrowLeft className="ml-2 h-4 w-4" />
+                            العودة
                         </Button>
-                    </Link>
+                    </div>
                 </div>
-            </section>
-        </div>
+
+                {/* Article Content */}
+                <article className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    {/* Hero Image */}
+                    {newsItem.image && (
+                        <div className="mb-8 rounded-xl overflow-hidden shadow-elegant">
+                            <img
+                                src={`https://form.codepeak.software/uploads/${newsItem.image}`}
+                                crossOrigin="anonymous"
+                                alt={newsItem.title}
+                                className=" w-1/2 mx-auto object-cover"
+                            />
+                        </div>
+                    )}
+
+                    {/* Article Header */}
+                    <div className="bg-white rounded-xl shadow-elegant p-8 mb-8">
+                        <header className="mb-6">
+                            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight font-arabic text-right">
+                                {newsItem.title}
+                            </h1>
+
+                            <div className="flex flex-wrap items-center justify-end gap-4 text-sm text-gray-600 mb-6">
+                                <div className="flex items-center font-arabic">
+                                    <span>{formatDate(newsItem.createdAt)}</span>
+                                    <Calendar className="ml-2 h-4 w-4" />
+                                </div>
+
+                                <div className="flex items-center font-arabic">
+                                    <span>بواسطة {newsItem.author?.name || "الإدارة"}</span>
+                                    <User className="ml-2 h-4 w-4" />
+                                </div>
+
+                                <div className="flex items-center font-arabic">
+                                    <span>{getReadingTime(newsItem.content)}</span>
+                                    <Clock className="ml-2 h-4 w-4" />
+                                </div>
+                            </div>
+
+                            {/* Share Buttons */}
+                            <div className="flex items-center gap-2 pt-4 border-t border-gray-200">
+                                <span className="text-sm text-gray-600 ml-2 font-arabic">شارك:</span>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => shareOnSocial("facebook")}
+                                    className="text-blue-600 hover:bg-blue-50"
+                                >
+                                    <Facebook className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => shareOnSocial("twitter")}
+                                    className="text-blue-400 hover:bg-blue-50"
+                                >
+                                    <Twitter className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => shareOnSocial("linkedin")}
+                                    className="text-blue-700 hover:bg-blue-50"
+                                >
+                                    <Linkedin className="h-4 w-4" />
+                                </Button>
+                                <Button variant="outline" size="sm" onClick={copyToClipboard} className="text-gray-600 hover:bg-gray-50">
+                                    <Share2 className="h-4 w-4" />
+                                </Button>
+                            </div>
+                        </header>
+
+                        {/* Article Content */}
+                        <div className="prose prose-lg max-w-none">
+                            <div className="whitespace-pre-wrap text-gray-700 leading-relaxed font-arabic text-right">{newsItem.content}</div>
+                        </div>
+                    </div>
+
+                    {/* Related Articles */}
+                    {relatedNews.length > 0 && (
+                        <section className="bg-white rounded-xl shadow-elegant p-8">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-6 font-arabic text-right">مقالات ذات صلة</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {relatedNews.map((article) => (
+                                    <Card
+                                        key={article._id}
+                                        className="hover:shadow-elegant transition-shadow cursor-pointer bg-white h-full border-gray-200"
+                                    >
+                                        <Link to={`/news/${article._id}`}>
+                                            {article.image && (
+                                                <div className=" overflow-hidden rounded-t-lg">
+                                                    <img
+                                                        crossOrigin="anonymous"
+                                                        src={`https://form.codepeak.software/uploads/${article.image}`}
+                                                        alt={article.title}
+                                                        className="w-full  object-cover hover:scale-105 transition-transform"
+                                                    />
+                                                </div>
+                                            )}
+                                            <CardHeader className="pb-2">
+                                                <CardTitle className="text-lg line-clamp-2 font-arabic text-right">{article.title}</CardTitle>
+                                            </CardHeader>
+                                            <CardContent>
+                                                <p className="text-sm text-gray-600 line-clamp-3 mb-2 font-arabic text-right">{article.content}</p>
+                                                <div className="flex items-center justify-end text-xs text-gray-500 font-arabic">
+                                                    <span>{formatDate(article.createdAt)}</span>
+                                                    <Calendar className="ml-1 h-3 w-3" />
+                                                </div>
+                                            </CardContent>
+                                        </Link>
+                                    </Card>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+                </article>
+
+                {/* Call to Action */}
+                <section className="py-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white mt-12">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                        <h2 className="text-3xl font-bold mb-6 font-arabic">هل تريد البقاء على اطلاع؟</h2>
+                        <p className="text-xl mb-8 max-w-2xl mx-auto font-arabic text-right leading-relaxed">
+                            انضم إلى مجتمعنا للحصول على آخر الأخبار والتحديثات مباشرة في لوحة التحكم الخاصة بك
+                        </p>
+                        <Link to="/register">
+                            <Button size="lg" className="bg-white text-egypt-red hover:bg-gray-100 hover:text-egypt-red px-8 py-3 font-arabic">
+                                انضم إلى مجتمعنا
+                            </Button>
+                        </Link>
+                    </div>
+                </section>
+            </div>
+        </>
     )
 }
 

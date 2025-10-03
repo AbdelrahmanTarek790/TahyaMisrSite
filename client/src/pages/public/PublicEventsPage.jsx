@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
 import { Search, Calendar, MapPin, Users, ArrowLeft } from "lucide-react"
-import Logo from "@/assets/Logo.png"
+import Logo from "@/assets/Logo.webp"
 
 const PublicEventsPage = () => {
     const [events, setEvents] = useState([])
@@ -160,6 +160,7 @@ const PublicEventsPage = () => {
                                                 <img
                                                     src={`https://form.codepeak.software/uploads/${event.image}`}
                                                     alt={event.title}
+                                                    crossOrigin="anonymous"
                                                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                                     onError={(e) => {
                                                         e.target.src = Logo
@@ -207,11 +208,7 @@ const PublicEventsPage = () => {
                                                     </Button>
                                                 </Link>
                                                 {!isEventPast(event.date) ? (
-                                                    <Link to="/register">
-                                                        <Button size="sm" className="bg-egypt-red hover:bg-egypt-red/90 text-white font-arabic">
-                                                            انضم للتسجيل
-                                                        </Button>
-                                                    </Link>
+                                                    <span className="text-xs text-egypt-gold font-arabic">الفعالية قادمة</span>
                                                 ) : (
                                                     <span className="text-xs text-muted-foreground font-arabic">انتهت الفعالية</span>
                                                 )}
@@ -284,6 +281,5 @@ const PublicEventsPage = () => {
         </div>
     )
 }
-
 
 export default PublicEventsPage
