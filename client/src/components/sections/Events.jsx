@@ -4,7 +4,7 @@ import { Button } from "../ui/enhanced-button"
 import { Calendar, MapPin, Users, Clock, ArrowRight, Star } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import Logo from "@/assets/Logo.png"
+import Logo from "@/assets/Logo.webp"
 const Events = () => {
     const [events, setEvents] = useState([])
     const [isLoading, setIsLoading] = useState(true)

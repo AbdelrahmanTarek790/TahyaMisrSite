@@ -1,8 +1,31 @@
-# robots.txt for https://tahyamisryu.com/
+# robots.txt for https://tahyamisr.org/
 
 User-agent: *
-# Allow all crawlers to index everything
-Disallow:
+# Allow all crawlers to index public pages
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /news
+Allow: /events
+Allow: /journey
+Allow: /join
+Allow: /help
+Allow: /terms
+Allow: /privacy
+Allow: /faq
+
+# Disallow private/admin areas
+Disallow: /dashboard
+Disallow: /login
+Disallow: /admin
+Disallow: /api
+
+# Crawl-delay for better server performance
+Crawl-delay: 1
 
 # Point crawlers to your sitemap
-Sitemap: https://tahyamisryu.com/sitemap.xml
+Sitemap: https://tahyamisr.org/sitemap.xml
+
+# Additional sitemaps for different content types
+Sitemap: https://tahyamisr.org/sitemap-news.xml
+Sitemap: https://tahyamisr.org/sitemap-events.xml

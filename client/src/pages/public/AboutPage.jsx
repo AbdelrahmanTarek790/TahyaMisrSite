@@ -2,8 +2,13 @@ import { Link } from "react-router-dom"
 import { Button } from "../../components/ui/button"
 import { Card, CardContent } from "../../components/ui/card"
 import { Users, Target, Heart, Award, ArrowLeft, VenetianMaskIcon, Mail, Globe, BookOpen, Crown } from "lucide-react"
+import { useDocumentMetadata } from "../../hooks/useDocumentMetadata"
+import { getPageSEO } from "../../constants/seoConfig"
 
 const AboutPage = () => {
+    // Set document metadata for SEO
+    const seoData = getPageSEO("about", "ar")
+    useDocumentMetadata(seoData)
     const values = [
         {
             icon: VenetianMaskIcon,
@@ -83,135 +88,150 @@ const AboutPage = () => {
     ]
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Hero Section */}
-            <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-6 font-arabic animate-slide-up">عن اتحاد شباب تحيا مصر</h1>
-                    <p
-                        className="text-xl mb-8 max-w-3xl mx-auto leading-relaxed font-arabic text-center animate-slide-up"
-                        style={{ animationDelay: "0.2s" }}
-                    >
-                        اتحاد شبابي مصري يجمع بين مختلف التوجهات الشبابية تحت مظلة واحدة ، و يسعى إلى حل قضايا وتحديات حيوية تواجه المجتمع المصرى
-                        ،خاصة الشباب اعتمادا على رؤية شبابية متجددة لتعزيز تنمية الوطن والتقدم به نحو آفاق أفضل
-                    </p>
-                </div>
-            </section>
+        <>
+            <title>{seoData.title}</title>
+            <meta name="description" content={seoData.description} />
+            <meta name="keywords" content={seoData.keywords} />
+            <meta property="og:title" content={seoData.title} />
+            <meta property="og:description" content={seoData.description} />
+            <meta property="og:image" content={`${window.location.origin}${seoData.image}`} />
+            <meta property="og:url" content={`${window.location.origin}${seoData.url}`} />
+            <meta property="og:type" content={seoData.type} />
+            <meta name="twitter:card" content="summary_large_image" />
+            <link rel="canonical" href={`${window.location.origin}${seoData.url}`} />
 
-            {/* Mission, Vision & Goals */}
-            <section className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))]">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16 animate-fade-in">
-                        <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 font-arabic">
-                            <span className="text-egypt-red">رؤيتنا ورسالتنا</span>
-                        </h2>
-                        <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-arabic">الأسس التي نبني عليها عملنا وطموحاتنا للمستقبل</p>
+            <div className="min-h-screen bg-gray-50">
+                {/* Hero Section */}
+                <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                        <h1 className="text-4xl md:text-5xl font-bold mb-6 font-arabic animate-slide-up">عن اتحاد شباب تحيا مصر</h1>
+                        <p
+                            className="text-xl mb-8 max-w-3xl mx-auto leading-relaxed font-arabic text-center animate-slide-up"
+                            style={{ animationDelay: "0.2s" }}
+                        >
+                            اتحاد شبابي مصري يجمع بين مختلف التوجهات الشبابية تحت مظلة واحدة ، و يسعى إلى حل قضايا وتحديات حيوية تواجه المجتمع المصرى
+                            ،خاصة الشباب اعتمادا على رؤية شبابية متجددة لتعزيز تنمية الوطن والتقدم به نحو آفاق أفضل
+                        </p>
                     </div>
+                </section>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                        {values.map((value, index) => (
-                            <Card
-                                key={index}
-                                className="bg-[linear-gradient(145deg,_rgb(255,255,255),_rgb(242,242,242))] border-0 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-scale-in"
-                                style={{ animationDelay: `${index * 0.15}s` }}
-                            >
-                                <CardContent className="p-6 text-center">
-                                    <div className="w-16 h-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:animate-float transition-all duration-300">
-                                        <value.icon className="w-8 h-8 text-white" />
-                                    </div>
-                                    <h3 className="text-xl font-semibold text-foreground mb-3 font-arabic">{value.title}</h3>
-                                    <p className="text-muted-foreground leading-relaxed font-arabic text-right">{value.description}</p>
-                                </CardContent>
-                            </Card>
-                        ))}
-                    </div>
-                </div>
-            </section>
+                {/* Mission, Vision & Goals */}
+                <section className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))]">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-16 animate-fade-in">
+                            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-6 font-arabic">
+                                <span className="text-egypt-red">رؤيتنا ورسالتنا</span>
+                            </h2>
+                            <p className="text-lg text-muted-foreground max-w-2xl mx-auto font-arabic">
+                                الأسس التي نبني عليها عملنا وطموحاتنا للمستقبل
+                            </p>
+                        </div>
 
-            {/* Core Values */}
-            <section className="py-20 bg-white">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-arabic">قيمنا الأساسية</h2>
-                        <p className="text-lg text-gray-600 font-arabic">المبادئ التي توجه كل ما نقوم به</p>
-                    </div>
-
-                    <div className="grid md:grid-cols-3 gap-8">
-                        {coreValues.map((value, index) => (
-                            <div key={index} className="text-center group animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
-                                <div
-                                    className={`${value.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                            {values.map((value, index) => (
+                                <Card
+                                    key={index}
+                                    className="bg-[linear-gradient(145deg,_rgb(255,255,255),_rgb(242,242,242))] border-0 shadow-card hover:shadow-elegant transition-all duration-500 hover:-translate-y-2 group animate-scale-in"
+                                    style={{ animationDelay: `${index * 0.15}s` }}
                                 >
-                                    <value.icon className={`h-8 w-8 ${value.iconColor}`} />
-                                </div>
-                                <h3 className="text-xl font-semibold mb-3 font-arabic">{value.title}</h3>
-                                <p className="text-gray-600 font-arabic text-center">{value.description}</p>
-                            </div>
-                        ))}
+                                    <CardContent className="p-6 text-center">
+                                        <div className="w-16 h-16 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mx-auto mb-4 group-hover:animate-float transition-all duration-300">
+                                            <value.icon className="w-8 h-8 text-white" />
+                                        </div>
+                                        <h3 className="text-xl font-semibold text-foreground mb-3 font-arabic">{value.title}</h3>
+                                        <p className="text-muted-foreground leading-relaxed font-arabic text-right">{value.description}</p>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* What We Do */}
-            <section className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))]">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-arabic">ما نقوم به</h2>
-                        <p className="text-lg text-gray-600 font-arabic">أنشطتنا ومبادراتنا التي تحدث فرقاً</p>
-                    </div>
+                {/* Core Values */}
+                <section className="py-20 bg-white">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-arabic">قيمنا الأساسية</h2>
+                            <p className="text-lg text-gray-600 font-arabic">المبادئ التي توجه كل ما نقوم به</p>
+                        </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {activities.map((activity, index) => (
-                            <Card
-                                key={index}
-                                className="bg-white border-0 shadow-card hover:shadow-elegant transition-all duration-300 hover:-translate-y-1 group animate-slide-up"
-                                style={{ animationDelay: `${index * 0.1}s` }}
-                            >
-                                <CardContent className="p-6">
-                                    <div className="w-12 h-12 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
-                                        <activity.icon className="w-6 h-6 text-white" />
+                        <div className="grid md:grid-cols-3 gap-8">
+                            {coreValues.map((value, index) => (
+                                <div key={index} className="text-center group animate-scale-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                                    <div
+                                        className={`${value.color} w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform duration-300`}
+                                    >
+                                        <value.icon className={`h-8 w-8 ${value.iconColor}`} />
                                     </div>
-                                    <h4 className="text-lg font-semibold mb-3 font-arabic text-right">{activity.title}</h4>
-                                    <p className="text-gray-600 font-arabic text-right leading-relaxed">{activity.description}</p>
-                                </CardContent>
-                            </Card>
-                        ))}
+                                    <h3 className="text-xl font-semibold mb-3 font-arabic">{value.title}</h3>
+                                    <p className="text-gray-600 font-arabic text-center">{value.description}</p>
+                                </div>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            {/* Join Us */}
-            <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl md:text-4xl font-bold mb-6 font-arabic animate-slide-up">كن جزءاً من الأتحاد</h2>
-                    <p
-                        className="text-xl mb-8 max-w-2xl mx-auto font-arabic text-right leading-relaxed animate-slide-up"
-                        style={{ animationDelay: "0.2s" }}
-                    >
-                        انضم إلى آلاف الشباب المصريين الذين يحدثون فرقاً. معاً، يمكننا بناء مستقبل أفضل لمصر.
-                    </p>
-                    <div className="flex flex-col sm:flex-row justify-center gap-4 animate-scale-in" style={{ animationDelay: "0.4s" }}>
-                        <Link to="/register">
-                            <Button
-                                size="lg"
-                                className="bg-white text-egypt-red hover:bg-gray-100 px-8 py-3 font-arabic hover:scale-105 transition-all duration-300"
-                            >
-                                انضم الآن
-                            </Button>
-                        </Link>
-                        <Link to="/contact">
-                            <Button
-                                size="lg"
-                                variant="outline-hero"
-                                className="border-white border-2  text-white hover:bg-white hover:text-egypt-red px-8 py-3 font-arabic hover:scale-105 transition-all duration-300"
-                            >
-                                اتصل بنا
-                            </Button>
-                        </Link>
+                {/* What We Do */}
+                <section className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))]">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 font-arabic">ما نقوم به</h2>
+                            <p className="text-lg text-gray-600 font-arabic">أنشطتنا ومبادراتنا التي تحدث فرقاً</p>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {activities.map((activity, index) => (
+                                <Card
+                                    key={index}
+                                    className="bg-white border-0 shadow-card hover:shadow-elegant transition-all duration-300 hover:-translate-y-1 group animate-slide-up"
+                                    style={{ animationDelay: `${index * 0.1}s` }}
+                                >
+                                    <CardContent className="p-6">
+                                        <div className="w-12 h-12 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300">
+                                            <activity.icon className="w-6 h-6 text-white" />
+                                        </div>
+                                        <h4 className="text-lg font-semibold mb-3 font-arabic text-right">{activity.title}</h4>
+                                        <p className="text-gray-600 font-arabic text-right leading-relaxed">{activity.description}</p>
+                                    </CardContent>
+                                </Card>
+                            ))}
+                        </div>
                     </div>
-                </div>
-            </section>
-        </div>
+                </section>
+
+                {/* Join Us */}
+                <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">
+                    <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                        <h2 className="text-3xl md:text-4xl font-bold mb-6 font-arabic animate-slide-up">كن جزءاً من الأتحاد</h2>
+                        <p
+                            className="text-xl mb-8 max-w-2xl mx-auto font-arabic text-right leading-relaxed animate-slide-up"
+                            style={{ animationDelay: "0.2s" }}
+                        >
+                            انضم إلى آلاف الشباب المصريين الذين يحدثون فرقاً. معاً، يمكننا بناء مستقبل أفضل لمصر.
+                        </p>
+                        <div className="flex flex-col sm:flex-row justify-center gap-4 animate-scale-in" style={{ animationDelay: "0.4s" }}>
+                            <Link to="/register">
+                                <Button
+                                    size="lg"
+                                    className="bg-white text-egypt-red hover:bg-gray-100 px-8 py-3 font-arabic hover:scale-105 transition-all duration-300"
+                                >
+                                    انضم الآن
+                                </Button>
+                            </Link>
+                            <Link to="/contact">
+                                <Button
+                                    size="lg"
+                                    variant="outline-hero"
+                                    className="border-white border-2  text-white hover:bg-white hover:text-egypt-red px-8 py-3 font-arabic hover:scale-105 transition-all duration-300"
+                                >
+                                    اتصل بنا
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </>
     )
 }
 

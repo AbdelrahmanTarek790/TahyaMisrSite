@@ -1,7 +1,6 @@
+import React, { useRef, useEffect } from "react"
 import { motion } from "motion/react"
 import { inView, animate, stagger } from "motion"
-import { useRef, useEffect } from "react"
-import React from "react"
 
 // Animation variants for different entrance effects
 export const fadeInUp = {

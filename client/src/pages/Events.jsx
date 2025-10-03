@@ -7,7 +7,7 @@ import { useAuth } from "../context/AuthContext"
 import { eventsAPI } from "../api"
 import { Search, Calendar, MapPin, Users, Plus } from "lucide-react"
 import CreateEventSheet from "../components/forms/CreateEventSheet"
-import Logo from "@/assets/Logo.png"
+import Logo from "@/assets/Logo.webp"
 const Events = () => {
     const [events, setEvents] = useState([])
     const [isLoading, setIsLoading] = useState(false)

@@ -4,7 +4,7 @@ import { Calendar, Clock, ArrowRight } from "lucide-react"
 import { Button } from "../ui/enhanced-button"
 import { useState, useEffect } from "react"
 import { Link } from "react-router-dom"
-import Logo from "@/assets/Logo.png"
+import Logo from "@/assets/Logo.webp"
 
 const News = () => {
     const [newsItems, setNewsItems] = useState([])

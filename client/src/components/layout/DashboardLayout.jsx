@@ -7,6 +7,7 @@ import { SidebarInset, SidebarProvider } from "../ui/sidebar"
 import { AppSidebar } from "./AppSidebar"
 import { Header } from "./Header"
 import { useLocalization } from "@/hooks/useLocalization"
+import FloatingScrollToTop from "../ui/FloatingScrollToTop"
 
 export function DashboardLayout({ children }) {
     const { isAuthenticated, loading } = useAuth()
@@ -50,6 +51,7 @@ export function DashboardLayout({ children }) {
                     </div>
                 </div>
             </SidebarInset>
+            <FloatingScrollToTop />
         </SidebarProvider>
     )
 }

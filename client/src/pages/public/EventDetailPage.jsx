@@ -4,11 +4,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/ca
 import { Button } from "../../components/ui/button"
 import { ArrowLeft, Calendar, MapPin, Clock, Share2, Facebook, Twitter, Linkedin, Users, User } from "lucide-react"
 import { eventsAPI } from "../../api"
-import Logo from "../../assets/logo.png"
+import Logo from "../../assets/Logo.webp"
+import { useAuth } from "@/context/AuthContext"
 
 const EventDetailPage = () => {
     const { id } = useParams()
     const navigate = useNavigate()
+    const { user } = useAuth()
     const [event, setEvent] = useState(null)
     const [isLoading, setIsLoading] = useState(true)
     const [error, setError] = useState(null)
@@ -17,9 +19,11 @@ const EventDetailPage = () => {
     const [isRegistered, setIsRegistered] = useState(false)
 
     useEffect(() => {
-        fetchEvent()
-        fetchRelatedEvents()
-    }, [id])
+        const fetchData = async () => {
+            await Promise.all([fetchEvent(), fetchRelatedEvents()])
+        }
+        fetchData()
+    }, [id,user])
 
     const fetchEvent = async () => {
         try {
@@ -32,10 +36,8 @@ const EventDetailPage = () => {
                 setEvent(eventData)
 
                 // Check if user is already registered (if logged in)
-                const token = localStorage.getItem("token")
-                const user = JSON.parse(localStorage.getItem("user") || "{}")
-                if (token && user._id && eventData.registeredUsers) {
-                    setIsRegistered(eventData.registeredUsers.includes(user._id))
+                if (user?._id && eventData.registeredUsers) {
+                    setIsRegistered(eventData.registeredUsers.some((u) => u._id === user._id))
                 }
             } else {
                 setError("Event not found")
@@ -53,7 +55,7 @@ const EventDetailPage = () => {
             const response = await fetch(`https://form.codepeak.software/api/v1/events?limit=3`)
             if (response.ok) {
                 const data = await response.json()
-                setRelatedEvents((data.events || data.data || []).filter((item) => item._id !== id).slice(0, 3))
+                setRelatedEvents((data.data.events || data.data || []).filter((item) => item._id !== id).slice(0, 3))
             }
         } catch (error) {
             console.error("Failed to fetch related events:", error)
@@ -106,17 +108,18 @@ const EventDetailPage = () => {
         try {
             setIsRegistering(true)
             await eventsAPI.register(id)
+
             setIsRegistered(true)
             // Update registered users count
-            setEvent((prev) => ({
-                ...prev,
-                registeredUsers: [...(prev.registeredUsers || []), JSON.parse(localStorage.getItem("user"))._id],
-            }))
+            // setEvent((prev) => ({
+            //     ...prev,
+            //     registeredUsers: [...(prev.registeredUsers || []), JSON.parse(localStorage.getItem("user"))._id],
+            // }))
         } catch (error) {
             console.error("Failed to register for event:", error)
-            setError("Failed to register for event")
+            setError(error.error || "Failed to register for event")
         } finally {
-            setIsRegistering(false)
+            // setIsRegistering(false)
         }
     }
 

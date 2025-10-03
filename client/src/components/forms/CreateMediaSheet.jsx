@@ -58,18 +58,18 @@ const CreateMediaSheet = ({ isOpen, onClose, onSuccess }) => {
 
   return (
     <Sheet open={isOpen} onOpenChange={handleClose}>
-      <SheetContent className="w-[600px] sm:max-w-[600px]">
+      <SheetContent className="w-[95%] sm:max-w-[600px]">
         <SheetHeader>
-          <SheetTitle>Upload Media</SheetTitle>
+          <SheetTitle>رفع الوسائط</SheetTitle>
         </SheetHeader>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6 px-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Title
+              العنوان
             </label>
             <Input
               {...register('title')}
-              placeholder="Enter media title"
+              placeholder="أدخل عنوان الوسائط"
             />
             {errors.title && (
               <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
@@ -78,12 +78,12 @@ const CreateMediaSheet = ({ isOpen, onClose, onSuccess }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Description (Optional)
+              الوصف (اختياري)
             </label>
             <textarea
               {...register('description')}
               className="w-full min-h-[100px] p-3 border border-gray-300 rounded-md"
-              placeholder="Enter media description"
+              placeholder="أدخل وصف الوسائط"
             />
             {errors.description && (
               <p className="text-red-500 text-sm mt-1">{errors.description.message}</p>
@@ -103,16 +103,16 @@ const CreateMediaSheet = ({ isOpen, onClose, onSuccess }) => {
               <p className="text-red-500 text-sm mt-1">{errors.file.message}</p>
             )}
             <p className="text-xs text-gray-500 mt-1">
-              Supported formats: Images, Videos, Audio, PDF, Word documents, PowerPoint presentations
+              الصيغ المدعومة: Images, Videos, Audio, PDF, Word documents, PowerPoint presentations
             </p>
           </div>
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={handleClose}>
-              Cancel
+              إلغاء
             </Button>
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Uploading...' : 'Upload Media'}
+              {isLoading ? 'جارٍ التحميل...' : 'رفع الوسائط'}
             </Button>
           </div>
         </form>

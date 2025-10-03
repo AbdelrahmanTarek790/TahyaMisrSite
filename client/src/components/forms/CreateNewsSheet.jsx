@@ -1,137 +1,118 @@
-import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '../ui/sheet';
-import { useError } from '../../context/ErrorContext';
-import { newsAPI } from '../../api';
+import { useState, useEffect } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Button } from "../ui/button"
+import { Input } from "../ui/input"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "../ui/sheet"
+import { useError } from "../../context/ErrorContext"
+import { newsAPI } from "../../api"
 
 const newsSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  content: z.string().min(10, 'Content must be at least 10 characters'),
-  image: z.any().optional(),
-});
+    title: z.string().min(3, "Title must be at least 3 characters"),
+    content: z.string().min(10, "Content must be at least 10 characters"),
+    image: z.any().optional(),
+})
 
 const CreateNewsSheet = ({ isOpen, onClose, onSuccess, editingNews = null }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { addError } = useError();
+    const [isLoading, setIsLoading] = useState(false)
+    const { addError } = useError()
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(newsSchema),
-  });
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(newsSchema),
+    })
 
-  // Reset form when editingNews changes
-  useEffect(() => {
-    if (editingNews) {
-      reset({
-        title: editingNews.title,
-        content: editingNews.content,
-      });
-    } else {
-      reset({ title: '', content: '' });
+    // Reset form when editingNews changes
+    useEffect(() => {
+        if (editingNews) {
+            reset({
+                title: editingNews.title,
+                content: editingNews.content,
+            })
+        } else {
+            reset({ title: "", content: "" })
+        }
+    }, [editingNews, reset])
+
+    const onSubmit = async (data) => {
+        try {
+            setIsLoading(true)
+            const formData = new FormData()
+            formData.append("title", data.title)
+            formData.append("content", data.content)
+            if (data.image && data.image[0]) {
+                formData.append("image", data.image[0])
+            }
+
+            if (editingNews) {
+                await newsAPI.update(editingNews._id, formData)
+                addError("News updated successfully!", "success")
+            } else {
+                await newsAPI.create(formData)
+                addError("News created successfully!", "success")
+            }
+
+            reset()
+            onClose()
+            if (onSuccess) onSuccess()
+        } catch (error) {
+            addError(error?.error || `Failed to ${editingNews ? "update" : "create"} news`)
+        } finally {
+            setIsLoading(false)
+        }
     }
-  }, [editingNews, reset]);
 
-  const onSubmit = async (data) => {
-    try {
-      setIsLoading(true);
-      const formData = new FormData();
-      formData.append('title', data.title);
-      formData.append('content', data.content);
-      if (data.image && data.image[0]) {
-        formData.append('image', data.image[0]);
-      }
-
-      if (editingNews) {
-        await newsAPI.update(editingNews._id, formData);
-        addError('News updated successfully!', 'success');
-      } else {
-        await newsAPI.create(formData);
-        addError('News created successfully!', 'success');
-      }
-      
-      reset();
-      onClose();
-      if (onSuccess) onSuccess();
-    } catch (error) {
-      addError(error?.error || `Failed to ${editingNews ? 'update' : 'create'} news`);
-    } finally {
-      setIsLoading(false);
+    const handleClose = () => {
+        reset()
+        onClose()
     }
-  };
 
-  const handleClose = () => {
-    reset();
-    onClose();
-  };
+    return (
+        <Sheet open={isOpen} onOpenChange={handleClose}>
+            <SheetContent className="w-[95%] sm:max-w-[600px]">
+                <SheetHeader>
+                    <SheetTitle>{editingNews ? "تعديل مقال الأخبار" : "إنشاء مقال أخبار"}</SheetTitle>
+                </SheetHeader>
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6 px-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">العنوان</label>
+                        <Input {...register("title")} placeholder="أدخل عنوان الخبر" />
+                        {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>}
+                    </div>
 
-  return (
-    <Sheet open={isOpen} onOpenChange={handleClose}>
-      <SheetContent className="w-[600px] sm:max-w-[600px]">
-        <SheetHeader>
-          <SheetTitle>{editingNews ? 'Edit News Article' : 'Create News Article'}</SheetTitle>
-        </SheetHeader>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6 px-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Title
-            </label>
-            <Input
-              {...register('title')}
-              placeholder="Enter news title"
-            />
-            {errors.title && (
-              <p className="text-red-500 text-sm mt-1">{errors.title.message}</p>
-            )}
-          </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">المحتوى</label>
+                        <textarea
+                            {...register("content")}
+                            className="w-full min-h-[150px] p-3 border border-gray-300 rounded-md"
+                            placeholder="أدخل محتوى الخبر"
+                        />
+                        {errors.content && <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>}
+                    </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Content
-            </label>
-            <textarea
-              {...register('content')}
-              className="w-full min-h-[150px] p-3 border border-gray-300 rounded-md"
-              placeholder="Enter news content"
-            />
-            {errors.content && (
-              <p className="text-red-500 text-sm mt-1">{errors.content.message}</p>
-            )}
-          </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">الصورة (اختياري)</label>
+                        <Input {...register("image")} type="file" accept="image/*" />
+                        {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>}
+                    </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Image (Optional)
-            </label>
-            <Input
-              {...register('image')}
-              type="file"
-              accept="image/*"
-            />
-            {errors.image && (
-              <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>
-            )}
-          </div>
+                    <div className="flex justify-end gap-2 pt-4">
+                        <Button type="button" variant="outline" onClick={handleClose}>
+                            إلغاء
+                        </Button>
+                        <Button type="submit" disabled={isLoading}>
+                            {isLoading ? `${editingNews ? "تحديث..." : "إنشاء..."}` : `${editingNews ? "تحديث الخبر" : "إنشاء خبر"}`}
+                        </Button>
+                    </div>
+                </form>
+            </SheetContent>
+        </Sheet>
+    )
+}
 
-          <div className="flex justify-end gap-2 pt-4">
-            <Button type="button" variant="outline" onClick={handleClose}>
-              Cancel
-            </Button>
-            <Button type="submit" disabled={isLoading}>
-              {isLoading ? `${editingNews ? 'Updating...' : 'Creating...'}` : `${editingNews ? 'Update News' : 'Create News'}`}
-            </Button>
-          </div>
-        </form>
-      </SheetContent>
-    </Sheet>
-  );
-};
-
-export default CreateNewsSheet;
+export default CreateNewsSheet

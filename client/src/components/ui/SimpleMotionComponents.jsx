@@ -1,5 +1,5 @@
-import { motion } from "motion/react"
 import React from "react"
+import { motion } from "motion/react"
 
 // Animation variants for different entrance effects
 export const fadeInUp = {
