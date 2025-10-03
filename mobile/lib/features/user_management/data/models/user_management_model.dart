@@ -6,12 +6,15 @@ part 'user_management_model.g.dart';
 @JsonSerializable()
 class UserManagementModel extends Equatable {
   final String id;
-  final String name;
   final String email;
-  final String phone;
-  final String university;
-  final String governorate;
+  final String name;
   final String role;
+  final String? governorate;
+  final String? phone;
+  final String? university;
+  final String? nationalId;
+  final String? membershipNumber;
+  final DateTime? membershipExpiry;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -23,6 +26,9 @@ class UserManagementModel extends Equatable {
     required this.university,
     required this.governorate,
     required this.role,
+    required this.nationalId,
+    required this.membershipNumber,
+    required this.membershipExpiry,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -32,9 +38,12 @@ class UserManagementModel extends Equatable {
         id,
         name,
         email,
-        phone,
-        university,
-        governorate,
+        phone ?? '',
+        university ?? '',
+        governorate ?? '',
+        nationalId ?? '',
+        membershipNumber ?? '',
+        membershipExpiry ?? '',
         role,
         createdAt,
         updatedAt,
@@ -50,10 +59,15 @@ class UserManagementModel extends Equatable {
         university: json['university'] ?? '',
         governorate: json['governorate'] ?? '',
         role: json['role'] ?? 'user',
-        createdAt: json['createdAt'] != null 
+        nationalId: json['nationalId'] ?? '',
+        membershipNumber: json['membershipNumber'] ?? '',
+        membershipExpiry: json['membershipExpiry'] != null
+            ? DateTime.parse(json['membershipExpiry'])
+            : null,
+        createdAt: json['createdAt'] != null
             ? DateTime.parse(json['createdAt'])
             : DateTime.now(),
-        updatedAt: json['updatedAt'] != null 
+        updatedAt: json['updatedAt'] != null
             ? DateTime.parse(json['updatedAt'])
             : DateTime.now(),
       );
@@ -63,6 +77,9 @@ class UserManagementModel extends Equatable {
         name: json['name'] ?? 'Unknown User',
         email: json['email'] ?? '',
         phone: json['phone'] ?? '',
+        nationalId: json['nationalId'] ?? '',
+        membershipNumber: json['membershipNumber'] ?? '',
+        membershipExpiry: null,
         university: json['university'] ?? '',
         governorate: json['governorate'] ?? '',
         role: json['role'] ?? 'user',

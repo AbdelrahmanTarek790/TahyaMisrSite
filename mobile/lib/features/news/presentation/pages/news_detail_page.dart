@@ -129,7 +129,7 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
                                               ),
                                         ),
                                         Text(
-                                          'منذ ${DateTime.now().difference( newsData.createdAt).inHours} ساعات',
+                                          (timeAgo(newsData.createdAt)),
                                           style: Theme.of(context)
                                               .textTheme
                                               .bodySmall
@@ -192,5 +192,25 @@ class _NewsDetailPageState extends State<NewsDetailPage> {
         },
       ),
     );
+  }
+
+  String timeAgo(DateTime date) {
+    final diff = DateTime.now().difference(date);
+
+    if (diff.inSeconds < 60) {
+      return 'منذ ${diff.inSeconds} ثواني';
+    } else if (diff.inMinutes < 60) {
+      return 'منذ ${diff.inMinutes} دقائق';
+    } else if (diff.inHours < 24) {
+      return 'منذ ${diff.inHours} ساعات';
+    } else if (diff.inDays < 7) {
+      return 'منذ ${diff.inDays} أيام';
+    } else if (diff.inDays < 30) {
+      return 'منذ ${(diff.inDays / 7).floor()} أسابيع';
+    } else if (diff.inDays < 365) {
+      return 'منذ ${(diff.inDays / 30).floor()} شهور';
+    } else {
+      return 'منذ ${(diff.inDays / 365).floor()} سنوات';
+    }
   }
 }

@@ -8,6 +8,7 @@ import 'package:toastification/toastification.dart';
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../data/models/user_management_model.dart';
+import 'edit_user_page.dart';
 
 class UserManagementPage extends StatefulWidget {
   const UserManagementPage({super.key});
@@ -371,9 +372,10 @@ class _UserManagementPageState extends State<UserManagementPage> {
                     color: Theme.of(context).colorScheme.secondary,
                   ),
                   const SizedBox(width: 8),
-                  Flexible(
-                    child: Text(user.phone,
-
+                  Expanded(
+                    child: Text(user.phone ?? 'No phone',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const Spacer(),
@@ -478,17 +480,16 @@ class _UserManagementPageState extends State<UserManagementPage> {
   }
 
   void _showEditUserDialog(BuildContext context, UserManagementModel user, AppLocalizations l10n) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Edit User'),
-        content: const Text('Edit user feature will be implemented in the next update.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider.value(
+          value:  _userManagementBloc,
+          child: EditUserPage(
+            user: user,
+            id: user.id,
           ),
-        ],
+        ),
       ),
     );
   }
