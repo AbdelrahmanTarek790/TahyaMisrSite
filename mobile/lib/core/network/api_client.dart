@@ -6,6 +6,9 @@ import '../../features/auth/data/models/login_request.dart';
 import '../../features/auth/data/models/login_response.dart';
 import '../../features/auth/data/models/register_request.dart';
 import '../../features/auth/data/models/user_model.dart';
+import '../../features/join_request/data/models/join_request_action_request.dart';
+import '../../features/join_request/data/models/join_request_model.dart';
+import '../../features/join_request/data/models/join_request_response.dart';
 import '../../features/news/data/models/news_model.dart';
 import '../../features/events/data/models/event_model.dart';
 import '../../features/media/data/models/media_model.dart';
@@ -30,7 +33,8 @@ abstract class ApiClient {
 
   @PUT('/users/me')
   Future<ApiResponse<UserModel>> updateProfile(
-      @Body() Map<String, dynamic> data,);
+    @Body() Map<String, dynamic> data,
+  );
 
   // News endpoints
   @GET('/news')
@@ -90,7 +94,9 @@ abstract class ApiClient {
 
   @PUT('/users/{id}')
   Future<ApiResponse<UserManagementModel>> updateUser(
-      @Path('id') String id, @Body() Map<String, dynamic> userData,);
+    @Path('id') String id,
+    @Body() Map<String, dynamic> userData,
+  );
 
   @DELETE('/users/{id}')
   Future<ApiResponse<dynamic>> deleteUser(@Path('id') String id);
@@ -98,18 +104,25 @@ abstract class ApiClient {
   // Position Management endpoints
   // search by name or isActive or isGlobal
   @GET('/positions')
-  Future<ApiResponse<dynamic>> getPositions(@Query('name') String? name, @Query('isActive') bool? isActive, @Query('isGlobal') bool? isGlobal,);
+  Future<ApiResponse<dynamic>> getPositions(
+    @Query('name') String? name,
+    @Query('isActive') bool? isActive,
+    @Query('isGlobal') bool? isGlobal,
+  );
 
   @GET('/positions/{id}')
   Future<ApiResponse<dynamic>> getPositionById(@Path('id') String id);
 
   @POST('/positions')
   Future<ApiResponse<dynamic>> createPosition(
-      @Body() Map<String, dynamic> positionData,);
+    @Body() Map<String, dynamic> positionData,
+  );
 
   @PUT('/positions/{id}')
   Future<ApiResponse<dynamic>> updatePosition(
-      @Path('id') String id, @Body() Map<String, dynamic> positionData,);
+    @Path('id') String id,
+    @Body() Map<String, dynamic> positionData,
+  );
 
   @DELETE('/positions/{id}')
   Future<ApiResponse<dynamic>> deletePosition(@Path('id') String id);
@@ -122,7 +135,9 @@ abstract class ApiClient {
   @MultiPart()
   @PUT('/news/{id}')
   Future<ApiResponse<NewsModel>> updateNews(
-      @Path('id') String id, @Body() FormData body,);
+    @Path('id') String id,
+    @Body() FormData body,
+  );
 
   @DELETE('/news/{id}')
   Future<ApiResponse<dynamic>> deleteNews(@Path('id') String id);
@@ -134,7 +149,9 @@ abstract class ApiClient {
   @MultiPart()
   @PUT('/events/{id}')
   Future<ApiResponse<EventModel>> updateEvent(
-      @Path('id') String id, @Body() FormData body,);
+    @Path('id') String id,
+    @Body() FormData body,
+  );
 
   @DELETE('/events/{id}')
   Future<ApiResponse<dynamic>> deleteEvent(@Path('id') String id);
@@ -142,6 +159,62 @@ abstract class ApiClient {
   @DELETE('/media/{id}')
   Future<ApiResponse<dynamic>> deleteMedia(@Path('id') String id);
 
+// Join Request endpoints
+  @POST('/join-requests')
+  Future<ApiResponse<dynamic>> createJoinRequest(
+    @Body() Map<String, dynamic> body,
+  );
+
+  @GET('/join-requests')
+  Future<ApiResponse<JoinRequestResponse>> getJoinRequests(
+    @Query('page') int? page,
+    @Query('limit') int? limit,
+    @Query('status') String? status,
+  );
+
+  @GET('/join-requests/{id}')
+  Future<ApiResponse<JoinRequestModel>> getJoinRequestById(
+    @Path('id') String id,
+  );
+
+  @PATCH('/join-requests/{id}/approve')
+  Future<ApiResponse<dynamic>> approveJoinRequest(
+    @Path('id') String id,
+    @Body() JoinRequestActionRequest request,
+  );
+
+  @PATCH('/join-requests/{id}/deny')
+  Future<ApiResponse<dynamic>> denyJoinRequest(
+    @Path('id') String id,
+    @Body() JoinRequestActionRequest request,
+  );
+
+  @DELETE('/join-requests/{id}')
+  Future<ApiResponse<dynamic>> deleteJoinRequest(@Path('id') String id);
+
+  // Timeline endpoints
+  @GET('/timeline')
+  Future<ApiResponse<dynamic>> getTimeline(
+    @Query('page') int page,
+    @Query('limit') int limit,
+  );
+
+  @GET('/timeline/{id}')
+  Future<ApiResponse<dynamic>> getTimelineById(@Path('id') String id);
+
+  @POST('/timeline')
+  Future<ApiResponse<dynamic>> createTimelineEntry(
+    @Body() Map<String, dynamic> body,
+  );
+
+  @PUT('/timeline/{id}')
+  Future<ApiResponse<dynamic>> updateTimelineEntry(
+    @Path('id') String id,
+    @Body() Map<String, dynamic> body,
+  );
+
+  @DELETE('/timeline/{id}')
+  Future<ApiResponse<dynamic>> deleteTimelineEntry(@Path('id') String id);
 // Dashboard data will be aggregated from other endpoints
 // No dedicated dashboard endpoints since dashboard.js was deleted
 }

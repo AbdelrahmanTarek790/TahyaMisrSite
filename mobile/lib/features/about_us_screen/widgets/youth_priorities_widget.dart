@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tahya_misr_app/core/constants/app_constants.dart';
 
 import '../../../core/constants/app_theme.dart';
 import '../../../gen_l10n/app_localizations.dart';
@@ -17,20 +18,20 @@ class _YouthPrioritiesWidgetState extends State<YouthPrioritiesWidget>{
   final List<Map<String, dynamic>> _youthPriorities = [
     {
       'title': 'جريدة تحيا مصر ',
-      'image': 'assets/images/active2.jpg',
+      'image': AppConstants.active2
     },
     {
       'title': 'اتحاد طلاب مدارس تحيا مصر',
-      'image': 'assets/images/active3.jpg',
+      'image':  AppConstants.active3
     },
     {
       'title':
           'أسرة اتحاد طلاب تحيا مصر بالأكاديمية المصرية للهندسة والتكنولوجيا المتقدمة',
-      'image': 'assets/images/active4.jpg',
+      'image':  AppConstants.active4
     },
     {
       'title': 'راديو تحيا مصر',
-      'image': 'assets/images/active1.jpg',
+      'image':  AppConstants.active1
     },
   ];
 

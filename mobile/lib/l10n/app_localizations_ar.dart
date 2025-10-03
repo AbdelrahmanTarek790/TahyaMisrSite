@@ -247,4 +247,109 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get date => 'التاريخ';
+
+  @override
+  String get joinRequest => 'طلب انضمام';
+
+  @override
+  String get joinRequestManagement => 'إدارة طلبات الانضمام';
+
+  @override
+  String get joinUs => 'انضم إلى اتحاد شباب تحيا مصر';
+
+  @override
+  String get submitJoinRequest => 'إرسال طلب الانضمام';
+
+  @override
+  String get personalInfo => 'معلومات شخصية';
+
+  @override
+  String get membershipInfo => 'معلومات العضوية';
+
+  @override
+  String get additionalNotes => 'ملاحظات إضافية';
+
+  @override
+  String get fullName => 'الاسم الكامل';
+
+  @override
+  String get phoneNumber => 'رقم الهاتف';
+
+  @override
+  String get nationalId => 'الرقم القومي';
+
+  @override
+  String get membershipType => 'نوع العضوية';
+
+  @override
+  String get member => 'عضو';
+
+  @override
+  String get volunteer => 'متطوع';
+
+  @override
+  String get position => 'المنصب';
+
+  @override
+  String get membershipNumber => 'رقم العضوية';
+
+  @override
+  String get notes => 'ملاحظات';
+
+  @override
+  String get pending => 'في الانتظار';
+
+  @override
+  String get approved => 'مقبول';
+
+  @override
+  String get denied => 'مرفوض';
+
+  @override
+  String get approve => 'قبول';
+
+  @override
+  String get deny => 'رفض';
+
+  @override
+  String get approveRequest => 'قبول الطلب';
+
+  @override
+  String get denyRequest => 'رفض الطلب';
+
+  @override
+  String get deleteRequest => 'حذف الطلب';
+
+  @override
+  String get requestSubmitted => 'تم إرسال الطلب بنجاح';
+
+  @override
+  String get requestApproved => 'تم قبول الطلب';
+
+  @override
+  String get requestDenied => 'تم رفض الطلب';
+
+  @override
+  String get requestDeleted => 'تم حذف الطلب';
+
+  @override
+  String get noJoinRequests => 'لا توجد طلبات انضمام';
+
+  @override
+  String get searchRequests => 'البحث في الطلبات';
+
+  @override
+  String get filterByStatus => 'فلترة بالحالة';
+
+  @override
+  String get allRequests => 'جميع الطلبات';
+
+  @override
+  String get adminNotes => 'ملاحظات الإدارة';
+
+  @override
+  String get reviewDate => 'تاريخ المراجعة';
+
+  @override
+  String get requestDate => 'تاريخ الطلب';
 }

@@ -577,6 +577,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Date'**
   String get date;
+
+  /// No description provided for @joinRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Request'**
+  String get joinRequest;
+
+  /// No description provided for @joinRequestManagement.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Request Management'**
+  String get joinRequestManagement;
+
+  /// No description provided for @joinUs.
+  ///
+  /// In en, this message translates to:
+  /// **'Join Tahya Misr Students Union'**
+  String get joinUs;
+
+  /// No description provided for @submitJoinRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Submit Join Request'**
+  String get submitJoinRequest;
+
+  /// No description provided for @personalInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Personal Information'**
+  String get personalInfo;
+
+  /// No description provided for @membershipInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership Information'**
+  String get membershipInfo;
+
+  /// No description provided for @additionalNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Additional Notes'**
+  String get additionalNotes;
+
+  /// No description provided for @fullName.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Name'**
+  String get fullName;
+
+  /// No description provided for @phoneNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Phone Number'**
+  String get phoneNumber;
+
+  /// No description provided for @nationalId.
+  ///
+  /// In en, this message translates to:
+  /// **'National ID'**
+  String get nationalId;
+
+  /// No description provided for @membershipType.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership Type'**
+  String get membershipType;
+
+  /// No description provided for @member.
+  ///
+  /// In en, this message translates to:
+  /// **'Member'**
+  String get member;
+
+  /// No description provided for @volunteer.
+  ///
+  /// In en, this message translates to:
+  /// **'Volunteer'**
+  String get volunteer;
+
+  /// No description provided for @position.
+  ///
+  /// In en, this message translates to:
+  /// **'Position'**
+  String get position;
+
+  /// No description provided for @membershipNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership Number'**
+  String get membershipNumber;
+
+  /// No description provided for @notes.
+  ///
+  /// In en, this message translates to:
+  /// **'Notes'**
+  String get notes;
+
+  /// No description provided for @pending.
+  ///
+  /// In en, this message translates to:
+  /// **'Pending'**
+  String get pending;
+
+  /// No description provided for @approved.
+  ///
+  /// In en, this message translates to:
+  /// **'Approved'**
+  String get approved;
+
+  /// No description provided for @denied.
+  ///
+  /// In en, this message translates to:
+  /// **'Denied'**
+  String get denied;
+
+  /// No description provided for @approve.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve'**
+  String get approve;
+
+  /// No description provided for @deny.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny'**
+  String get deny;
+
+  /// No description provided for @approveRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Approve Request'**
+  String get approveRequest;
+
+  /// No description provided for @denyRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Deny Request'**
+  String get denyRequest;
+
+  /// No description provided for @deleteRequest.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Request'**
+  String get deleteRequest;
+
+  /// No description provided for @requestSubmitted.
+  ///
+  /// In en, this message translates to:
+  /// **'Request submitted successfully'**
+  String get requestSubmitted;
+
+  /// No description provided for @requestApproved.
+  ///
+  /// In en, this message translates to:
+  /// **'Request approved'**
+  String get requestApproved;
+
+  /// No description provided for @requestDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Request denied'**
+  String get requestDenied;
+
+  /// No description provided for @requestDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'Request deleted'**
+  String get requestDeleted;
+
+  /// No description provided for @noJoinRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'No join requests'**
+  String get noJoinRequests;
+
+  /// No description provided for @searchRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'Search requests'**
+  String get searchRequests;
+
+  /// No description provided for @filterByStatus.
+  ///
+  /// In en, this message translates to:
+  /// **'Filter by status'**
+  String get filterByStatus;
+
+  /// No description provided for @allRequests.
+  ///
+  /// In en, this message translates to:
+  /// **'All requests'**
+  String get allRequests;
+
+  /// No description provided for @adminNotes.
+  ///
+  /// In en, this message translates to:
+  /// **'Admin Notes'**
+  String get adminNotes;
+
+  /// No description provided for @reviewDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Review Date'**
+  String get reviewDate;
+
+  /// No description provided for @requestDate.
+  ///
+  /// In en, this message translates to:
+  /// **'Request Date'**
+  String get requestDate;
 }
 
 class _AppLocalizationsDelegate

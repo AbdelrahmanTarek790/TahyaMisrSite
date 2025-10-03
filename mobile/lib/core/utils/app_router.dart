@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tahya_misr_app/core/utils/route_guard.dart';
 import 'package:tahya_misr_app/features/about_us_screen/about_us_screen.dart';
 import 'package:tahya_misr_app/features/media/presentation/pages/media_detail_page.dart';
 
@@ -7,6 +9,9 @@ import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/auth/presentation/pages/splash_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
+import '../../features/join_request/presentation/cubits/join_request_cubit.dart';
+import '../../features/join_request/presentation/pages/join_request_management_page.dart';
+import '../../features/join_request/presentation/pages/join_request_page.dart';
 import '../../features/news/presentation/pages/news_list_page.dart';
 import '../../features/news/presentation/pages/news_detail_page.dart';
 import '../../features/events/presentation/pages/events_list_page.dart';
@@ -15,10 +20,12 @@ import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../features/profile/presentation/pages/settings_page.dart';
 import '../../features/media/presentation/pages/media_gallery_page.dart';
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/timeline/presentation/cubits/timeline_cubit.dart';
 import '../../features/user_management/presentation/pages/user_management_page.dart';
 import '../../features/content_management/presentation/pages/content_management_page.dart';
 import '../../features/positions/presentation/pages/position_management_page.dart';
 import '../../shared/widgets/main_navigation.dart';
+import '../dependency_injection/injection.dart';
 
 class AppRouter {
   late final GoRouter router;
@@ -121,11 +128,31 @@ class AppRouter {
           path: '/position-management',
           builder: (context, state) => const PositionManagementPage(),
         ),
+        // Join Request Management (Admin only)
+        GoRoute(
+          path: '/join-request-management',
+          builder: (context, state) => BlocProvider(
+            create: (_) => getIt<JoinRequestCubit>(),
+            child: const AdminGuard(
+              child: JoinRequestManagementPage(),
+            ),
+          ),
+        ),
 
+        // Join Request (Public)
+        GoRoute(
+          path: '/join-request',
+          builder: (context, state) => BlocProvider(
+            create: (_) => getIt<JoinRequestCubit>(),
+            child: const JoinRequestPage(),),
+        ),
         // ABOUT US
         GoRoute(
           path: '/about-us',
-          builder: (context, state) => const AboutUsScreen(),
+          builder: (context, state) => BlocProvider(
+            create: (_) => getIt<TimelineCubit>(),
+            child: const AboutUsScreen(),
+          ),
         ),
       ],
       errorBuilder: (context, state) => Scaffold(

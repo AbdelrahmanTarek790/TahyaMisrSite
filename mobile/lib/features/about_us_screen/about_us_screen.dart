@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tahya_misr_app/core/constants/app_constants.dart';
 import 'package:tahya_misr_app/core/constants/app_theme.dart';
 
 import '../../gen_l10n/app_localizations.dart';
@@ -138,7 +139,7 @@ class _AboutUsScreenState extends State<AboutUsScreen>
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child:  Image.asset(
-                  'assets/images/background.jpg',
+                  AppConstants.backgroundImage,
                   width: double.infinity,
                   height: 20,
                   fit: BoxFit.cover,

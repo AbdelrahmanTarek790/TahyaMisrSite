@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:tahya_misr_app/core/constants/app_constants.dart';
 import 'package:tahya_misr_app/core/dependency_injection/injection.dart';
 import 'package:toastification/toastification.dart';
 
@@ -71,11 +72,11 @@ class _LoginPageState extends State<LoginPage> {
                   Column(
                     children: [
                       Container(
-                        width: 150,
-                        height: 150,
-                        decoration: const BoxDecoration(
+                        width: 250,
+                        height: 250,
+                        decoration:  const BoxDecoration(
                           image: DecorationImage(
-                            image: AssetImage('assets/images/Logo.png'),
+                            image: AssetImage(AppConstants.logoPng),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -262,9 +263,9 @@ class _LoginPageState extends State<LoginPage> {
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           TextButton(
-                            onPressed: () => context.go('/register'),
+                            onPressed: () => context.push('/join-request'),
                             child: Text(
-                              l10n.register,
+                              'انضم الان',
                               style: TextStyle(
                                 color:
                                     Theme.of(context).colorScheme.primary,

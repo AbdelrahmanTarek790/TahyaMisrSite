@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:tahya_misr_app/core/constants/app_constants.dart';
 import 'package:tahya_misr_app/core/constants/app_theme.dart';
 
 class MediaDetailPage extends StatefulWidget {
@@ -19,7 +20,7 @@ class _MediaDetailPageState extends State<MediaDetailPage> {
     {
       'id': '1',
       'title': 'منتدي الطريق الى الجمهوريه الجديدة ',
-      'image': 'assets/images/Achievements1.jpg',
+      'image': AppConstants.achievements1,
       'description':
           'نصة حوارية تهدف الي الجمع بين شباب الجمهورية ، للمشاركة والتعبير عن آرائهم ، والخروج بتوصيات ومبادرات من خلال المناقشات الواسعة وتبادل الأفكار والخبرات ، ويأتي ذلك من خلال الجلسات وورش العمل بين الشباب والمتخصصين وقادة الفكر والشخصيات العامة في المجتمع ، أن المنتدى خلال نسخه الثلاثة المنفذه تم عرض العديد من المحاور النقاشية ، ',
       'notable': [
@@ -32,7 +33,7 @@ class _MediaDetailPageState extends State<MediaDetailPage> {
     {
       'id': '2',
       'title': ' القمه الشبابية العربيه',
-      'image': 'assets/images/Achievements2.jpg',
+      'image': AppConstants.achievements2,
       'description':
           ' حاضنة رئيسية لتطلعات وطموح الشباب العربي من خلال دعمها وتشجيعها العديد من المبادرات والبرامج للارتقاء بدورهم ، وتستهدف تمكين الشباب العربي واشراكهم في العمل الشبابي والمجتمعي، وبناء وعيهم بأهم قضايا الوطن العربي المشتركة، وتنفيذ مبادرات شبابية لتعزيز الهوية العربية، ودعم الشباب من خلال إشراكهم في التنمية ، حيث تركز المبادرات والبرامج الموجهة للشباب العربي على رعاية طاقاتهم وتشجيعهم على الابتكار والتسلح بالمعرفة والعلم، وتعزيز دورهم الإيجابي في التنمية المستدامة بمجتمعاتهم.',
       'notable': [
@@ -45,7 +46,7 @@ class _MediaDetailPageState extends State<MediaDetailPage> {
     {
       'id': '3',
       'title': 'المنتدي الوطني لبناء الوعي',
-      'image': 'assets/images/Achievements3.jpg',
+      'image': AppConstants.achievements3,
       'description':
           'تحت شعار « شباب واعى نحو ريادة المستقبل «منصة حوارية هدفها نشر وتعزيز الوعى لدى الشباب ومناقشة الموضوعات المعاصرة ورؤيتهم فى التعامل معها للمساهمه في تنفيذ المشروعات التنموية التى تدعم رؤية مصر 2030 وتتصدى لحروب الجيل الرابع .',
       'notable': [
@@ -58,7 +59,7 @@ class _MediaDetailPageState extends State<MediaDetailPage> {
     {
       'id': '4',
       'title': 'المبادرة الوطنية للبناء والتمكين',
-      'image': 'assets/images/Achievements4.jpg',
+      'image': AppConstants.achievements4,
       'description':
           'يهدف المشروع إلى تمكين الشباب من تطوير مهاراتهم وتعزيز قدراتهم، من خلال توفير بيئة داعمة تجمع بين التدريب العملي، العمل التطوعي، والإرشاد المهني. بما يتماشى مع الرؤية الوطنية لمبادرة "بداية"، ويعزز مساهمة الشباب في بناء مستقبل مستدام يعتمد على الابتكار والعمل الجماعي. ومن خلال هذا المشروع، سيتم تأهيل جيل من الشباب القادرين على مواجهة تحديات العصر والمساهمة في تحقيق التنمية الشاملة لوطنهم',
       'notable': [
@@ -71,7 +72,7 @@ class _MediaDetailPageState extends State<MediaDetailPage> {
     {
       'id': '5',
       'title': ' المبادرة الوطنية كنوز ال٢٧',
-      'image': 'assets/images/Achievements5.jpg',
+      'image': AppConstants.achievements5,
       'description':
           'يسعي فريق كنوز ال27 أن يكون رائد في نشر الوعي الأثري والتاريخي والتصدي للخرافات والشائعات من خلال حملته لإيصال مفهوم التاريخ الصحيح بشكل مبسط وشيق لأكبر فئة من المجتمع من خلال عمل زيارات ميدانية للأماكن أثرية وشرح أهم معالمها وتوفير بعض المحاضرات العلمية والثقافيه واقامة الندوات والتدريبات ويكون نطاق العمل في جميع محافظات الجمهورية',
       'notable': [
@@ -84,7 +85,7 @@ class _MediaDetailPageState extends State<MediaDetailPage> {
     {
       'id': '6',
       'title': 'المبادرة الوطنية رائدات مصر ',
-      'image': 'assets/images/Achievements6.jpg',
+      'image': AppConstants.achievements6,
       'description':
           'سعى من خلالها إلى دعم وتمكين المرأة المصرية في مختلف المجالات، ورفع وعيها بقدراتها وإمكاناتها لتكون عنصرًا فاعلًا في تنمية المجتمع.تأتي هذه المبادرة ، انطلاقًا من إيماننا العميق بأهمية دور المراه في قيادة التغيير الإيجابي، واستكمالًا للجهود الوطنية الرامية إلى تنمية وتوعية الأسرة المصرية ككل. ',
       'notable': [
@@ -98,7 +99,7 @@ class _MediaDetailPageState extends State<MediaDetailPage> {
     {
       'id': '7',
       'title': 'المبادرة المجتمعيه وقايه تحيا مصر ',
-      'image': 'assets/images/Achievements7.jpg',
+      'image': AppConstants.achievements7,
       'description':
           'تتمحور حول التثقيف المجتمعي وتعزيز الوعي العام حول مجموعة من القضايا المحددة فضلا عن تشجيع الفرص الواعدة المتاحة وإحداث تغيير إيجابي يعود بالفائدة على المجتمع ،وخاصة تسليط الضوء على أهمية الكشف المبكر والوقاية من سرطان الثدي، وإبراز إنجازات الدولة في دعم صحة المرأة المصرية في إطار تنفيذ رؤية مصر 2030، كما يتناول دور بعض القطاعات في تقديم المساعدة الاجتماعية والاقتصادية والنفسية والصحية للنساء المصابات بالمرض',
       'notable': [
