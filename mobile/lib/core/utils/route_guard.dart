@@ -47,6 +47,7 @@ class RouteGuard {
       '/content-management',
       '/position-management',
       '/join-request-management',
+      '/change-password',
     ];
 
     // List of routes that require admin role
@@ -68,6 +69,8 @@ class RouteGuard {
       '/media',
       '/about-us',
       '/join-request',
+      '/forgot-password',
+      '/reset-password',
     ];
 
     // If user is not logged in and trying to access protected route
