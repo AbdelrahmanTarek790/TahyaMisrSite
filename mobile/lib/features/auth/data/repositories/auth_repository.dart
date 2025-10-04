@@ -7,6 +7,9 @@ import '../../../../core/network/network_info.dart';
 import '../models/login_request.dart';
 import '../models/register_request.dart';
 import '../models/user_model.dart';
+import '../models/forgot_password_request.dart';
+import '../models/reset_password_request.dart';
+import '../models/change_password_request.dart';
 import '../services/auth_api_service.dart';
 import '../local/auth_local_storage.dart';
 
@@ -32,6 +35,9 @@ abstract class AuthRepository {
   Future<Either<Failure, void>> logout();
   Future<Either<Failure, String?>> getStoredToken();
   Future<Either<Failure, bool>> isLoggedIn();
+  Future<Either<Failure, void>> forgotPassword({required String email});
+  Future<Either<Failure, void>> resetPassword({required String token, required String password});
+  Future<Either<Failure, void>> changePassword({required String currentPassword, required String newPassword});
 }
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -190,6 +196,63 @@ class AuthRepositoryImpl implements AuthRepository {
       return Right(isLoggedIn);
     } catch (e) {
       return Left(CacheFailure('Failed to check login status: $e'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> forgotPassword({required String email}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final request = ForgotPasswordRequest(email: email);
+        await apiService.forgotPassword(request);
+        return const Right(null);
+      } on DioException catch (e) {
+        return Left(_handleDioError(e));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(ServerFailure('Unexpected error occurred: $e'));
+      }
+    } else {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> resetPassword({required String token, required String password}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final request = ResetPasswordRequest(token: token, password: password);
+        await apiService.resetPassword(request);
+        return const Right(null);
+      } on DioException catch (e) {
+        return Left(_handleDioError(e));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(ServerFailure('Unexpected error occurred: $e'));
+      }
+    } else {
+      return const Left(NetworkFailure('No internet connection'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, void>> changePassword({required String currentPassword, required String newPassword}) async {
+    if (await networkInfo.isConnected) {
+      try {
+        final request = ChangePasswordRequest(currentPassword: currentPassword, newPassword: newPassword);
+        await apiService.changePassword(request);
+        return const Right(null);
+      } on DioException catch (e) {
+        return Left(_handleDioError(e));
+      } on ServerException catch (e) {
+        return Left(ServerFailure(e.message));
+      } catch (e) {
+        return Left(ServerFailure('Unexpected error occurred: $e'));
+      }
+    } else {
+      return const Left(NetworkFailure('No internet connection'));
     }
   }
 

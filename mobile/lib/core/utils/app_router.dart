@@ -8,6 +8,9 @@ import 'package:tahya_misr_app/features/media/presentation/pages/media_detail_pa
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
 import '../../features/auth/presentation/pages/splash_page.dart';
+import '../../features/auth/presentation/pages/forgot_password_page.dart';
+import '../../features/auth/presentation/pages/reset_password_page.dart';
+import '../../features/auth/presentation/pages/change_password_page.dart';
 import '../../features/home/presentation/pages/home_page.dart';
 import '../../features/join_request/presentation/cubits/join_request_cubit.dart';
 import '../../features/join_request/presentation/pages/join_request_management_page.dart';
@@ -48,6 +51,20 @@ class AppRouter {
         GoRoute(
           path: '/register',
           builder: (context, state) => const RegisterPage(),
+        ),
+        GoRoute(
+          path: '/forgot-password',
+          builder: (context, state) => const ForgotPasswordPage(),
+        ),
+        GoRoute(
+          path: '/reset-password',
+          builder: (context, state) => ResetPasswordPage(
+            token: state.uri.queryParameters['token'],
+          ),
+        ),
+        GoRoute(
+          path: '/change-password',
+          builder: (context, state) => const ChangePasswordPage(),
         ),
 
         // Main app shell with bottom navigation

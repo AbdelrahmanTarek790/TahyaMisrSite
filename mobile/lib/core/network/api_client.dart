@@ -6,6 +6,9 @@ import '../../features/auth/data/models/login_request.dart';
 import '../../features/auth/data/models/login_response.dart';
 import '../../features/auth/data/models/register_request.dart';
 import '../../features/auth/data/models/user_model.dart';
+import '../../features/auth/data/models/forgot_password_request.dart';
+import '../../features/auth/data/models/reset_password_request.dart';
+import '../../features/auth/data/models/change_password_request.dart';
 import '../../features/join_request/data/models/join_request_action_request.dart';
 import '../../features/join_request/data/models/join_request_model.dart';
 import '../../features/join_request/data/models/join_request_response.dart';
@@ -35,6 +38,15 @@ abstract class ApiClient {
   Future<ApiResponse<UserModel>> updateProfile(
     @Body() Map<String, dynamic> data,
   );
+
+  @POST('/auth/forgot-password')
+  Future<ApiResponse<dynamic>> forgotPassword(@Body() ForgotPasswordRequest request);
+
+  @POST('/auth/reset-password')
+  Future<ApiResponse<dynamic>> resetPassword(@Body() ResetPasswordRequest request);
+
+  @PUT('/auth/change-password')
+  Future<ApiResponse<dynamic>> changePassword(@Body() ChangePasswordRequest request);
 
   // News endpoints
   @GET('/news')

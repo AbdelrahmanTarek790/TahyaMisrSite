@@ -156,6 +156,15 @@ class SettingsPage extends StatelessWidget {
                           );
                         },
                       ),
+                      _buildSettingsTile(
+                        context,
+                        'تغيير كلمة المرور',
+                        'تحديث كلمة المرور الخاصة بك',
+                        Icons.lock_reset,
+                        () {
+                          context.push('/change-password');
+                        },
+                      ),
                       /*    _buildSettingsTile(
                             context,
                             'معلومات الحساب',
