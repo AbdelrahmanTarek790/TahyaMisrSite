@@ -177,4 +177,53 @@ class AuthCubit extends Cubit<AuthState> {
   void setAsGuest(bool value) {
     asGuest = value;
   }
+
+  Future<void> forgotPassword({required String email}) async {
+    emit(const AuthState.loading());
+
+    final result = await authRepository.forgotPassword(email: email);
+
+    result.fold(
+      (failure) => emit(AuthState.error(message: failure.message)),
+      (_) => emit(const AuthState.unauthenticated()),
+    );
+  }
+
+  Future<void> resetPassword({required String token, required String password}) async {
+    emit(const AuthState.loading());
+
+    final result = await authRepository.resetPassword(token: token, password: password);
+
+    result.fold(
+      (failure) => emit(AuthState.error(message: failure.message)),
+      (_) => emit(const AuthState.unauthenticated()),
+    );
+  }
+
+  Future<void> changePassword({required String currentPassword, required String newPassword}) async {
+    emit(const AuthState.loading());
+
+    final result = await authRepository.changePassword(currentPassword: currentPassword, newPassword: newPassword);
+
+    result.fold(
+      (failure) => emit(AuthState.error(message: failure.message)),
+      (_) async {
+        // After changing password, we need to refresh the user session
+        final tokenResult = await authRepository.getStoredToken();
+        final userResult = await authRepository.getCurrentUser();
+        
+        if (tokenResult.isRight() && userResult.isRight()) {
+          final token = tokenResult.getOrElse(() => null);
+          final user = userResult.getOrElse(() => throw Exception());
+          if (token != null) {
+            emit(AuthState.authenticated(user: user, token: token));
+          } else {
+            emit(const AuthState.unauthenticated());
+          }
+        } else {
+          emit(const AuthState.unauthenticated());
+        }
+      },
+    );
+  }
 }

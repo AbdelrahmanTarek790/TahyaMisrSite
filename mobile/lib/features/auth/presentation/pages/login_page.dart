@@ -195,7 +195,24 @@ class _LoginPageState extends State<LoginPage> {
                           .fadeIn(delay: 1000.ms)
                           .slideX(begin: -0.3, end: 0),
 
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 16),
+
+                      // Forgot Password Link
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: TextButton(
+                          onPressed: () => context.push('/forgot-password'),
+                          child: Text(
+                            'نسيت كلمة المرور؟',
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ).animate().fadeIn(delay: 1100.ms),
+
+                      const SizedBox(height: 16),
 
                       // Login Button
                       ElevatedButton(

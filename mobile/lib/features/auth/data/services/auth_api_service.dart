@@ -4,6 +4,9 @@ import '../models/login_request.dart';
 import '../models/login_response.dart';
 import '../models/register_request.dart';
 import '../models/user_model.dart';
+import '../models/forgot_password_request.dart';
+import '../models/reset_password_request.dart';
+import '../models/change_password_request.dart';
 
 class AuthApiService {
   final ApiClient apiClient;
@@ -79,6 +82,48 @@ class AuthApiService {
     } catch (e) {
       print('Update profile error: $e');
       throw Exception('Failed to update profile: $e');
+    }
+  }
+
+  Future<void> forgotPassword(ForgotPasswordRequest request) async {
+    try {
+      final response = await apiClient.forgotPassword(request);
+      print('Forgot password API response: success=${response.success}, data=${response.data}, error=${response.error}');
+      
+      if (!response.success) {
+        throw Exception(response.error ?? 'Failed to send reset password email');
+      }
+    } catch (e) {
+      print('Forgot password error: $e');
+      throw Exception('Failed to send reset password email: $e');
+    }
+  }
+
+  Future<void> resetPassword(ResetPasswordRequest request) async {
+    try {
+      final response = await apiClient.resetPassword(request);
+      print('Reset password API response: success=${response.success}, data=${response.data}, error=${response.error}');
+      
+      if (!response.success) {
+        throw Exception(response.error ?? 'Failed to reset password');
+      }
+    } catch (e) {
+      print('Reset password error: $e');
+      throw Exception('Failed to reset password: $e');
+    }
+  }
+
+  Future<void> changePassword(ChangePasswordRequest request) async {
+    try {
+      final response = await apiClient.changePassword(request);
+      print('Change password API response: success=${response.success}, data=${response.data}, error=${response.error}');
+      
+      if (!response.success) {
+        throw Exception(response.error ?? 'Failed to change password');
+      }
+    } catch (e) {
+      print('Change password error: $e');
+      throw Exception('Failed to change password: $e');
     }
   }
 }
