@@ -9,6 +9,7 @@ import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
 import '../../data/models/user_management_model.dart';
 import 'edit_user_page.dart';
+import 'create_user_page.dart';
 
 class UserManagementPage extends StatefulWidget {
   const UserManagementPage({super.key});
@@ -464,17 +465,13 @@ class _UserManagementPageState extends State<UserManagementPage> {
   }
 
   void _showCreateUserDialog(BuildContext context, AppLocalizations l10n) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Create User'),
-        content: const Text('Create user feature will be implemented in the next update.'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlocProvider.value(
+          value: _userManagementBloc,
+          child: const CreateUserPage(),
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:dartz/dartz.dart';
 
 import '../../../../core/error/failures.dart';
 import '../../../../core/network/network_info.dart';
+import '../../../auth/data/models/register_request.dart';
 import '../models/user_management_model.dart';
 import '../services/user_management_api_service.dart';
 
@@ -70,7 +71,17 @@ class UserManagementRepositoryImpl implements UserManagementRepository {
   Future<Either<Failure, UserManagementModel>> createUser(dynamic userData) async {
     if (await networkInfo.isConnected) {
       try {
-        final user = await apiService.createUser(userData);
+        // Convert Map to RegisterRequest if needed
+        RegisterRequest registerRequest;
+        if (userData is Map<String, dynamic>) {
+          registerRequest = RegisterRequest.fromJson(userData);
+        } else if (userData is RegisterRequest) {
+          registerRequest = userData;
+        } else {
+          return Left(ServerFailure('Invalid user data format'));
+        }
+        
+        final user = await apiService.createUser(registerRequest);
         return Right(user);
       } catch (e) {
         return Left(ServerFailure(e.toString()));
