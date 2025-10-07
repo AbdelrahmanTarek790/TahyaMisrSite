@@ -268,7 +268,7 @@ const NewsDetailPage = () => {
                                         key={article._id}
                                         className="hover:shadow-elegant transition-shadow cursor-pointer bg-white h-full border-gray-200"
                                     >
-                                        <Link to={`/news/${article._id}`}>
+                                        <Link to={`/news/${article.slug}`}>
                                             {article.image && (
                                                 <div className=" overflow-hidden rounded-t-lg">
                                                     <img
