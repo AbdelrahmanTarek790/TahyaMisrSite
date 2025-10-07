@@ -80,11 +80,11 @@ const NewsDetailPage = () => {
 
     const fetchRelatedNews = async () => {
         try {
-            const response = await fetch(`https://form.codepeak.software/api/v1/news?limit=3`)
+            const response = await fetch(`https://form.codepeak.software/api/v1/news?limit=4`)
             if (response.ok) {
                 const data = await response.json()
 
-                setRelatedNews((data.data.news || data.data || []).filter((item) => item._id !== id).slice(0, 3))
+                setRelatedNews((data.data.news || data.data || []).filter((item) => item.slug !== id).slice(0, 3))
             }
         } catch (error) {
             console.error("Failed to fetch related news:", error)

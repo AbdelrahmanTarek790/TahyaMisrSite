@@ -5,7 +5,7 @@ import TheRoadOfRepublicForum from "@/assets/the-road-of-new-republic-forum.jpg"
 import ArabYouthSummit from "@/assets/Arab-youth-summit.jpg"
 import NationalForumforAwarenessBuilding from "@/assets/build-forum.jpg"
 import NationalInitiativeforConstructionandEmpowerment from "@/assets/assign.jpg"
-import Teasure27 from "@/assets/tresure27.jpg"
+// import Teasure27 from "@/assets/tresure27.jpg"
 import FemaleLeaders from "@/assets/Female-leaders.jpg"
 import CommunityInitiative from "@/assets/wqaya.jpg"
 import RadioTahiaMisr from "@/assets/RadioTahiaMisr.jpg"
@@ -59,15 +59,15 @@ const Features = () => {
             color: "text-egypt-gold",
             image: NationalInitiativeforConstructionandEmpowerment,
         },
-        {
-            icon: Award,
-            title: "المبادرة الوطنية كنوز ال٢٧",
-            description:
-                "يسعي فريق كنوز ال27 أن يكون رائد في نشر الوعي الأثري والتاريخي والتصدي للخرافات والشائعات من خلال حملته لإيصال مفهوم التاريخ الصحيح بشكل مبسط وشيق لأكبر فئة من المجتمع من خلال عمل زيارات ميدانية للأماكن أثرية.",
-            highlights: ["نشر الوعي الأثري والتاريخي", "التصدي للخرافات والشائعات", "زيارات ميدانية للمواقع الأثرية", "تغطية جميع محافظات الجمهورية"],
-            color: "text-egypt-red",
-            image: Teasure27,
-        },
+        // {
+        //     icon: Award,
+        //     title: "المبادرة الوطنية كنوز ال٢٧",
+        //     description:
+        //         "يسعي فريق كنوز ال27 أن يكون رائد في نشر الوعي الأثري والتاريخي والتصدي للخرافات والشائعات من خلال حملته لإيصال مفهوم التاريخ الصحيح بشكل مبسط وشيق لأكبر فئة من المجتمع من خلال عمل زيارات ميدانية للأماكن أثرية.",
+        //     highlights: ["نشر الوعي الأثري والتاريخي", "التصدي للخرافات والشائعات", "زيارات ميدانية للمواقع الأثرية", "تغطية جميع محافظات الجمهورية"],
+        //     color: "text-egypt-red",
+        //     image: Teasure27,
+        // },
         {
             icon: Crown,
             title: "المبادرة الوطنية رائدات مصر",
