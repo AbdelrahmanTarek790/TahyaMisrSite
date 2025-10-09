@@ -33,6 +33,7 @@ import { useAuth } from "@/context/AuthContext"
 
 const components = [
     { title: "من نحن", href: "/about", description: "تعرف على المزيد حول أتحاد شباب تحيا مصر ورؤيتنا ورسالتنا." },
+    { title: "فريق العمل", href: "/team", description: "تعرف على الفريق المتميز الذي يقود الاتحاد نحو تحقيق أهدافه." },
     { title: "رحلة الاتحاد", href: "/journey", description: "تعرف على رحلة الاتحاد وأهدافه." },
     // { title: "شركاؤنا", href: "/partners", description: "اكتشف شركاء النجاح الذين يدعمون مبادراتنا." },
     // { title: "قصص النجاح", href: "/success-stories", description: "اقرأ قصص النجاح الملهمة من مشاريعنا ومبادراتنا." },

@@ -15,6 +15,7 @@ import ScrollToTop from "./components/ScrollToTop"
 const Home = lazy(() => import("./pages/Home"))
 const AboutPage = lazy(() => import("./pages/public/AboutPage"))
 const ContactPage = lazy(() => import("./pages/public/ContactPage"))
+const TeamPage = lazy(() => import("./pages/public/TeamPage"))
 const PublicNewsPage = lazy(() => import("./pages/public/PublicNewsPage"))
 const PublicEventsPage = lazy(() => import("./pages/public/PublicEventsPage"))
 const NewsDetailPage = lazy(() => import("./pages/public/NewsDetailPage"))
@@ -31,6 +32,8 @@ const FAQPage = lazy(() => import("./pages/public/FAQPage"))
 // Lazy load auth pages
 const Login = lazy(() => import("./pages/auth/Login"))
 const Register = lazy(() => import("./pages/auth/Register"))
+const ForgotPassword = lazy(() => import("./pages/auth/ForgotPassword"))
+const ResetPassword = lazy(() => import("./pages/auth/ResetPassword"))
 
 // Lazy load dashboard pages
 const Dashboard = lazy(() => import("./pages/dashboard/Dashboard"))
@@ -48,6 +51,7 @@ const PositionsManagement = lazy(() => import("./pages/admin/PositionsManagement
 const NotificationsManagement = lazy(() => import("./pages/admin/NotificationsManagement"))
 const TimelineManagement = lazy(() => import("./pages/admin/TimelineManagement"))
 const JoinRequestManagement = lazy(() => import("./pages/admin/JoinRequestManagement"))
+const HeroImagesManagement = lazy(() => import("./pages/admin/HeroImagesManagement"))
 
 // Landing page for immediate loading
 const LandingPage = lazy(() => import("./pages/public/LandingPage"))
@@ -65,6 +69,7 @@ function App() {
                                 <Route path="/" element={<Home />} />
                                 <Route path="/about" element={<AboutPage />} />
                                 <Route path="/contact" element={<ContactPage />} />
+                                <Route path="/team" element={<TeamPage />} />
                                 <Route path="/news" element={<PublicNewsPage />} />
                                 <Route path="/news/:id" element={<NewsDetailPage />} />
                                 <Route path="/events" element={<PublicEventsPage />} />
@@ -77,6 +82,8 @@ function App() {
                                 <Route path="/join" element={<JoinRequestPage />} />
                                 {/* Auth Routes */}
                                 <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <Login />} />
+                                <Route path="/forgot-password" element={<ForgotPassword />} />
+                                <Route path="/reset-password" element={<ResetPassword />} />
                                 <Route path="/register" element={<Navigate to="/join" replace />} />
                             </Route>
 
@@ -212,6 +219,16 @@ function App() {
                                     <ProtectedRoute roles={["admin"]}>
                                         <DashboardLayout>
                                             <TimelineManagement />
+                                        </DashboardLayout>
+                                    </ProtectedRoute>
+                                }
+                            />
+                            <Route
+                                path="/admin/hero-images"
+                                element={
+                                    <ProtectedRoute roles={["admin"]}>
+                                        <DashboardLayout>
+                                            <HeroImagesManagement />
                                         </DashboardLayout>
                                     </ProtectedRoute>
                                 }

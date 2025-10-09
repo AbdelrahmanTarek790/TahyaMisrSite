@@ -138,4 +138,10 @@ export const timelineAPI = {
     delete: (id) => api.delete(`/timeline/${id}`),
 }
 
+// Hero Images API
+export const heroImagesAPI = {
+    getAll: () => api.get("/hero-images"), // returns { success, data: HeroImage[] }
+    getAllAdmin: () => api.get("/hero-images/admin"),
+}
+
 export default api

@@ -76,6 +76,23 @@ export const seoConfig = {
             type: "website",
         },
 
+        team: {
+            title: {
+                ar: "فريق العمل - اتحاد شباب تحيا مصر",
+                en: "Our Team - Tahya Misr Youth Union",
+            },
+            description: {
+                ar: "تعرف على فريق العمل المتميز في اتحاد شباب تحيا مصر. قادة وخبراء يعملون على تمكين الشباب المصري",
+                en: "Meet the outstanding team of Tahya Misr Youth Union. Leaders and experts working to empower Egyptian youth",
+            },
+            keywords: {
+                ar: "فريق العمل، قادة، خبراء، إدارة، أعضاء الفريق، قيادات شبابية",
+                en: "team, leaders, experts, management, team members, youth leadership",
+            },
+            url: "/team",
+            type: "website",
+        },
+
         news: {
             title: {
                 ar: "الأخبار - اتحاد شباب تحيا مصر",

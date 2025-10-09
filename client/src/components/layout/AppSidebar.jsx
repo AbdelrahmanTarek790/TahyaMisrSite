@@ -18,10 +18,10 @@ export function AppSidebar(props) {
 
     // Define navigation items
     const navItems = [
-        { title: "لوحة التحكم", url: "/dashboard", icon: Home, role: ["student", "volunteer", "admin"] },
-        { title: "الأخبار", url: "/dashboard/news", icon: Newspaper, role: ["student", "volunteer", "admin"] },
-        { title: "الفعاليات", url: "/dashboard/events", icon: Calendar, role: ["student", "volunteer", "admin"] },
-        { title: "الوسائط", url: "/media", icon: Image, role: ["student", "volunteer", "admin"] },
+        { title: "لوحة التحكم", url: "/dashboard", icon: Home, role: ["member", "volunteer", "admin"] },
+        { title: "الأخبار", url: "/dashboard/news", icon: Newspaper, role: ["member", "volunteer", "admin"] },
+        { title: "الفعاليات", url: "/dashboard/events", icon: Calendar, role: ["member", "volunteer", "admin"] },
+        { title: "الوسائط", url: "/media", icon: Image, role: ["member", "volunteer", "admin"] },
         { title: "إدارة الأخبار", url: "/admin/news", icon: Newspaper, role: ["admin"] },
         { title: "إدارة الفعاليات", url: "/admin/events", icon: Calendar, role: ["admin"] },
         { title: "الجدول الزمني", url: "/admin/timeline", icon: Clock, role: ["admin"] },
@@ -29,7 +29,8 @@ export function AppSidebar(props) {
         { title: "طلبات الانضمام", url: "/admin/join-requests", icon: Users, role: ["admin"] },
         { title: "المناصب", url: "/admin/positions", icon: Settings, role: ["admin"] },
         { title: "الإشعارات", url: "/admin/notifications", icon: Bell, role: ["admin"] },
-        { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["student", "volunteer", "admin"] },
+        { title: "صور السلايدر", url: "/admin/hero-images", icon: Image, role: ["admin"] },
+        { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["member", "volunteer", "admin"] },
     ]
 
     // Filter navigation items based on user role and authentication status
