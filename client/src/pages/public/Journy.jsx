@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import Icon from "../../components/AppIcon"
 import { timelineAPI } from "../../api"
-import { QuickSEO } from "../../components/QuickSEO"
+import { SEOMetadata } from "../../components/SEOMetadata"
 
 const Journy = () => {
     const [activeTimeline, setActiveTimeline] = useState(0)
@@ -128,7 +128,7 @@ const Journy = () => {
 
     return (
         <>
-            <QuickSEO pageKey="journey" locale="ar" />
+            <SEOMetadata pageKey="journey" locale="ar" />
             <section className="py-20">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Section Header */}

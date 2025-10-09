@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
-import { QuickSEO } from "../../components/QuickSEO"
+import { SEOMetadata } from "../../components/SEOMetadata"
 import { Input } from "../../components/ui/input"
 import { Button } from "../../components/ui/button"
 import {
@@ -123,7 +123,7 @@ const FAQPage = () => {
             id: 15,
             category: "technical",
             question: "لماذا لا أتلقى رسائل البريد الإلكتروني؟",
-            answer: "تحقق من مجلد الرسائل المرفوضة (Spam) أولاً. تأكد من أن عنوان بريدك الإلكتروني صحيح في ملفك الشخصي. أضف support@tahyamisr.org إلى قائمة جهات الاتصال الآمنة. إذا استمرت المشكلة، اتصل بنا لتحديث إعدادات البريد.",
+            answer: "تحقق من مجلد الرسائل المرفوضة (Spam) أولاً. تأكد من أن عنوان بريدك الإلكتروني صحيح في ملفك الشخصي. أضف support@tahyamisryu.com إلى قائمة جهات الاتصال الآمنة. إذا استمرت المشكلة، اتصل بنا لتحديث إعدادات البريد.",
         },
     ]
 
@@ -140,7 +140,7 @@ const FAQPage = () => {
 
     return (
         <>
-            <QuickSEO pageKey="faq" locale="ar" />
+            <SEOMetadata pageKey="faq" locale="ar" />
             <div className="min-h-screen bg-background" dir="rtl">
                 {/* Hero Section */}
                 <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">
@@ -287,7 +287,7 @@ const FAQPage = () => {
                                     <p className="text-muted-foreground mb-6">
                                         راسلنا على
                                         <br />
-                                        <strong className="text-foreground">support@tahyamisr.org</strong>
+                                        <strong className="text-foreground">support@tahyamisryu.com</strong>
                                     </p>
                                     <Button variant="outline" className="w-full">
                                         إرسال رسالة

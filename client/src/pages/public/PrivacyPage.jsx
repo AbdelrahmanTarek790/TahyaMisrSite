@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Shield, Eye, Lock, Users, FileText, AlertCircle, CheckCircle, Mail } from "lucide-react"
 import { Button } from "../../components/ui/button"
-import { QuickSEO } from "../../components/QuickSEO"
+import { SEOMetadata } from "../../components/SEOMetadata"
 
 const PrivacyPage = () => {
     const privacyPrinciples = [
@@ -49,7 +49,7 @@ const PrivacyPage = () => {
 
     return (
         <>
-            <QuickSEO pageKey="privacy" locale="ar" />
+            <SEOMetadata pageKey="privacy" locale="ar" />
             <div className="min-h-screen bg-background" dir="rtl">
                 {/* Hero Section */}
                 <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">

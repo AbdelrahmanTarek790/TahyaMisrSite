@@ -107,7 +107,7 @@ const NewsDetailPage = () => {
 
     const getReadingTime = (content) => {
         const wordsPerMinute = 200
-        const wordCount = content.split(" ").length
+        const wordCount = content.length
         const readingTime = Math.ceil(wordCount / wordsPerMinute)
         return readingTime + " دقائق قراءة"
     }
@@ -190,7 +190,7 @@ const NewsDetailPage = () => {
                                 src={`https://form.codepeak.software/uploads/${newsItem.image}`}
                                 crossOrigin="anonymous"
                                 alt={newsItem.title}
-                                className=" w-1/2 mx-auto object-cover"
+                                className=" md:w-1/2 mx-auto object-cover"
                             />
                         </div>
                     )}

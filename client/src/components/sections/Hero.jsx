@@ -7,10 +7,10 @@ import api, { heroImagesAPI } from "@/api"
 
 // Import hero images
 import heroImage1 from "@/assets/hero.webp"
-import heroImage2 from "@/assets/1758267543110-78fd503d-f9e8-47a2-9933-7db0dab1aa98.png"
+// import heroImage2 from "@/assets/1758267543110-78fd503d-f9e8-47a2-9933-7db0dab1aa98.png"
 
 const Hero = () => {
-    const [heroImages, setHeroImages] = useState([heroImage1, heroImage2, heroImage1])
+    const [heroImages, setHeroImages] = useState([heroImage1])
 
     const [api, setApi] = useState()
     const [currentSlide, setCurrentSlide] = useState(0)

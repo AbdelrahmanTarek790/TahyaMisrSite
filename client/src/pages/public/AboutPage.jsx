@@ -2,13 +2,9 @@ import { Link } from "react-router-dom"
 import { Button } from "../../components/ui/button"
 import { Card, CardContent } from "../../components/ui/card"
 import { Users, Target, Heart, Award, ArrowLeft, VenetianMaskIcon, Mail, Globe, BookOpen, Crown } from "lucide-react"
-import { useDocumentMetadata } from "../../hooks/useDocumentMetadata"
-import { getPageSEO } from "../../constants/seoConfig"
+import { SEOMetadata } from "../../components/SEOMetadata"
 
 const AboutPage = () => {
-    // Set document metadata for SEO
-    const seoData = getPageSEO("about", "ar")
-    useDocumentMetadata(seoData)
     const values = [
         {
             icon: VenetianMaskIcon,
@@ -89,16 +85,7 @@ const AboutPage = () => {
 
     return (
         <>
-            <title>{seoData.title}</title>
-            <meta name="description" content={seoData.description} />
-            <meta name="keywords" content={seoData.keywords} />
-            <meta property="og:title" content={seoData.title} />
-            <meta property="og:description" content={seoData.description} />
-            <meta property="og:image" content={`${window.location.origin}${seoData.image}`} />
-            <meta property="og:url" content={`${window.location.origin}${seoData.url}`} />
-            <meta property="og:type" content={seoData.type} />
-            <meta name="twitter:card" content="summary_large_image" />
-            <link rel="canonical" href={`${window.location.origin}${seoData.url}`} />
+            <SEOMetadata pageKey="about" locale="ar" />
 
             <div className="min-h-screen bg-gray-50">
                 {/* Hero Section */}

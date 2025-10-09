@@ -4,13 +4,9 @@ import { Card, CardContent } from "../../components/ui/card"
 import { Input } from "../../components/ui/input"
 import { MapPin, Mail, Phone, Clock, ArrowLeft, Send, MessageCircle, Users, HeadphonesIcon } from "lucide-react"
 import { useState } from "react"
-import { useDocumentMetadata } from "../../hooks/useDocumentMetadata"
-import { getPageSEO } from "../../constants/seoConfig"
+import { SEOMetadata } from "../../components/SEOMetadata"
 
 const ContactPage = () => {
-    // Set document metadata for SEO
-    const seoData = getPageSEO("contact", "ar")
-    useDocumentMetadata(seoData)
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -44,7 +40,7 @@ const ContactPage = () => {
         {
             icon: Mail,
             title: "البريد الإلكتروني",
-            details: ["contact@tahyamisr.org", "info@tahyamisr.org"],
+            details: ["contact@tahyamisryu.com", "info@tahyamisryu.com"],
             color: "bg-green-100",
             iconColor: "text-green-600",
         },
@@ -85,7 +81,7 @@ const ContactPage = () => {
 
     return (
         <>
-            <QuickSEO pageKey="contact" locale="ar" />
+            <SEOMetadata pageKey="contact" locale="ar" />
             <div className="min-h-screen bg-gray-50">
                 {/* Hero Section */}
                 <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">

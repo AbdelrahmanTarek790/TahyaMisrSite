@@ -1,10 +1,17 @@
 import React, { createContext, useContext, useReducer, useEffect } from "react"
 import { usersAPI } from "../api"
 
+// SSR-safe localStorage wrapper
+const safeLocalStorage = {
+    getItem: (key) => (typeof window !== "undefined" ? localStorage.getItem(key) : null),
+    setItem: (key, value) => typeof window !== "undefined" && localStorage.setItem(key, value),
+    removeItem: (key) => typeof window !== "undefined" && localStorage.removeItem(key),
+}
+
 // Initial state
 const initialState = {
     user: null,
-    token: localStorage.getItem("token"),
+    token: safeLocalStorage.getItem("token"),
     isAuthenticated: false,
     isLoading: true,
     error: null,
@@ -35,8 +42,8 @@ const authReducer = (state, action) => {
             }
 
         case AuthActionTypes.LOGIN_SUCCESS:
-            localStorage.setItem("token", action.payload.token)
-            localStorage.setItem("user", JSON.stringify(action.payload.user))
+            safeLocalStorage.setItem("token", action.payload.token)
+            safeLocalStorage.setItem("user", JSON.stringify(action.payload.user))
             return {
                 ...state,
                 isAuthenticated: true,
@@ -57,8 +64,8 @@ const authReducer = (state, action) => {
 
         case AuthActionTypes.LOGIN_FAILURE:
         case AuthActionTypes.LOAD_USER_FAILURE:
-            localStorage.removeItem("token")
-            localStorage.removeItem("user")
+            safeLocalStorage.removeItem("token")
+            safeLocalStorage.removeItem("user")
             return {
                 ...state,
                 isAuthenticated: false,
@@ -69,8 +76,8 @@ const authReducer = (state, action) => {
             }
 
         case AuthActionTypes.LOGOUT:
-            localStorage.removeItem("token")
-            localStorage.removeItem("user")
+            safeLocalStorage.removeItem("token")
+            safeLocalStorage.removeItem("user")
             return {
                 ...state,
                 isAuthenticated: false,
@@ -81,7 +88,7 @@ const authReducer = (state, action) => {
             }
 
         case AuthActionTypes.UPDATE_USER:
-            localStorage.setItem("user", JSON.stringify(action.payload))
+            safeLocalStorage.setItem("user", JSON.stringify(action.payload))
             return {
                 ...state,
                 user: action.payload,
@@ -108,8 +115,8 @@ export const AuthProvider = ({ children }) => {
     // Load user on app start
     useEffect(() => {
         const loadUser = async () => {
-            const token = localStorage.getItem("token")
-            const savedUser = localStorage.getItem("user")
+            const token = safeLocalStorage.getItem("token")
+            const savedUser = safeLocalStorage.getItem("user")
 
             if (token && savedUser) {
                 try {

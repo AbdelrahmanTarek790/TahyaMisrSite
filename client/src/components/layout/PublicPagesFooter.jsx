@@ -92,7 +92,7 @@ export default function PublicPagesFooter() {
                             </div>
                             <div className="text-right">
                                 <div className="text-sm text-egypt-white/70 font-arabic">البريد الإلكتروني</div>
-                                <div className="text-egypt-white">info@tahyamisr.org</div>
+                                <div className="text-egypt-white">info@tahyamisryu.com</div>
                             </div>
                         </div>
                         <div className="flex  items-center space-x-3 ">

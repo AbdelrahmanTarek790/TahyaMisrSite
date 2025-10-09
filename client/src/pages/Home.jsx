@@ -1,8 +1,7 @@
 import { lazy, Suspense } from "react"
 import Hero from "@/components/sections/Hero"
 import { SimpleInViewSection } from "@/components/ui/SimpleMotionComponents"
-import { useDocumentMetadata } from "@/hooks/useDocumentMetadata"
-import { getPageSEO } from "@/constants/seoConfig"
+import { SEOMetadata } from "@/components/SEOMetadata"
 
 // Lazy load below-the-fold sections for better initial page load
 const About = lazy(() => import("@/components/sections/About"))
@@ -19,25 +18,9 @@ const SectionSkeleton = () => (
 )
 
 const Home = () => {
-    // Set document metadata for SEO
-    const seoData = getPageSEO("home", "ar")
-    useDocumentMetadata(seoData)
-
     return (
         <>
-            <title>{seoData.title}</title>
-            <meta name="description" content={seoData.description} />
-            <meta name="keywords" content={seoData.keywords} />
-            <meta property="og:title" content={seoData.title} />
-            <meta property="og:description" content={seoData.description} />
-            <meta property="og:image" content={`${window.location.origin}${seoData.image}`} />
-            <meta property="og:url" content={`${window.location.origin}${seoData.url}`} />
-            <meta property="og:type" content={seoData.type} />
-            <meta property="og:locale" content={seoData.locale} />
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content={seoData.title} />
-            <meta name="twitter:description" content={seoData.description} />
-            <link rel="canonical" href={`${window.location.origin}${seoData.url}`} />
+            <SEOMetadata pageKey="home" locale="ar" />
 
             <div className="min-h-screen" dir="rtl">
                 {/* Hero section appears immediately without InView */}

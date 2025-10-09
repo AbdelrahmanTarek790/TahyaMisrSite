@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # React SSR Application
+  tahyamisr-frontend:
+    container_name: TahyaMisrFront
+    build:
+      context: ./TahyaMisr/Frontend  # Adjust path as needed
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+      - PORT=5173
+      - SITE_URL=https://tahyamisryu.com  # Update with your domain
+      # Add other environment variables as needed
+      # - SITEMAP_WEBHOOK_URL=https://your-cms.com/api/webhooks/sitemap-updated
+    volumes:
+      # Optional: Mount sitemap volume for persistence
+      - sitemap_data:/app/public
+    restart: unless-stopped
+    networks:
+      - npm_internal
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http = require('http'); const req = http.request({host: 'localhost', port: 5173, path: '/api/sitemap/status'}, (res) => process.exit(res.statusCode === 200 ? 0 : 1)); req.on('error', () => process.exit(1)); req.end();"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Nginx Reverse Proxy (Optional - only if you want nginx in front)
+  nginx-proxy:
+    container_name: TahyaMisrProxy
+    image: nginx:alpine
+    ports:
+      - "80:80"  # External port 80 maps to nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - tahyamisr-frontend
+    restart: unless-stopped
+    networks:
+      - npm_internal
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  sitemap_data:
+    driver: local
+
+networks:
+  npm_internal:
+    external: true

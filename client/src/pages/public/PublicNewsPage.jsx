@@ -5,13 +5,9 @@ import { Button } from "../../components/ui/button"
 import { Input } from "../../components/ui/input"
 import { Search, Calendar, ArrowLeft } from "lucide-react"
 import { newsAPI } from "../../api"
-import { useDocumentMetadata } from "../../hooks/useDocumentMetadata"
-import { getPageSEO } from "../../constants/seoConfig"
+import { SEOMetadata } from "../../components/SEOMetadata"
 
 const PublicNewsPage = () => {
-    // Set document metadata for SEO
-    const seoData = getPageSEO("news", "ar")
-    useDocumentMetadata(seoData)
     const [news, setNews] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [searchTerm, setSearchTerm] = useState("")
@@ -61,16 +57,7 @@ const PublicNewsPage = () => {
 
     return (
         <>
-            <title>{seoData.title}</title>
-            <meta name="description" content={seoData.description} />
-            <meta name="keywords" content={seoData.keywords} />
-            <meta property="og:title" content={seoData.title} />
-            <meta property="og:description" content={seoData.description} />
-            <meta property="og:image" content={`${window.location.origin}${seoData.image}`} />
-            <meta property="og:url" content={`${window.location.origin}${seoData.url}`} />
-            <meta property="og:type" content={seoData.type} />
-            <meta name="twitter:card" content="summary_large_image" />
-            <link rel="canonical" href={`${window.location.origin}${seoData.url}`} />
+            <SEOMetadata pageKey="news" locale="ar" />
 
             <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-yellow-50">
                 {/* Hero Section */}

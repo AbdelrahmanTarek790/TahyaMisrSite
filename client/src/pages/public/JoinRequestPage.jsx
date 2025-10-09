@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Input } from "../../components/ui/input"
 import { Button } from "../../components/ui/button"
-import { QuickSEO } from "../../components/QuickSEO"
+import { SEOMetadata } from "../../components/SEOMetadata"
 import { Label } from "../../components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../components/ui/select"
 import { Textarea } from "../../components/ui/textarea"
@@ -174,7 +174,7 @@ const JoinRequestPage = () => {
 
     return (
         <>
-            <QuickSEO pageKey="join" locale="ar" />
+            <SEOMetadata pageKey="join" locale="ar" />
             <div className="min-h-screen bg-background" dir="rtl">
                 {/* Hero Section */}
                 <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">
