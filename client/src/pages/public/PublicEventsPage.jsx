@@ -188,7 +188,7 @@ const PublicEventsPage = () => {
                                                     <MapPin className="ml-2 h-4 w-4" />
                                                 </div>
                                                 <div className="flex items-center justify-end text-sm text-muted-foreground font-arabic">
-                                                    <span>{event.registrations?.length || 0} مسجل</span>
+                                                    <span>{(event.registeredUsers?.length || 0) + (event.guestRegistrationsCount || 0)} مسجل</span>
                                                     <Users className="ml-2 h-4 w-4" />
                                                 </div>
                                             </CardDescription>

@@ -11,6 +11,8 @@ import { NavMain } from "../ui/nav-main"
 import { useNavigate } from "react-router-dom"
 // import { DirectionSwitcher } from "../DirectionSwitcher"
 import { useAuth } from "@/context/AuthContext"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { getInitials } from "@/lib/utils"
 
 export function AppSidebar(props) {
     const { user, isAuthenticated } = useAuth()
@@ -90,9 +92,13 @@ export function AppSidebar(props) {
                 {isAuthenticated && user && (
                     <div className="p-3 border-t">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
-                                {user.name ? user.name.charAt(0).toUpperCase() : "U"}
-                            </div>
+                            <Avatar className="w-10 h-10">
+                                <AvatarImage
+                                    src={user?.profileImage ? `https://form.codepeak.software/uploads/${user.profileImage}` : undefined}
+                                    alt={user?.name || "User"}
+                                />
+                                <AvatarFallback className="text-2xl">{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
+                            </Avatar>
                             <div>
                                 <p className="text-sm font-medium">{user.name}</p>
                                 <p className="text-xs text-muted-foreground">{user.role}</p>
