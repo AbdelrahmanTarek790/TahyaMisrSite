@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
-import { QuickSEO } from "../../components/QuickSEO"
+import { SEOMetadata } from "../../components/SEOMetadata"
 import { FileText, Scale, AlertTriangle, CheckCircle, Users, Shield, Gavel, Mail } from "lucide-react"
 import { Button } from "../../components/ui/button"
 
@@ -47,7 +47,7 @@ const TermsPage = () => {
 
     return (
         <>
-            <QuickSEO pageKey="terms" locale="ar" />
+            <SEOMetadata pageKey="terms" locale="ar" />
             <div className="min-h-screen bg-background" dir="rtl">
                 {/* Hero Section */}
                 <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">

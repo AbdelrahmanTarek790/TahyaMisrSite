@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card"
 import { Button } from "../../components/ui/button"
-import { QuickSEO } from "../../components/QuickSEO"
+import { SEOMetadata } from "../../components/SEOMetadata"
 import { ChevronDown, ChevronUp, Search, Phone, Mail, MessageCircle, HeadphonesIcon, Clock, MapPin } from "lucide-react"
 
 const HelpPage = () => {
@@ -47,7 +47,7 @@ const HelpPage = () => {
             icon: Mail,
             title: "البريد الإلكتروني",
             description: "أرسل لنا رسالة وسنرد عليك خلال 24 ساعة",
-            contact: "support@tahyamisr.org",
+            contact: "support@tahyamisryu.com",
             availability: "متاح 24/7",
         },
         {
@@ -69,7 +69,7 @@ const HelpPage = () => {
 
     return (
         <>
-            <QuickSEO pageKey="help" locale="ar" />
+            <SEOMetadata pageKey="help" locale="ar" />
             <div className="min-h-screen bg-background" dir="rtl">
                 {/* Hero Section */}
                 <section className="py-20 bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] text-white">

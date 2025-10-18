@@ -1,4 +1,4 @@
-# robots.txt for https://tahyamisr.org/
+# robots.txt for https://https://tahyamisryu.com/
 
 User-agent: *
 # Allow all crawlers to index public pages
@@ -24,8 +24,8 @@ Disallow: /api
 Crawl-delay: 1
 
 # Point crawlers to your sitemap
-Sitemap: https://tahyamisr.org/sitemap.xml
+Sitemap: https://https://tahyamisryu.com/sitemap.xml
 
 # Additional sitemaps for different content types
-Sitemap: https://tahyamisr.org/sitemap-news.xml
-Sitemap: https://tahyamisr.org/sitemap-events.xml
+Sitemap: https://https://tahyamisryu.com/sitemap-news.xml
+Sitemap: https://https://tahyamisryu.com/sitemap-events.xml

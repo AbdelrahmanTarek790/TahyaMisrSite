@@ -23,6 +23,7 @@ const mediaRoutes = require("./routes/media")
 const notificationRoutes = require("./routes/notifications")
 const timelineRoutes = require("./routes/timeline")
 const joinRequestRoutes = require("./routes/joinRequests")
+const heroImagesRoutes = require("./routes/heroImages")
 
 // Security middleware
 app.use(helmet())
@@ -68,6 +69,7 @@ app.use("/api/v1/media", mediaRoutes)
 app.use("/api/v1/notifications", notificationRoutes)
 app.use("/api/v1/timeline", timelineRoutes)
 app.use("/api/v1/join-requests", joinRequestRoutes)
+app.use("/api/v1/hero-images", heroImagesRoutes)
 
 // 404 handler
 app.use("*", (req, res) => {

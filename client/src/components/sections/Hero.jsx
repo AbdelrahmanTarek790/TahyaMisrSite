@@ -1,15 +1,81 @@
 import { Button } from "@/components/ui/enhanced-button"
 import { SimpleInViewStagger } from "@/components/ui/SimpleMotionComponents"
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { Link } from "react-router-dom"
-// import heroImage from "@/assets/1758267543110-78fd503d-f9e8-47a2-9933-7db0dab1aa98.png"
-import heroImage from "@/assets/hero.webp"
+import { useEffect, useState } from "react"
+import api, { heroImagesAPI } from "@/api"
+
+// Import hero images
+import heroImage1 from "@/assets/hero.webp"
+// import heroImage2 from "@/assets/1758267543110-78fd503d-f9e8-47a2-9933-7db0dab1aa98.png"
 
 const Hero = () => {
+    const [heroImages, setHeroImages] = useState([heroImage1])
+
+    const [api, setApi] = useState()
+    const [currentSlide, setCurrentSlide] = useState(0)
+
+    useEffect(() => {
+        if (!api) return
+
+        // Auto-advance carousel every 5 seconds
+        const interval = setInterval(() => {
+            api.scrollNext()
+        }, 5000)
+
+        // Update current slide when carousel changes
+        api.on("select", () => {
+            setCurrentSlide(api.selectedScrollSnap())
+        })
+
+        return () => {
+            clearInterval(interval)
+            // Don't destroy here; the Carousel component manages lifecycle
+        }
+    }, [api])
+
+    // Load hero images from backend (fallback to local images on error)
+    useEffect(() => {
+        let ignore = false
+        heroImagesAPI
+            .getAll()
+            .then((res) => {
+                const uploadsBase = "https://form.codepeak.software/uploads/"
+                const list = (res?.data || []).map((it) => `${uploadsBase}${it.imagePath}`)
+
+                if (list.length) setHeroImages(list)
+            })
+            .catch(() => {
+                /* ignore and keep fallback */
+            })
+    }, [])
+
     return (
-        <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-            {/* Background Image */}
-            <div className="absolute inset-0 bg-cover bg-center bg-no-repeat" style={{ backgroundImage: `url(${heroImage})` }}>
-                <div className="absolute inset-0 bg-gradient-to-r from-egypt-black/80 via-egypt-black/60 to-transparent"></div>
+        <section className="relative min-h-screen h-screen flex items-center justify-center overflow-hidden">
+            {/* Background Carousel */}
+            <div className="absolute inset-0">
+                <Carousel
+                    setApi={setApi}
+                    className="w-full h-full"
+                    opts={{
+                        align: "start",
+                        loop: true,
+                    }}
+                    dir={"ltr"}
+                >
+                    <CarouselContent className="h-screen">
+                        {heroImages.map((image, index) => (
+                            <CarouselItem key={index}>
+                                <div
+                                    className="w-full h-screen bg-cover bg-center bg-no-repeat relative"
+                                    style={{ backgroundImage: `url(${image})` }}
+                                >
+                                    <div className="absolute inset-0 bg-gradient-to-r from-egypt-black/80 via-egypt-black/60 to-transparent"></div>
+                                </div>
+                            </CarouselItem>
+                        ))}
+                    </CarouselContent>
+                </Carousel>
             </div>
 
             {/* Content */}
@@ -64,6 +130,19 @@ const Hero = () => {
                     </div>
                 </SimpleInViewStagger>
             </div>
+
+            {/* Carousel Indicators */}
+            {/* <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                {heroImages.map((_, index) => (
+                    <button
+                        key={index}
+                        className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                            currentSlide === index ? "bg-egypt-gold scale-125" : "bg-egypt-white/50 hover:bg-egypt-white/80"
+                        }`}
+                        onClick={() => api?.scrollTo(index)}
+                    />
+                ))}
+            </div> */}
 
             {/* Scroll Indicator */}
             <div

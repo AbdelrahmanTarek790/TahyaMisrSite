@@ -1,9 +1,8 @@
-import { useDocumentMetadata } from "../hooks/useDocumentMetadata"
-import { getPageSEO } from "../constants/seoConfig"
+import { getPageSEO, seoConfig } from "../constants/seoConfig"
 
 /**
- * Enhanced SEO component that handles both static and dynamic SEO metadata
- * This component properly manages React 19's built-in document metadata
+ * Enhanced SEO component using React 19's native metadata support
+ * Works seamlessly with SSR - no client-side DOM manipulation needed
  */
 export const SEOMetadata = ({
     pageKey,
@@ -16,6 +15,7 @@ export const SEOMetadata = ({
     url,
     type = "website",
     structuredData,
+    baseUrl = seoConfig.site.url,
 }) => {
     // If individual props are provided, use them directly
     // Otherwise, use the page configuration
@@ -24,7 +24,7 @@ export const SEOMetadata = ({
               title,
               description,
               keywords,
-              image: image || "/Logo.webp",
+              image: image || "/Logo.png",
               url,
               type,
               locale,
@@ -33,8 +33,12 @@ export const SEOMetadata = ({
           }
         : getPageSEO(pageKey, locale, dynamicData)
 
-    // Apply metadata using the custom hook
-    useDocumentMetadata(seoData)
+    // Build absolute URLs for SSR compatibility
+    const absoluteImage = seoData.image?.startsWith("http") ? seoData.image : `${baseUrl}${seoData.image}`
+
+    const absoluteUrl = seoData.url?.startsWith("http")
+        ? seoData.url
+        : `${baseUrl}${seoData.url || ""}`
 
     return (
         <>
@@ -49,8 +53,8 @@ export const SEOMetadata = ({
             <meta property="og:type" content={seoData.type} />
             <meta property="og:title" content={seoData.title} />
             <meta property="og:description" content={seoData.description} />
-            <meta property="og:image" content={`${window.location.origin}${seoData.image}`} />
-            <meta property="og:url" content={`${window.location.origin}${seoData.url || window.location.pathname}`} />
+            <meta property="og:image" content={absoluteImage} />
+            <meta property="og:url" content={absoluteUrl} />
             <meta property="og:locale" content={seoData.locale} />
             <meta property="og:site_name" content="اتحاد شباب تحيا مصر" />
 
@@ -58,10 +62,10 @@ export const SEOMetadata = ({
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content={seoData.title} />
             <meta name="twitter:description" content={seoData.description} />
-            <meta name="twitter:image" content={`${window.location.origin}${seoData.image}`} />
+            <meta name="twitter:image" content={absoluteImage} />
 
             {/* Canonical URL */}
-            <link rel="canonical" href={`${window.location.origin}${seoData.url || window.location.pathname}`} />
+            <link rel="canonical" href={absoluteUrl} />
 
             {/* Structured Data (JSON-LD) */}
             {seoData.structuredData && (

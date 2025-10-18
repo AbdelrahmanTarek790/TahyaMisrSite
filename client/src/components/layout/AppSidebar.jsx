@@ -11,6 +11,8 @@ import { NavMain } from "../ui/nav-main"
 import { useNavigate } from "react-router-dom"
 // import { DirectionSwitcher } from "../DirectionSwitcher"
 import { useAuth } from "@/context/AuthContext"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { getInitials } from "@/lib/utils"
 
 export function AppSidebar(props) {
     const { user, isAuthenticated } = useAuth()
@@ -18,10 +20,10 @@ export function AppSidebar(props) {
 
     // Define navigation items
     const navItems = [
-        { title: "لوحة التحكم", url: "/dashboard", icon: Home, role: ["student", "volunteer", "admin"] },
-        { title: "الأخبار", url: "/dashboard/news", icon: Newspaper, role: ["student", "volunteer", "admin"] },
-        { title: "الفعاليات", url: "/dashboard/events", icon: Calendar, role: ["student", "volunteer", "admin"] },
-        { title: "الوسائط", url: "/media", icon: Image, role: ["student", "volunteer", "admin"] },
+        { title: "لوحة التحكم", url: "/dashboard", icon: Home, role: ["member", "volunteer", "admin"] },
+        { title: "الأخبار", url: "/dashboard/news", icon: Newspaper, role: ["member", "volunteer", "admin"] },
+        { title: "الفعاليات", url: "/dashboard/events", icon: Calendar, role: ["member", "volunteer", "admin"] },
+        { title: "الوسائط", url: "/media", icon: Image, role: ["member", "volunteer", "admin"] },
         { title: "إدارة الأخبار", url: "/admin/news", icon: Newspaper, role: ["admin"] },
         { title: "إدارة الفعاليات", url: "/admin/events", icon: Calendar, role: ["admin"] },
         { title: "الجدول الزمني", url: "/admin/timeline", icon: Clock, role: ["admin"] },
@@ -29,7 +31,8 @@ export function AppSidebar(props) {
         { title: "طلبات الانضمام", url: "/admin/join-requests", icon: Users, role: ["admin"] },
         { title: "المناصب", url: "/admin/positions", icon: Settings, role: ["admin"] },
         { title: "الإشعارات", url: "/admin/notifications", icon: Bell, role: ["admin"] },
-        { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["student", "volunteer", "admin"] },
+        { title: "صور السلايدر", url: "/admin/hero-images", icon: Image, role: ["admin"] },
+        { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["member", "volunteer", "admin"] },
     ]
 
     // Filter navigation items based on user role and authentication status
@@ -89,9 +92,13 @@ export function AppSidebar(props) {
                 {isAuthenticated && user && (
                     <div className="p-3 border-t">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
-                                {user.name ? user.name.charAt(0).toUpperCase() : "U"}
-                            </div>
+                            <Avatar className="w-10 h-10">
+                                <AvatarImage
+                                    src={user?.profileImage ? `https://form.codepeak.software/uploads/${user.profileImage}` : undefined}
+                                    alt={user?.name || "User"}
+                                />
+                                <AvatarFallback className="text-2xl">{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
+                            </Avatar>
                             <div>
                                 <p className="text-sm font-medium">{user.name}</p>
                                 <p className="text-xs text-muted-foreground">{user.role}</p>

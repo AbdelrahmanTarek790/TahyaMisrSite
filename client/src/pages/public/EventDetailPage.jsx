@@ -6,6 +6,7 @@ import { ArrowLeft, Calendar, MapPin, Clock, Share2, Facebook, Twitter, Linkedin
 import { eventsAPI } from "../../api"
 import Logo from "../../assets/Logo.webp"
 import { useAuth } from "@/context/AuthContext"
+import GuestEventRegisterDialog from "@/components/dialogs/GuestEventRegisterDialog"
 
 const EventDetailPage = () => {
     const { id } = useParams()
@@ -16,6 +17,7 @@ const EventDetailPage = () => {
     const [error, setError] = useState(null)
     const [relatedEvents, setRelatedEvents] = useState([])
     const [isRegistering, setIsRegistering] = useState(false)
+    const [guestDialogOpen, setGuestDialogOpen] = useState(false)
     const [isRegistered, setIsRegistered] = useState(false)
 
     useEffect(() => {
@@ -23,7 +25,7 @@ const EventDetailPage = () => {
             await Promise.all([fetchEvent(), fetchRelatedEvents()])
         }
         fetchData()
-    }, [id,user])
+    }, [id, user])
 
     const fetchEvent = async () => {
         try {
@@ -101,25 +103,34 @@ const EventDetailPage = () => {
     const handleRegistration = async () => {
         const token = localStorage.getItem("token")
         if (!token) {
-            navigate("/login")
+            setGuestDialogOpen(true)
             return
         }
 
         try {
             setIsRegistering(true)
             await eventsAPI.register(id)
-
             setIsRegistered(true)
-            // Update registered users count
-            // setEvent((prev) => ({
-            //     ...prev,
-            //     registeredUsers: [...(prev.registeredUsers || []), JSON.parse(localStorage.getItem("user"))._id],
-            // }))
         } catch (error) {
             console.error("Failed to register for event:", error)
             setError(error.error || "Failed to register for event")
         } finally {
-            // setIsRegistering(false)
+            setIsRegistering(false)
+        }
+    }
+
+    const submitGuestRegistration = async (payload, reset) => {
+        try {
+            setIsRegistering(true)
+            await eventsAPI.guestRegister(id, payload)
+            setIsRegistered(true)
+            setGuestDialogOpen(false)
+            reset?.()
+        } catch (error) {
+            console.error("Failed to guest-register for event:", error)
+            setError(error.error || "تعذر التسجيل كضيف")
+        } finally {
+            setIsRegistering(false)
         }
     }
 
@@ -376,6 +387,13 @@ const EventDetailPage = () => {
                     </Link>
                 </div>
             </section>
+            {/* Guest Register Dialog */}
+            <GuestEventRegisterDialog
+                open={guestDialogOpen}
+                onOpenChange={setGuestDialogOpen}
+                onSubmit={submitGuestRegistration}
+                loading={isRegistering}
+            />
         </div>
     )
 }

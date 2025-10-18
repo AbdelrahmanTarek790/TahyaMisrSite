@@ -33,6 +33,7 @@ import { useAuth } from "@/context/AuthContext"
 
 const components = [
     { title: "من نحن", href: "/about", description: "تعرف على المزيد حول أتحاد شباب تحيا مصر ورؤيتنا ورسالتنا." },
+    { title: "فريق العمل", href: "/team", description: "تعرف على الفريق المتميز الذي يقود الاتحاد نحو تحقيق أهدافه." },
     { title: "رحلة الاتحاد", href: "/journey", description: "تعرف على رحلة الاتحاد وأهدافه." },
     // { title: "شركاؤنا", href: "/partners", description: "اكتشف شركاء النجاح الذين يدعمون مبادراتنا." },
     // { title: "قصص النجاح", href: "/success-stories", description: "اقرأ قصص النجاح الملهمة من مشاريعنا ومبادراتنا." },
@@ -80,9 +81,12 @@ export default function PublicPagesHeader() {
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="p-1">
                                 <div className="flex items-center gap-2">
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarImage src={user?.photo} alt={user?.name || "User"} />
-                                        <AvatarFallback>{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
+                                    <Avatar className="w-8 h-8">
+                                        <AvatarImage
+                                            src={user?.profileImage ? `https://form.codepeak.software/uploads/${user.profileImage}` : undefined}
+                                            alt={user?.name || "User"}
+                                        />
+                                        <AvatarFallback className="text-2xl">{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
                                     </Avatar>
                                     <div className="hidden md:block text-left">
                                         <p className="text-sm font-medium">{user?.name}</p>
@@ -377,9 +381,18 @@ export default function PublicPagesHeader() {
                                                                 {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ""}
                                                             </p>
                                                         </div>
-                                                        <Avatar className="h-10 w-10">
-                                                            <AvatarImage src={user?.photo} alt={user?.name || "User"} />
-                                                            <AvatarFallback>{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
+                                                        <Avatar className="w-8 h-8">
+                                                            <AvatarImage
+                                                                src={
+                                                                    user?.profileImage
+                                                                        ? `https://form.codepeak.software/uploads/${user.profileImage}`
+                                                                        : undefined
+                                                                }
+                                                                alt={user?.name || "User"}
+                                                            />
+                                                            <AvatarFallback className="text-2xl">
+                                                                {user?.name ? getInitials(user.name) : "U"}
+                                                            </AvatarFallback>
                                                         </Avatar>
                                                     </div>
 

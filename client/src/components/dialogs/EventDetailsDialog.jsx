@@ -5,13 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui
 import { Badge } from "../ui/badge"
 import { eventsAPI } from "../../api"
 import { useError } from "../../context/ErrorContext"
-import { exportEventUsersToExcel } from "../../utils/excelExport"
+import { exportEventUsersToExcel, exportEventGuestsToExcel } from "../../utils/excelExport"
 import { Download, Users, Calendar, MapPin, Loader2 } from "lucide-react"
 
 const EventDetailsDialog = ({ event, isOpen, onClose }) => {
     const [registeredUsers, setRegisteredUsers] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [isExporting, setIsExporting] = useState(false)
+    const [guestRegistrations, setGuestRegistrations] = useState([])
     const { addError } = useError()
 
     const fetchRegisteredUsers = useCallback(async () => {
@@ -21,6 +22,7 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
             setIsLoading(true)
             const response = await eventsAPI.getRegisteredUsers(event._id)
             setRegisteredUsers(response.data?.registeredUsers || [])
+            setGuestRegistrations(response.data?.guestRegistrations || [])
         } catch (error) {
             console.error("Failed to fetch registered users:", error)
             addError("Failed to fetch registered users")
@@ -39,19 +41,32 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
             addError("No registered users to export")
             return
         }
-
         try {
             setIsExporting(true)
             const success = exportEventUsersToExcel(registeredUsers, event.title)
-
-            if (success) {
-                addError("Users exported successfully!", "success")
-            } else {
-                addError("Failed to export users")
-            }
+            if (success) addError("Users exported successfully!", "success")
+            else addError("Failed to export users")
         } catch (error) {
             console.error("Failed to export users:", error)
             addError("Failed to export users")
+        } finally {
+            setIsExporting(false)
+        }
+    }
+
+    const handleExportGuests = async () => {
+        if (!guestRegistrations.length) {
+            addError("No guest registrations to export")
+            return
+        }
+        try {
+            setIsExporting(true)
+            const success = exportEventGuestsToExcel(guestRegistrations, event.title)
+            if (success) addError("Guests exported successfully!", "success")
+            else addError("Failed to export guests")
+        } catch (error) {
+            console.error("Failed to export guests:", error)
+            addError("Failed to export guests")
         } finally {
             setIsExporting(false)
         }
@@ -72,7 +87,7 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+            <DialogContent className=" w-[90%] md:max-w-4xl max-h-[80vh] overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-2xl">{event.title}</DialogTitle>
                     <DialogDescription>
@@ -88,7 +103,7 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
                                 </span>
                                 <span className="flex items-center">
                                     <Users className="mr-1 h-4 w-4" />
-                                    {registeredUsers.length} مسجل
+                                    {registeredUsers.length} مسجل | {guestRegistrations.length} ضيف
                                 </span>
                             </div>
                         </div>
@@ -172,6 +187,62 @@ const EventDetailsDialog = ({ event, isOpen, onClose }) => {
                                                     <td className="py-4 text-sm">{user.governorate}</td>
                                                     <td className="py-4 text-sm">{user.position?.name || "N/A"}</td>
                                                     <td className="py-4 text-sm">{new Date(user.createdAt).toLocaleDateString("ar-EG")}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+
+                    {/* Guest Registrations */}
+                    <Card>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle>تسجيلات الضيوف ({guestRegistrations.length})</CardTitle>
+                                <CardDescription>الأشخاص الذين سجلوا دون حساب</CardDescription>
+                            </div>
+                            <Button onClick={handleExportGuests} disabled={isExporting || !guestRegistrations.length} variant="outline">
+                                {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+                                تصدير Excel
+                            </Button>
+                        </CardHeader>
+                        <CardContent>
+                            {isLoading ? (
+                                <div className="flex items-center justify-center py-8">
+                                    <Loader2 className="h-8 w-8 animate-spin" />
+                                </div>
+                            ) : guestRegistrations.length === 0 ? (
+                                <div className="text-center py-8">
+                                    <Users className="mx-auto h-12 w-12 text-gray-400" />
+                                    <h3 className="mt-2 text-lg font-medium text-gray-900">لا يوجد ضيوف مسجلين</h3>
+                                    <p className="text-gray-500">لم يقم أي ضيف بالتسجيل في هذه الفعالية بعد</p>
+                                </div>
+                            ) : (
+                                <div className="overflow-x-auto">
+                                    <table className="w-full">
+                                        <thead>
+                                            <tr className="border-b">
+                                                <th className="text-left pb-3 font-medium">الاسم</th>
+                                                <th className="text-left pb-3 font-medium">البريد الإلكتروني</th>
+                                                <th className="text-left pb-3 font-medium">الهاتف</th>
+                                                <th className="text-left pb-3 font-medium">المحافظة</th>
+                                                <th className="text-left pb-3 font-medium">الرقم القومي</th>
+                                                <th className="text-left pb-3 font-medium">تاريخ التسجيل</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {guestRegistrations.map((g, idx) => (
+                                                <tr key={idx} className="border-b">
+                                                    <td className="py-4">{g.name}</td>
+                                                    <td className="py-4 text-sm">{g.email}</td>
+                                                    <td className="py-4 text-sm">{g.phone || "N/A"}</td>
+                                                    <td className="py-4 text-sm">{g.governorate || "N/A"}</td>
+                                                    <td className="py-4 text-sm">{g.nationalId || "N/A"}</td>
+                                                    <td className="py-4 text-sm">
+                                                        {g.createdAt ? new Date(g.createdAt).toLocaleDateString("ar-EG") : "N/A"}
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>

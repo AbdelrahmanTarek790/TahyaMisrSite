@@ -2,6 +2,7 @@ const JoinRequest = require("../models/JoinRequest")
 const User = require("../models/User")
 const Position = require("../models/Position")
 const { generateToken } = require("../middleware/auth")
+const { sendJoinRequestSubmitted, sendJoinRequestApproved, sendJoinRequestDenied } = require("../utils/email")
 
 // @desc    Create a new join request
 // @route   POST /api/v1/join-requests
@@ -82,6 +83,13 @@ const createJoinRequest = async (req, res, next) => {
 
         // Populate position if it exists
         await joinRequest.populate("position")
+
+        // Send submission confirmation email (non-blocking)
+        try {
+            sendJoinRequestSubmitted(email, name)
+        } catch (e) {
+            /* ignore */
+        }
 
         res.status(201).json({
             success: true,
@@ -242,6 +250,13 @@ const approveJoinRequest = async (req, res, next) => {
         // Generate token for the new user
         const token = generateToken(user._id)
 
+        // Send approval email with temp password (non-blocking)
+        try {
+            sendJoinRequestApproved(joinRequest.email, joinRequest.name, tempPassword)
+        } catch (e) {
+            /* ignore */
+        }
+
         res.status(200).json({
             success: true,
             message: "Join request approved and user account created successfully",
@@ -289,6 +304,13 @@ const denyJoinRequest = async (req, res, next) => {
 
         // Deny the join request
         await joinRequest.deny(req.user._id, notes)
+
+        // Send denial email (non-blocking)
+        try {
+            sendJoinRequestDenied(joinRequest.email, joinRequest.name, notes)
+        } catch (e) {
+            /* ignore */
+        }
 
         res.status(200).json({
             success: true,

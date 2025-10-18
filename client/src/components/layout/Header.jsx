@@ -228,9 +228,12 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="p-1">
                             <div className="flex items-center gap-2">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src={user?.photo} alt={user?.name || "User"} />
-                                    <AvatarFallback>{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
+                                <Avatar className="w-8 h-8">
+                                    <AvatarImage
+                                        src={user?.profileImage ? `https://form.codepeak.software/uploads/${user.profileImage}` : undefined}
+                                        alt={user?.name || "User"}
+                                    />
+                                    <AvatarFallback className="text-2xl">{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
                                 </Avatar>
                                 <div className="hidden md:block text-left">
                                     <p className="text-sm font-medium">{user?.name}</p>

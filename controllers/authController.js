@@ -241,7 +241,7 @@ const forgotPassword = async (req, res, next) => {
         await user.save({ validateBeforeSave: false })
 
         // Send email with reset token
-        const emailResult = await sendResetPasswordEmail(email, resetToken)
+        const emailResult = await sendResetPasswordEmail(email, `https://tahyamisryu.com/reset-password?token=${resetToken}`)
 
         if (!emailResult.success) {
             // Reset the token fields if email fails

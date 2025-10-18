@@ -24,7 +24,7 @@ const userSchema = z.object({
     position: z.string().optional(),
     membershipNumber: z.string().optional(),
     membershipExpiry: z.string().optional(),
-    role: z.enum(["student", "volunteer", "admin"]),
+    role: z.enum(["member", "volunteer", "admin"]),
 })
 
 const createUserSchema = z.object({
@@ -38,7 +38,7 @@ const createUserSchema = z.object({
     position: z.string().optional(),
     membershipNumber: z.string().optional(),
     membershipExpiry: z.string().optional(),
-    role: z.enum(["student", "volunteer", "admin"]),
+    role: z.enum(["member", "volunteer", "admin"]),
 })
 
 const UserManagement = () => {
@@ -53,6 +53,7 @@ const UserManagement = () => {
     const [filterRole, setFilterRole] = useState("all")
     const [filterGovernorate, setFilterGovernorate] = useState("all")
     const [filterUniversity, setFilterUniversity] = useState("all")
+    const [filterLimit, setFilterLimit] = useState(10)
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 })
     const { addError } = useError()
 
@@ -79,12 +80,13 @@ const UserManagement = () => {
             setIsLoading(true)
             const response = await usersAPI.getAll({
                 page: pagination.page,
-                limit: pagination.limit,
+                limit: filterLimit,
             })
             setUsers(response.data?.users || [])
             setPagination((prev) => ({
                 ...prev,
-                total: response.data?.total || 0,
+                limit: filterLimit,
+                total: response.data?.pagination.total || 0,
             }))
         } catch (error) {
             console.error("Failed to fetch users:", error)
@@ -92,7 +94,7 @@ const UserManagement = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [pagination.page, pagination.limit, addError])
+    }, [pagination.page, filterLimit, addError])
 
     const fetchPositions = async () => {
         try {
@@ -108,6 +110,11 @@ const UserManagement = () => {
         fetchUsers()
         fetchPositions()
     }, [fetchUsers])
+
+    // Handle limit change - reset to page 1 when limit changes
+    useEffect(() => {
+        setPagination((prev) => ({ ...prev, page: 1, limit: filterLimit }))
+    }, [filterLimit])
     const handleDeleteUser = async (userId) => {
         if (!confirm("Are you sure you want to delete this user?")) return
 
@@ -247,6 +254,7 @@ const UserManagement = () => {
         setFilterRole("all")
         setFilterGovernorate("all")
         setFilterUniversity("all")
+        setFilterLimit(10)
     }
 
     const getRoleIcon = (role) => {
@@ -340,7 +348,7 @@ const UserManagement = () => {
                     className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                 >
                     <option value="all">كل المستخدمين</option>
-                    <option value="student">الاعضاء</option>
+                    <option value="member">الاعضاء</option>
                     <option value="volunteer">المتطوعين</option>
                     <option value="admin">المدراء</option>
                 </select>
@@ -367,6 +375,23 @@ const UserManagement = () => {
                             {university}
                         </option>
                     ))}
+                </select>
+                <select
+                    value={filterLimit}
+                    onChange={(e) => setFilterLimit(Number(e.target.value))}
+                    className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    title="عدد المستخدمين في الصفحة"
+                >
+                    <option value={5}>5 في الصفحة</option>
+                    <option value={10}>10 في الصفحة</option>
+                    <option value={25}>25 في الصفحة</option>
+                    <option value={50}>50 في الصفحة</option>
+                    <option value={100}>100 في الصفحة</option>
+                    <option value={200}>200 في الصفحة</option>
+                    <option value={1000}>1000 في الصفحة</option>
+                    <option value={10000}>10000 في الصفحة</option>
+
+
                 </select>
                 <Button variant="outline" onClick={clearFilters}>
                     <Filter className="h-4 w-4 mr-2" />
@@ -467,7 +492,7 @@ const UserManagement = () => {
                                                         onChange={(e) => handleRoleChange(user._id, e.target.value)}
                                                         className="text-xs rounded border border-gray-300 px-2 py-1"
                                                     >
-                                                        <option value="student">Student</option>
+                                                        <option value="member">Member</option>
                                                         <option value="volunteer">Volunteer</option>
                                                         <option value="admin">Admin</option>
                                                     </select>
@@ -493,17 +518,17 @@ const UserManagement = () => {
                         onClick={() => setPagination((prev) => ({ ...prev, page: prev.page - 1 }))}
                         disabled={pagination.page === 1 || isLoading}
                     >
-                        Previous
+                        السابق
                     </Button>
                     <span className="flex items-center px-4">
-                        Page {pagination.page} of {Math.ceil(pagination.total / pagination.limit)}
+                        صفحة {pagination.page} من {Math.ceil(pagination.total / pagination.limit)}
                     </span>
                     <Button
                         variant="outline"
                         onClick={() => setPagination((prev) => ({ ...prev, page: prev.page + 1 }))}
                         disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit) || isLoading}
                     >
-                        Next
+                        التالي
                     </Button>
                 </div>
             )}
@@ -512,49 +537,49 @@ const UserManagement = () => {
             <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
                 <SheetContent className="w-[600px] sm:max-w-[600px]">
                     <SheetHeader>
-                        <SheetTitle>Edit User</SheetTitle>
+                        <SheetTitle>تعديل المستخدم</SheetTitle>
                     </SheetHeader>
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6 px-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                            <Input {...register("name")} placeholder="Enter full name" />
+                            <label className="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل *</label>
+                            <Input {...register("name")} placeholder="أدخل الاسم الكامل" />
                             {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                            <Input {...register("email")} type="email" disabled placeholder="Enter email address" />
+                            <label className="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني *</label>
+                            <Input {...register("email")} type="email" disabled placeholder="أدخل البريد الإلكتروني" />
                             {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-                                <Input {...register("phone")} placeholder="Enter phone number" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف *</label>
+                                <Input {...register("phone")} placeholder="أدخل رقم الهاتف" />
                                 {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">National ID *</label>
-                                <Input {...register("nationalId")} placeholder="Enter national ID" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الرقم القومي *</label>
+                                <Input {...register("nationalId")} placeholder="أدخل الرقم القومي" />
                                 {errors.nationalId && <p className="text-red-500 text-sm mt-1">{errors.nationalId.message}</p>}
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">University *</label>
-                                <Input {...register("university")} placeholder="Enter university" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الجامعة *</label>
+                                <Input {...register("university")} placeholder="أدخل الجامعة" />
                                 {errors.university && <p className="text-red-500 text-sm mt-1">{errors.university.message}</p>}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Governorate *</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">المحافظة *</label>
                                 <select
                                     {...register("governorate")}
                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 >
-                                    <option value="">Select Governorate</option>
+                                    <option value="">اختر المحافظة</option>
                                     {EGYPT_GOVERNORATES.map((governorate) => (
                                         <option key={governorate} value={governorate}>
                                             {governorate}
@@ -567,22 +592,22 @@ const UserManagement = () => {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الدور *</label>
                                 <select {...register("role")} className="w-full p-2 border border-gray-300 rounded-md">
-                                    <option value="student">Student</option>
-                                    <option value="volunteer">Volunteer</option>
-                                    <option value="admin">Admin</option>
+                                    <option value="member">عضو</option>
+                                    <option value="volunteer">متطوع</option>
+                                    <option value="admin">مدير</option>
                                 </select>
                                 {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Position</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">اللجنة </label>
                                 <select
                                     {...register("position")}
                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 >
-                                    <option value="">Select Position</option>
+                                    <option value="">اختر اللجنة</option>
                                     {positions.map((position) => (
                                         <option key={position._id} value={position._id}>
                                             {position.name}
@@ -595,24 +620,24 @@ const UserManagement = () => {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Membership Number</label>
-                                <Input {...register("membershipNumber")} placeholder="Enter membership number" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">رقم العضوية</label>
+                                <Input {...register("membershipNumber")} placeholder="أدخل رقم العضوية" />
                                 {errors.membershipNumber && <p className="text-red-500 text-sm mt-1">{errors.membershipNumber.message}</p>}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Membership Expiry</label>
-                                <Input {...register("membershipExpiry")} type="date" placeholder="Select expiry date" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">تاريخ انتهاء العضوية</label>
+                                <Input {...register("membershipExpiry")} type="date" placeholder="اختر تاريخ الانتهاء" />
                                 {errors.membershipExpiry && <p className="text-red-500 text-sm mt-1">{errors.membershipExpiry.message}</p>}
                             </div>
                         </div>
 
                         <div className="flex justify-end gap-2 pt-4">
                             <Button type="button" variant="outline" onClick={handleCloseSheet}>
-                                Cancel
+                                إلغاء
                             </Button>
                             <Button type="submit" disabled={isLoading}>
-                                {isLoading ? "Updating..." : "Update User"}
+                                {isLoading ? "تحديث..." : "تحديث المستخدم"}
                             </Button>
                         </div>
                     </form>
@@ -623,55 +648,55 @@ const UserManagement = () => {
             <Sheet open={isCreateSheetOpen} onOpenChange={setIsCreateSheetOpen}>
                 <SheetContent className="w-[600px] sm:max-w-[600px]">
                     <SheetHeader>
-                        <SheetTitle>Create New User</SheetTitle>
+                        <SheetTitle>إنشاء مستخدم جديد</SheetTitle>
                     </SheetHeader>
                     <form onSubmit={handleSubmitCreate(onCreateSubmit)} className="space-y-4 mt-6 px-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                            <Input {...registerCreate("name")} placeholder="Enter full name" />
+                            <label className="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل *</label>
+                            <Input {...registerCreate("name")} placeholder="أدخل الاسم الكامل" />
                             {errorsCreate.name && <p className="text-red-500 text-sm mt-1">{errorsCreate.name.message}</p>}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                            <Input {...registerCreate("email")} type="email" placeholder="Enter email address" />
+                            <label className="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني *</label>
+                            <Input {...registerCreate("email")} type="email" placeholder="أدخل البريد الإلكتروني" />
                             {errorsCreate.email && <p className="text-red-500 text-sm mt-1">{errorsCreate.email.message}</p>}
                         </div>
 
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
-                            <Input {...registerCreate("password")} type="password" placeholder="Enter password" />
+                            <label className="block text-sm font-medium text-gray-700 mb-1">كلمة المرور *</label>
+                            <Input {...registerCreate("password")} type="password" placeholder="أدخل كلمة المرور" />
                             {errorsCreate.password && <p className="text-red-500 text-sm mt-1">{errorsCreate.password.message}</p>}
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number *</label>
-                                <Input {...registerCreate("phone")} placeholder="Enter phone number" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف *</label>
+                                <Input {...registerCreate("phone")} placeholder="أدخل رقم الهاتف" />
                                 {errorsCreate.phone && <p className="text-red-500 text-sm mt-1">{errorsCreate.phone.message}</p>}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">National ID *</label>
-                                <Input {...registerCreate("nationalId")} placeholder="Enter national ID" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الرقم القومي *</label>
+                                <Input {...registerCreate("nationalId")} placeholder="أدخل الرقم القومي" />
                                 {errorsCreate.nationalId && <p className="text-red-500 text-sm mt-1">{errorsCreate.nationalId.message}</p>}
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">University *</label>
-                                <Input {...registerCreate("university")} placeholder="Enter university" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الجامعة *</label>
+                                <Input {...registerCreate("university")} placeholder="أدخل الجامعة" />
                                 {errorsCreate.university && <p className="text-red-500 text-sm mt-1">{errorsCreate.university.message}</p>}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Governorate *</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">المحافظة *</label>
                                 <select
                                     {...registerCreate("governorate")}
                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 >
-                                    <option value="">Select Governorate</option>
+                                    <option value="">اختر المحافظة</option>
                                     {EGYPT_GOVERNORATES.map((governorate) => (
                                         <option key={governorate} value={governorate}>
                                             {governorate}
@@ -684,22 +709,22 @@ const UserManagement = () => {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الدور *</label>
                                 <select {...registerCreate("role")} className="w-full p-2 border border-gray-300 rounded-md">
-                                    <option value="student">Student</option>
-                                    <option value="volunteer">Volunteer</option>
-                                    <option value="admin">Admin</option>
+                                    <option value="member">عضو</option>
+                                    <option value="volunteer">متطوع</option>
+                                    <option value="admin">مدير</option>
                                 </select>
                                 {errorsCreate.role && <p className="text-red-500 text-sm mt-1">{errorsCreate.role.message}</p>}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Position</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">اللجنة *</label>
                                 <select
                                     {...registerCreate("position")}
                                     className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                                 >
-                                    <option value="">Select Position</option>
+                                    <option value="">اختر اللجنة</option>
                                     {positions.map((position) => (
                                         <option key={position._id} value={position._id}>
                                             {position.name}
@@ -712,16 +737,16 @@ const UserManagement = () => {
 
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Membership Number</label>
-                                <Input {...registerCreate("membershipNumber")} placeholder="Enter membership number" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">رقم العضوية</label>
+                                <Input {...registerCreate("membershipNumber")} placeholder="أدخل رقم العضوية" />
                                 {errorsCreate.membershipNumber && (
                                     <p className="text-red-500 text-sm mt-1">{errorsCreate.membershipNumber.message}</p>
                                 )}
                             </div>
 
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Membership Expiry</label>
-                                <Input {...registerCreate("membershipExpiry")} type="date" placeholder="Select expiry date" />
+                                <label className="block text-sm font-medium text-gray-700 mb-1">تاريخ انتهاء العضوية</label>
+                                <Input {...registerCreate("membershipExpiry")} type="date" placeholder="اختر تاريخ الانتهاء" />
                                 {errorsCreate.membershipExpiry && (
                                     <p className="text-red-500 text-sm mt-1">{errorsCreate.membershipExpiry.message}</p>
                                 )}
@@ -730,10 +755,10 @@ const UserManagement = () => {
 
                         <div className="flex justify-end gap-2 pt-4">
                             <Button type="button" variant="outline" onClick={handleCloseCreateSheet}>
-                                Cancel
+                                الغاء
                             </Button>
                             <Button type="submit" disabled={isLoading}>
-                                {isLoading ? "Creating..." : "Create User"}
+                                {isLoading ? "جاري الإنشاء..." : "إنشاء مستخدم جديد"}
                             </Button>
                         </div>
                     </form>
@@ -744,15 +769,15 @@ const UserManagement = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Total Students</CardTitle>
+                        <CardTitle className="text-sm font-medium">الاعضاء</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">{users.filter((u) => u.role === "student").length}</div>
+                        <div className="text-2xl font-bold">{users.filter((u) => u.role === "member").length}</div>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Total Volunteers</CardTitle>
+                        <CardTitle className="text-sm font-medium">المتطوعين</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{users.filter((u) => u.role === "volunteer").length}</div>
@@ -760,7 +785,7 @@ const UserManagement = () => {
                 </Card>
                 <Card>
                     <CardHeader className="pb-2">
-                        <CardTitle className="text-sm font-medium">Total Admins</CardTitle>
+                        <CardTitle className="text-sm font-medium">المدراء</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{users.filter((u) => u.role === "admin").length}</div>

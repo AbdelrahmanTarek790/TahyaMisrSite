@@ -108,6 +108,7 @@ export const eventsAPI = {
         }),
     delete: (id) => api.delete(`/events/${id}`),
     register: (id) => api.post(`/events/${id}/register`),
+    guestRegister: (id, payload) => api.post(`/events/${id}/guest-register`, payload),
 }
 
 // Media API
@@ -136,6 +137,12 @@ export const timelineAPI = {
     create: (timelineData) => api.post("/timeline", timelineData),
     update: (id, timelineData) => api.put(`/timeline/${id}`, timelineData),
     delete: (id) => api.delete(`/timeline/${id}`),
+}
+
+// Hero Images API
+export const heroImagesAPI = {
+    getAll: () => api.get("/hero-images"), // returns { success, data: HeroImage[] }
+    getAllAdmin: () => api.get("/hero-images/admin"),
 }
 
 export default api

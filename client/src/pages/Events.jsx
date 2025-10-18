@@ -179,7 +179,7 @@ const Events = () => {
                                     </div>
                                     <div className="flex items-center text-sm text-gray-500">
                                         <Users className="mr-1 h-3 w-3" />
-                                        {event.registeredUsers?.length || 0} مسجلين
+                                        {(event.registeredUsers?.length || 0) + (event.guestRegistrationsCount || 0)} مسجلين
                                     </div>
                                 </CardDescription>
                             </CardHeader>
