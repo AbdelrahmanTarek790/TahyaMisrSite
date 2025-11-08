@@ -246,6 +246,37 @@ abstract class ApiClient {
   Future<ApiResponse<dynamic>> reorderActivities(
     @Body() Map<String, dynamic> body,
   );
+
+  // Achievements endpoints
+  @GET('/achievements')
+  Future<ApiResponse<dynamic>> getAchievements(
+    @Query('isActive') bool? isActive,
+  );
+
+  @GET('/achievements/{id}')
+  Future<ApiResponse<dynamic>> getAchievementById(@Path('id') String id);
+
+  @MultiPart()
+  @POST('/achievements')
+  Future<ApiResponse<dynamic>> createAchievement(@Body() FormData body);
+
+  @MultiPart()
+  @PUT('/achievements/{id}')
+  Future<ApiResponse<dynamic>> updateAchievement(
+    @Path('id') String id,
+    @Body() FormData body,
+  );
+
+  @DELETE('/achievements/{id}')
+  Future<ApiResponse<dynamic>> deleteAchievement(@Path('id') String id);
+
+  @PATCH('/achievements/{id}/toggle')
+  Future<ApiResponse<dynamic>> toggleAchievementStatus(@Path('id') String id);
+
+  @PUT('/achievements/reorder')
+  Future<ApiResponse<dynamic>> reorderAchievements(
+    @Body() Map<String, dynamic> body,
+  );
 // Dashboard data will be aggregated from other endpoints
 // No dedicated dashboard endpoints since dashboard.js was deleted
 }

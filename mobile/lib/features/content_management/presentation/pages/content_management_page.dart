@@ -6,6 +6,7 @@ import 'package:tahya_misr_app/features/dashboard/presentation/cubits/dashboard_
 
 import '../../../../core/dependency_injection/injection.dart';
 import '../../../../gen_l10n/app_localizations.dart';
+import '../../../achievements/presentation/pages/manage_achievements_page.dart';
 import '../../../activities/presentation/pages/manage_activities_page.dart';
 import 'manage_news/mange_news.dart';
 import 'manage_timeline/manage_timeline.dart';
@@ -184,6 +185,24 @@ class _ContentManagementPageState extends State<ContentManagementPage> {
                   );
                 },
               ).animate().fadeIn(delay: 800.ms).slideX(begin: 0.3, end: 0),
+
+              const SizedBox(height: 12),
+
+              // Achievements Management
+              _buildManagementCard(
+                context,
+                title: 'إدارة الإنجازات',
+                subtitle: 'إضافة وتعديل إنجازات الاتحاد',
+                icon: Icons.emoji_events,
+                color: Colors.amber,
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => const ManageAchievementsPage(),
+                    ),
+                  );
+                },
+              ).animate().fadeIn(delay: 1000.ms).slideX(begin: -0.3, end: 0),
 
               const SizedBox(height: 12),
         /*      // Media Management
