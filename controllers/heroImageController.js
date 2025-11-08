@@ -80,4 +80,4 @@ const deleteHeroImage = async (req, res, next) => {
     }
 }
 
-module.exports = { listHeroImages, createHeroImage, updateHeroImage, deleteHeroImage , listHeroImagesAdmin }
+module.exports = { listHeroImages, createHeroImage, updateHeroImage, deleteHeroImage, listHeroImagesAdmin }

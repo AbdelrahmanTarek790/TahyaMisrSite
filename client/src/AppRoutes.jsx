@@ -49,6 +49,8 @@ const NotificationsManagement = lazy(() => import("./pages/admin/NotificationsMa
 const TimelineManagement = lazy(() => import("./pages/admin/TimelineManagement"))
 const JoinRequestManagement = lazy(() => import("./pages/admin/JoinRequestManagement"))
 const HeroImagesManagement = lazy(() => import("./pages/admin/HeroImagesManagement"))
+const AchievementsManagement = lazy(() => import("./pages/admin/AchievementsManagement"))
+const ActivitiesManagement = lazy(() => import("./pages/admin/ActivitiesManagement"))
 
 export default function AppRoutes() {
     const { isAuthenticated, user } = useAuth()
@@ -219,6 +221,26 @@ export default function AppRoutes() {
                             <ProtectedRoute roles={["admin"]}>
                                 <DashboardLayout>
                                     <HeroImagesManagement />
+                                </DashboardLayout>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/achievements"
+                        element={
+                            <ProtectedRoute roles={["admin"]}>
+                                <DashboardLayout>
+                                    <AchievementsManagement />
+                                </DashboardLayout>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/activities"
+                        element={
+                            <ProtectedRoute roles={["admin"]}>
+                                <DashboardLayout>
+                                    <ActivitiesManagement />
                                 </DashboardLayout>
                             </ProtectedRoute>
                         }

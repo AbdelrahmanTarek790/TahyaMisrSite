@@ -29,7 +29,7 @@ const updateUserSchema = Joi.object({
     membershipExpiry: Joi.date().optional(),
     email: Joi.string().email().optional(),
     nationalId: Joi.string().min(14).max(14).optional(),
-    role: Joi.string().valid("student", "volunteer", "admin").optional(),
+    role: Joi.string().valid("member", "volunteer", "admin").optional(),
 })
 
 const forgotPasswordSchema = Joi.object({

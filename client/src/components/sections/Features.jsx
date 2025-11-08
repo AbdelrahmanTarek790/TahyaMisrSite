@@ -1,6 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Award, Users, Globe, Heart, BookOpen, Crown, Shield } from "lucide-react"
 import { Link } from "react-router-dom"
+import { useEffect, useState } from "react"
+import { achievementsAPI, activitiesAPI } from "@/api"
 import TheRoadOfRepublicForum from "@/assets/the-road-of-new-republic-forum.jpg"
 import ArabYouthSummit from "@/assets/Arab-youth-summit.jpg"
 import NationalForumforAwarenessBuilding from "@/assets/build-forum.jpg"
@@ -16,8 +18,25 @@ import Eaeat from "@/assets/EAEAT.jpg"
 import { SimpleInViewSection, SimpleInViewStagger } from "@/components/ui/SimpleMotionComponents"
 import { InViewSection, InViewStagger } from "../ui/MotionComponents"
 
+// Icon mapping for dynamic data
+const iconMap = {
+    Globe: Globe,
+    Crown: Crown,
+    BookOpen: BookOpen,
+    Users: Users,
+    Award: Award,
+    Heart: Heart,
+    Shield: Shield,
+}
+
 const Features = () => {
-    const achievements = [
+    const [achievements, setAchievements] = useState([])
+    const [activities, setActivities] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(null)
+
+    // Fallback data (your original hardcoded data)
+    const fallbackAchievements = [
         {
             icon: Globe,
             title: "منتدي الطريق الى الجمهوريه الجديدة",
@@ -88,6 +107,92 @@ const Features = () => {
         },
     ]
 
+    const fallbackActivities = [
+        {
+            title: "أسرة اتحاد طلاب تحيا مصر بالأكاديمية المصرية للهندسة والتكنولوجيا المتقدمة",
+            image: Eaeat,
+            color: "bg-gradient-to-br from-blue-500 to-blue-600",
+        },
+        {
+            title: "اتحاد طلاب مدارس تحيا مصر",
+            image: StudentTahiaMisr,
+            color: "bg-gradient-to-br from-egypt-red to-red-600",
+        },
+        {
+            title: "جريدة تحيا مصر",
+            image: NewsTahiaMisr,
+            color: "bg-gradient-to-br from-egypt-gold to-yellow-600",
+        },
+        {
+            title: "راديو تحيا مصر",
+            image: RadioTahiaMisr,
+            color: "bg-gradient-to-br from-purple-500 to-purple-600",
+        },
+    ]
+
+    // Fetch achievements and activities from API
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                setLoading(true)
+                setError(null)
+
+                // Fetch both achievements and activities
+                const [achievementsResponse, activitiesResponse] = await Promise.all([
+                    achievementsAPI.getAll({ isActive: true }),
+                    activitiesAPI.getAll({ isActive: true }),
+                ])
+
+                // Map API data to component format
+                const mappedAchievements = achievementsResponse.data.map((achievement) => ({
+                    icon: iconMap[achievement.icon] || Award,
+                    title: achievement.title,
+                    description: achievement.description,
+                    highlights: achievement.highlights || [],
+                    color: achievement.color || "text-egypt-gold",
+                    image: achievement.image || TheRoadOfRepublicForum,
+                    _id: achievement._id,
+                }))
+
+                const mappedActivities = activitiesResponse.data.map((activity) => ({
+                    title: activity.title,
+                    image: activity.image || RadioTahiaMisr,
+                    color: activity.color || "bg-gradient-to-br from-egypt-red to-egypt-gold",
+                    _id: activity._id,
+                }))
+
+                setAchievements(mappedAchievements.length > 0 ? mappedAchievements : fallbackAchievements)
+                setActivities(mappedActivities.length > 0 ? mappedActivities : fallbackActivities)
+            } catch (err) {
+                console.error("Error fetching data:", err)
+                setError(err)
+                // Use fallback data on error
+                setAchievements(fallbackAchievements)
+                setActivities(fallbackActivities)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchData()
+    }, [])
+
+    // Show loading skeleton or fallback data
+    if (loading) {
+        return (
+            <section className="py-10 bg-background">
+                <div className="container mx-auto px-6">
+                    <div className="text-center mb-16">
+                        <h2 className="text-2xl md:text-5xl font-bold text-foreground mb-6 font-arabic">
+                            🔹 <span className="text-egypt-gold animate-gradient">إنجازات ومشروعات 🔹</span>
+                        </h2>
+                        <p className="text-xl text-muted-foreground max-w-3xl mx-auto">جاري التحميل...</p>
+                    </div>
+                </div>
+            </section>
+        )
+    }
+
     return (
         <section className="py-10 bg-background">
             <div className="container mx-auto px-6">
@@ -102,11 +207,11 @@ const Features = () => {
 
                 <SimpleInViewStagger className="grid grid-cols-1 lg:grid-cols-3 gap-8" staggerDelay={0.2}>
                     {achievements.map((achievement, index) => (
-                        <Card key={index} className="bg-card border-border card-hover group h-full overflow-hidden">
+                        <Card key={achievement._id || index} className="bg-card border-border card-hover group h-full overflow-hidden">
                             {/* Project Image */}
                             <div className="aspect-video bg-gradient-to-br from-egypt-red/10 to-egypt-gold/10 flex items-center justify-center overflow-hidden">
                                 <img
-                                    src={achievement.image}
+                                    src={achievement.image.startsWith("/uploads") ? `https://form.codepeak.software${achievement.image}` : achievement.image}
                                     alt={achievement.title}
                                     className="object-cover w-[250px] group-hover:scale-110 transition-transform duration-500"
                                 />
@@ -131,6 +236,7 @@ const Features = () => {
                                 <div className="space-y-2">
                                     <h4 className="font-semibold text-foreground text-right font-arabic">أبرز المحاور:</h4>
                                     <ul className="space-y-1">
+                                        {/* Convert to array */}
                                         {achievement.highlights.map((highlight, idx) => (
                                             <li key={idx} className="text-sm text-muted-foreground flex  items-center gap-2 font-arabic">
                                                 <span className="w-2 h-2 bg-egypt-gold rounded-full"></span>
@@ -159,35 +265,14 @@ const Features = () => {
                         <h3 className="text-2xl font-bold text-foreground mb-8 text-center font-arabic">🔹 أنشطة مركزية 🔹</h3>
 
                         <InViewStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" staggerDelay={0.2}>
-                            {[
-                                {
-                                    title: "أسرة اتحاد طلاب تحيا مصر بالأكاديمية المصرية للهندسة والتكنولوجيا المتقدمة",
-                                    img: Eaeat,
-                                    color: "bg-gradient-to-br from-blue-500 to-blue-600",
-                                },
-                                {
-                                    title: "اتحاد طلاب مدارس تحيا مصر",
-                                    img: StudentTahiaMisr,
-                                    color: "bg-gradient-to-br from-egypt-red to-red-600",
-                                },
-
-                                {
-                                    title: "جريدة تحيا مصر",
-                                    img: NewsTahiaMisr,
-                                    color: "bg-gradient-to-br from-egypt-gold to-yellow-600",
-                                },
-                                {
-                                    title: "راديو تحيا مصر",
-                                    img: RadioTahiaMisr,
-                                    color: "bg-gradient-to-br from-purple-500 to-purple-600",
-                                },
-                            ].map((activity, index) => (
+                            {activities.map((activity, index) => (
                                 <Card
-                                    key={index}
+                                    key={activity._id || index}
                                     className="bg-white/80 backdrop-blur-sm border-2 h-full border-white/20 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
                                 >
                                     <CardHeader className="text-center pb-4 ">
-                                        <img src={activity.img} alt={activity.title} className="w-32  text-white" />
+                                        {/* validate the url */}
+                                        <img src={activity.image.startsWith("/uploads") ? `https://form.codepeak.software${activity.image}` : activity.image} alt={activity.title} className="w-32  text-white" />
                                     </CardHeader>
                                     <CardContent className="text-center">
                                         <h4 className="text-lg font-semibold text-foreground leading-tight font-arabic text-right px-2">

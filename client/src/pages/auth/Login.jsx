@@ -34,7 +34,7 @@ const Login = () => {
             await login(data)
             navigate("/dashboard")
         } catch (error) {
-            addError(error?.error || "Login failed. Please try again.")
+            addError("البريد الإلكتروني أو كلمة المرور غير صحيحة" || "Login failed. Please try again.")
         } finally {
             setIsLoading(false)
         }

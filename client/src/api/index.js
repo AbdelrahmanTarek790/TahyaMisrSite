@@ -17,6 +17,12 @@ api.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`
         }
+
+        // Don't set Content-Type for FormData - let browser set it with boundary
+        if (config.data instanceof FormData) {
+            delete config.headers["Content-Type"]
+        }
+
         return config
     },
     (error) => {
@@ -30,7 +36,7 @@ api.interceptors.response.use(
         return response.data
     },
     (error) => {
-        if (error.response?.status === 401) {
+        if (error.response?.status === 401 && !window.location.href.includes("/login")) {
             localStorage.removeItem("token")
             localStorage.removeItem("user")
             window.location.href = "/login"
@@ -143,6 +149,28 @@ export const timelineAPI = {
 export const heroImagesAPI = {
     getAll: () => api.get("/hero-images"), // returns { success, data: HeroImage[] }
     getAllAdmin: () => api.get("/hero-images/admin"),
+}
+
+// Achievements API
+export const achievementsAPI = {
+    getAll: (params) => api.get("/achievements", { params }),
+    getById: (id) => api.get(`/achievements/${id}`),
+    create: (achievementData) => api.post("/achievements", achievementData),
+    update: (id, achievementData) => api.put(`/achievements/${id}`, achievementData),
+    delete: (id) => api.delete(`/achievements/${id}`),
+    toggleStatus: (id) => api.patch(`/achievements/${id}/toggle`),
+    reorder: (achievements) => api.put("/achievements/reorder", { achievements }),
+}
+
+// Activities API
+export const activitiesAPI = {
+    getAll: (params) => api.get("/activities", { params }),
+    getById: (id) => api.get(`/activities/${id}`),
+    create: (activityData) => api.post("/activities", activityData),
+    update: (id, activityData) => api.put(`/activities/${id}`, activityData),
+    delete: (id) => api.delete(`/activities/${id}`),
+    toggleStatus: (id) => api.patch(`/activities/${id}/toggle`),
+    reorder: (activities) => api.put("/activities/reorder", { activities }),
 }
 
 export default api

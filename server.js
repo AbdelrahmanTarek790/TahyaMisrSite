@@ -24,12 +24,20 @@ const notificationRoutes = require("./routes/notifications")
 const timelineRoutes = require("./routes/timeline")
 const joinRequestRoutes = require("./routes/joinRequests")
 const heroImagesRoutes = require("./routes/heroImages")
+const achievementRoutes = require("./routes/achievements")
+const activityRoutes = require("./routes/activities")
 
 // Security middleware
 app.use(helmet())
 app.use(
     cors({
-        origin: ["http://localhost:5173", "http://localhost:5174", "https://tahyamisr.codepeak.software"],
+        origin: [
+            "http://localhost:5173",
+            "http://localhost:5174",
+            "https://tahyamisr.codepeak.software",
+            "https://tahyamisryu.com",
+            "https://www.tahyamisryu.com",
+        ],
         credentials: true,
     })
 )
@@ -42,7 +50,12 @@ if (process.env.NODE_ENV === "development") {
 // Body parser middleware
 app.use(express.json({ limit: "10mb" }))
 app.use(express.urlencoded({ extended: true, limit: "10mb" }))
-
+app.use("/uploads", (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*")
+    res.header("Cross-Origin-Resource-Policy", "cross-origin")
+    res.header("Cross-Origin-Embedder-Policy", "unsafe-none")
+    next()
+})
 // Static file serving for uploads
 app.use("/uploads", express.static(path.join(__dirname, "uploads")))
 
@@ -70,6 +83,8 @@ app.use("/api/v1/notifications", notificationRoutes)
 app.use("/api/v1/timeline", timelineRoutes)
 app.use("/api/v1/join-requests", joinRequestRoutes)
 app.use("/api/v1/hero-images", heroImagesRoutes)
+app.use("/api/v1/achievements", achievementRoutes)
+app.use("/api/v1/activities", activityRoutes)
 
 // 404 handler
 app.use("*", (req, res) => {
