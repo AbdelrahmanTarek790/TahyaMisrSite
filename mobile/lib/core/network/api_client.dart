@@ -215,6 +215,37 @@ abstract class ApiClient {
 
   @DELETE('/timeline/{id}')
   Future<ApiResponse<dynamic>> deleteTimelineEntry(@Path('id') String id);
+
+  // Activities endpoints
+  @GET('/activities')
+  Future<ApiResponse<dynamic>> getActivities(
+    @Query('isActive') bool? isActive,
+  );
+
+  @GET('/activities/{id}')
+  Future<ApiResponse<dynamic>> getActivityById(@Path('id') String id);
+
+  @MultiPart()
+  @POST('/activities')
+  Future<ApiResponse<dynamic>> createActivity(@Body() FormData body);
+
+  @MultiPart()
+  @PUT('/activities/{id}')
+  Future<ApiResponse<dynamic>> updateActivity(
+    @Path('id') String id,
+    @Body() FormData body,
+  );
+
+  @DELETE('/activities/{id}')
+  Future<ApiResponse<dynamic>> deleteActivity(@Path('id') String id);
+
+  @PATCH('/activities/{id}/toggle')
+  Future<ApiResponse<dynamic>> toggleActivityStatus(@Path('id') String id);
+
+  @PUT('/activities/reorder')
+  Future<ApiResponse<dynamic>> reorderActivities(
+    @Body() Map<String, dynamic> body,
+  );
 // Dashboard data will be aggregated from other endpoints
 // No dedicated dashboard endpoints since dashboard.js was deleted
 }
