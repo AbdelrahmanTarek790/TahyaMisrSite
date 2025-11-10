@@ -1,0 +1,26 @@
+{
+    "applinks": {
+        "apps": [],
+        "details": [
+            {
+                "appID": "TEAM_ID.com.tahya_misr.youth",
+                "paths": [
+                    "/app/news/*",
+                    "/app/events/*",
+                    "/app/achievements/*",
+                    "/app/activities/*",
+                    "/app/install",
+                    "/news/*",
+                    "/events/*",
+                    "/achievements/*",
+                    "/activities/*"
+                ]
+            }
+        ]
+    },
+    "webcredentials": {
+        "apps": [
+            "TEAM_ID.com.tahya_misr.youth"
+        ]
+    }
+}

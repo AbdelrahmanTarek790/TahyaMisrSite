@@ -19,6 +19,8 @@ export default defineConfig({
         //     },
         // }),
     ],
+    // Ensure public folder is copied to dist
+    publicDir: "public",
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),

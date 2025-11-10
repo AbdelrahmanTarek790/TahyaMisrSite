@@ -61,6 +61,269 @@ async function createServer() {
         }
     })
 
+    // ==================== UNIVERSAL LINKS / APP LINKS ====================
+    // Apple App Site Association (for iOS Universal Links)
+    app.get("/.well-known/apple-app-site-association", (req, res) => {
+        try {
+            // Try production path first (dist), then development path (public)
+            const prodPath = resolve(__dirname, "../dist/.well-known/apple-app-site-association")
+            const devPath = resolve(__dirname, "../public/.well-known/apple-app-site-association")
+            const filePath = fs.existsSync(prodPath) ? prodPath : devPath
+
+            // Check if file exists
+            if (!fs.existsSync(filePath)) {
+                console.error("❌ apple-app-site-association not found")
+                console.error("   Tried production path:", prodPath)
+                console.error("   Tried development path:", devPath)
+                return res.status(404).json({ error: "File not found" })
+            }
+
+            // Read file directly and send content
+            const fileContent = fs.readFileSync(filePath, "utf-8")
+            console.log("✅ Serving apple-app-site-association from:", filePath)
+
+            res.setHeader("Content-Type", "application/json")
+            res.setHeader("Cache-Control", "public, max-age=3600")
+            res.send(fileContent)
+        } catch (error) {
+            console.error("❌ Error serving apple-app-site-association:", error)
+            res.status(500).json({ error: "Internal server error" })
+        }
+    })
+
+    // Android Asset Links (for Android App Links)
+    app.get("/.well-known/assetlinks.json", (req, res) => {
+        try {
+            // Try production path first (dist), then development path (public)
+            const prodPath = resolve(__dirname, "../dist/.well-known/assetlinks.json")
+            const devPath = resolve(__dirname, "../public/.well-known/assetlinks.json")
+            const filePath = fs.existsSync(prodPath) ? prodPath : devPath
+
+            // Check if file exists
+            if (!fs.existsSync(filePath)) {
+                console.error("❌ assetlinks.json not found")
+                console.error("   Tried production path:", prodPath)
+                console.error("   Tried development path:", devPath)
+                return res.status(404).json({ error: "File not found" })
+            }
+
+            // Read file directly and send content
+            const fileContent = fs.readFileSync(filePath, "utf-8")
+            console.log("✅ Serving assetlinks.json from:", filePath)
+
+            res.setHeader("Content-Type", "application/json")
+            res.setHeader("Cache-Control", "public, max-age=3600")
+            res.send(fileContent)
+        } catch (error) {
+            console.error("❌ Error serving assetlinks.json:", error)
+            res.status(500).json({ error: "Internal server error" })
+        }
+    })
+
+    // ==================== DEEP LINK ROUTES ====================
+    // Helper function to detect mobile and platform
+    const getMobileInfo = (userAgent) => {
+        const ua = (userAgent || "").toLowerCase()
+        return {
+            isMobile: /android|iphone|ipad|ipod/i.test(userAgent),
+            isAndroid: /android/i.test(userAgent),
+            isIOS: /iphone|ipad|ipod/i.test(userAgent),
+        }
+    }
+
+    // Deep link HTML template
+    const getDeepLinkHTML = (type, id, isAndroid, isIOS) => `
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فتح تطبيق تحيا مصر</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1e40af 0%, #991b1b 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 30px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .button {
+            display: inline-block;
+            margin: 10px;
+            padding: 15px 30px;
+            background: white;
+            color: #1e40af;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .button:hover {
+            transform: scale(1.05);
+        }
+        .message {
+            margin-top: 20px;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>جاري فتح التطبيق...</h1>
+        <div class="spinner"></div>
+        <p class="message" id="message">يرجى الانتظار</p>
+        <div id="buttons" style="display: none;">
+            <a href="https://tahyamisryu.com/${type}/${id}" class="button">
+                فتح في المتصفح
+            </a>
+            <a href="${
+                isAndroid ? "https://play.google.com/store/apps/details?id=com.tahya_misr.youth" : "https://apps.apple.com/app/tahya-misr/id123456789"
+            }" 
+               class="button">
+                تحميل التطبيق
+            </a>
+        </div>
+    </div>
+    
+    <script>
+        const deepLink = 'tahyamisr://${type}/${id}';
+        const isIOS = ${isIOS};
+        
+        // Attempt to open app
+        window.location.href = deepLink;
+        
+        let appOpened = false;
+        
+        // Check if app opened
+        const showFallback = () => {
+            if (!appOpened) {
+                document.getElementById('message').textContent = 'لم يتم العثور على التطبيق';
+                document.getElementById('buttons').style.display = 'block';
+            }
+        };
+        
+        // Listen for page visibility change
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                appOpened = true;
+            }
+        });
+        
+        // For iOS
+        if (isIOS) {
+            setTimeout(() => {
+                if (!document.hidden) {
+                    showFallback();
+                }
+            }, 2500);
+        } else {
+            // Android
+            window.addEventListener('blur', () => {
+                appOpened = true;
+            });
+            
+            setTimeout(showFallback, 2500);
+        }
+    </script>
+</body>
+</html>
+    `
+
+    // News deep link
+    app.get("/app/news/:id", (req, res) => {
+        const { id } = req.params
+        const { isMobile, isAndroid, isIOS } = getMobileInfo(req.headers["user-agent"])
+
+        if (isMobile) {
+            return res.send(getDeepLinkHTML("news", id, isAndroid, isIOS))
+        }
+
+        // Desktop: continue to next handler (will be handled by SSR)
+        return res.redirect(`/news/${id}`)
+    })
+
+    // Events deep link
+    app.get("/app/events/:id", (req, res) => {
+        const { id } = req.params
+        const { isMobile, isAndroid, isIOS } = getMobileInfo(req.headers["user-agent"])
+
+        if (isMobile) {
+            return res.send(getDeepLinkHTML("events", id, isAndroid, isIOS))
+        }
+
+        return res.redirect(`/events/${id}`)
+    })
+
+    // Achievements deep link
+    app.get("/app/achievements/:id", (req, res) => {
+        const { id } = req.params
+        const { isMobile, isAndroid, isIOS } = getMobileInfo(req.headers["user-agent"])
+
+        if (isMobile) {
+            return res.send(getDeepLinkHTML("achievements", id, isAndroid, isIOS))
+        }
+
+        res.redirect("https://tahyamisryu.com/#achievements")
+    })
+
+    // Activities deep link
+    app.get("/app/activities/:id", (req, res) => {
+        const { id } = req.params
+        const { isMobile, isAndroid, isIOS } = getMobileInfo(req.headers["user-agent"])
+
+        if (isMobile) {
+            return res.send(getDeepLinkHTML("activities", id, isAndroid, isIOS))
+        }
+
+        res.redirect("https://tahyamisryu.com/#activities")
+    })
+
+    // App install redirect
+    app.get("/app/install", (req, res) => {
+        const { isAndroid, isIOS } = getMobileInfo(req.headers["user-agent"])
+
+        if (isAndroid) {
+            return res.redirect("https://play.google.com/store/apps/details?id=com.tahyamisr.app")
+        } else if (isIOS) {
+            return res.redirect("https://apps.apple.com/app/tahya-misr/id123456789")
+        }
+
+        res.redirect("https://tahyamisryu.com/")
+    })
+
+    // ==================== END DEEP LINK ROUTES ====================
+
     let vite
     if (!isProduction) {
         // Development: Create Vite dev server in middleware mode
@@ -245,5 +508,6 @@ createServer().then(({ app }) => {
         console.log(`🚀 Server running at http://localhost:${port}`)
         console.log(`📄 SSR enabled for public routes`)
         console.log(`⚡ SPA mode for: ${spaOnlyRoutes.join(", ")}`)
+        console.log(`🔗 Deep links enabled: /app/news/:id, /app/events/:id, /app/achievements/:id, /app/activities/:id`)
     })
 })

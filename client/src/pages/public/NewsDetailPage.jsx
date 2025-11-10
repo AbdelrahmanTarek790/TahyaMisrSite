@@ -254,7 +254,7 @@ const NewsDetailPage = () => {
 
                         {/* Article Content */}
                         <div className="prose prose-lg max-w-none">
-                            <div className="whitespace-pre-wrap text-gray-700 leading-relaxed font-arabic text-right">{newsItem.content}</div>
+                            <div className="whitespace-pre-wrap text-gray-700 leading-relaxed font-arabic text-right break-words">{newsItem.content}</div>
                         </div>
                     </div>
 

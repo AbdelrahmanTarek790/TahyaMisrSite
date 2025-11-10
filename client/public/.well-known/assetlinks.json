@@ -1,0 +1,10 @@
+[
+    {
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "com.tahya_misr.youth",
+            "sha256_cert_fingerprints": ["69:52:AF:38:95:84:49:48:49:A9:74:01:AE:FB:1F:62:FF:6F:BE:D4:07:5E:92:AB:B5:1A:44:BA:2C:73:21:82"]
+        }
+    }
+]
