@@ -26,6 +26,7 @@ const joinRequestRoutes = require("./routes/joinRequests")
 const heroImagesRoutes = require("./routes/heroImages")
 const achievementRoutes = require("./routes/achievements")
 const activityRoutes = require("./routes/activities")
+const siteSettingsRoutes = require("./routes/siteSettings")
 
 // Security middleware
 app.use(helmet())
@@ -85,6 +86,7 @@ app.use("/api/v1/join-requests", joinRequestRoutes)
 app.use("/api/v1/hero-images", heroImagesRoutes)
 app.use("/api/v1/achievements", achievementRoutes)
 app.use("/api/v1/activities", activityRoutes)
+app.use("/api/v1/site-settings", siteSettingsRoutes)
 
 // 404 handler
 app.use("*", (req, res) => {

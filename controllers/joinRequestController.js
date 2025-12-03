@@ -1,6 +1,7 @@
 const JoinRequest = require("../models/JoinRequest")
 const User = require("../models/User")
 const Position = require("../models/Position")
+const SiteSettings = require("../models/SiteSettings")
 const { generateToken } = require("../middleware/auth")
 const { sendJoinRequestSubmitted, sendJoinRequestApproved, sendJoinRequestDenied } = require("../utils/email")
 
@@ -9,10 +10,20 @@ const { sendJoinRequestSubmitted, sendJoinRequestApproved, sendJoinRequestDenied
 // @access  Public
 const createJoinRequest = async (req, res, next) => {
     try {
-        const { name, email, phone, nationalID, governorate, position, membershipNumber, role, notes } = req.body
+        // Check if join requests are enabled
+        const settings = await SiteSettings.getSettings()
+        if (!settings.joinRequestsEnabled) {
+            return res.status(403).json({
+                success: false,
+                error: settings.joinRequestMessage || "Join requests are currently disabled",
+                data: null,
+            })
+        }
+
+        const { name, email, phone, nationalID, governorate, position, membershipNumber, notes } = req.body
 
         // Validate required fields
-        if (!name || !email || !phone || !nationalID || !governorate || !role) {
+        if (!name || !email || !phone || !nationalID || !governorate) {
             return res.status(400).json({
                 success: false,
                 error: "Name, email, phone, nationalID, governorate, and role are required",
@@ -60,13 +71,6 @@ const createJoinRequest = async (req, res, next) => {
         }
 
         // Validate role
-        if (!["member", "volunteer"].includes(role)) {
-            return res.status(400).json({
-                success: false,
-                error: "Role must be either 'member' or 'volunteer'",
-                data: null,
-            })
-        }
 
         // Create the join request
         const joinRequest = await JoinRequest.create({
@@ -77,7 +81,7 @@ const createJoinRequest = async (req, res, next) => {
             governorate,
             position: position || undefined,
             membershipNumber: membershipNumber || undefined,
-            role,
+            role: "member",
             notes: notes || undefined,
         })
 

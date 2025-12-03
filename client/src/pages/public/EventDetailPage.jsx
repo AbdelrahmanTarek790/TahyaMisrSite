@@ -338,10 +338,11 @@ const EventDetailPage = () => {
                                 >
                                     <Link to={`/events/${relatedEvent._id}`}>
                                         {relatedEvent.image && (
+                                            // {`https://form.codepeak.software/uploads/${event.image}`}
                                             <div className="aspect-video overflow-hidden rounded-t-lg">
                                                 <img
                                                     crossOrigin="anonymous"
-                                                    src={`${relatedEvent.image}`}
+                                                    src={`https://form.codepeak.software/uploads/${relatedEvent.image}`}
                                                     alt={relatedEvent.title}
                                                     className="w-full h-full object-cover hover:scale-105 transition-transform"
                                                 />

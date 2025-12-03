@@ -9,7 +9,7 @@ const {
     getEventRegisteredUsers,
     guestRegisterForEvent,
 } = require("../controllers/eventController")
-const { protect, admin } = require("../middleware/auth")
+const { protect, admin, authorize } = require("../middleware/auth")
 const { upload } = require("../utils/upload")
 
 const router = express.Router()
@@ -22,10 +22,10 @@ router.post("/:id/register", protect, registerForEvent)
 // Public guest registration
 router.post("/:id/guest-register", guestRegisterForEvent)
 
-// Admin only routes
-router.get("/:id/registered-users", protect, admin, getEventRegisteredUsers)
-router.post("/", protect, admin, ...upload.news(), createEvent)
-router.put("/:id", protect, admin, ...upload.news(), updateEvent)
+// Admin and Publisher routes
+router.get("/:id/registered-users", protect, authorize("admin", "publisher"), getEventRegisteredUsers)
+router.post("/", protect, authorize("admin", "publisher"), ...upload.news(), createEvent)
+router.put("/:id", protect, authorize("admin", "publisher"), ...upload.news(), updateEvent)
 router.delete("/:id", protect, admin, deleteEvent)
 
 module.exports = router

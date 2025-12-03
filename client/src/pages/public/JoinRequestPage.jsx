@@ -10,7 +10,7 @@ import { Textarea } from "../../components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "../../components/ui/radio-group"
 import { AlertCircle, CheckCircle, Users, FileText, Phone, Mail, MapPin, User, Crown } from "lucide-react"
 import { Alert, AlertDescription } from "../../components/ui/alert"
-import { joinRequestAPI, positionsAPI } from "../../api"
+import { joinRequestAPI, positionsAPI, siteSettingsAPI } from "../../api"
 import { EGYPT_GOVERNORATES } from "../../constants/governorates"
 
 const JoinRequestPage = () => {
@@ -19,6 +19,8 @@ const JoinRequestPage = () => {
     const [positions, setPositions] = useState([])
     const [success, setSuccess] = useState(false)
     const [error, setError] = useState("")
+    const [joinRequestsEnabled, setJoinRequestsEnabled] = useState(true)
+    const [joinRequestMessage, setJoinRequestMessage] = useState("")
 
     const [formData, setFormData] = useState({
         name: "",
@@ -34,17 +36,24 @@ const JoinRequestPage = () => {
 
     const [errors, setErrors] = useState({})
 
-    // Fetch positions on component mount
+    // Fetch settings and positions on component mount
     useEffect(() => {
-        const fetchPositions = async () => {
+        const fetchData = async () => {
             try {
-                const response = await positionsAPI.getAll()
-                setPositions(response.data.positions || [])
+                // Fetch site settings
+                const settingsResponse = await siteSettingsAPI.getSettings()
+                const settings = settingsResponse.data || settingsResponse
+                setJoinRequestsEnabled(settings.joinRequestsEnabled)
+                setJoinRequestMessage(settings.joinRequestMessage || "عذراً، التسجيل غير متاح حالياً")
+
+                // Fetch positions
+                const positionsResponse = await positionsAPI.getAll()
+                setPositions(positionsResponse.data.positions || [])
             } catch (error) {
-                console.error("Error fetching positions:", error)
+                console.error("Error fetching data:", error)
             }
         }
-        fetchPositions()
+        fetchData()
     }, [])
 
     const validateForm = () => {
@@ -189,125 +198,139 @@ const JoinRequestPage = () => {
                     </div>
                 </section>
 
-                {/* Form Section */}
-                <section className="py-20">
-                    <div className="container mx-auto px-6">
-                        <div className="max-w-4xl mx-auto">
-                            <div className="text-center mb-12">
-                                <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">طلب الانضمام</h2>
-                                <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                                    املأ النموذج التالي للتقدم بطلب انضمام إلى اتحاد شباب تحيا مصر
-                                </p>
-                            </div>
+                {/* Check if join requests are disabled */}
+                {!joinRequestsEnabled ? (
+                    <div className="container mx-auto px-6 py-12 max-w-2xl">
+                        <Alert className="border-yellow-500 bg-yellow-50 dark:bg-yellow-950/20">
+                            <AlertCircle className="h-4 w-4 text-yellow-600" />
+                            <AlertDescription className="text-yellow-800 dark:text-yellow-200 text-lg">{joinRequestMessage}</AlertDescription>
+                        </Alert>
+                        <div className="mt-8 text-center">
+                            <Button onClick={() => navigate("/")} variant="outline" size="lg">
+                                العودة للرئيسية
+                            </Button>
+                        </div>
+                    </div>
+                ) : (
+                    /* Form Section */
+                    <section className="py-20">
+                        <div className="container mx-auto px-6">
+                            <div className="max-w-4xl mx-auto">
+                                <div className="text-center mb-12">
+                                    <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">طلب الانضمام</h2>
+                                    <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                                        املأ النموذج التالي للتقدم بطلب انضمام إلى اتحاد شباب تحيا مصر
+                                    </p>
+                                </div>
 
-                            {error && (
-                                <Alert className="mb-8 border-red-200 bg-red-50">
-                                    <AlertCircle className="h-4 w-4 text-red-600" />
-                                    <AlertDescription className="text-red-600">{error}</AlertDescription>
-                                </Alert>
-                            )}
+                                {error && (
+                                    <Alert className="mb-8 border-red-200 bg-red-50">
+                                        <AlertCircle className="h-4 w-4 text-red-600" />
+                                        <AlertDescription className="text-red-600">{error}</AlertDescription>
+                                    </Alert>
+                                )}
 
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle className="text-right text-2xl">بيانات طلب الانضمام</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <form onSubmit={handleSubmit} className="space-y-8">
-                                        {/* Personal Information */}
-                                        <div className="space-y-6">
-                                            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                                                <User className="w-5 h-5" />
-                                                البيانات الشخصية
-                                            </h3>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="text-right text-2xl">بيانات طلب الانضمام</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <form onSubmit={handleSubmit} className="space-y-8">
+                                            {/* Personal Information */}
+                                            <div className="space-y-6">
+                                                <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                                                    <User className="w-5 h-5" />
+                                                    البيانات الشخصية
+                                                </h3>
 
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="name">الاسم الكامل *</Label>
-                                                    <Input
-                                                        id="name"
-                                                        type="text"
-                                                        value={formData.name}
-                                                        onChange={(e) => handleInputChange("name", e.target.value)}
-                                                        placeholder="أدخل اسمك الكامل"
-                                                        className={errors.name ? "border-red-500" : ""}
-                                                    />
-                                                    {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
-                                                </div>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="name">الاسم الكامل *</Label>
+                                                        <Input
+                                                            id="name"
+                                                            type="text"
+                                                            value={formData.name}
+                                                            onChange={(e) => handleInputChange("name", e.target.value)}
+                                                            placeholder="أدخل اسمك الكامل"
+                                                            className={errors.name ? "border-red-500" : ""}
+                                                        />
+                                                        {errors.name && <p className="text-sm text-red-500">{errors.name}</p>}
+                                                    </div>
 
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="email">البريد الإلكتروني *</Label>
-                                                    <Input
-                                                        id="email"
-                                                        type="email"
-                                                        value={formData.email}
-                                                        onChange={(e) => handleInputChange("email", e.target.value)}
-                                                        placeholder="example@email.com"
-                                                        className={errors.email ? "border-red-500" : ""}
-                                                    />
-                                                    {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
-                                                </div>
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="email">البريد الإلكتروني *</Label>
+                                                        <Input
+                                                            id="email"
+                                                            type="email"
+                                                            value={formData.email}
+                                                            onChange={(e) => handleInputChange("email", e.target.value)}
+                                                            placeholder="example@email.com"
+                                                            className={errors.email ? "border-red-500" : ""}
+                                                        />
+                                                        {errors.email && <p className="text-sm text-red-500">{errors.email}</p>}
+                                                    </div>
 
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="phone">رقم الهاتف *</Label>
-                                                    <Input
-                                                        id="phone"
-                                                        type="tel"
-                                                        value={formData.phone}
-                                                        onChange={(e) => handleInputChange("phone", e.target.value)}
-                                                        placeholder="01012345678"
-                                                        className={errors.phone ? "border-red-500" : ""}
-                                                    />
-                                                    {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
-                                                </div>
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="phone">رقم الهاتف *</Label>
+                                                        <Input
+                                                            id="phone"
+                                                            type="tel"
+                                                            value={formData.phone}
+                                                            onChange={(e) => handleInputChange("phone", e.target.value)}
+                                                            placeholder="01012345678"
+                                                            className={errors.phone ? "border-red-500" : ""}
+                                                        />
+                                                        {errors.phone && <p className="text-sm text-red-500">{errors.phone}</p>}
+                                                    </div>
 
-                                                <div className="space-y-2">
-                                                    <Label htmlFor="nationalID">الرقم القومي *</Label>
-                                                    <Input
-                                                        id="nationalID"
-                                                        type="text"
-                                                        value={formData.nationalID}
-                                                        onChange={(e) => handleInputChange("nationalID", e.target.value)}
-                                                        placeholder="12345678901234"
-                                                        maxLength="14"
-                                                        className={errors.nationalID ? "border-red-500" : ""}
-                                                    />
-                                                    {errors.nationalID && <p className="text-sm text-red-500">{errors.nationalID}</p>}
-                                                </div>
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="nationalID">الرقم القومي *</Label>
+                                                        <Input
+                                                            id="nationalID"
+                                                            type="text"
+                                                            value={formData.nationalID}
+                                                            onChange={(e) => handleInputChange("nationalID", e.target.value)}
+                                                            placeholder="12345678901234"
+                                                            maxLength="14"
+                                                            className={errors.nationalID ? "border-red-500" : ""}
+                                                        />
+                                                        {errors.nationalID && <p className="text-sm text-red-500">{errors.nationalID}</p>}
+                                                    </div>
 
-                                                <div className="space-y-2 md:col-span-2">
-                                                    <Label htmlFor="governorate">المحافظة *</Label>
-                                                    <Select
-                                                        value={formData.governorate}
-                                                        onValueChange={(value) => handleInputChange("governorate", value)}
-                                                    >
-                                                        <SelectTrigger className={errors.governorate ? "border-red-500" : ""}>
-                                                            <SelectValue placeholder="اختر المحافظة" />
-                                                        </SelectTrigger>
-                                                        <SelectContent>
-                                                            {EGYPT_GOVERNORATES.map((gov) => (
-                                                                <SelectItem key={gov} value={gov}>
-                                                                    {gov}
-                                                                </SelectItem>
-                                                            ))}
-                                                        </SelectContent>
-                                                    </Select>
-                                                    {errors.governorate && <p className="text-sm text-red-500">{errors.governorate}</p>}
+                                                    <div className="space-y-2 md:col-span-2">
+                                                        <Label htmlFor="governorate">المحافظة *</Label>
+                                                        <Select
+                                                            value={formData.governorate}
+                                                            onValueChange={(value) => handleInputChange("governorate", value)}
+                                                        >
+                                                            <SelectTrigger className={errors.governorate ? "border-red-500" : ""}>
+                                                                <SelectValue placeholder="اختر المحافظة" />
+                                                            </SelectTrigger>
+                                                            <SelectContent>
+                                                                {EGYPT_GOVERNORATES.map((gov) => (
+                                                                    <SelectItem key={gov} value={gov}>
+                                                                        {gov}
+                                                                    </SelectItem>
+                                                                ))}
+                                                            </SelectContent>
+                                                        </Select>
+                                                        {errors.governorate && <p className="text-sm text-red-500">{errors.governorate}</p>}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Membership Information */}
-                                        <div className="space-y-6">
-                                            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                                                <Crown className="w-5 h-5" />
-                                                بيانات العضوية
-                                            </h3>
+                                            {/* Membership Information */}
+                                            <div className="space-y-6">
+                                                <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                                                    <Crown className="w-5 h-5" />
+                                                    بيانات العضوية
+                                                </h3>
 
-                                            <div className="space-y-4">
-                                                <div className="space-y-3">
+                                                <div className="space-y-4">
+                                                    {/* <div className="space-y-3">
                                                     <Label>نوع العضوية المطلوب *</Label>
                                                     <RadioGroup
-                                                        // value={formData.role}
+                                                        
                                                         onValueChange={(value) => handleInputChange("role", value)}
                                                         className="flex gap-6 justify-end"
                                                     >
@@ -319,12 +342,16 @@ const JoinRequestPage = () => {
                                                             <RadioGroupItem value="volunteer" id="volunteer" />
                                                             <Label htmlFor="volunteer">متطوع</Label>
                                                         </div>
+                                                        <div className="flex items-center gap-2 space-x-2 space-x-reverse">
+                                                            <RadioGroupItem value="publisher" id="publisher" />
+                                                            <Label htmlFor="publisher">ناشر محتوى</Label>
+                                                        </div>
                                                     </RadioGroup>
                                                     {errors.role && <p className="text-sm text-red-500">{errors.role}</p>}
-                                                </div>
+                                                </div> */}
 
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                    {/* <div className="space-y-2">
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                        {/* <div className="space-y-2">
                                                     <Label htmlFor="position">المنصب المرغوب (اختياري)</Label>
                                                     <Select value={formData.position} onValueChange={(value) => handleInputChange("position", value)}>
                                                         <SelectTrigger>
@@ -340,82 +367,83 @@ const JoinRequestPage = () => {
                                                     </Select>
                                                 </div> */}
 
-                                                    <div className="space-y-2">
-                                                        <Label htmlFor="membershipNumber">رقم العضوية السابق (اختياري)</Label>
-                                                        <Input
-                                                            id="membershipNumber"
-                                                            type="text"
-                                                            value={formData.membershipNumber}
-                                                            onChange={(e) => handleInputChange("membershipNumber", e.target.value)}
-                                                            placeholder="TM-2025-001"
-                                                        />
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="membershipNumber">رقم العضوية السابق (اختياري)</Label>
+                                                            <Input
+                                                                id="membershipNumber"
+                                                                type="text"
+                                                                value={formData.membershipNumber}
+                                                                onChange={(e) => handleInputChange("membershipNumber", e.target.value)}
+                                                                placeholder="TM-2025-001"
+                                                            />
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        {/* Additional Notes */}
-                                        <div className="space-y-6">
-                                            <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
-                                                <FileText className="w-5 h-5" />
-                                                معلومات إضافية
-                                            </h3>
+                                            {/* Additional Notes */}
+                                            <div className="space-y-6">
+                                                <h3 className="text-xl font-semibold text-foreground flex items-center gap-2">
+                                                    <FileText className="w-5 h-5" />
+                                                    معلومات إضافية
+                                                </h3>
 
-                                            <div className="space-y-2">
-                                                <Label htmlFor="notes">ملاحظات أو رسالة شخصية (اختياري)</Label>
-                                                <Textarea
-                                                    id="notes"
-                                                    value={formData.notes}
-                                                    onChange={(e) => handleInputChange("notes", e.target.value)}
-                                                    placeholder="أخبرنا عن دوافعك للانضمام، خبراتك السابقة، أو أي معلومات تراها مهمة..."
-                                                    rows="4"
-                                                />
+                                                <div className="space-y-2">
+                                                    <Label htmlFor="notes">ملاحظات أو رسالة شخصية (اختياري)</Label>
+                                                    <Textarea
+                                                        id="notes"
+                                                        value={formData.notes}
+                                                        onChange={(e) => handleInputChange("notes", e.target.value)}
+                                                        placeholder="أخبرنا عن دوافعك للانضمام، خبراتك السابقة، أو أي معلومات تراها مهمة..."
+                                                        rows="4"
+                                                    />
+                                                </div>
                                             </div>
-                                        </div>
 
-                                        {/* Submit Button */}
-                                        <div className="pt-6">
-                                            <Button
-                                                type="submit"
-                                                className="w-full bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] hover:opacity-90 text-lg py-6"
-                                                disabled={loading}
-                                            >
-                                                {loading ? "جاري الإرسال..." : "إرسال طلب الانضمام"}
-                                            </Button>
-                                        </div>
-                                    </form>
-                                </CardContent>
-                            </Card>
-
-                            {/* Information Cards */}
-                            <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-                                <Card className="text-center">
-                                    <CardContent className="p-8">
-                                        <Mail className="w-12 h-12 mx-auto mb-4 text-egypt-red" />
-                                        <h3 className="text-lg font-bold mb-2">تأكيد سريع</h3>
-                                        <p className="text-muted-foreground">ستحصل على بريد تأكيد خلال 24 ساعة</p>
+                                            {/* Submit Button */}
+                                            <div className="pt-6">
+                                                <Button
+                                                    type="submit"
+                                                    className="w-full bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] hover:opacity-90 text-lg py-6"
+                                                    disabled={loading}
+                                                >
+                                                    {loading ? "جاري الإرسال..." : "إرسال طلب الانضمام"}
+                                                </Button>
+                                            </div>
+                                        </form>
                                     </CardContent>
                                 </Card>
 
-                                <Card className="text-center">
-                                    <CardContent className="p-8">
-                                        <Users className="w-12 h-12 mx-auto mb-4 text-egypt-red" />
-                                        <h3 className="text-lg font-bold mb-2">مراجعة دقيقة</h3>
-                                        <p className="text-muted-foreground">فريق متخصص يراجع كل طلب بعناية</p>
-                                    </CardContent>
-                                </Card>
+                                {/* Information Cards */}
+                                <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                                    <Card className="text-center">
+                                        <CardContent className="p-8">
+                                            <Mail className="w-12 h-12 mx-auto mb-4 text-egypt-red" />
+                                            <h3 className="text-lg font-bold mb-2">تأكيد سريع</h3>
+                                            <p className="text-muted-foreground">ستحصل على بريد تأكيد خلال 24 ساعة</p>
+                                        </CardContent>
+                                    </Card>
 
-                                <Card className="text-center">
-                                    <CardContent className="p-8">
-                                        <CheckCircle className="w-12 h-12 mx-auto mb-4 text-egypt-red" />
-                                        <h3 className="text-lg font-bold mb-2">رد سريع</h3>
-                                        <p className="text-muted-foreground">رد نهائي خلال 5 أيام عمل كحد أقصى</p>
-                                    </CardContent>
-                                </Card>
+                                    <Card className="text-center">
+                                        <CardContent className="p-8">
+                                            <Users className="w-12 h-12 mx-auto mb-4 text-egypt-red" />
+                                            <h3 className="text-lg font-bold mb-2">مراجعة دقيقة</h3>
+                                            <p className="text-muted-foreground">فريق متخصص يراجع كل طلب بعناية</p>
+                                        </CardContent>
+                                    </Card>
+
+                                    <Card className="text-center">
+                                        <CardContent className="p-8">
+                                            <CheckCircle className="w-12 h-12 mx-auto mb-4 text-egypt-red" />
+                                            <h3 className="text-lg font-bold mb-2">رد سريع</h3>
+                                            <p className="text-muted-foreground">رد نهائي خلال 5 أيام عمل كحد أقصى</p>
+                                        </CardContent>
+                                    </Card>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </section>
+                    </section>
+                )}
             </div>
         </>
     )

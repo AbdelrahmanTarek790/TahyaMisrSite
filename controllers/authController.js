@@ -14,6 +14,8 @@ const register = async (req, res, next) => {
     try {
         // Validate input
         const { error } = registerSchema.validate(req.body)
+        console.log(error);
+        
         if (error) {
             return res.status(400).json({
                 success: false,
@@ -22,7 +24,7 @@ const register = async (req, res, next) => {
             })
         }
 
-        const { name, email, password, phone, university, nationalId, governorate, position, membershipNumber, membershipExpiry } = req.body
+        const { name, email, password, phone, university,role, nationalId, governorate, position, membershipNumber, membershipExpiry } = req.body
 
         // Check if user already exists
         const existingUser = await User.findOne({
@@ -57,6 +59,7 @@ const register = async (req, res, next) => {
             phone,
             university,
             nationalId,
+            role,
             governorate,
             position,
             membershipNumber,

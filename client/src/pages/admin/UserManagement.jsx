@@ -24,7 +24,7 @@ const userSchema = z.object({
     position: z.string().optional(),
     membershipNumber: z.string().optional(),
     membershipExpiry: z.string().optional(),
-    role: z.enum(["member", "volunteer", "admin"]),
+    role: z.enum(["member", "publisher", "admin"]),
 })
 
 const createUserSchema = z.object({
@@ -38,7 +38,7 @@ const createUserSchema = z.object({
     position: z.string().optional(),
     membershipNumber: z.string().optional(),
     membershipExpiry: z.string().optional(),
-    role: z.enum(["member", "volunteer", "admin"]),
+    role: z.enum(["member", "publisher", "admin"]),
 })
 
 const UserManagement = () => {
@@ -261,6 +261,8 @@ const UserManagement = () => {
         switch (role) {
             case "admin":
                 return <Shield className="h-4 w-4 text-red-500" />
+            case "publisher":
+                return <Edit className="h-4 w-4 text-purple-500" />
             case "volunteer":
                 return <UserPlus className="h-4 w-4 text-blue-500" />
             default:
@@ -272,6 +274,8 @@ const UserManagement = () => {
         switch (role) {
             case "admin":
                 return "bg-red-100 text-red-800"
+            case "publisher":
+                return "bg-purple-100 text-purple-800"
             case "volunteer":
                 return "bg-blue-100 text-blue-800"
             default:
@@ -350,6 +354,7 @@ const UserManagement = () => {
                     <option value="all">كل المستخدمين</option>
                     <option value="member">الاعضاء</option>
                     <option value="volunteer">المتطوعين</option>
+                    <option value="publisher">الناشرين</option>
                     <option value="admin">المدراء</option>
                 </select>
                 <select
@@ -390,8 +395,6 @@ const UserManagement = () => {
                     <option value={200}>200 في الصفحة</option>
                     <option value={1000}>1000 في الصفحة</option>
                     <option value={10000}>10000 في الصفحة</option>
-
-
                 </select>
                 <Button variant="outline" onClick={clearFilters}>
                     <Filter className="h-4 w-4 mr-2" />
@@ -493,7 +496,8 @@ const UserManagement = () => {
                                                         className="text-xs rounded border border-gray-300 px-2 py-1"
                                                     >
                                                         <option value="member">Member</option>
-                                                        <option value="volunteer">Volunteer</option>
+                                                    
+                                                        <option value="publisher">Publisher</option>
                                                         <option value="admin">Admin</option>
                                                     </select>
                                                     <Button variant="outline" size="sm" onClick={() => handleDeleteUser(user._id)}>
@@ -595,7 +599,8 @@ const UserManagement = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">الدور *</label>
                                 <select {...register("role")} className="w-full p-2 border border-gray-300 rounded-md">
                                     <option value="member">عضو</option>
-                                    <option value="volunteer">متطوع</option>
+                                        
+                                    <option value="publisher">ناشر محتوى</option>
                                     <option value="admin">مدير</option>
                                 </select>
                                 {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>}
@@ -712,7 +717,7 @@ const UserManagement = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">الدور *</label>
                                 <select {...registerCreate("role")} className="w-full p-2 border border-gray-300 rounded-md">
                                     <option value="member">عضو</option>
-                                    <option value="volunteer">متطوع</option>
+                                    <option value="publisher">ناشر محتوى</option>
                                     <option value="admin">مدير</option>
                                 </select>
                                 {errorsCreate.role && <p className="text-red-500 text-sm mt-1">{errorsCreate.role.message}</p>}
@@ -766,7 +771,7 @@ const UserManagement = () => {
             </Sheet>
 
             {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card>
                     <CardHeader className="pb-2">
                         <CardTitle className="text-sm font-medium">الاعضاء</CardTitle>
@@ -781,6 +786,14 @@ const UserManagement = () => {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{users.filter((u) => u.role === "volunteer").length}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium">الناشرين</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{users.filter((u) => u.role === "publisher").length}</div>
                     </CardContent>
                 </Card>
                 <Card>

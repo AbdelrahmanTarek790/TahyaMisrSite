@@ -69,11 +69,9 @@ exports.createActivity = async (req, res) => {
         }
 
         // Handle image upload
-        let imagePath = null
+        let imagePath = req.body.image
         if (req.file) {
             imagePath = `/uploads/${req.file.filename}`
-        } else if (req.body.image && typeof req.body.image === "string" && req.body.image.trim() !== "") {
-            imagePath = req.body.image
         }
 
         const activity = await Activity.create({
@@ -120,13 +118,7 @@ exports.updateActivity = async (req, res) => {
         if (req.file) {
             activity.image = `/uploads/${req.file.filename}`
         } else if (req.body.image !== undefined) {
-            // Only update if it's a valid string
-            if (typeof req.body.image === "string" && req.body.image.trim() !== "") {
-                activity.image = req.body.image
-            } else if (req.body.image === "" || req.body.image === null) {
-                // Explicitly set to null if empty string or null
-                activity.image = null
-            }
+            activity.image = req.body.image
         }
 
         // Update fields

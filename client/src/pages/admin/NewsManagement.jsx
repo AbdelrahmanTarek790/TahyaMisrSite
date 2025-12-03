@@ -21,14 +21,16 @@ const NewsManagement = () => {
   const fetchNews = async () => {
     try {
       setIsLoading(true);
+      
       const response = await newsAPI.getAll({
         page: pagination.page,
         limit: pagination.limit,
       });
+      console.log(response);
       setNews(response.data?.news || []);
       setPagination(prev => ({
         ...prev,
-        total: response.data?.total || 0,
+        total: response.data.pagination?.total || 0,
       }));
     } catch (error) {
       addError('Failed to fetch news');
@@ -155,17 +157,17 @@ const NewsManagement = () => {
             onClick={() => setPagination(prev => ({ ...prev, page: prev.page - 1 }))}
             disabled={pagination.page === 1}
           >
-            Previous
+            السابق
           </Button>
           <span className="flex items-center px-4">
-            Page {pagination.page} of {Math.ceil(pagination.total / pagination.limit)}
+            الصفحة {pagination.page} من {Math.ceil(pagination.total / pagination.limit)}
           </span>
           <Button
             variant="outline"
             onClick={() => setPagination(prev => ({ ...prev, page: prev.page + 1 }))}
             disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit)}
           >
-            Next
+            التالي
           </Button>
         </div>
       )}

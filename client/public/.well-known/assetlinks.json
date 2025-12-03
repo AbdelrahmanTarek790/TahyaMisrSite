@@ -1,10 +1,14 @@
 [
     {
-        "relation": ["delegate_permission/common.handle_all_urls"],
+        "relation": ["delegate_permission/common.handle_all_urls", "delegate_permission/common.get_login_creds"],
         "target": {
             "namespace": "android_app",
             "package_name": "com.tahya_misr.youth",
-            "sha256_cert_fingerprints": ["69:52:AF:38:95:84:49:48:49:A9:74:01:AE:FB:1F:62:FF:6F:BE:D4:07:5E:92:AB:B5:1A:44:BA:2C:73:21:82"]
+            "sha256_cert_fingerprints": [
+                "69:52:AF:38:95:84:49:48:49:A9:74:01:AE:FB:1F:62:FF:6F:BE:D4:07:5E:92:AB:B5:1A:44:BA:2C:73:21:82",
+                "E3:31:C7:A0:7C:CE:54:8C:D7:20:F6:16:DD:EA:10:87:D7:85:EA:00:D9:54:B9:19:43:3D:5E:37:D9:04:18:3B",
+                "F1:9D:F9:62:BA:11:58:47:5E:A6:4B:67:69:15:5E:0E:8D:FB:50:E3:51:4C:CD:00:6D:B2:D0:6A:CA:84:F5:29"
+            ]
         }
     }
 ]

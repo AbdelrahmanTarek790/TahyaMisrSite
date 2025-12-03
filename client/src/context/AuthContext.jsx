@@ -13,7 +13,8 @@ const initialState = {
     user: null,
     token: safeLocalStorage.getItem("token"),
     isAuthenticated: false,
-    isLoading: true,
+    isLoading: typeof window === "undefined" ? false : true, // No loading on server
+    isInitialized: typeof window === "undefined" ? true : false, // Already initialized on server
     error: null,
 }
 
@@ -28,6 +29,7 @@ const AuthActionTypes = {
     LOAD_USER_FAILURE: "LOAD_USER_FAILURE",
     CLEAR_ERROR: "CLEAR_ERROR",
     UPDATE_USER: "UPDATE_USER",
+    SET_INITIALIZED: "SET_INITIALIZED",
 }
 
 // Reducer
@@ -100,6 +102,13 @@ const authReducer = (state, action) => {
                 error: null,
             }
 
+        case AuthActionTypes.SET_INITIALIZED:
+            return {
+                ...state,
+                isInitialized: true,
+                isLoading: false,
+            }
+
         default:
             return state
     }
@@ -129,6 +138,9 @@ export const AuthProvider = ({ children }) => {
             } else {
                 dispatch({ type: AuthActionTypes.LOAD_USER_FAILURE, payload: null })
             }
+
+            // Mark initialization as complete
+            dispatch({ type: AuthActionTypes.SET_INITIALIZED })
         }
 
         loadUser()

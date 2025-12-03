@@ -81,7 +81,7 @@ async function createServer() {
             // Read file directly and send content
             const fileContent = fs.readFileSync(filePath, "utf-8")
             console.log("✅ Serving apple-app-site-association from:", filePath)
-
+            
             res.setHeader("Content-Type", "application/json")
             res.setHeader("Cache-Control", "public, max-age=3600")
             res.send(fileContent)
@@ -110,7 +110,7 @@ async function createServer() {
             // Read file directly and send content
             const fileContent = fs.readFileSync(filePath, "utf-8")
             console.log("✅ Serving assetlinks.json from:", filePath)
-
+            
             res.setHeader("Content-Type", "application/json")
             res.setHeader("Cache-Control", "public, max-age=3600")
             res.send(fileContent)

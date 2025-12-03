@@ -1,0 +1,1394 @@
+{
+    "info": {
+        "_postman_id": "tahyamisr-api-collection",
+        "name": "TahyaMisr API Collection",
+        "description": "Complete API collection for TahyaMisr platform including authentication, users, news, events, join requests, site settings, and more",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "auth": {
+        "type": "bearer",
+        "bearer": [
+            {
+                "key": "token",
+                "value": "{{authToken}}",
+                "type": "string"
+            }
+        ]
+    },
+    "item": [
+        {
+            "name": "Authentication",
+            "item": [
+                {
+                    "name": "Register User",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"01234567890\",\n  \"university\": \"Cairo University\",\n  \"nationalId\": \"12345678901234\",\n  \"governorate\": \"Cairo\",\n  \"role\": \"member\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/auth/register",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "auth", "register"]
+                        },
+                        "description": "Register a new user account"
+                    }
+                },
+                {
+                    "name": "Login",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 200) {",
+                                    "    const response = pm.response.json();",
+                                    "    pm.environment.set('authToken', response.token);",
+                                    "}"
+                                ],
+                                "type": "text/javascript"
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"admin@tahyamisr.com\",\n  \"password\": \"admin123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/auth/login",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "auth", "login"]
+                        },
+                        "description": "Login with email and password. Token is automatically saved to environment."
+                    }
+                },
+                {
+                    "name": "Get Current User",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/auth/me",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "auth", "me"]
+                        },
+                        "description": "Get currently logged in user information"
+                    }
+                },
+                {
+                    "name": "Forgot Password",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"email\": \"user@example.com\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/auth/forgot-password",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "auth", "forgot-password"]
+                        },
+                        "description": "Send password reset email"
+                    }
+                },
+                {
+                    "name": "Reset Password",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"password\": \"newpassword123\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/auth/reset-password/:resetToken",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "auth", "reset-password", ":resetToken"],
+                            "variable": [
+                                {
+                                    "key": "resetToken",
+                                    "value": "your-reset-token-here"
+                                }
+                            ]
+                        },
+                        "description": "Reset password using token from email"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Users",
+            "item": [
+                {
+                    "name": "Get All Users (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users?page=1&limit=10",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "users"],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "member",
+                                    "disabled": true
+                                },
+                                {
+                                    "key": "governorate",
+                                    "value": "Cairo",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get all users with pagination (Admin only)"
+                    }
+                },
+                {
+                    "name": "Get User By ID",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "users", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "user-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get single user by ID"
+                    }
+                },
+                {
+                    "name": "Create User (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Publisher User\",\n  \"email\": \"publisher@example.com\",\n  \"password\": \"password123\",\n  \"phone\": \"01234567891\",\n  \"university\": \"Alexandria University\",\n  \"nationalId\": \"12345678901235\",\n  \"governorate\": \"Alexandria\",\n  \"role\": \"publisher\",\n  \"membershipNumber\": \"TM-2024-001\",\n  \"membershipExpiry\": \"2025-12-31T00:00:00.000Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "users"]
+                        },
+                        "description": "Create new user with any role (Admin only). Roles: member, volunteer, publisher, admin"
+                    }
+                },
+                {
+                    "name": "Update User",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Name\",\n  \"phone\": \"01234567892\",\n  \"university\": \"Ain Shams University\",\n  \"governorate\": \"Giza\",\n  \"role\": \"publisher\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "users", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "user-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Update user information (Admin can update all fields including role)"
+                    }
+                },
+                {
+                    "name": "Delete User (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/users/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "users", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "user-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Delete user (Admin only)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "News",
+            "item": [
+                {
+                    "name": "Get All News",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/news?page=1&limit=10",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "news"],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get all news articles (Public)"
+                    }
+                },
+                {
+                    "name": "Get News By ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/news/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "news", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "news-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get single news article by ID (Public)"
+                    }
+                },
+                {
+                    "name": "Create News (Publisher/Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Breaking News: TahyaMisr Launches New Initiative\",\n  \"content\": \"Full content of the news article goes here...\",\n  \"image\": \"https://example.com/image.jpg\",\n  \"category\": \"announcement\",\n  \"tags\": [\"initiative\", \"education\", \"youth\"]\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/news",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "news"]
+                        },
+                        "description": "Create new news article (Publisher or Admin only)"
+                    }
+                },
+                {
+                    "name": "Update News (Publisher/Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Updated News Title\",\n  \"content\": \"Updated content...\",\n  \"category\": \"update\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/news/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "news", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "news-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Update news article (Publisher or Admin only)"
+                    }
+                },
+                {
+                    "name": "Delete News (Admin Only)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/news/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "news", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "news-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Delete news article (Admin only)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Events",
+            "item": [
+                {
+                    "name": "Get All Events",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/events?page=1&limit=10",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "events"],
+                            "query": [
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get all events (Public)"
+                    }
+                },
+                {
+                    "name": "Get Event By ID",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/events/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "events", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "event-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get single event by ID (Public)"
+                    }
+                },
+                {
+                    "name": "Create Event (Publisher/Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Youth Leadership Workshop\",\n  \"description\": \"Join us for an intensive leadership training program\",\n  \"date\": \"2024-12-01T10:00:00.000Z\",\n  \"location\": \"Cairo, Egypt\",\n  \"image\": \"https://example.com/event-image.jpg\",\n  \"category\": \"workshop\",\n  \"capacity\": 50,\n  \"registrationDeadline\": \"2024-11-25T23:59:59.000Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/events",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "events"]
+                        },
+                        "description": "Create new event (Publisher or Admin only)"
+                    }
+                },
+                {
+                    "name": "Update Event (Publisher/Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Updated Event Title\",\n  \"date\": \"2024-12-05T10:00:00.000Z\",\n  \"capacity\": 75\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/events/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "events", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "event-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Update event (Publisher or Admin only)"
+                    }
+                },
+                {
+                    "name": "Delete Event (Admin Only)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/events/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "events", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "event-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Delete event (Admin only)"
+                    }
+                },
+                {
+                    "name": "Register for Event",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/events/:id/register",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "events", ":id", "register"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "event-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Register current user for an event"
+                    }
+                },
+                {
+                    "name": "Get Event Registrations (Publisher/Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/events/:id/registrations",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "events", ":id", "registrations"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "event-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get list of users registered for an event (Publisher or Admin only)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Join Requests",
+            "item": [
+                {
+                    "name": "Submit Join Request",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Ahmed Mohamed\",\n  \"email\": \"ahmed@example.com\",\n  \"phone\": \"01234567890\",\n  \"university\": \"Cairo University\",\n  \"nationalId\": \"29901011234567\",\n  \"governorate\": \"Cairo\",\n  \"role\": \"publisher\",\n  \"motivation\": \"I want to contribute to TahyaMisr by creating engaging content and managing news updates for the community.\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/join-requests",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "join-requests"]
+                        },
+                        "description": "Submit a new join request. Available roles: member, volunteer, publisher"
+                    }
+                },
+                {
+                    "name": "Get All Join Requests (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/join-requests?status=pending",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "join-requests"],
+                            "query": [
+                                {
+                                    "key": "status",
+                                    "value": "pending"
+                                },
+                                {
+                                    "key": "role",
+                                    "value": "publisher",
+                                    "disabled": true
+                                }
+                            ]
+                        },
+                        "description": "Get all join requests (Admin only). Filter by status: pending, approved, rejected"
+                    }
+                },
+                {
+                    "name": "Get Join Request By ID (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/join-requests/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "join-requests", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "request-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Get single join request by ID (Admin only)"
+                    }
+                },
+                {
+                    "name": "Approve Join Request (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"password\": \"temporaryPassword123\",\n  \"membershipNumber\": \"TM-2024-042\",\n  \"membershipExpiry\": \"2025-12-31T00:00:00.000Z\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/join-requests/:id/approve",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "join-requests", ":id", "approve"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "request-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Approve join request and create user account with requested role (Admin only)"
+                    }
+                },
+                {
+                    "name": "Reject Join Request (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"rejectionReason\": \"Incomplete information provided\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/join-requests/:id/reject",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "join-requests", ":id", "reject"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "request-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Reject join request with optional reason (Admin only)"
+                    }
+                },
+                {
+                    "name": "Delete Join Request (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/join-requests/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "join-requests", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "request-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Delete join request (Admin only)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Site Settings",
+            "item": [
+                {
+                    "name": "Get Site Settings",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/site-settings",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "site-settings"]
+                        },
+                        "description": "Get current site settings (Public)"
+                    }
+                },
+                {
+                    "name": "Update Site Settings (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"joinRequestsEnabled\": false,\n  \"joinRequestMessage\": \"Join requests are temporarily closed for system maintenance.\",\n  \"maintenanceMode\": false,\n  \"maintenanceMessage\": \"\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/site-settings",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "site-settings"]
+                        },
+                        "description": "Update site settings (Admin only). Controls join requests availability and maintenance mode."
+                    }
+                },
+                {
+                    "name": "Toggle Join Requests (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"enabled\": true\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/site-settings/toggle-join-requests",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "site-settings", "toggle-join-requests"]
+                        },
+                        "description": "Quickly toggle join requests on/off (Admin only)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Timeline",
+            "item": [
+                {
+                    "name": "Get All Timeline Items",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/timeline",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "timeline"]
+                        },
+                        "description": "Get all timeline items (Public)"
+                    }
+                },
+                {
+                    "name": "Create Timeline Item (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"year\": 2024,\n  \"title\": \"TahyaMisr Founded\",\n  \"description\": \"The organization was officially established\",\n  \"image\": \"https://example.com/timeline-image.jpg\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/timeline",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "timeline"]
+                        },
+                        "description": "Create timeline item (Admin only)"
+                    }
+                },
+                {
+                    "name": "Update Timeline Item (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"title\": \"Updated Timeline Title\",\n  \"description\": \"Updated description\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/timeline/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "timeline", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "timeline-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Update timeline item (Admin only)"
+                    }
+                },
+                {
+                    "name": "Delete Timeline Item (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/timeline/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "timeline", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "timeline-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Delete timeline item (Admin only)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Positions",
+            "item": [
+                {
+                    "name": "Get All Positions",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/positions",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "positions"]
+                        },
+                        "description": "Get all positions/committees (Public)"
+                    }
+                },
+                {
+                    "name": "Create Position (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Content Team\",\n  \"description\": \"Responsible for creating and managing content\",\n  \"icon\": \"edit\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/positions",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "positions"]
+                        },
+                        "description": "Create position/committee (Admin only)"
+                    }
+                },
+                {
+                    "name": "Update Position (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Updated Position Name\",\n  \"description\": \"Updated description\"\n}"
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/positions/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "positions", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "position-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Update position (Admin only)"
+                    }
+                },
+                {
+                    "name": "Delete Position (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/positions/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "positions", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "position-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Delete position (Admin only)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Media",
+            "item": [
+                {
+                    "name": "Get All Media",
+                    "request": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/media?type=image&page=1&limit=10",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "media"],
+                            "query": [
+                                {
+                                    "key": "type",
+                                    "value": "image"
+                                },
+                                {
+                                    "key": "page",
+                                    "value": "1"
+                                },
+                                {
+                                    "key": "limit",
+                                    "value": "10"
+                                }
+                            ]
+                        },
+                        "description": "Get all media items (Public). Filter by type: image, video"
+                    }
+                },
+                {
+                    "name": "Upload Media (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "file",
+                                    "type": "file",
+                                    "src": []
+                                },
+                                {
+                                    "key": "title",
+                                    "value": "Media Title",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "description",
+                                    "value": "Media description",
+                                    "type": "text"
+                                },
+                                {
+                                    "key": "type",
+                                    "value": "image",
+                                    "type": "text"
+                                }
+                            ]
+                        },
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/media",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "media"]
+                        },
+                        "description": "Upload media file (Admin only)"
+                    }
+                },
+                {
+                    "name": "Delete Media (Admin)",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "DELETE",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/media/:id",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "media", ":id"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "media-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Delete media item (Admin only)"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "Notifications",
+            "item": [
+                {
+                    "name": "Get My Notifications",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/notifications",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "notifications"]
+                        },
+                        "description": "Get notifications for current user"
+                    }
+                },
+                {
+                    "name": "Mark Notification as Read",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/notifications/:id/read",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "notifications", ":id", "read"],
+                            "variable": [
+                                {
+                                    "key": "id",
+                                    "value": "notification-id-here"
+                                }
+                            ]
+                        },
+                        "description": "Mark notification as read"
+                    }
+                },
+                {
+                    "name": "Mark All Notifications as Read",
+                    "request": {
+                        "auth": {
+                            "type": "bearer",
+                            "bearer": [
+                                {
+                                    "key": "token",
+                                    "value": "{{authToken}}",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "method": "PUT",
+                        "header": [],
+                        "url": {
+                            "raw": "{{baseUrl}}/api/v1/notifications/read-all",
+                            "host": ["{{baseUrl}}"],
+                            "path": ["api", "v1", "notifications", "read-all"]
+                        },
+                        "description": "Mark all notifications as read for current user"
+                    }
+                }
+            ]
+        }
+    ],
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5000",
+            "type": "string"
+        },
+        {
+            "key": "authToken",
+            "value": "",
+            "type": "string"
+        }
+    ]
+}

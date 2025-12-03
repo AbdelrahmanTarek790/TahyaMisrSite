@@ -12,6 +12,7 @@ const registerSchema = Joi.object({
     position: Joi.string().hex().length(24).optional(),
     membershipNumber: Joi.string().optional(),
     membershipExpiry: Joi.date().optional(),
+    role: Joi.string().valid("member", "publisher", "admin").optional(),
 })
 
 const loginSchema = Joi.object({
@@ -29,7 +30,7 @@ const updateUserSchema = Joi.object({
     membershipExpiry: Joi.date().optional(),
     email: Joi.string().email().optional(),
     nationalId: Joi.string().min(14).max(14).optional(),
-    role: Joi.string().valid("member", "volunteer", "admin").optional(),
+    role: Joi.string().valid("member", "publisher", "admin").optional(),
 })
 
 const forgotPasswordSchema = Joi.object({

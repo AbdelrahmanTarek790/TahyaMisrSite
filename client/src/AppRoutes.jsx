@@ -51,6 +51,7 @@ const JoinRequestManagement = lazy(() => import("./pages/admin/JoinRequestManage
 const HeroImagesManagement = lazy(() => import("./pages/admin/HeroImagesManagement"))
 const AchievementsManagement = lazy(() => import("./pages/admin/AchievementsManagement"))
 const ActivitiesManagement = lazy(() => import("./pages/admin/ActivitiesManagement"))
+const SiteSettingsManagement = lazy(() => import("./pages/admin/SiteSettingsManagement"))
 
 export default function AppRoutes() {
     const { isAuthenticated, user } = useAuth()
@@ -148,7 +149,7 @@ export default function AppRoutes() {
                     <Route
                         path="/admin/news"
                         element={
-                            <ProtectedRoute roles={["admin"]}>
+                            <ProtectedRoute roles={["publisher", "admin"]}>
                                 <DashboardLayout>
                                     <NewsManagement />
                                 </DashboardLayout>
@@ -158,7 +159,7 @@ export default function AppRoutes() {
                     <Route
                         path="/admin/events"
                         element={
-                            <ProtectedRoute roles={["admin"]}>
+                            <ProtectedRoute roles={["publisher", "admin"]}>
                                 <DashboardLayout>
                                     <EventsManagement />
                                 </DashboardLayout>
@@ -241,6 +242,16 @@ export default function AppRoutes() {
                             <ProtectedRoute roles={["admin"]}>
                                 <DashboardLayout>
                                     <ActivitiesManagement />
+                                </DashboardLayout>
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/admin/site-settings"
+                        element={
+                            <ProtectedRoute roles={["admin"]}>
+                                <DashboardLayout>
+                                    <SiteSettingsManagement />
                                 </DashboardLayout>
                             </ProtectedRoute>
                         }

@@ -5,24 +5,22 @@ This guide covers how to use Microsoft Clarity's advanced features in your React
 ## Table of Contents
 
 1. [Basic Setup](#basic-setup)
-2. [SSR Compatibility](#ssr-compatibility)
-3. [Identify API](#identify-api)
-4. [Custom Tags API](#custom-tags-api)
-5. [Custom Events API](#custom-events-api)
-6. [Cookie Consent](#cookie-consent)
-7. [Upgrade Session API](#upgrade-session-api)
-8. [Integration Examples](#integration-examples)
+2. [Identify API](#identify-api)
+3. [Custom Tags API](#custom-tags-api)
+4. [Custom Events API](#custom-events-api)
+5. [Cookie Consent](#cookie-consent)
+6. [Upgrade Session API](#upgrade-session-api)
+7. [Integration Examples](#integration-examples)
 
 ---
 
 ## Basic Setup
 
-Clarity is already initialized in `src/entry-client.jsx` (for SSR builds) and `src/main.jsx` (for SPA builds). It automatically:
+Clarity is already initialized in `src/main.jsx`. It automatically:
 
--   ✅ **SSR-Safe**: Only runs in browser environment (not during server-side rendering)
--   ✅ **DNT Respect**: Checks for Do Not Track (DNT) settings and honors user privacy
--   ✅ **Production-Only**: Only loads in production (unless `VITE_CLARITY_ENABLE_DEVELOPMENT=true`)
--   ✅ **Error Handling**: Handles errors gracefully without breaking your app
+-   Checks for Do Not Track (DNT) settings
+-   Only loads in production (unless `VITE_CLARITY_ENABLE_DEVELOPMENT=true`)
+-   Handles errors gracefully
 
 ### Environment Variables
 
@@ -35,51 +33,6 @@ VITE_CLARITY_ID=your-project-id
 # Enable in development mode (optional, default: false)
 VITE_CLARITY_ENABLE_DEVELOPMENT=true
 ```
-
----
-
-## SSR Compatibility
-
-### How SSR Safety Works
-
-The Clarity implementation includes SSR safety checks:
-
-```javascript
-// SSR Safety Check: Only run in browser environment
-if (typeof window === "undefined" || typeof navigator === "undefined") {
-    return
-}
-```
-
-This ensures:
-
--   **No SSR crashes**: Clarity won't try to access browser APIs during server-side rendering
--   **Client-side only**: Clarity initializes only after hydration in the browser
--   **No duplicate tracking**: Single initialization per session
-
-### Using Clarity APIs in SSR Components
-
-When using Clarity APIs in your components, always wrap them in SSR-safe checks:
-
-```javascript
-import Clarity from "@microsoft/clarity"
-
-function MyComponent() {
-    const trackEvent = () => {
-        // SSR-safe wrapper
-        if (typeof window !== "undefined") {
-            Clarity.event("button-clicked")
-        }
-    }
-
-    return <button onClick={trackEvent}>Click me</button>
-}
-```
-
-### SSR Build Status
-
-✅ **Regular Build**: `npm run build` - Works with Clarity  
-⚠️ **SSR Build**: `npm run build:ssr` - Requires additional dependencies (see project README)
 
 ---
 
@@ -510,25 +463,14 @@ function completePurchase(order) {
     ```
 
 5. **Respect user privacy**: Always check DNT and get consent when required
-    - The implementation in `entry-client.jsx` and `main.jsx` already respects DNT
+    - The implementation in `main.jsx` already respects DNT
     - Use `Clarity.consent()` if your project requires cookie consent
-6. **SSR-safe wrappers**: Always check for browser environment when using Clarity APIs
-
-    ```javascript
-    // ✅ Good - SSR-safe
-    if (typeof window !== "undefined") {
-        Clarity.event("my-event")
-    }
-
-    // ❌ Bad - Will crash during SSR
-    Clarity.event("my-event")
-    ```
 
 ---
 
-## Utility Hook Example (SSR-Safe)
+## Utility Hook Example
 
-Create a custom hook for easier SSR-safe Clarity integration:
+Create a custom hook for easier Clarity integration:
 
 ```javascript
 // hooks/useClarity.js
@@ -536,11 +478,7 @@ import { useEffect } from "react"
 import Clarity from "@microsoft/clarity"
 
 export function useClarity() {
-    // SSR-safe check
-    const isClient = typeof window !== "undefined"
-
     const trackEvent = (eventName) => {
-        if (!isClient) return
         try {
             Clarity.event(eventName)
         } catch (error) {
@@ -549,7 +487,6 @@ export function useClarity() {
     }
 
     const setTag = (key, value) => {
-        if (!isClient) return
         try {
             Clarity.setTag(key, value)
         } catch (error) {
@@ -558,7 +495,6 @@ export function useClarity() {
     }
 
     const identify = (userId, sessionId, pageId, friendlyName) => {
-        if (!isClient) return
         try {
             Clarity.identify(userId, sessionId, pageId, friendlyName)
         } catch (error) {
@@ -567,7 +503,6 @@ export function useClarity() {
     }
 
     const upgrade = (reason) => {
-        if (!isClient) return
         try {
             Clarity.upgrade(reason)
         } catch (error) {

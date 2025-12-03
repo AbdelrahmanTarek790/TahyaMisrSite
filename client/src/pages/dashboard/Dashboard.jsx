@@ -35,17 +35,18 @@ const Dashboard = () => {
                         : Promise.resolve({ data: { total: 0 } }),
                     mediaAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } })),
                 ])
-
-                const newsData = newsResponse.status === "fulfilled" ? newsResponse.value.data : { news: [], total: 0 }
+                console.log(eventsResponse);
+                
+                const newsData = newsResponse.status === "fulfilled" ? newsResponse.value.data : { news: [], pagination: { total: 0 } }
                 const eventsData = eventsResponse.status === "fulfilled" ? eventsResponse.value.data : { events: [], total: 0 }
                 const usersData = usersResponse.status === "fulfilled" ? usersResponse.value.data : { total: 0 }
                 const mediaData = mediaResponse.status === "fulfilled" ? mediaResponse.value.data : { total: 0 }
 
                 setDashboardData({
-                    newsCount: newsData.total || 0,
-                    eventsCount: eventsData.total || 0,
-                    usersCount: usersData.total || 0,
-                    mediaCount: mediaData.total || 0,
+                    newsCount: newsData.pagination.total || 0,
+                    eventsCount: eventsData.pagination.total || 0,
+                    usersCount: usersData.pagination.total || 0,
+                    mediaCount: mediaData.pagination.total || 0,
                     recentNews: newsData.news || [],
                     upcomingEvents: eventsData.events || [],
                 })

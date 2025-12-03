@@ -173,4 +173,11 @@ export const activitiesAPI = {
     reorder: (activities) => api.put("/activities/reorder", { activities }),
 }
 
+// Site Settings API
+export const siteSettingsAPI = {
+    getSettings: () => api.get("/site-settings"),
+    updateSettings: (settings) => api.put("/site-settings", settings),
+    toggleJoinRequests: () => api.post("/site-settings/toggle-join-requests"),
+}
+
 export default api

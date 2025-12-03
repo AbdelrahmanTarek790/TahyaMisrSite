@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 
-import { Users, Newspaper, Calendar, Image, Settings, Bell, LogOut, Home, UserCircle, ChevronRight, Clock, Award, Activity } from "lucide-react"
+import { Users, Newspaper, Calendar, Image, Settings, Bell, LogOut, Home, UserCircle, ChevronRight, Clock, Award, Activity, Cog } from "lucide-react"
 import { NavMain } from "../ui/nav-main"
 // import { NavSecondary } from "../ui/nav-secondary"
 
@@ -20,12 +20,12 @@ export function AppSidebar(props) {
 
     // Define navigation items
     const navItems = [
-        { title: "لوحة التحكم", url: "/dashboard", icon: Home, role: ["member", "volunteer", "admin"] },
-        { title: "الأخبار", url: "/dashboard/news", icon: Newspaper, role: ["member", "volunteer", "admin"] },
-        { title: "الفعاليات", url: "/dashboard/events", icon: Calendar, role: ["member", "volunteer", "admin"] },
-        { title: "الوسائط", url: "/media", icon: Image, role: ["member", "volunteer", "admin"] },
-        { title: "إدارة الأخبار", url: "/admin/news", icon: Newspaper, role: ["admin"] },
-        { title: "إدارة الفعاليات", url: "/admin/events", icon: Calendar, role: ["admin"] },
+        { title: "لوحة التحكم", url: "/dashboard", icon: Home, role: ["member", "volunteer", "publisher", "admin"] },
+        { title: "الأخبار", url: "/dashboard/news", icon: Newspaper, role: ["member", "volunteer", "publisher", "admin"] },
+        { title: "الفعاليات", url: "/dashboard/events", icon: Calendar, role: ["member", "volunteer", "publisher", "admin"] },
+        { title: "الوسائط", url: "/media", icon: Image, role: ["member", "volunteer", "publisher", "admin"] },
+        { title: "إدارة الأخبار", url: "/admin/news", icon: Newspaper, role: ["publisher", "admin"] },
+        { title: "إدارة الفعاليات", url: "/admin/events", icon: Calendar, role: ["publisher", "admin"] },
         { title: "الجدول الزمني", url: "/admin/timeline", icon: Clock, role: ["admin"] },
         { title: "الإنجازات", url: "/admin/achievements", icon: Award, role: ["admin"] },
         { title: "الأنشطة المركزية", url: "/admin/activities", icon: Activity, role: ["admin"] },
@@ -34,7 +34,8 @@ export function AppSidebar(props) {
         { title: "المناصب", url: "/admin/positions", icon: Settings, role: ["admin"] },
         { title: "الإشعارات", url: "/admin/notifications", icon: Bell, role: ["admin"] },
         { title: "صور السلايدر", url: "/admin/hero-images", icon: Image, role: ["admin"] },
-        { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["member", "volunteer", "admin"] },
+        { title: "إعدادات الموقع", url: "/admin/site-settings", icon: Cog, role: ["admin"] },
+        { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["member", "volunteer", "publisher", "admin"] },
     ]
 
     // Filter navigation items based on user role and authentication status

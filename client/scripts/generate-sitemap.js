@@ -97,7 +97,7 @@ async function generate() {
     console.log("🚀 Starting sitemap generation...")
     const startTime = Date.now()
 
-    const sitemapPath = path.resolve("public/sitemap.xml")
+    const sitemapPath = path.resolve("dist/sitemap.xml")
     const ws = createWriteStream(sitemapPath)
     const smStream = new SitemapStream({
         hostname: BASE_URL,
