@@ -54,6 +54,18 @@ import '../../features/user_management/data/repositories/user_management_reposit
 import '../../features/user_management/data/services/user_management_api_service.dart';
 import '../../features/user_management/presentation/cubits/user_management_cubit.dart';
 
+// Activities imports
+import '../../features/activities/data/services/activities_api_service.dart';
+import '../../features/activities/data/local/activities_local_storage.dart';
+import '../../features/activities/data/repositories/activities_repository.dart';
+import '../../features/activities/presentation/cubits/activities_cubit.dart';
+
+// Achievements imports
+import '../../features/achievements/data/services/achievements_api_service.dart';
+import '../../features/achievements/data/local/achievements_local_storage.dart';
+import '../../features/achievements/data/repositories/achievements_repository.dart';
+import '../../features/achievements/presentation/cubits/achievements_cubit.dart';
+
 // Core imports
 import '../network/api_client.dart';
 import '../network/network_info.dart';
@@ -104,6 +116,8 @@ Future<void> configureDependencies() async {
   final mediaBox = await Hive.openBox('media');
   final dashboardBox = await Hive.openBox('dashboard');
   final positionsBox = await Hive.openBox('positions');
+  final activitiesBox = await Hive.openBox('activities');
+  final achievementsBox = await Hive.openBox('achievements');
 
   getIt.registerLazySingleton<Box>(() => authBox, instanceName: 'authBox');
   getIt.registerLazySingleton<Box>(() => cacheBox, instanceName: 'cacheBox');
@@ -117,6 +131,14 @@ Future<void> configureDependencies() async {
   getIt.registerLazySingleton<Box>(
     () => positionsBox,
     instanceName: 'positionsBox',
+  );
+  getIt.registerLazySingleton<Box>(
+    () => activitiesBox,
+    instanceName: 'activitiesBox',
+  );
+  getIt.registerLazySingleton<Box>(
+    () => achievementsBox,
+    instanceName: 'achievementsBox',
   );
 
   // Dio configuration
@@ -225,6 +247,12 @@ Future<void> configureDependencies() async {
 
   // Timeline dependencies
   _configureTimelineDependencies();
+
+  // Activities dependencies
+  _configureActivitiesDependencies();
+
+  // Achievements dependencies
+  _configureAchievementsDependencies();
 
   // Router
   getIt.registerLazySingleton<AppRouter>(AppRouter.new);
@@ -427,6 +455,64 @@ void _configureTimelineDependencies() {
   getIt.registerFactory<TimelineCubit>(
         () => TimelineCubit(
       timelineRepository: getIt<TimelineRepository>(),
+    ),
+  );
+}
+
+void _configureActivitiesDependencies() {
+  // Activities API Service
+  getIt.registerLazySingleton<ActivitiesApiService>(
+    () => ActivitiesApiService(getIt<ApiClient>()),
+  );
+
+  // Activities Local Storage
+  getIt.registerLazySingleton<ActivitiesLocalStorage>(
+    () => ActivitiesLocalStorage(getIt<Box>(instanceName: 'activitiesBox')),
+  );
+
+  // Activities repository
+  getIt.registerLazySingleton<ActivitiesRepository>(
+    () => ActivitiesRepository(
+      apiService: getIt<ActivitiesApiService>(),
+      localStorage: getIt<ActivitiesLocalStorage>(),
+      networkInfo: getIt<NetworkInfo>(),
+    ),
+  );
+
+  // Activities cubit
+  getIt.registerFactory<ActivitiesCubit>(
+    () => ActivitiesCubit(
+      repository: getIt<ActivitiesRepository>(),
+      logger: getIt<Logger>(),
+    ),
+  );
+}
+
+void _configureAchievementsDependencies() {
+  // Achievements API Service
+  getIt.registerLazySingleton<AchievementsApiService>(
+    () => AchievementsApiService(getIt<ApiClient>()),
+  );
+
+  // Achievements Local Storage
+  getIt.registerLazySingleton<AchievementsLocalStorage>(
+    () => AchievementsLocalStorage(getIt<Box>(instanceName: 'achievementsBox')),
+  );
+
+  // Achievements repository
+  getIt.registerLazySingleton<AchievementsRepository>(
+    () => AchievementsRepository(
+      apiService: getIt<AchievementsApiService>(),
+      localStorage: getIt<AchievementsLocalStorage>(),
+      networkInfo: getIt<NetworkInfo>(),
+    ),
+  );
+
+  // Achievements cubit
+  getIt.registerFactory<AchievementsCubit>(
+    () => AchievementsCubit(
+      repository: getIt<AchievementsRepository>(),
+      logger: getIt<Logger>(),
     ),
   );
 }
