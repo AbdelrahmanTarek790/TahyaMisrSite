@@ -10,7 +10,7 @@ import {
 } from "../ui/dropdown-menu"
 import { Button } from "../ui/button"
 
-import { useNavigate } from "react-router-dom"
+// import { useNavigate } from "react-router-dom"
 import { getInitials } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { SidebarTrigger } from "../ui/sidebar"
@@ -18,10 +18,13 @@ import { useAuth } from "@/context/AuthContext"
 import CreateNewsSheet from "../forms/CreateNewsSheet"
 import CreateEventSheet from "../forms/CreateEventSheet"
 import CreateMediaSheet from "../forms/CreateMediaSheet"
+import LanguageToggle from "../ui/LanguageToggle"
+import { useRouter } from "next/navigation"
+// import LanguageToggle from "../LanguageToggle"
 
 export function Header({ sidebarOpen, setSidebarOpen }) {
     const { user, logout } = useAuth()
-    const navigate = useNavigate()
+    const navigate = useRouter()
     const [newsSheetOpen, setNewsSheetOpen] = useState(false)
     const [eventSheetOpen, setEventSheetOpen] = useState(false)
     const [mediaSheetOpen, setMediaSheetOpen] = useState(false)
@@ -49,39 +52,33 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
             type: "general",
             read: true,
             timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000), // 2 hours ago
-        }
+        },
     ])
 
     const handleLogout = async () => {
         await logout()
-        navigate("/login")
+        navigate.push("/login")
     }
 
     const markAsRead = (notificationId) => {
-        setNotifications(prev => 
-            prev.map(notification => 
-                notification.id === notificationId 
-                    ? { ...notification, read: true }
-                    : notification
-            )
-        )
+        setNotifications((prev) => prev.map((notification) => (notification.id === notificationId ? { ...notification, read: true } : notification)))
     }
 
     const markAllAsRead = () => {
-        setNotifications(prev => prev.map(notification => ({ ...notification, read: true })))
+        setNotifications((prev) => prev.map((notification) => ({ ...notification, read: true })))
     }
 
     const removeNotification = (notificationId) => {
-        setNotifications(prev => prev.filter(notification => notification.id !== notificationId))
+        setNotifications((prev) => prev.filter((notification) => notification.id !== notificationId))
     }
 
-    const unreadCount = notifications.filter(n => !n.read).length
+    const unreadCount = notifications.filter((n) => !n.read).length
 
     const getNotificationIcon = (type) => {
         switch (type) {
-            case 'event':
+            case "event":
                 return <Calendar className="h-4 w-4 text-blue-500" />
-            case 'system':
+            case "system":
                 return <Bell className="h-4 w-4 text-orange-500" />
             default:
                 return <FileText className="h-4 w-4 text-gray-500" />
@@ -94,7 +91,7 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
         const minutes = Math.floor(diff / (1000 * 60))
         const hours = Math.floor(diff / (1000 * 60 * 60))
 
-        if (minutes < 1) return 'Just now'
+        if (minutes < 1) return "Just now"
         if (minutes < 60) return `${minutes}m ago`
         if (hours < 24) return `${hours}h ago`
         return timestamp.toLocaleDateString()
@@ -108,7 +105,7 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
 
             <div className="flex items-center gap-2">
                 {/* Quick Create Dropdown - Only for admin users */}
-                {user?.role === 'admin' && (
+                {user?.role === "admin" && (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" size="icon">
@@ -140,7 +137,7 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
                             <Bell size={18} />
                             {unreadCount > 0 && (
                                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-destructive text-destructive-foreground text-xs rounded-full flex items-center justify-center">
-                                    {unreadCount > 9 ? '9+' : unreadCount}
+                                    {unreadCount > 9 ? "9+" : unreadCount}
                                 </span>
                             )}
                         </Button>
@@ -149,12 +146,7 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
                         <div className="flex items-center justify-between p-2">
                             <DropdownMenuLabel className="m-0">Notifications</DropdownMenuLabel>
                             {unreadCount > 0 && (
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={markAllAsRead}
-                                    className="text-xs h-6 px-2"
-                                >
+                                <Button variant="ghost" size="sm" onClick={markAllAsRead} className="text-xs h-6 px-2">
                                     Mark all read
                                 </Button>
                             )}
@@ -162,34 +154,30 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
                         <DropdownMenuSeparator />
                         <div className="max-h-96 overflow-y-auto">
                             {notifications.length === 0 ? (
-                                <div className="p-4 text-center text-gray-500 text-sm">
-                                    No notifications
-                                </div>
+                                <div className="p-4 text-center text-gray-500 text-sm">No notifications</div>
                             ) : (
                                 notifications.map((notification) => (
                                     <div
                                         key={notification.id}
                                         className={`p-3 border-b border-gray-100 last:border-b-0 hover:bg-gray-50 ${
-                                            !notification.read ? 'bg-blue-50' : ''
+                                            !notification.read ? "bg-blue-50" : ""
                                         }`}
                                     >
                                         <div className="flex items-start gap-3">
                                             {getNotificationIcon(notification.type)}
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-2">
-                                                    <p className={`text-sm font-medium truncate ${!notification.read ? 'text-blue-900' : 'text-gray-900'}`}>
+                                                    <p
+                                                        className={`text-sm font-medium truncate ${
+                                                            !notification.read ? "text-blue-900" : "text-gray-900"
+                                                        }`}
+                                                    >
                                                         {notification.title}
                                                     </p>
-                                                    {!notification.read && (
-                                                        <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>
-                                                    )}
+                                                    {!notification.read && <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0"></div>}
                                                 </div>
-                                                <p className="text-xs text-gray-600 mt-1 line-clamp-2">
-                                                    {notification.message}
-                                                </p>
-                                                <p className="text-xs text-gray-400 mt-1">
-                                                    {formatTimestamp(notification.timestamp)}
-                                                </p>
+                                                <p className="text-xs text-gray-600 mt-1 line-clamp-2">{notification.message}</p>
+                                                <p className="text-xs text-gray-400 mt-1">{formatTimestamp(notification.timestamp)}</p>
                                             </div>
                                             <div className="flex gap-1">
                                                 {!notification.read && (
@@ -223,7 +211,7 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
                                     <Button
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => navigate('/admin/notifications')}
+                                        onClick={() => navigate.push("/admin/notifications")}
                                         className="w-full text-center text-xs"
                                     >
                                         View all notifications
@@ -234,13 +222,19 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
                     </DropdownMenuContent>
                 </DropdownMenu>
 
+                {/* Language Toggle */}
+                <LanguageToggle />
+
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="p-1">
                             <div className="flex items-center gap-2">
-                                <Avatar className="h-8 w-8">
-                                    <AvatarImage src={user?.photo} alt={user?.name || "User"} />
-                                    <AvatarFallback>{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
+                                <Avatar className="w-8 h-8">
+                                    <AvatarImage
+                                        src={user?.profileImage ? `https://tmbackend.tahyamisryu.com/uploads/${user.profileImage}` : undefined}
+                                        alt={user?.name || "User"}
+                                    />
+                                    <AvatarFallback className="text-2xl">{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
                                 </Avatar>
                                 <div className="hidden md:block text-left">
                                     <p className="text-sm font-medium">{user?.name}</p>
@@ -254,7 +248,7 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
                     <DropdownMenuContent align="end" className="w-56">
                         <DropdownMenuLabel>My Account</DropdownMenuLabel>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={() => navigate("/profile")}>
+                        <DropdownMenuItem onClick={() => navigate.push("/profile")}>
                             <User className="mr-2 h-4 w-4" />
                             Profile
                         </DropdownMenuItem>
@@ -265,18 +259,9 @@ export function Header({ sidebarOpen, setSidebarOpen }) {
             </div>
 
             {/* Creation Sheets */}
-            <CreateNewsSheet 
-                isOpen={newsSheetOpen} 
-                onClose={() => setNewsSheetOpen(false)} 
-            />
-            <CreateEventSheet 
-                isOpen={eventSheetOpen} 
-                onClose={() => setEventSheetOpen(false)} 
-            />
-            <CreateMediaSheet 
-                isOpen={mediaSheetOpen} 
-                onClose={() => setMediaSheetOpen(false)} 
-            />
+            <CreateNewsSheet isOpen={newsSheetOpen} onClose={() => setNewsSheetOpen(false)} />
+            <CreateEventSheet isOpen={eventSheetOpen} onClose={() => setEventSheetOpen(false)} />
+            <CreateMediaSheet isOpen={mediaSheetOpen} onClose={() => setMediaSheetOpen(false)} />
         </header>
     )
 }

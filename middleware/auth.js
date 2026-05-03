@@ -56,6 +56,21 @@ const admin = (req, res, next) => {
   }
 };
 
+const authorize = (...roles) => {
+  return (req, res, next) => {
+    if (req.user && roles.includes(req.user.role)) {
+      next();
+    } else {
+      res.status(403).json({
+        success: false,
+        error: 'Access denied. You do not have permission to perform this action.',
+        data: null
+      });
+    }
+  };
+};
+
+
 // Generate JWT Token
 const generateToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -63,4 +78,4 @@ const generateToken = (id) => {
   });
 };
 
-module.exports = { protect, admin, generateToken };
+module.exports = { protect, admin, generateToken, authorize };

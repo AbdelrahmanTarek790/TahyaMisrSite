@@ -1,0 +1,841 @@
+'use client'
+import { useState, useEffect, useCallback } from "react"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { z } from "zod"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { useError } from "@/context/ErrorContext"
+import { usersAPI, positionsAPI } from "@/app/api/api"
+import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter, Download, Loader2 } from "lucide-react"
+import { EGYPT_GOVERNORATES } from "@/constants/governorates"
+import { exportUsersToExcel } from "@/utils/excelExport"
+
+// Backend User model validation schema
+const userSchema = z.object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters").optional(),
+    phone: z.string().min(1, "Phone number is required"),
+    university: z.string().min(2, "University must be at least 2 characters"),
+    nationalId: z.string().min(1, "National ID is required"),
+    governorate: z.string().min(1, "Governorate is required"),
+    position: z.string().optional(),
+    membershipNumber: z.string().optional(),
+    membershipExpiry: z.string().optional(),
+    role: z.enum(["member", "publisher", "admin"]),
+})
+
+const createUserSchema = z.object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    email: z.string().email("Invalid email address"),
+    password: z.string().min(6, "Password must be at least 6 characters"),
+    phone: z.string().min(1, "Phone number is required"),
+    university: z.string().min(2, "University must be at least 2 characters"),
+    nationalId: z.string().min(1, "National ID is required"),
+    governorate: z.string().min(1, "Governorate is required"),
+    position: z.string().optional(),
+    membershipNumber: z.string().optional(),
+    membershipExpiry: z.string().optional(),
+    role: z.enum(["member", "publisher", "admin"]),
+})
+
+const UserManagement = () => {
+    const [users, setUsers] = useState([])
+    const [positions, setPositions] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
+    const [isExporting, setIsExporting] = useState(false)
+    const [isSheetOpen, setIsSheetOpen] = useState(false)
+    const [isCreateSheetOpen, setIsCreateSheetOpen] = useState(false)
+    const [editingUser, setEditingUser] = useState(null)
+    const [searchTerm, setSearchTerm] = useState("")
+    const [filterRole, setFilterRole] = useState("all")
+    const [filterGovernorate, setFilterGovernorate] = useState("all")
+    const [filterUniversity, setFilterUniversity] = useState("all")
+    const [filterLimit, setFilterLimit] = useState(10)
+    const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 })
+    const [stats, setStats] = useState({ total: 0, members: 0, volunteers: 0, publishers: 0, admins: 0 })
+    const { addError } = useError()
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm({
+        resolver: zodResolver(userSchema),
+    })
+
+    const {
+        register: registerCreate,
+        handleSubmit: handleSubmitCreate,
+        reset: resetCreate,
+        formState: { errors: errorsCreate },
+    } = useForm({
+        resolver: zodResolver(createUserSchema),
+    })
+
+    const fetchUsers = useCallback(async () => {
+        try {
+            setIsLoading(true)
+
+            const params = {
+                page: pagination.page,
+                limit: filterLimit,
+            }
+
+            // Add search parameter (backend will search across multiple fields with OR)
+            if (searchTerm.trim()) {
+                params.search = searchTerm.trim()
+            }
+
+            // Add role filter
+            if (filterRole !== "all") {
+                params.role = filterRole
+            }
+
+            // Add governorate filter
+            if (filterGovernorate !== "all") {
+                params.governorate = filterGovernorate
+            }
+
+            // Add university filter
+            if (filterUniversity !== "all") {
+                params.university = filterUniversity
+            }
+
+            const response = await usersAPI.getAll(params)
+            setUsers(response.data?.users || [])
+            setPagination((prev) => ({
+                ...prev,
+                limit: filterLimit,
+                total: response.data?.pagination.total || 0,
+            }))
+        } catch (error) {
+            console.error("Failed to fetch users:", error)
+            addError("Failed to fetch users")
+        } finally {
+            setIsLoading(false)
+        }
+    }, [pagination.page, filterLimit, searchTerm, filterRole, filterGovernorate, filterUniversity, addError])
+
+    const fetchPositions = async () => {
+        try {
+            const response = await positionsAPI.getAll()
+            setPositions(response.data.positions || [])
+        } catch (error) {
+            // Positions might not be available, don't show error
+            console.warn("Failed to fetch positions:", error)
+        }
+    }
+
+    const fetchStats = async () => {
+        try {
+            const response = await usersAPI.getStats()
+            setStats(response.data || { total: 0, members: 0, volunteers: 0, publishers: 0, admins: 0 })
+        } catch (error) {
+            console.warn("Failed to fetch user stats:", error)
+        }
+    }
+
+    useEffect(() => {
+        fetchUsers()
+        fetchPositions()
+        fetchStats()
+    }, [fetchUsers])
+
+    // Handle limit change - reset to page 1 when limit changes
+    useEffect(() => {
+        setPagination((prev) => ({ ...prev, page: 1, limit: filterLimit }))
+    }, [filterLimit])
+    const handleDeleteUser = async (userId) => {
+        if (!confirm("Are you sure you want to delete this user?")) return
+
+        try {
+            await usersAPI.delete(userId)
+            addError("User deleted successfully!", "success")
+            fetchUsers()
+            fetchStats()
+        } catch (error) {
+            console.error("Failed to delete user:", error)
+            addError("Failed to delete user")
+        }
+    }
+
+    const handleRoleChange = async (userId, newRole) => {
+        try {
+            await usersAPI.update(userId, { role: newRole })
+            addError("User role updated successfully!", "success")
+            fetchUsers()
+            fetchStats()
+        } catch (error) {
+            console.error("Failed to update user role:", error)
+            addError("Failed to update user role")
+        }
+    }
+
+    const handleEdit = (user) => {
+        setEditingUser(user)
+        reset({
+            name: user.name,
+            email: user.email,
+            phone: user.phone || "",
+            university: user.university,
+            nationalId: user.nationalId || "",
+            governorate: user.governorate,
+            position: user.position?._id || "",
+            membershipNumber: user.membershipNumber || "",
+            membershipExpiry: user.membershipExpiry ? new Date(user.membershipExpiry).toISOString().split("T")[0] : "",
+            role: user.role,
+        })
+        setIsSheetOpen(true)
+    }
+
+    const onSubmit = async (data) => {
+        try {
+            setIsLoading(true)
+
+            // Convert membershipExpiry to proper date format if provided
+            const submitData = {
+                ...data,
+                membershipExpiry: data.membershipExpiry ? new Date(data.membershipExpiry).toISOString() : undefined,
+                position: data.position || undefined, // Don't send empty string
+            }
+
+            // Remove undefined fields
+            Object.keys(submitData).forEach((key) => {
+                if (submitData[key] === undefined || submitData[key] === "") {
+                    delete submitData[key]
+                }
+            })
+
+            await usersAPI.update(editingUser._id, submitData)
+            addError("User updated successfully!", "success")
+            setIsSheetOpen(false)
+            setEditingUser(null)
+            reset()
+            fetchUsers()
+        } catch (error) {
+            addError(error.message || "Failed to update user")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const onCreateSubmit = async (data) => {
+        try {
+            setIsLoading(true)
+
+            // Convert membershipExpiry to proper date format if provided
+            const submitData = {
+                ...data,
+                membershipExpiry: data.membershipExpiry ? new Date(data.membershipExpiry).toISOString() : undefined,
+                position: data.position || undefined, // Don't send empty string
+            }
+
+            // Remove undefined fields
+            Object.keys(submitData).forEach((key) => {
+                if (submitData[key] === undefined || submitData[key] === "") {
+                    delete submitData[key]
+                }
+            })
+
+            await usersAPI.create(submitData)
+            addError("User created successfully!", "success")
+            setIsCreateSheetOpen(false)
+            resetCreate()
+            fetchUsers()
+            fetchStats()
+        } catch (error) {
+            addError(error.message || "Failed to create user")
+        } finally {
+            setIsLoading(false)
+        }
+    }
+
+    const handleCloseSheet = () => {
+        setIsSheetOpen(false)
+        setEditingUser(null)
+        reset()
+    }
+
+    const handleCloseCreateSheet = () => {
+        setIsCreateSheetOpen(false)
+        resetCreate()
+    }
+
+    // Get unique universities for filter (from all users before filtering)
+    const uniqueUniversities = [...new Set(users.map((user) => user.university).filter(Boolean))]
+
+    // Clear filters function
+    const clearFilters = () => {
+        setSearchTerm("")
+        setFilterRole("all")
+        setFilterGovernorate("all")
+        setFilterUniversity("all")
+        setFilterLimit(10)
+    }
+
+    const getRoleIcon = (role) => {
+        switch (role) {
+            case "admin":
+                return <Shield className="h-4 w-4 text-red-500" />
+            case "publisher":
+                return <Edit className="h-4 w-4 text-purple-500" />
+            case "volunteer":
+                return <UserPlus className="h-4 w-4 text-blue-500" />
+            default:
+                return <User className="h-4 w-4 text-green-500" />
+        }
+    }
+
+    const getRoleBadgeColor = (role) => {
+        switch (role) {
+            case "admin":
+                return "bg-red-100 text-red-800"
+            case "publisher":
+                return "bg-purple-100 text-purple-800"
+            case "volunteer":
+                return "bg-blue-100 text-blue-800"
+            default:
+                return "bg-green-100 text-green-800"
+        }
+    }
+
+    const handleExportUsers = async () => {
+        if (!users.length) {
+            addError("No users to export")
+            return
+        }
+
+        try {
+            setIsExporting(true)
+
+            // Create filename based on current filters
+            let filename = "users_export"
+            if (searchTerm) filename += `_search_${searchTerm.replace(/[^\w]/g, "_")}`
+            if (filterRole !== "all") filename += `_${filterRole}`
+            if (filterGovernorate !== "all") filename += `_${filterGovernorate.replace(/[^\w]/g, "_")}`
+            if (filterUniversity !== "all") filename += `_${filterUniversity.replace(/[^\w]/g, "_")}`
+
+            const success = exportUsersToExcel(users, filename)
+
+            if (success) {
+                addError(`Successfully exported ${users.length} users!`, "success")
+            } else {
+                addError("Failed to export users")
+            }
+        } catch (error) {
+            console.error("Failed to export users:", error)
+            addError("Failed to export users")
+        } finally {
+            setIsExporting(false)
+        }
+    }
+
+    return (
+        <div className="space-y-6">
+            {/* Header */}
+            <div className="flex justify-between items-center flex-wrap gap-3">
+                <div>
+                    <h1 className="text-3xl font-bold text-gray-900"> إدارة المستخدمين</h1>
+                    <p className="text-gray-600">إدارة المستخدمين وأدوارهم</p>
+                </div>
+                <div className="flex space-x-2">
+                    <Button onClick={handleExportUsers} disabled={isExporting || !users.length} variant="outline">
+                        {isExporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
+                        تصدير Excel ({users.length})
+                    </Button>
+                    <Button onClick={() => setIsCreateSheetOpen(true)}>
+                        <UserPlus className="h-4 w-4 mr-2" />
+                        إنشاء مستخدم
+                    </Button>
+                </div>
+            </div>
+
+            {/* Filters */}
+            <div className="flex flex-col sm:flex-row flex-wrap gap-4">
+                <div className="relative flex-1 max-w-md">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Input
+                        type="text"
+                        placeholder="ابحث في المستخدمين..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="pl-10"
+                    />
+                </div>
+                <select
+                    value={filterRole}
+                    onChange={(e) => setFilterRole(e.target.value)}
+                    className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                    <option value="all">كل المستخدمين</option>
+                    <option value="member">الاعضاء</option>
+                    {/* <option value="volunteer">المتطوعين</option> */}
+                    <option value="publisher">الناشرين</option>
+                    <option value="admin">المدراء</option>
+                </select>
+                <select
+                    value={filterGovernorate}
+                    onChange={(e) => setFilterGovernorate(e.target.value)}
+                    className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                    <option value="all">كل المحافظات</option>
+                    {EGYPT_GOVERNORATES.map((governorate) => (
+                        <option key={governorate} value={governorate}>
+                            {governorate}
+                        </option>
+                    ))}
+                </select>
+                {/* <select
+                    value={filterUniversity}
+                    onChange={(e) => setFilterUniversity(e.target.value)}
+                    className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                >
+                    <option value="all">كل الجامعات</option>
+                    {uniqueUniversities.map((university) => (
+                        <option key={university} value={university}>
+                            {university}
+                        </option>
+                    ))}
+                </select> */}
+                <select
+                    value={filterLimit}
+                    onChange={(e) => setFilterLimit(Number(e.target.value))}
+                    className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    title="عدد المستخدمين في الصفحة"
+                >
+                    <option value={5}>5 في الصفحة</option>
+                    <option value={10}>10 في الصفحة</option>
+                    <option value={25}>25 في الصفحة</option>
+                    <option value={50}>50 في الصفحة</option>
+                    <option value={100}>100 في الصفحة</option>
+                    <option value={200}>200 في الصفحة</option>
+                    <option value={1000}>1000 في الصفحة</option>
+                    <option value={10000}>10000 في الصفحة</option>
+                </select>
+                <Button variant="outline" onClick={clearFilters}>
+                    <Filter className="h-4 w-4 mr-2" />
+                    مسح الفلاتر
+                </Button>
+            </div>
+
+            {/* Users Table */}
+            {isLoading && users.length === 0 ? (
+                <Card>
+                    <CardContent className="flex items-center justify-center py-12">
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </CardContent>
+                </Card>
+            ) : users.length === 0 ? (
+                <Card>
+                    <CardContent className="flex items-center justify-center py-12">
+                        <div className="text-center">
+                            <h3 className="text-lg font-medium text-gray-900 mb-2">
+                                {searchTerm || filterRole !== "all" || filterGovernorate !== "all" || filterUniversity !== "all"
+                                    ? "لا توجد مستخدمين"
+                                    : "لا توجد مستخدمين متاحين"}
+                            </h3>
+                            <p className="text-gray-600">
+                                {searchTerm || filterRole !== "all" || filterGovernorate !== "all" || filterUniversity !== "all"
+                                    ? "حاول تعديل معايير البحث أو الفلترة"
+                                    : "سيظهر المستخدمون هنا بمجرد تسجيلهم"}
+                            </p>
+                        </div>
+                    </CardContent>
+                </Card>
+            ) : (
+                <Card>
+                    <CardHeader>
+                        <CardTitle>المستخدمين ({pagination.total})</CardTitle>
+                        <CardDescription>إدارة حسابات المستخدمين والأذونات</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr className="border-b ">
+                                        <th className="pb-3 font-medium text-right">المستخدم</th>
+                                        <th className=" pb-3 font-medium text-right">الدور</th>
+                                        <th className=" pb-3 font-medium text-right">الجامعة</th>
+                                        <th className=" pb-3 font-medium text-right">المحافظة</th>
+                                        <th className=" pb-3 font-medium text-right">الرقم القومي</th>
+                                        <th className=" pb-3 font-medium text-right">اللجنة</th>
+                                        <th className=" pb-3 font-medium text-right">العضوية</th>
+                                        <th className=" pb-3 font-medium text-right">تاريخ الانضمام</th>
+                                        <th className=" pb-3 font-medium text-right">الإجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {users.map((user) => (
+                                        <tr key={user._id} className="border-b space-x-2">
+                                            <td className="py-4">
+                                                <div>
+                                                    <div className="font-medium min-w-[120px]">{user.name}</div>
+                                                    <div className="text-sm text-gray-500 min-w-[120px]">{user.email}</div>
+                                                    <div className="text-xs text-gray-400 min-w-[120px]">{user.phone}</div>
+                                                </div>
+                                            </td>
+                                            <td className="py-4">
+                                                <div className="flex items-center space-x-2">
+                                                    {getRoleIcon(user.role)}
+                                                    <span
+                                                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${getRoleBadgeColor(
+                                                            user.role
+                                                        )}`}
+                                                    >
+                                                        {user.role}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td className="py-4 text-sm min-w-[120px]">{user.university}</td>
+                                            <td className="py-4 text-sm min-w-[120px]   ">{user.governorate}</td>
+                                            <td className="py-4 text-sm font-mono min-w-[120px]">{user.nationalId}</td>
+                                            <td className="py-4 text-sm min-w-[120px]">{user.position?.name || "N/A"}</td>
+                                            <td className="py-4 text-sm min-w-[120px]">
+                                                <div>
+                                                    <div>{user.membershipNumber || "N/A"}</div>
+                                                    {user.membershipExpiry && (
+                                                        <div className="text-xs text-gray-400">
+                                                            Expires: {new Date(user.membershipExpiry).toLocaleDateString()}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            </td>
+                                            <td className="py-4 text-sm">{new Date(user.createdAt).toLocaleDateString()}</td>
+                                            <td className="py-4">
+                                                <div className="flex space-x-2">
+                                                    <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                    <select
+                                                        value={user.role}
+                                                        onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                                                        className="text-xs rounded border border-gray-300 px-2 py-1"
+                                                    >
+                                                        <option value="member">Member</option>
+
+                                                        <option value="publisher">Publisher</option>
+                                                        <option value="admin">Admin</option>
+                                                    </select>
+                                                    <Button variant="outline" size="sm" onClick={() => handleDeleteUser(user._id)}>
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </CardContent>
+                </Card>
+            )}
+
+            {/* Pagination */}
+            {pagination.total > pagination.limit && !searchTerm && filterRole === "all" && (
+                <div className="flex justify-center space-x-2">
+                    <Button
+                        variant="outline"
+                        onClick={() => setPagination((prev) => ({ ...prev, page: prev.page - 1 }))}
+                        disabled={pagination.page === 1 || isLoading}
+                    >
+                        السابق
+                    </Button>
+                    <span className="flex items-center px-4">
+                        صفحة {pagination.page} من {Math.ceil(pagination.total / pagination.limit)}
+                    </span>
+                    <Button
+                        variant="outline"
+                        onClick={() => setPagination((prev) => ({ ...prev, page: prev.page + 1 }))}
+                        disabled={pagination.page >= Math.ceil(pagination.total / pagination.limit) || isLoading}
+                    >
+                        التالي
+                    </Button>
+                </div>
+            )}
+
+            {/* Edit User Sheet */}
+            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+                <SheetContent className="w-[600px] sm:max-w-[600px]">
+                    <SheetHeader>
+                        <SheetTitle>تعديل المستخدم</SheetTitle>
+                    </SheetHeader>
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-6 px-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل *</label>
+                            <Input {...register("name")} placeholder="أدخل الاسم الكامل" />
+                            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني *</label>
+                            <Input {...register("email")} type="email" disabled placeholder="أدخل البريد الإلكتروني" />
+                            {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف *</label>
+                                <Input {...register("phone")} placeholder="أدخل رقم الهاتف" />
+                                {errors.phone && <p className="text-red-500 text-sm mt-1">{errors.phone.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الرقم القومي *</label>
+                                <Input {...register("nationalId")} placeholder="أدخل الرقم القومي" />
+                                {errors.nationalId && <p className="text-red-500 text-sm mt-1">{errors.nationalId.message}</p>}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الجامعة *</label>
+                                <Input {...register("university")} placeholder="أدخل الجامعة" />
+                                {errors.university && <p className="text-red-500 text-sm mt-1">{errors.university.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">المحافظة *</label>
+                                <select
+                                    {...register("governorate")}
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                >
+                                    <option value="">اختر المحافظة</option>
+                                    {EGYPT_GOVERNORATES.map((governorate) => (
+                                        <option key={governorate} value={governorate}>
+                                            {governorate}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.governorate && <p className="text-red-500 text-sm mt-1">{errors.governorate.message}</p>}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الدور *</label>
+                                <select {...register("role")} className="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="member">عضو</option>
+
+                                    <option value="publisher">ناشر محتوى</option>
+                                    <option value="admin">مدير</option>
+                                </select>
+                                {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">اللجنة </label>
+                                <select
+                                    {...register("position")}
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                >
+                                    <option value="">اختر اللجنة</option>
+                                    {positions.map((position) => (
+                                        <option key={position._id} value={position._id}>
+                                            {position.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errors.position && <p className="text-red-500 text-sm mt-1">{errors.position.message}</p>}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">رقم العضوية</label>
+                                <Input {...register("membershipNumber")} placeholder="أدخل رقم العضوية" />
+                                {errors.membershipNumber && <p className="text-red-500 text-sm mt-1">{errors.membershipNumber.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">تاريخ انتهاء العضوية</label>
+                                <Input {...register("membershipExpiry")} type="date" placeholder="اختر تاريخ الانتهاء" />
+                                {errors.membershipExpiry && <p className="text-red-500 text-sm mt-1">{errors.membershipExpiry.message}</p>}
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-2 pt-4">
+                            <Button type="button" variant="outline" onClick={handleCloseSheet}>
+                                إلغاء
+                            </Button>
+                            <Button type="submit" disabled={isLoading}>
+                                {isLoading ? "تحديث..." : "تحديث المستخدم"}
+                            </Button>
+                        </div>
+                    </form>
+                </SheetContent>
+            </Sheet>
+
+            {/* Create User Sheet */}
+            <Sheet open={isCreateSheetOpen} onOpenChange={setIsCreateSheetOpen}>
+                <SheetContent className="w-[600px] sm:max-w-[600px]">
+                    <SheetHeader>
+                        <SheetTitle>إنشاء مستخدم جديد</SheetTitle>
+                    </SheetHeader>
+                    <form onSubmit={handleSubmitCreate(onCreateSubmit)} className="space-y-4 mt-6 px-4">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">الاسم الكامل *</label>
+                            <Input {...registerCreate("name")} placeholder="أدخل الاسم الكامل" />
+                            {errorsCreate.name && <p className="text-red-500 text-sm mt-1">{errorsCreate.name.message}</p>}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">البريد الإلكتروني *</label>
+                            <Input {...registerCreate("email")} type="email" placeholder="أدخل البريد الإلكتروني" />
+                            {errorsCreate.email && <p className="text-red-500 text-sm mt-1">{errorsCreate.email.message}</p>}
+                        </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">كلمة المرور *</label>
+                            <Input {...registerCreate("password")} type="password" placeholder="أدخل كلمة المرور" />
+                            {errorsCreate.password && <p className="text-red-500 text-sm mt-1">{errorsCreate.password.message}</p>}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">رقم الهاتف *</label>
+                                <Input {...registerCreate("phone")} placeholder="أدخل رقم الهاتف" />
+                                {errorsCreate.phone && <p className="text-red-500 text-sm mt-1">{errorsCreate.phone.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الرقم القومي *</label>
+                                <Input {...registerCreate("nationalId")} placeholder="أدخل الرقم القومي" />
+                                {errorsCreate.nationalId && <p className="text-red-500 text-sm mt-1">{errorsCreate.nationalId.message}</p>}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الجامعة *</label>
+                                <Input {...registerCreate("university")} placeholder="أدخل الجامعة" />
+                                {errorsCreate.university && <p className="text-red-500 text-sm mt-1">{errorsCreate.university.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">المحافظة *</label>
+                                <select
+                                    {...registerCreate("governorate")}
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                >
+                                    <option value="">اختر المحافظة</option>
+                                    {EGYPT_GOVERNORATES.map((governorate) => (
+                                        <option key={governorate} value={governorate}>
+                                            {governorate}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errorsCreate.governorate && <p className="text-red-500 text-sm mt-1">{errorsCreate.governorate.message}</p>}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">الدور *</label>
+                                <select {...registerCreate("role")} className="w-full p-2 border border-gray-300 rounded-md">
+                                    <option value="member">عضو</option>
+                                    <option value="publisher">ناشر محتوى</option>
+                                    <option value="admin">مدير</option>
+                                </select>
+                                {errorsCreate.role && <p className="text-red-500 text-sm mt-1">{errorsCreate.role.message}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">اللجنة *</label>
+                                <select
+                                    {...registerCreate("position")}
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                >
+                                    <option value="">اختر اللجنة</option>
+                                    {positions.map((position) => (
+                                        <option key={position._id} value={position._id}>
+                                            {position.name}
+                                        </option>
+                                    ))}
+                                </select>
+                                {errorsCreate.position && <p className="text-red-500 text-sm mt-1">{errorsCreate.position.message}</p>}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">رقم العضوية</label>
+                                <Input {...registerCreate("membershipNumber")} placeholder="أدخل رقم العضوية" />
+                                {errorsCreate.membershipNumber && (
+                                    <p className="text-red-500 text-sm mt-1">{errorsCreate.membershipNumber.message}</p>
+                                )}
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">تاريخ انتهاء العضوية</label>
+                                <Input {...registerCreate("membershipExpiry")} type="date" placeholder="اختر تاريخ الانتهاء" />
+                                {errorsCreate.membershipExpiry && (
+                                    <p className="text-red-500 text-sm mt-1">{errorsCreate.membershipExpiry.message}</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end gap-2 pt-4">
+                            <Button type="button" variant="outline" onClick={handleCloseCreateSheet}>
+                                الغاء
+                            </Button>
+                            <Button type="submit" disabled={isLoading}>
+                                {isLoading ? "جاري الإنشاء..." : "إنشاء مستخدم جديد"}
+                            </Button>
+                        </div>
+                    </form>
+                </SheetContent>
+            </Sheet>
+
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium">إجمالي المستخدمين</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.total}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium">الاعضاء</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.members}</div>
+                    </CardContent>
+                </Card>
+                {/* <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium">المتطوعين</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.volunteers}</div>
+                    </CardContent>
+                </Card> */}
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium">الناشرين</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.publishers}</div>
+                    </CardContent>
+                </Card>
+                <Card>
+                    <CardHeader className="pb-2">
+                        <CardTitle className="text-sm font-medium">المدراء</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="text-2xl font-bold">{stats.admins}</div>
+                    </CardContent>
+                </Card>
+            </div>
+        </div>
+    )
+}
+
+export default UserManagement

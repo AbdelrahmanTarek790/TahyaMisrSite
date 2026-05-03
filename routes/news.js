@@ -1,22 +1,16 @@
-const express = require('express');
-const {
-  getNews,
-  getNewsById,
-  createNews,
-  updateNews,
-  deleteNews
-} = require('../controllers/newsController');
-const { protect, admin } = require('../middleware/auth');
-const upload = require('../utils/upload');
+const express = require("express")
+const { getNews, getNewsById, createNews, updateNews, deleteNews } = require("../controllers/newsController")
+const { protect, admin, authorize } = require("../middleware/auth")
+const { upload } = require("../utils/upload")
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/', getNews);
-router.get('/:id', getNewsById);
+router.get("/", getNews)
+router.get("/:id", getNewsById)
 
-// Admin only routes
-router.post('/', protect, admin, upload.single('image'), createNews);
-router.put('/:id', protect, admin, upload.single('image'), updateNews);
-router.delete('/:id', protect, admin, deleteNews);
+// Admin and Publisher routes
+router.post("/", protect, authorize("admin", "publisher"), ...upload.news(), createNews)
+router.put("/:id", protect, authorize("admin", "publisher"), ...upload.news(), updateNews)
+router.delete("/:id", protect, admin, deleteNews)
 
-module.exports = router;
+module.exports = router

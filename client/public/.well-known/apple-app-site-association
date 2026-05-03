@@ -1,0 +1,23 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "2S8F5F333A.com.tahyamisr.youth",
+        "paths": [
+          "/news/*",
+          "/events/*",
+          "/about-us",
+          "/about",
+          "/team",
+          "/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "2S8F5F333A.com.tahyamisr.youth"
+    ]
+  }
+}

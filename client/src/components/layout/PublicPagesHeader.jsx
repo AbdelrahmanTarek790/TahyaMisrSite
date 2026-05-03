@@ -1,7 +1,9 @@
+"use client"
 import React, { useState, useEffect } from "react"
-import { Link, NavLink, useNavigate } from "react-router-dom"
+// import { Link, Link, useNavigate } from "react-router-dom"
+// import { usePreloadRoutes } from "@/hooks/usePreloadRoutes"
 import { Button } from "@/components/ui/button"
-import Logo from "@/assets/Logo.png"
+import Logo from "@/assets/Logo.webp"
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -25,14 +27,29 @@ import {
 import { Menu, Search, X, ChevronDown, User, LogIn, Bell } from "lucide-react"
 // import api from "@/lib/axios"
 import { cn, getInitials } from "@/lib/utils"
-
+import { usePathname, useRouter } from "next/navigation"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+
 import { useAuth } from "@/context/AuthContext"
+import Link from "next/link"
+import Image from "next/image"
+
+const components = [
+    { title: "من نحن", href: "/about", description: "تعرف على المزيد حول أتحاد شباب تحيا مصر ورؤيتنا ورسالتنا." },
+    { title: "فريق العمل", href: "/team", description: "تعرف على الفريق المتميز الذي يقود الاتحاد نحو تحقيق أهدافه." },
+    { title: "رحلة الاتحاد", href: "/journey", description: "تعرف على رحلة الاتحاد وأهدافه." },
+    // { title: "شركاؤنا", href: "/partners", description: "اكتشف شركاء النجاح الذين يدعمون مبادراتنا." },
+    // { title: "قصص النجاح", href: "/success-stories", description: "اقرأ قصص النجاح الملهمة من مشاريعنا ومبادراتنا." },
+]
 
 export default function PublicPagesHeader() {
-    const navigate = useNavigate()
+    // const navigate = useNavigate()
+    const navigate = useRouter()
     const { user, logout } = useAuth()
     const [isScrolled, setIsScrolled] = useState(false)
+    const pathname = usePathname()
+    // Initialize route preloading
+    // usePreloadRoutes()
 
     // Handle scroll event to change header styling
     useEffect(() => {
@@ -51,7 +68,7 @@ export default function PublicPagesHeader() {
     // Handle logout
     const handleLogout = async () => {
         await logout()
-        navigate("/login")
+        navigate.push("/login")
     }
 
     // Render authentication buttons based on login state
@@ -68,9 +85,12 @@ export default function PublicPagesHeader() {
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="p-1">
                                 <div className="flex items-center gap-2">
-                                    <Avatar className="h-8 w-8">
-                                        <AvatarImage src={user?.photo} alt={user?.name || "User"} />
-                                        <AvatarFallback>{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
+                                    <Avatar className="w-8 h-8">
+                                        <AvatarImage
+                                            src={user?.profileImage ? `https://tmbackend.tahyamisryu.com/uploads/${user.profileImage}` : undefined}
+                                            alt={user?.name || "User"}
+                                        />
+                                        <AvatarFallback className="text-2xl">{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
                                     </Avatar>
                                     <div className="hidden md:block text-left">
                                         <p className="text-sm font-medium">{user?.name}</p>
@@ -84,9 +104,9 @@ export default function PublicPagesHeader() {
                         <DropdownMenuContent align="end" className="w-56">
                             <DropdownMenuLabel>حسابي</DropdownMenuLabel>
                             <DropdownMenuSeparator />
-                            {user.role !== "user" && <DropdownMenuItem onClick={() => navigate("/dashboard")}>لوحة التحكم</DropdownMenuItem>}
-                            <DropdownMenuItem onClick={() => navigate("/settings/profile")}>الملف الشخصي</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => navigate("/settings/account")}>إعدادات الحساب</DropdownMenuItem>
+                            {user.role !== "user" && <DropdownMenuItem onClick={() => navigate.push("/dashboard")}>لوحة التحكم</DropdownMenuItem>}
+                            <DropdownMenuItem onClick={() => navigate.push("/profile")}>الملف الشخصي</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => navigate.push("/settings")}>إعدادات الحساب</DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem onClick={handleLogout}>تسجيل الخروج</DropdownMenuItem>
                         </DropdownMenuContent>
@@ -97,13 +117,13 @@ export default function PublicPagesHeader() {
             return (
                 <div className="flex items-center space-x-1">
                     <Button variant="ghost" size="sm" asChild>
-                        <Link to="/login">
+                        <Link href="/login">
                             <LogIn className="mr-2 h-4 w-4" /> تسجيل الدخول
                         </Link>
                     </Button>
-                    <Button size="sm" asChild>
+                    {/* <Button size="sm" asChild>
                         <Link to="/register">إنشاء حساب</Link>
-                    </Button>
+                    </Button> */}
                 </div>
             )
         }
@@ -141,14 +161,19 @@ export default function PublicPagesHeader() {
         if (user) {
             return (
                 <div className="flex flex-col space-y-2 pt-4">
+                    {user.role !== "user" && (
+                        <Button variant="ghost" className="w-full" asChild>
+                            <Link href="/dashboard">لوحة التحكم</Link>
+                        </Button>
+                    )}
                     <Button variant="ghost" className="w-full" asChild>
-                        <Link to="/dashboard">Dashboard</Link>
+                        <Link href="/settings/profile">الملف الشخصي</Link>
                     </Button>
                     <Button variant="ghost" className="w-full" asChild>
-                        <Link to="/settings/account">Account Settings</Link>
+                        <Link href="/settings/account">إعدادات الحساب</Link>
                     </Button>
                     <Button variant="ghost" className="w-full" onClick={handleLogout}>
-                        Logout
+                        تسجيل الخروج
                     </Button>
                 </div>
             )
@@ -156,13 +181,13 @@ export default function PublicPagesHeader() {
             return (
                 <div className="flex flex-col space-y-2 pt-4">
                     <Button className="w-full" asChild>
-                        <Link to="/login">
-                            <LogIn className="mr-2 h-4 w-4" /> Sign In
+                        <Link href="/login">
+                            <LogIn className="mr-2 h-4 w-4" /> تسجيل الدخول
                         </Link>
                     </Button>
                     <Button variant="outline" className="w-full" asChild>
-                        <Link to="/register">
-                            <User className="mr-2 h-4 w-4" /> Sign Up
+                        <Link href="/register">
+                            <User className="mr-2 h-4 w-4" /> إنشاء حساب
                         </Link>
                     </Button>
                 </div>
@@ -178,23 +203,23 @@ export default function PublicPagesHeader() {
                     isScrolled ? "bg-background/95 backdrop-blur-sm shadow-sm" : "bg-background"
                 )}
             >
-                <div className="container mx-auto">
+                <div className="container mx-auto py-2 ">
                     {/* Top bar with logo and auth buttons */}
-                    <div className="flex items-center flex-row-reverse justify-between">
+                    <div className="flex items-center  justify-between">
                         {/* Logo */}
-                        <Link to="/" className="flex items-center space-x-2">
-                            <span className="text-2xl font-bold">أتحاد شباب تحيا مصر</span>
-                            <img src={Logo} alt="Logo" className="h-28 w-28" />
+                        <Link href="/" className="flex items-center justify-between py-4 lg:py-0 space-x-2">
+                            <Image src={Logo} alt="Logo" className=" w-16 h-16 lg:w-20 lg:h-20" />
+                            <span className="text-2xl font-bold">اتحاد شباب تحيا مصر</span>
                         </Link>
 
                         {/* Desktop Navigation */}
-                        <div className="hidden md:flex md:items-center md:space-x-4 ">
+                        <div className="hidden lg:flex md:items-center md:space-x-4 ">
                             <NavigationMenu>
-                                <NavigationMenuList className={" md:flex-row-reverse "}>
+                                <NavigationMenuList className={" lg:flex-row-reverse font-medium text-lg "}>
                                     <NavigationMenuItem>
-                                        <NavLink to="/" className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}>
+                                        <Link href="/" className={cn(navigationMenuTriggerStyle(), pathname === "/" && "font-medium")}>
                                             الرئيسية
-                                        </NavLink>
+                                        </Link>
                                     </NavigationMenuItem>
 
                                     {/* <Route path="/" element={<LandingPage />} />
@@ -204,37 +229,47 @@ export default function PublicPagesHeader() {
                             <Route path="/public/events" element={<PublicEventsPage />} /> */}
 
                                     <NavigationMenuItem>
-                                        <NavLink
-                                            to="/news"
-                                            className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}
+                                        <Link
+                                            href="/news"
+                                            className={cn(navigationMenuTriggerStyle(), pathname.startsWith("/news") && "font-medium")}
                                         >
                                             الاخبار
-                                        </NavLink>
+                                        </Link>
                                     </NavigationMenuItem>
 
                                     <NavigationMenuItem>
-                                        <NavLink
-                                            to="/events"
-                                            className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}
+                                        <Link
+                                            href="/events"
+                                            className={cn(navigationMenuTriggerStyle(), pathname.startsWith("/events") && "font-medium")}
                                         >
                                             الفعاليات
-                                        </NavLink>
+                                        </Link>
                                     </NavigationMenuItem>
                                     <NavigationMenuItem>
-                                        <NavLink
+                                        {/* <Link    
                                             to="/about"
                                             className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}
                                         >
                                             من نحن
-                                        </NavLink>
+                                        </Link> */}
+                                        <NavigationMenuTrigger>من نحن</NavigationMenuTrigger>
+                                        <NavigationMenuContent>
+                                            <ul className="grid w-[400px] gap-2 md:w-[500px] md:grid-cols-2 lg:w-[600px] text-right" dir="rtl">
+                                                {components.map((component) => (
+                                                    <ListItem key={component.title} title={component.title} href={component.href}>
+                                                        {component.description}
+                                                    </ListItem>
+                                                ))}
+                                            </ul>
+                                        </NavigationMenuContent>
                                     </NavigationMenuItem>
                                     <NavigationMenuItem>
-                                        <NavLink
-                                            to="/contact"
-                                            className={({ isActive }) => cn(navigationMenuTriggerStyle(), isActive ? "font-medium" : "")}
+                                        <Link
+                                            href="/contact"
+                                            className={cn(navigationMenuTriggerStyle(), pathname.startsWith("/contact") && "font-medium")}
                                         >
                                             اتصل بنا
-                                        </NavLink>
+                                        </Link>
                                     </NavigationMenuItem>
                                 </NavigationMenuList>
                             </NavigationMenu>
@@ -245,9 +280,9 @@ export default function PublicPagesHeader() {
 
                             {/* Render auth buttons based on login state */}
                         </div>
-                        <div className="hidden md:flex md:items-center md:flex-row-reverse md:space-x-4">{renderAuthButtons()}</div>
+                        <div className="hidden lg:flex md:items-center md:flex-row-reverse md:space-x-4">{renderAuthButtons()}</div>
                         {/* Mobile menu and search buttons */}
-                        <div className="flex items-center md:hidden">
+                        <div className="flex items-center lg:hidden">
                             {user && (
                                 <Button variant="ghost" size="icon" className="relative mr-1" aria-label="Notifications">
                                     <Bell size={18} />
@@ -261,83 +296,135 @@ export default function PublicPagesHeader() {
                                         <Menu className="h-5 w-5" />
                                     </Button>
                                 </SheetTrigger>
-                                <SheetContent side="right">
-                                    <SheetHeader>
-                                        <SheetTitle>Tahya Misr</SheetTitle>
+                                <SheetContent side="right" className="w-80 p-0">
+                                    <SheetHeader className="p-6 border-b">
+                                        <SheetTitle className="text-xl font-bold text-center">أتحاد شباب تحيا مصر</SheetTitle>
                                     </SheetHeader>
-                                    <div id="sheetHeader" className="flex flex-col space-y-2">
-                                        <NavigationMenu className="w-full max-w-full justify-start">
-                                            <NavigationMenuList className="flex flex-col w-full space-y-1">
-                                                <NavigationMenuItem className="w-full">
-                                                    <NavLink
-                                                        to="/"
-                                                        className={({ isActive }) =>
-                                                            cn(
-                                                                navigationMenuTriggerStyle(),
-                                                                isActive ? "font-medium w-full justify-normal" : "w-full justify-normal"
-                                                            )
-                                                        }
-                                                    >
-                                                        Home
-                                                    </NavLink>
-                                                </NavigationMenuItem>
-                                                <NavigationMenuItem className="w-full">
-                                                    <NavLink
-                                                        to="/public/news"
-                                                        className={({ isActive }) =>
-                                                            cn(
-                                                                navigationMenuTriggerStyle(),
-                                                                isActive ? "font-medium w-full justify-normal" : "w-full justify-normal"
-                                                            )
-                                                        }
-                                                    >
-                                                        News
-                                                    </NavLink>
-                                                </NavigationMenuItem>
-                                                <NavigationMenuItem className="w-full">
-                                                    <NavLink
-                                                        to="/public/events"
-                                                        className={({ isActive }) =>
-                                                            cn(
-                                                                navigationMenuTriggerStyle(),
-                                                                isActive ? "font-medium w-full justify-normal" : "w-full justify-normal"
-                                                            )
-                                                        }
-                                                    >
-                                                        Events
-                                                    </NavLink>
-                                                </NavigationMenuItem>
-                                                <NavigationMenuItem className="w-full">
-                                                    <NavLink
-                                                        to="/about"
-                                                        className={({ isActive }) =>
-                                                            cn(
-                                                                navigationMenuTriggerStyle(),
-                                                                isActive ? "font-medium w-full justify-normal" : "w-full justify-normal"
-                                                            )
-                                                        }
-                                                    >
-                                                        About
-                                                    </NavLink>
-                                                </NavigationMenuItem>
-                                                <NavigationMenuItem className="w-full">
-                                                    <NavLink
-                                                        to="/contact"
-                                                        className={({ isActive }) =>
-                                                            cn(
-                                                                navigationMenuTriggerStyle(),
-                                                                isActive ? "font-medium w-full justify-normal" : "w-full justify-normal"
-                                                            )
-                                                        }
-                                                    >
-                                                        Contact
-                                                    </NavLink>
-                                                </NavigationMenuItem>
-                                            </NavigationMenuList>
-                                        </NavigationMenu>
+                                    <div className="flex flex-col h-full">
+                                        {/* Navigation Section */}
+                                        <div className="flex-1 p-6" dir="rtl">
+                                            <nav className="space-y-2">
+                                                <Link
+                                                    href="/"
+                                                    className={cn(
+                                                        "flex items-center justify-end w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground",
+                                                        pathname === "/" ? "bg-accent text-accent-foreground" : "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    الرئيسية
+                                                </Link>
+                                                <Link
+                                                    href="/news"
+                                                    className={cn(
+                                                        "flex items-center justify-end w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground",
+                                                        pathname === "/news" ? "bg-accent text-accent-foreground" : "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    الاخبار
+                                                </Link>
+                                                <Link
+                                                    href="/events"
+                                                    className={cn(
+                                                        "flex items-center justify-end w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground",
+                                                        pathname === "/events" ? "bg-accent text-accent-foreground" : "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    الفعاليات
+                                                </Link>
 
-                                        {/* Render mobile auth buttons */}
-                                        {renderMobileAuthButtons()}
+                                                {/* About submenu */}
+                                                <div className="space-y-1">
+                                                    <div className="px-4 py-3 text-sm font-medium text-muted-foreground">من نحن</div>
+                                                    <div className="pr-6 space-y-1">
+                                                        {components.map((component) => (
+                                                            <Link
+                                                                key={component.href}
+                                                                href={component.href}
+                                                                className={cn(
+                                                                    "flex items-center justify-end w-full px-3 py-2 text-xs rounded-md transition-colors hover:bg-accent/50 hover:text-accent-foreground",
+                                                                    pathname === component.href
+                                                                        ? "bg-accent/50 text-accent-foreground"
+                                                                        : "text-muted-foreground"
+                                                                )}
+                                                            >
+                                                                {component.title}
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <Link
+                                                    href="/contact"
+                                                    className={cn(
+                                                        "flex items-center justify-end w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors hover:bg-accent hover:text-accent-foreground",
+                                                        pathname === "/contact" ? "bg-accent text-accent-foreground" : "text-muted-foreground"
+                                                    )}
+                                                >
+                                                    اتصل بنا
+                                                </Link>
+                                            </nav>
+                                        </div>
+
+                                        {/* Auth Section */}
+                                        <div className="border-t p-6" dir="rtl">
+                                            {user ? (
+                                                <div className="space-y-4">
+                                                    {/* User Info */}
+                                                    <div className="flex items-center gap-3 p-3 rounded-lg bg-accent/20">
+                                                        <div className="text-right flex-1">
+                                                            <p className="text-sm font-medium">{user?.name}</p>
+                                                            <p className="text-xs text-muted-foreground">
+                                                                {user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ""}
+                                                            </p>
+                                                        </div>
+                                                        <Avatar className="w-8 h-8">
+                                                            <AvatarImage
+                                                                src={
+                                                                    user?.profileImage
+                                                                        ? `https://tmbackend.tahyamisryu.com/uploads/${user.profileImage}`
+                                                                        : undefined
+                                                                }
+                                                                alt={user?.name || "User"}
+                                                            />
+                                                            <AvatarFallback className="text-2xl">
+                                                                {user?.name ? getInitials(user.name) : "U"}
+                                                            </AvatarFallback>
+                                                        </Avatar>
+                                                    </div>
+
+                                                    {/* User Menu */}
+                                                    <div className="space-y-2">
+                                                        {user.role !== "user" && (
+                                                            <Button variant="ghost" className="w-full justify-end" asChild>
+                                                                <Link href="/dashboard">لوحة التحكم</Link>
+                                                            </Button>
+                                                        )}
+                                                        <Button variant="ghost" className="w-full justify-end" asChild>
+                                                            <Link href="/profile">الملف الشخصي</Link>
+                                                        </Button>
+                                                        <Button variant="ghost" className="w-full justify-end" asChild>
+                                                            <Link href="/settings">إعدادات الحساب</Link>
+                                                        </Button>
+                                                        <Button variant="outline" className="w-full justify-end" onClick={handleLogout}>
+                                                            تسجيل الخروج
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-3">
+                                                    <Button className="w-full justify-center" asChild>
+                                                        <Link href="/login">
+                                                            <LogIn className="ml-2 h-4 w-4" /> تسجيل الدخول
+                                                        </Link>
+                                                    </Button>
+                                                    {/* <Button variant="outline" className="w-full justify-center" asChild>
+                                                        <Link to="/register">
+                                                            <User className="ml-2 h-4 w-4" /> إنشاء حساب
+                                                        </Link>
+                                                    </Button> */}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </SheetContent>
                             </Sheet>
@@ -346,5 +433,18 @@ export default function PublicPagesHeader() {
                 </div>
             </header>
         </>
+    )
+}
+
+function ListItem({ title, children, href, ...props }) {
+    return (
+        <li {...props}>
+            <NavigationMenuLink asChild>
+                <Link href={href}>
+                    <div className="text-sm leading-none font-medium">{title}</div>
+                    <p className="text-muted-foreground line-clamp-2 text-sm leading-snug">{children}</p>
+                </Link>
+            </NavigationMenuLink>
+        </li>
     )
 }

@@ -1,0 +1,40 @@
+{
+    "dashboard": {
+        "welcome": {
+            "morning": "Good morning",
+            "afternoon": "Good afternoon",
+            "evening": "Good evening"
+        },
+        "welcomeMessage": "Welcome to your Tahya Misr {role} dashboard",
+        "stats": {
+            "newsArticles": "News Articles",
+            "upcomingEvents": "Upcoming Events",
+            "mediaItems": "Media Items",
+            "activeMembers": "Active Members",
+            "publishedArticles": "Published articles",
+            "totalEvents": "Total events",
+            "photosAndVideos": "Photos and videos",
+            "registeredUsers": "Registered users"
+        },
+        "sections": {
+            "recentNews": "Recent News",
+            "latestPublishedArticles": "Latest published articles",
+            "upcomingEvents": "Upcoming Events",
+            "scheduledEvents": "Scheduled events",
+            "noNewsAvailable": "No news available",
+            "noEventsAvailable": "No events available",
+            "viewMore": "View more",
+            "loading": "Loading..."
+        },
+        "errors": {
+            "failedToLoadData": "Failed to load dashboard data"
+        },
+        "roles": {
+            "admin": "admin",
+            "user": "user",
+            "moderator": "moderator",
+            "volunteer": "volunteer",
+            "student": "student"
+        }
+    }
+}

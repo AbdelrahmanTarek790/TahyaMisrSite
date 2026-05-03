@@ -4,31 +4,39 @@ import * as React from "react"
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 
-import { Users, Newspaper, Calendar, Image, Settings, Bell, LogOut, Home, UserCircle, ChevronRight, Clock } from "lucide-react"
+import { Users, Newspaper, Calendar, Image, Settings, Bell, LogOut, Home, UserCircle, ChevronRight, Clock, Award, Activity, Cog } from "lucide-react"
 import { NavMain } from "../ui/nav-main"
 // import { NavSecondary } from "../ui/nav-secondary"
 
-import { useNavigate } from "react-router-dom"
+// import { useNavigate } from "react-router-dom"
 // import { DirectionSwitcher } from "../DirectionSwitcher"
 import { useAuth } from "@/context/AuthContext"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { getInitials } from "@/lib/utils"
+import { useRouter } from "next/navigation"
 
 export function AppSidebar(props) {
     const { user, isAuthenticated } = useAuth()
-    const navigate = useNavigate()
+    const navigate = useRouter()
 
     // Define navigation items
     const navItems = [
-        { title: "Dashboard", url: "/dashboard", icon: Home, role: ["student", "volunteer", "admin"] },
-        { title: "News", url: "/dashboard/news", icon: Newspaper, role: ["student", "volunteer", "admin"] },
-        { title: "Events", url: "/dashboard/events", icon: Calendar, role: ["student", "volunteer", "admin"] },
-        { title: "Media", url: "/media", icon: Image, role: ["student", "volunteer", "admin"] },
-        { title: "Manage News", url: "/admin/news", icon: Newspaper, role: ["admin"] },
-        { title: "Manage Events", url: "/admin/events", icon: Calendar, role: ["admin"] },
-        { title: "Timeline", url: "/admin/timeline", icon: Clock, role: ["admin"] },
-        { title: "Users", url: "/admin/users", icon: Users, role: ["admin"] },
-        { title: "Positions", url: "/admin/positions", icon: Settings, role: ["admin"] },
-        { title: "Notifications", url: "/admin/notifications", icon: Bell, role: ["admin"] },
-        { title: "Settings", url: "/settings", icon: UserCircle, role: ["student", "volunteer", "admin"] },
+        { title: "لوحة التحكم", url: "/dashboard", icon: Home, role: ["member", "volunteer", "publisher", "admin"] },
+        { title: "الأخبار", url: "/dashboard/news", icon: Newspaper, role: ["member", "volunteer", "publisher", "admin"] },
+        { title: "الفعاليات", url: "/dashboard/events", icon: Calendar, role: ["member", "volunteer", "publisher", "admin"] },
+        { title: "الوسائط", url: "/media", icon: Image, role: ["member", "volunteer", "publisher", "admin"] },
+        { title: "إدارة الأخبار", url: "/admin/news", icon: Newspaper, role: ["publisher", "admin"] },
+        { title: "إدارة الفعاليات", url: "/admin/events", icon: Calendar, role: ["publisher", "admin"] },
+        { title: "الجدول الزمني", url: "/admin/timeline", icon: Clock, role: ["admin"] },
+        { title: "الإنجازات", url: "/admin/achievements", icon: Award, role: ["admin"] },
+        { title: "الأنشطة المركزية", url: "/admin/activities", icon: Activity, role: ["admin"] },
+        { title: "المستخدمون", url: "/admin/users", icon: Users, role: ["admin"] },
+        { title: "طلبات الانضمام", url: "/admin/join-requests", icon: Users, role: ["admin"] },
+        { title: "المناصب", url: "/admin/positions", icon: Settings, role: ["admin"] },
+        { title: "الإشعارات", url: "/admin/notifications", icon: Bell, role: ["admin"] },
+        { title: "صور السلايدر", url: "/admin/hero-images", icon: Image, role: ["admin"] },
+        { title: "إعدادات الموقع", url: "/admin/site-settings", icon: Cog, role: ["admin"] },
+        { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["member", "volunteer", "publisher", "admin"] },
     ]
 
     // Filter navigation items based on user role and authentication status
@@ -62,13 +70,15 @@ export function AppSidebar(props) {
     // ]
 
     return (
-        <Sidebar collapsible="offcanvas" {...props} >
+        <Sidebar collapsible="offcanvas" {...props}>
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5">
-                            <a href="/">
-                                <span className="text-base font-semibold">NewsPress</span>
+                        <SidebarMenuButton asChild className="data-[slot=sidebar-menu-button]:!p-1.5  py-4">
+                            <a href="/" className=" text-center  py-4">
+                                <p className="text-2xl py-2 font-bold mx-auto">
+                                    اتحاد شباب <span className="text-egypt-red">تحيا مصر</span>
+                                </p>
                             </a>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -86,9 +96,13 @@ export function AppSidebar(props) {
                 {isAuthenticated && user && (
                     <div className="p-3 border-t">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground">
-                                {user.name ? user.name.charAt(0).toUpperCase() : "U"}
-                            </div>
+                            <Avatar className="w-10 h-10">
+                                <AvatarImage
+                                    src={user?.profileImage ? `https://tmbackend.tahyamisryu.com/uploads/${user.profileImage}` : undefined}
+                                    alt={user?.name || "User"}
+                                />
+                                <AvatarFallback className="text-2xl">{user?.name ? getInitials(user.name) : "U"}</AvatarFallback>
+                            </Avatar>
                             <div>
                                 <p className="text-sm font-medium">{user.name}</p>
                                 <p className="text-xs text-muted-foreground">{user.role}</p>

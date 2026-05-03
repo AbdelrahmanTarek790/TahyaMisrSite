@@ -1,8 +1,10 @@
+"use client"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { InViewSection, InViewStagger } from "@/components/ui/MotionComponents"
 import { Button } from "../ui/enhanced-button"
 import { Calendar, MapPin, Users, Clock, ArrowRight, Star } from "lucide-react"
 import { useState, useEffect } from "react"
-import { Link } from "react-router-dom"
+import Link from "next/link"
 
 const Events = () => {
     const [events, setEvents] = useState([])
@@ -15,7 +17,7 @@ const Events = () => {
     const fetchEvents = async () => {
         try {
             setIsLoading(true)
-            const response = await fetch("https://form.codepeak.software/api/v1/events?page=1&limit=4")
+            const response = await fetch("https://tmbackend.tahyamisryu.com/api/v1/events?page=1&limit=4")
             if (response.ok) {
                 const data = await response.json()
                 const eventsData = data.data?.events || []
@@ -31,9 +33,7 @@ const Events = () => {
                     category: "Event",
                     price: "Free",
                     featured: index === 0,
-                    image: item.image
-                        ? `https://form.codepeak.software/uploads/${item.image}`
-                        : "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&h=400&fit=crop",
+                    image: item.image ? `https://tmbackend.tahyamisryu.com/uploads/${item.image}` : "/placeholder.png",
                 }))
                 setEvents(transformedEvents)
             }
@@ -65,16 +65,16 @@ const Events = () => {
     }
 
     return (
-        <section className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))] overflow-hidden">
+        <section id="events-section" className="py-20 bg-[linear-gradient(180deg,_rgb(255,255,255),_rgb(245,245,245))] overflow-hidden">
             <div className="container mx-auto px-6">
-                <div className="text-center mb-16 animate-fade-in">
+                <InViewSection animation="fadeInUp" className="text-center mb-16">
                     <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
                         <span className="text-egypt-gold">الفعاليات</span>
                     </h2>
                     <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                         انضم إلينا في فعاليات مثيرة وورش عمل ومبادرات مجتمعية تهدف إلى تمكين وربط الشباب المصري في جميع أنحاء البلاد.
                     </p>
-                </div>
+                </InViewSection>
 
                 {isLoading ? (
                     <div>
@@ -107,9 +107,9 @@ const Events = () => {
                         </div>
                     </div>
                 ) : events.length > 0 ? (
-                    <div>
+                    <InViewStagger staggerDelay={0.3}>
                         {/* Featured Event */}
-                        <div className="mb-16 animate-scale-in">
+                        <div className="mb-16">
                             <Card className="group bg-[linear-gradient(145deg,_rgb(255,255,255),_rgb(242,242,242))] border-0 shadow-elegant hover:shadow-glow transition-all duration-500 overflow-hidden">
                                 <div className="relative">
                                     <img
@@ -159,13 +159,13 @@ const Events = () => {
                                 </div>
                                 <CardContent className="p-6">
                                     <div className="flex items-center justify-between">
-                                        <div className="flex items-center space-x-4">
+                                        {/* <div className="flex items-center space-x-4">
                                             <div className="flex items-center space-x-2 text-muted-foreground">
                                                 <Users className="w-5 h-5 text-egypt-red" />
                                                 <span className="font-semibold">{events[0].attendees} مسجلين</span>
                                             </div>
-                                        </div>
-                                        <Link to={`/events/${events[0].id}`}>
+                                        </div> */}
+                                        <Link href={`/events/${events[0].id}`}>
                                             <Button
                                                 variant="hero"
                                                 size="lg"
@@ -195,7 +195,7 @@ const Events = () => {
                                             crossOrigin="anonymous"
                                             className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-700"
                                             onError={(e) => {
-                                                e.target.src = "https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=600&h=400&fit=crop"
+                                                e.target.src = "/placeholder.png"
                                             }}
                                         />
                                         <div className="absolute top-4 left-4">
@@ -230,16 +230,16 @@ const Events = () => {
                                                 <MapPin className="w-4 h-4 text-egypt-gold" />
                                                 <span>{event.location}</span>
                                             </div>
-                                            <div className="flex items-center space-x-2 text-muted-foreground">
+                                            {/* <div className="flex items-center space-x-2 text-muted-foreground">
                                                 <Users className="w-4 h-4 text-egypt-red" />
                                                 <span>
                                                     {event.attendees}
                                                     مسجلين
                                                 </span>
-                                            </div>
+                                            </div> */}
                                         </div>
 
-                                        <Link to={`/events/${event.id}`}>
+                                        <Link href={`/events/${event.id}`}>
                                             <Button
                                                 variant="outline"
                                                 className="w-full group-hover:bg-egypt-gold group-hover:text-egypt-black group-hover:border-egypt-gold transition-all duration-300"
@@ -252,7 +252,7 @@ const Events = () => {
                                 </Card>
                             ))}
                         </div>
-                    </div>
+                    </InViewStagger>
                 ) : (
                     <div className="text-center py-12">
                         <p className="text-muted-foreground text-lg">لا توجد فعاليات متاحة في الوقت الحالي.</p>
@@ -260,10 +260,10 @@ const Events = () => {
                 )}
 
                 <div className="text-center animate-bounce-in">
-                    <Link to="/events">
-                        <Button variant="cta" size="lg"  className="hover:shadow-glow hover:scale-105 transition-all duration-300">
-                            عرض جميع الفعاليات
+                    <Link href="/events">
+                        <Button variant="cta" size="lg" className="hover:shadow-glow hover:scale-105 transition-all duration-300">
                             <ArrowRight className="w-5 h-5 ml-2" />
+                            عرض جميع الفعاليات
                         </Button>
                     </Link>
                 </div>

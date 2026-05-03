@@ -1,3 +1,4 @@
+'use client';
 import { useEffect } from 'react';
 import { useError } from '../../context/ErrorContext';
 import { X, AlertCircle, CheckCircle, Info } from 'lucide-react';

@@ -7,11 +7,12 @@ const registerSchema = Joi.object({
     password: Joi.string().min(6).required(),
     phone: Joi.string().min(10).max(15).required(),
     university: Joi.string().min(2).max(100).required(),
-    nationalId: Joi.string().min(14).max(14).required(),
+    nationalId: Joi.string().min(14).max(14).optional(),
     governorate: Joi.string().min(2).max(50).required(),
     position: Joi.string().hex().length(24).optional(),
     membershipNumber: Joi.string().optional(),
     membershipExpiry: Joi.date().optional(),
+    role: Joi.string().valid("member", "publisher", "admin").optional(),
 })
 
 const loginSchema = Joi.object({
@@ -29,7 +30,7 @@ const updateUserSchema = Joi.object({
     membershipExpiry: Joi.date().optional(),
     email: Joi.string().email().optional(),
     nationalId: Joi.string().min(14).max(14).optional(),
-    role: Joi.string().valid('student', 'volunteer', 'admin').optional(),
+    role: Joi.string().valid("member", "publisher", "admin").optional(),
 })
 
 const forgotPasswordSchema = Joi.object({
@@ -65,8 +66,17 @@ const newsSchema = Joi.object({
 const eventSchema = Joi.object({
     title: Joi.string().min(5).max(200).required(),
     description: Joi.string().min(10).required(),
-    date: Joi.date().greater("now").required(),
+    date: Joi.date().required(),
     location: Joi.string().min(5).max(200).required(),
+})
+
+// Guest registration (public, no account required)
+const guestEventRegistrationSchema = Joi.object({
+    name: Joi.string().min(2).max(100).required(),
+    email: Joi.string().email().required(),
+    phone: Joi.string().min(7).max(20).optional(),
+    nationalId: Joi.string().min(14).max(14).optional(),
+    governorate: Joi.string().min(2).max(50).optional(),
 })
 
 // Media validation schemas
@@ -94,4 +104,5 @@ module.exports = {
     eventSchema,
     mediaSchema,
     notificationSchema,
+    guestEventRegistrationSchema,
 }

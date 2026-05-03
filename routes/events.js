@@ -1,26 +1,31 @@
-const express = require('express');
+const express = require("express")
 const {
-  getEvents,
-  getEventById,
-  createEvent,
-  updateEvent,
-  deleteEvent,
-  registerForEvent
-} = require('../controllers/eventController');
-const { protect, admin } = require('../middleware/auth');
-const upload = require('../utils/upload');
+    getEvents,
+    getEventById,
+    createEvent,
+    updateEvent,
+    deleteEvent,
+    registerForEvent,
+    getEventRegisteredUsers,
+    guestRegisterForEvent,
+} = require("../controllers/eventController")
+const { protect, admin, authorize } = require("../middleware/auth")
+const { upload } = require("../utils/upload")
 
-const router = express.Router();
+const router = express.Router()
 
-router.get('/', getEvents);
-router.get('/:id', getEventById);
+router.get("/", getEvents)
+router.get("/:id", getEventById)
 
 // Student registration
-router.post('/:id/register', protect, registerForEvent);
+router.post("/:id/register", protect, registerForEvent)
+// Public guest registration
+router.post("/:id/guest-register", guestRegisterForEvent)
 
-// Admin only routes
-router.post('/', protect, admin, upload.single('image'), createEvent);
-router.put('/:id', protect, admin, upload.single('image'), updateEvent);
-router.delete('/:id', protect, admin, deleteEvent);
+// Admin and Publisher routes
+router.get("/:id/registered-users", protect, authorize("admin", "publisher"), getEventRegisteredUsers)
+router.post("/", protect, authorize("admin", "publisher"), ...upload.news(), createEvent)
+router.put("/:id", protect, authorize("admin", "publisher"), ...upload.news(), updateEvent)
+router.delete("/:id", protect, admin, deleteEvent)
 
-module.exports = router;
+module.exports = router
