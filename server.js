@@ -8,9 +8,6 @@ require("dotenv").config()
 const connectDB = require("./config/database")
 const errorHandler = require("./middleware/error")
 
-// corn
-require("./utils/cron")
-
 const app = express()
 
 // Connect to database
@@ -30,6 +27,9 @@ const heroImagesRoutes = require("./routes/heroImages")
 const achievementRoutes = require("./routes/achievements")
 const activityRoutes = require("./routes/activities")
 const siteSettingsRoutes = require("./routes/siteSettings")
+const honorMemberRoutes = require("./routes/honorMembers")
+const partnerRoutes = require("./routes/partners")
+const privilegeRoutes = require("./routes/privileges")
 
 // Security middleware
 app.use(helmet())
@@ -38,7 +38,6 @@ app.use(
         origin: [
             "http://localhost:5173",
             "http://localhost:5174",
-            "http://localhost:3000",
             "https://tahyamisr.codepeak.software",
             "https://tahyamisryu.com",
             "https://www.tahyamisryu.com",
@@ -91,6 +90,9 @@ app.use("/api/v1/hero-images", heroImagesRoutes)
 app.use("/api/v1/achievements", achievementRoutes)
 app.use("/api/v1/activities", activityRoutes)
 app.use("/api/v1/site-settings", siteSettingsRoutes)
+app.use("/api/v1/honor-roll", honorMemberRoutes)
+app.use("/api/v1/partners", partnerRoutes)
+app.use("/api/v1/privileges", privilegeRoutes)
 
 // 404 handler
 app.use("*", (req, res) => {

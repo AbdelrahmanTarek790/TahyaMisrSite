@@ -17,6 +17,9 @@ export default function PublicPagesFooter() {
             { name: "من نحن", href: "/about" },
             { name: "الأحداث", href: "/events" },
             { name: "الأخبار", href: "/news" },
+            { name: "لوحة الشرف", href: "/honor-roll" },
+            { name: "شركاؤنا", href: "/partners" },
+            { name: "امتيازات الأعضاء", href: "/privileges" },
             { name: "اتصل بنا", href: "/contact" },
         ],
         "انضم إلينا": [

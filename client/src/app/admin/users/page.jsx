@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useCallback } from "react"
-import { useForm } from "react-hook-form"
+import { useForm, Controller } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -9,6 +9,8 @@ import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { useError } from "@/context/ErrorContext"
 import { usersAPI, positionsAPI } from "@/app/api/api"
+import { Slider } from "@/components/ui/slider"
+import { Badge } from "@/components/ui/badge"
 import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter, Download, Loader2 } from "lucide-react"
 import { EGYPT_GOVERNORATES } from "@/constants/governorates"
 import { exportUsersToExcel } from "@/utils/excelExport"
@@ -25,7 +27,8 @@ const userSchema = z.object({
     position: z.string().optional(),
     membershipNumber: z.string().optional(),
     membershipExpiry: z.string().optional(),
-    role: z.enum(["member", "publisher", "admin"]),
+    role: z.enum(["member", "publisher", "admin", "partnership_manager", "hr", "coordinator"]),
+    rating: z.preprocess((val) => Number(val), z.number().min(0).max(100)).optional(),
 })
 
 const createUserSchema = z.object({
@@ -39,7 +42,8 @@ const createUserSchema = z.object({
     position: z.string().optional(),
     membershipNumber: z.string().optional(),
     membershipExpiry: z.string().optional(),
-    role: z.enum(["member", "publisher", "admin"]),
+    role: z.enum(["member", "publisher", "admin", "partnership_manager", "hr", "coordinator"]),
+    rating: z.preprocess((val) => Number(val), z.number().min(0).max(100)).optional(),
 })
 
 const UserManagement = () => {
@@ -63,6 +67,7 @@ const UserManagement = () => {
         register,
         handleSubmit,
         reset,
+        control,
         formState: { errors },
     } = useForm({
         resolver: zodResolver(userSchema),
@@ -72,6 +77,7 @@ const UserManagement = () => {
         register: registerCreate,
         handleSubmit: handleSubmitCreate,
         reset: resetCreate,
+        control: controlCreate,
         formState: { errors: errorsCreate },
     } = useForm({
         resolver: zodResolver(createUserSchema),
@@ -189,6 +195,7 @@ const UserManagement = () => {
             membershipNumber: user.membershipNumber || "",
             membershipExpiry: user.membershipExpiry ? new Date(user.membershipExpiry).toISOString().split("T")[0] : "",
             role: user.role,
+            rating: user.rating || 0,
         })
         setIsSheetOpen(true)
     }
@@ -286,6 +293,10 @@ const UserManagement = () => {
                 return <Edit className="h-4 w-4 text-purple-500" />
             case "volunteer":
                 return <UserPlus className="h-4 w-4 text-blue-500" />
+            case "hr":
+                return <Shield className="h-4 w-4 text-blue-600" />
+            case "coordinator":
+                return <Globe className="h-4 w-4 text-teal-500" />
             default:
                 return <User className="h-4 w-4 text-green-500" />
         }
@@ -299,6 +310,10 @@ const UserManagement = () => {
                 return "bg-purple-100 text-purple-800"
             case "volunteer":
                 return "bg-blue-100 text-blue-800"
+            case "hr":
+                return "bg-blue-100 text-blue-800"
+            case "coordinator":
+                return "bg-teal-100 text-teal-800"
             default:
                 return "bg-green-100 text-green-800"
         }
@@ -376,6 +391,9 @@ const UserManagement = () => {
                     <option value="member">الاعضاء</option>
                     {/* <option value="volunteer">المتطوعين</option> */}
                     <option value="publisher">الناشرين</option>
+                    <option value="partnership_manager">مسؤولي الشراكات</option>
+                    <option value="hr">الموارد البشرية (HR)</option>
+                    <option value="coordinator">المنسقين</option>
                     <option value="admin">المدراء</option>
                 </select>
                 <select
@@ -458,15 +476,16 @@ const UserManagement = () => {
                             <table className="w-full">
                                 <thead>
                                     <tr className="border-b ">
-                                        <th className="pb-3 font-medium text-right">المستخدم</th>
-                                        <th className=" pb-3 font-medium text-right">الدور</th>
-                                        <th className=" pb-3 font-medium text-right">الجامعة</th>
-                                        <th className=" pb-3 font-medium text-right">المحافظة</th>
-                                        <th className=" pb-3 font-medium text-right">الرقم القومي</th>
-                                        <th className=" pb-3 font-medium text-right">اللجنة</th>
-                                        <th className=" pb-3 font-medium text-right">العضوية</th>
-                                        <th className=" pb-3 font-medium text-right">تاريخ الانضمام</th>
-                                        <th className=" pb-3 font-medium text-right">الإجراءات</th>
+                                        <th className="pb-3 font-medium text-right px-4">المستخدم</th>
+                                        <th className=" pb-3 font-medium text-right px-4">الدور</th>
+                                        <th className=" pb-3 font-medium text-right px-4">الجامعة</th>
+                                        <th className=" pb-3 font-medium text-right px-4">المحافظة</th>
+                                        <th className=" pb-3 font-medium text-right px-4">الرقم القومي</th>
+                                        <th className=" pb-3 font-medium text-right px-4">اللجنة</th>
+                                        <th className=" pb-3 font-medium text-right px-4">العضوية</th>
+                                        <th className=" pb-3 font-medium text-right px-4">التقييم</th>
+                                        <th className=" pb-3 font-medium text-right px-4">تاريخ الانضمام</th>
+                                        <th className=" pb-3 font-medium text-right px-4">الإجراءات</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -505,8 +524,21 @@ const UserManagement = () => {
                                                     )}
                                                 </div>
                                             </td>
-                                            <td className="py-4 text-sm">{new Date(user.createdAt).toLocaleDateString()}</td>
-                                            <td className="py-4">
+                                            <td className="py-4 px-4 text-sm">
+                                                <div className="flex items-center space-x-1">
+                                                    <div className="w-full bg-gray-200 rounded-full h-2 max-w-[60px]">
+                                                        <div
+                                                            className={`h-2 rounded-full ${
+                                                                user.rating >= 80 ? "bg-green-500" : user.rating >= 50 ? "bg-yellow-500" : "bg-red-500"
+                                                            }`}
+                                                            style={{ width: `${user.rating || 0}%` }}
+                                                        ></div>
+                                                    </div>
+                                                    <span className="text-xs font-bold mr-1">{user.rating || 0}%</span>
+                                                </div>
+                                            </td>
+                                            <td className="py-4 px-4 text-sm">{new Date(user.createdAt).toLocaleDateString()}</td>
+                                            <td className="py-4 px-4">
                                                 <div className="flex space-x-2">
                                                     <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
                                                         <Edit className="h-4 w-4" />
@@ -519,6 +551,9 @@ const UserManagement = () => {
                                                         <option value="member">Member</option>
 
                                                         <option value="publisher">Publisher</option>
+                                                        <option value="partnership_manager">Partnership Manager</option>
+                                                        <option value="hr">HR</option>
+                                                        <option value="coordinator">Coordinator</option>
                                                         <option value="admin">Admin</option>
                                                     </select>
                                                     <Button variant="outline" size="sm" onClick={() => handleDeleteUser(user._id)}>
@@ -620,8 +655,10 @@ const UserManagement = () => {
                                 <label className="block text-sm font-medium text-gray-700 mb-1">الدور *</label>
                                 <select {...register("role")} className="w-full p-2 border border-gray-300 rounded-md">
                                     <option value="member">عضو</option>
-
                                     <option value="publisher">ناشر محتوى</option>
+                                    <option value="partnership_manager">مسؤول شراكات</option>
+                                    <option value="hr">مسؤول موارد بشرية (HR)</option>
+                                    <option value="coordinator">منسق محافظة</option>
                                     <option value="admin">مدير</option>
                                 </select>
                                 {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>}
@@ -644,18 +681,47 @@ const UserManagement = () => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">رقم العضوية</label>
-                                <Input {...register("membershipNumber")} placeholder="أدخل رقم العضوية" />
-                                {errors.membershipNumber && <p className="text-red-500 text-sm mt-1">{errors.membershipNumber.message}</p>}
+                        <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <div className="flex justify-between items-center">
+                                <label className="text-sm font-bold text-gray-700">تقييم الأداء النشط</label>
+                                <Controller
+                                    name="rating"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Badge
+                                            className={`${
+                                                field.value >= 80 ? "bg-green-500" : field.value >= 50 ? "bg-yellow-500" : "bg-red-500"
+                                            } text-white px-3 py-1 text-sm`}
+                                        >
+                                            {field.value >= 80 ? "ممتاز" : field.value >= 50 ? "جيد" : "ضعيف"} ({field.value}%)
+                                        </Badge>
+                                    )}
+                                />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">تاريخ انتهاء العضوية</label>
-                                <Input {...register("membershipExpiry")} type="date" placeholder="اختر تاريخ الانتهاء" />
-                                {errors.membershipExpiry && <p className="text-red-500 text-sm mt-1">{errors.membershipExpiry.message}</p>}
-                            </div>
+                            <Controller
+                                name="rating"
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="space-y-6 pt-2">
+                                        <Slider
+                                            value={[field.value || 0]}
+                                            onValueChange={(vals) => field.onChange(vals[0])}
+                                            max={100}
+                                            step={1}
+                                            className="accent-egypt-red"
+                                        />
+                                        <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1">
+                                            <span>0%</span>
+                                            <span>25%</span>
+                                            <span>50%</span>
+                                            <span>75%</span>
+                                            <span>100%</span>
+                                        </div>
+                                    </div>
+                                )}
+                            />
+                            {errors.rating && <p className="text-red-500 text-sm mt-1">{errors.rating.message}</p>}
                         </div>
 
                         <div className="flex justify-end gap-2 pt-4">
@@ -739,6 +805,9 @@ const UserManagement = () => {
                                 <select {...registerCreate("role")} className="w-full p-2 border border-gray-300 rounded-md">
                                     <option value="member">عضو</option>
                                     <option value="publisher">ناشر محتوى</option>
+                                    <option value="partnership_manager">مسؤول شراكات</option>
+                                    <option value="hr">مسؤول موارد بشرية (HR)</option>
+                                    <option value="coordinator">منسق محافظة</option>
                                     <option value="admin">مدير</option>
                                 </select>
                                 {errorsCreate.role && <p className="text-red-500 text-sm mt-1">{errorsCreate.role.message}</p>}
@@ -761,22 +830,49 @@ const UserManagement = () => {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">رقم العضوية</label>
-                                <Input {...registerCreate("membershipNumber")} placeholder="أدخل رقم العضوية" />
-                                {errorsCreate.membershipNumber && (
-                                    <p className="text-red-500 text-sm mt-1">{errorsCreate.membershipNumber.message}</p>
-                                )}
+                        <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200 mt-2">
+                            <div className="flex justify-between items-center">
+                                <label className="text-sm font-bold text-gray-700">تقييم الأداء الأولي</label>
+                                <Controller
+                                    name="rating"
+                                    control={controlCreate}
+                                    defaultValue={0}
+                                    render={({ field }) => (
+                                        <Badge
+                                            className={`${
+                                                field.value >= 80 ? "bg-green-500" : field.value >= 50 ? "bg-yellow-500" : "bg-red-500"
+                                            } text-white px-3 py-1 text-sm`}
+                                        >
+                                            {field.value >= 80 ? "ممتاز" : field.value >= 50 ? "جيد" : "ضعيف"} ({field.value}%)
+                                        </Badge>
+                                    )}
+                                />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">تاريخ انتهاء العضوية</label>
-                                <Input {...registerCreate("membershipExpiry")} type="date" placeholder="اختر تاريخ الانتهاء" />
-                                {errorsCreate.membershipExpiry && (
-                                    <p className="text-red-500 text-sm mt-1">{errorsCreate.membershipExpiry.message}</p>
+                            <Controller
+                                name="rating"
+                                control={controlCreate}
+                                defaultValue={0}
+                                render={({ field }) => (
+                                    <div className="space-y-6 pt-2">
+                                        <Slider
+                                            value={[field.value || 0]}
+                                            onValueChange={(vals) => field.onChange(vals[0])}
+                                            max={100}
+                                            step={1}
+                                            className="accent-egypt-red"
+                                        />
+                                        <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1">
+                                            <span>0%</span>
+                                            <span>25%</span>
+                                            <span>50%</span>
+                                            <span>75%</span>
+                                            <span>100%</span>
+                                        </div>
+                                    </div>
                                 )}
-                            </div>
+                            />
+                            {errorsCreate.rating && <p className="text-red-500 text-sm mt-1">{errorsCreate.rating.message}</p>}
                         </div>
 
                         <div className="flex justify-end gap-2 pt-4">

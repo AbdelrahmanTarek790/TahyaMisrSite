@@ -13,28 +13,10 @@ const NotificationsManagement = () => {
   const [filterType, setFilterType] = useState('all');
   const { addError } = useError();
 
-  // Mock data for notifications - replace with API calls
+  // Fetch notifications from API
   useEffect(() => {
-    setNotifications([
-      {
-        _id: '1',
-        title: 'Welcome to Tahya Misr',
-        message: 'Welcome to the Tahya Misr Students Union Platform',
-        type: 'general',
-        recipients: 'all',
-        sentAt: new Date().toISOString(),
-        status: 'sent'
-      },
-      {
-        _id: '2',
-        title: 'Event Reminder',
-        message: 'Don\'t forget about the upcoming cultural event',
-        type: 'event',
-        recipients: 'students',
-        sentAt: new Date(Date.now() - 86400000).toISOString(),
-        status: 'sent'
-      }
-    ]);
+    // TODO: Implement API call to fetch notifications
+    setNotifications([]);
   }, []);
 
   const filteredNotifications = notifications.filter(notification => {

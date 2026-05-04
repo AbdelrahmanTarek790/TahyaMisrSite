@@ -10,6 +10,9 @@ const Features = lazy(() => import("@/components/sections/Features"))
 const News = lazy(() => import("@/components/sections/News"))
 const Events = lazy(() => import("@/components/sections/Events"))
 const Contact = lazy(() => import("@/components/sections/Contact"))
+const HonorRoll = lazy(() => import("@/components/sections/HonorRoll"))
+const Partners = lazy(() => import("@/components/sections/Partners"))
+const Privileges = lazy(() => import("@/components/sections/Privileges"))
 
 // Lightweight loading placeholder for sections
 const SectionSkeleton = () => (
@@ -50,6 +53,27 @@ export default function HomeClient() {
                 <SimpleInViewSection animation="fadeInRight" delay={0.2}>
                     <Suspense fallback={<SectionSkeleton />}>
                         <Events />
+                    </Suspense>
+                </SimpleInViewSection>
+
+                {/* Honor Roll section - New */}
+                <SimpleInViewSection animation="fadeInUp" delay={0.1}>
+                    <Suspense fallback={<SectionSkeleton />}>
+                        <HonorRoll />
+                    </Suspense>
+                </SimpleInViewSection>
+
+                {/* Privileges section - New */}
+                <SimpleInViewSection animation="fadeInLeft" delay={0.2}>
+                    <Suspense fallback={<SectionSkeleton />}>
+                        <Privileges />
+                    </Suspense>
+                </SimpleInViewSection>
+
+                {/* Partners section - New */}
+                <SimpleInViewSection animation="fadeInUp" delay={0.1}>
+                    <Suspense fallback={<SectionSkeleton />}>
+                        <Partners />
                     </Suspense>
                 </SimpleInViewSection>
 

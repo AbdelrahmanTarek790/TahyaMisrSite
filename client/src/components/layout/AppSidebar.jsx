@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 
-import { Users, Newspaper, Calendar, Image, Settings, Bell, LogOut, Home, UserCircle, ChevronRight, Clock, Award, Activity, Cog } from "lucide-react"
+import { Users, Newspaper, Calendar, Image, Settings, Bell, LogOut, Home, UserCircle, ChevronRight, Clock, Award, Activity, Cog, Handshake, Star } from "lucide-react"
 import { NavMain } from "../ui/nav-main"
 // import { NavSecondary } from "../ui/nav-secondary"
 
@@ -30,6 +30,9 @@ export function AppSidebar(props) {
         { title: "الجدول الزمني", url: "/admin/timeline", icon: Clock, role: ["admin"] },
         { title: "الإنجازات", url: "/admin/achievements", icon: Award, role: ["admin"] },
         { title: "الأنشطة المركزية", url: "/admin/activities", icon: Activity, role: ["admin"] },
+        { title: "لجنة الشرف", url: "/admin/honor-roll", icon: Award, role: ["admin"] },
+        { title: "الشركاء", url: "/admin/partners", icon: Handshake, role: ["admin"] },
+        { title: "الامتيازات", url: "/admin/privileges", icon: Star, role: ["admin"] },
         { title: "المستخدمون", url: "/admin/users", icon: Users, role: ["admin"] },
         { title: "طلبات الانضمام", url: "/admin/join-requests", icon: Users, role: ["admin"] },
         { title: "المناصب", url: "/admin/positions", icon: Settings, role: ["admin"] },

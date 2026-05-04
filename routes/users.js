@@ -1,7 +1,7 @@
 const express = require("express")
 const { getUsers, getUser, updateUser, deleteUser, getUserStats } = require("../controllers/userController")
 const { getMe, updateMe } = require("../controllers/authController")
-const { protect, admin } = require("../middleware/auth")
+const { protect, admin, authorize } = require("../middleware/auth")
 const { upload } = require("../utils/upload")
 
 const router = express.Router()
@@ -10,11 +10,11 @@ const router = express.Router()
 router.get("/me", protect, getMe)
 router.put("/me", protect, ...upload.profile(), updateMe)
 
-// Admin routes (require admin role)
-router.get("/stats", protect, admin, getUserStats)
-router.get("/", protect, admin, getUsers)
-router.get("/:id", protect, admin, getUser)
-router.put("/:id", protect, admin, updateUser)
-router.delete("/:id", protect, admin, deleteUser)
+// Admin/HR routes
+router.get("/stats", protect, authorize("admin", "hr"), getUserStats)
+router.get("/", protect, authorize("admin", "hr"), getUsers)
+router.get("/:id", protect, authorize("admin", "hr"), getUser)
+router.put("/:id", protect, authorize("admin", "hr"), updateUser)
+router.delete("/:id", protect, authorize("admin", "hr"), deleteUser)
 
 module.exports = router

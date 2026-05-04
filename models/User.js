@@ -34,7 +34,7 @@ const userSchema = new mongoose.Schema(
         },
         nationalId: {
             type: String,
-            // required: [true, "National ID is required"],
+            required: [true, "National ID is required"],
             unique: true,
             trim: true,
         },
@@ -89,9 +89,15 @@ const userSchema = new mongoose.Schema(
         membershipExpiry: {
             type: Date,
         },
+        rating: {
+            type: Number,
+            min: 0,
+            max: 100,
+            default: 0,
+        },
         role: {
             type: String,
-            enum: ["member", "publisher", "admin"],
+            enum: ["member", "publisher", "admin", "partnership_manager", "hr", "coordinator"],
             default: "member",
         },
         resetPasswordToken: {

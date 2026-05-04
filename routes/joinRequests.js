@@ -13,9 +13,9 @@ const { protect, authorize } = require("../middleware/auth")
 // Public routes
 router.post("/", createJoinRequest)
 
-// Admin only routes
+// Admin/HR only routes
 router.use(protect)
-router.use(authorize("admin"))
+router.use(authorize("admin", "hr"))
 
 router.get("/", getJoinRequests)
 router.get("/:id", getJoinRequest)

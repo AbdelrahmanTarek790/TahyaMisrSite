@@ -2,8 +2,8 @@
 import { useState, useEffect } from "react"
 import { useAuth } from "@/context/AuthContext"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Newspaper, Calendar, Image } from "lucide-react"
-import { newsAPI, eventsAPI, usersAPI, mediaAPI } from "@/app/api/api"
+import { Users, Newspaper, Calendar, Image, Award, Handshake, Star } from "lucide-react"
+import { newsAPI, eventsAPI, usersAPI, mediaAPI, honorRollAPI, partnersAPI, privilegesAPI } from "@/app/api/api"
 import { useError } from "@/context/ErrorContext"
 import { useLocalization } from "@/hooks/useLocalization.jsx"
 
@@ -16,8 +16,12 @@ const Dashboard = () => {
         eventsCount: 0,
         usersCount: 0,
         mediaCount: 0,
+        honorRollCount: 0,
+        partnersCount: 0,
+        privilegesCount: 0,
         recentNews: [],
         upcomingEvents: [],
+        recentPartners: [],
     })
     const [isLoading, setIsLoading] = useState(true)
 
@@ -28,28 +32,37 @@ const Dashboard = () => {
                 setIsLoading(true)
 
                 // Fetch all data in parallel
-                const [newsResponse, eventsResponse, usersResponse, mediaResponse] = await Promise.allSettled([
+                const [newsResponse, eventsResponse, usersResponse, mediaResponse, honorResponse, partnersResponse, privilegesResponse] = await Promise.allSettled([
                     newsAPI.getAll({ page: 1, limit: 3 }).catch(() => ({ data: { news: [], total: 0 } })),
                     eventsAPI.getAll({ page: 1, limit: 3 }).catch(() => ({ data: { events: [], total: 0 } })),
                     user?.role === "admin"
                         ? usersAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } }))
                         : Promise.resolve({ data: { total: 0 } }),
                     mediaAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } })),
+                    honorRollAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } })),
+                    partnersAPI.getAll({ page: 1, limit: 3 }).catch(() => ({ data: { partners: [], total: 0 } })),
+                    privilegesAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } })),
                 ])
-                console.log(eventsResponse);
                 
                 const newsData = newsResponse.status === "fulfilled" ? newsResponse.value.data : { news: [], pagination: { total: 0 } }
-                const eventsData = eventsResponse.status === "fulfilled" ? eventsResponse.value.data : { events: [], total: 0 }
-                const usersData = usersResponse.status === "fulfilled" ? usersResponse.value.data : { total: 0 }
-                const mediaData = mediaResponse.status === "fulfilled" ? mediaResponse.value.data : { total: 0 }
+                const eventsData = eventsResponse.status === "fulfilled" ? eventsResponse.value.data : { events: [], pagination: { total: 0 } }
+                const usersData = usersResponse.status === "fulfilled" ? usersResponse.value.data : { pagination: { total: 0 } }
+                const mediaData = mediaResponse.status === "fulfilled" ? mediaResponse.value.data : { pagination: { total: 0 } }
+                const honorData = honorResponse.status === "fulfilled" ? honorResponse.value.data : { pagination: { total: 0 } }
+                const partnersData = partnersResponse.status === "fulfilled" ? partnersResponse.value.data : { partners: [], pagination: { total: 0 } }
+                const privilegesData = privilegesResponse.status === "fulfilled" ? privilegesResponse.value.data : { pagination: { total: 0 } }
 
                 setDashboardData({
-                    newsCount: newsData.pagination.total || 0,
-                    eventsCount: eventsData.pagination.total || 0,
-                    usersCount: usersData.pagination.total || 0,
-                    mediaCount: mediaData.pagination.total || 0,
+                    newsCount: newsData.pagination?.total || 0,
+                    eventsCount: eventsData.pagination?.total || 0,
+                    usersCount: usersData.pagination?.total || 0,
+                    mediaCount: mediaData.pagination?.total || 0,
+                    honorRollCount: honorData.pagination?.total || 0,
+                    partnersCount: partnersData.pagination?.total || 0,
+                    privilegesCount: privilegesData.pagination?.total || 0,
                     recentNews: newsData.news || [],
                     upcomingEvents: eventsData.events || [],
+                    recentPartners: partnersData.partners || [],
                 })
             } catch (error) {
                 console.error("Error fetching dashboard data:", error)
@@ -87,6 +100,24 @@ const Dashboard = () => {
             icon: Users,
             description: t("dashboard.stats.registeredUsers"),
         },
+        {
+            title: "أعضاء لجنة الشرف",
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.honorRollCount.toString(),
+            icon: Award,
+            description: "إجمالي المكرمين في لوحة الشرف",
+        },
+        {
+            title: "شركاء النجاح",
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.partnersCount.toString(),
+            icon: Handshake,
+            description: "إجمالي الرعاة والشركاء",
+        },
+        {
+            title: "الامتيازات المتاحة",
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.privilegesCount.toString(),
+            icon: Star,
+            description: "إجمالي المزايا والخصومات",
+        },
     ]
 
     const welcomeMessage = () => {
@@ -117,18 +148,20 @@ const Dashboard = () => {
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {stats.map((stat) => {
                     const Icon = stat.icon
                     return (
-                        <Card key={stat.title}>
+                        <Card key={stat.title} className="hover:shadow-md transition-shadow">
                             <CardHeader className={`flex flex-row items-center justify-between space-y-0 pb-2 ${isRTL ? "flex-row-reverse" : ""}`}>
                                 <CardTitle className="text-sm font-medium">{stat.title}</CardTitle>
-                                <Icon className={`h-4 w-4 text-muted-foreground ${isRTL ? "ml-0 mr-2" : ""}`} />
+                                <div className="p-2 bg-primary/10 rounded-lg">
+                                    <Icon className={`h-4 w-4 text-primary ${isRTL ? "ml-0 mr-2" : ""}`} />
+                                </div>
                             </CardHeader>
                             <CardContent>
                                 <div className="text-2xl font-bold">{stat.value}</div>
-                                <p className="text-xs text-muted-foreground">{stat.description}</p>
+                                <p className="text-xs text-muted-foreground mt-1">{stat.description}</p>
                             </CardContent>
                         </Card>
                     )
@@ -191,6 +224,38 @@ const Dashboard = () => {
                             ) : (
                                 <div className="text-center py-4">
                                     <p className="text-sm text-gray-500">{t("dashboard.sections.noEventsAvailable")}</p>
+                                </div>
+                            )}
+                        </div>
+                    </CardContent>
+                </Card>
+
+                <Card className="lg:col-span-2">
+                    <CardHeader>
+                        <CardTitle>شركاء النجاح الجدد</CardTitle>
+                        <CardDescription>أحدث الشركاء الذين انضموا إلينا مؤخراً</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            {isLoading ? (
+                                <div className="col-span-full flex items-center justify-center py-4">
+                                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                                </div>
+                            ) : dashboardData.recentPartners.length > 0 ? (
+                                dashboardData.recentPartners.map((partner) => (
+                                    <div key={partner._id} className="flex items-center gap-3 p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                                        <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center overflow-hidden">
+                                            <img src={`https://tmbackend.tahyamisryu.com/uploads/${partner.logo}`} alt={partner.name} className="w-full h-full object-contain" />
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-medium text-sm truncate">{partner.name}</p>
+                                            <p className="text-xs text-gray-500 capitalize">{partner.category}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="col-span-full text-center py-4">
+                                    <p className="text-sm text-gray-500">لا يوجد شركاء حالياً</p>
                                 </div>
                             )}
                         </div>

@@ -181,4 +181,28 @@ export const siteSettingsAPI = {
     toggleJoinRequests: () => api.post("/site-settings/toggle-join-requests"),
 }
 
+// Honor Roll API
+export const honorRollAPI = {
+    getAll: (params) => api.get("/honor-roll", { params }),
+    create: (data) => api.post("/honor-roll", data),
+    update: (id, data) => api.put(`/honor-roll/${id}`, data),
+    delete: (id) => api.delete(`/honor-roll/${id}`),
+}
+
+// Partners API
+export const partnersAPI = {
+    getAll: (params) => api.get("/partners", { params }),
+    create: (formData) => api.post("/partners", formData),
+    update: (id, formData) => api.put(`/partners/${id}`, formData),
+    delete: (id) => api.delete(`/partners/${id}`),
+}
+
+// Privileges API
+export const privilegesAPI = {
+    getAll: (params) => api.get("/privileges", { params }),
+    create: (formData) => api.post("/privileges", formData),
+    update: (id, formData) => api.put(`/privileges/${id}`, formData),
+    delete: (id) => api.delete(`/privileges/${id}`),
+}
+
 export default api
