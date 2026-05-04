@@ -18,7 +18,7 @@ const errorReducer = (state, action) => {
     switch (action.type) {
         case ErrorActionTypes.ADD_ERROR:
             const error = {
-                id: Date.now() + Math.random(),
+                id: action.payload.id,
                 message: action.payload.message,
                 type: action.payload.type || "error",
                 timestamp: new Date(),
@@ -58,7 +58,7 @@ export const ErrorProvider = ({ children }) => {
         
         dispatch({
             type: ErrorActionTypes.ADD_ERROR,
-            payload: { message, type },
+            payload: { id: errorId, message, type },
         })
 
         // Auto remove error after 5 seconds

@@ -27,7 +27,7 @@ const userSchema = z.object({
     position: z.string().optional(),
     membershipNumber: z.string().optional(),
     membershipExpiry: z.string().optional(),
-    role: z.enum(["member", "publisher", "admin", "partnership_manager", "hr", "coordinator"]),
+    role: z.enum(["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator"]),
     rating: z.preprocess((val) => Number(val), z.number().min(0).max(100)).optional(),
 })
 
@@ -42,7 +42,7 @@ const createUserSchema = z.object({
     position: z.string().optional(),
     membershipNumber: z.string().optional(),
     membershipExpiry: z.string().optional(),
-    role: z.enum(["member", "publisher", "admin", "partnership_manager", "hr", "coordinator"]),
+    role: z.enum(["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator"]),
     rating: z.preprocess((val) => Number(val), z.number().min(0).max(100)).optional(),
 })
 

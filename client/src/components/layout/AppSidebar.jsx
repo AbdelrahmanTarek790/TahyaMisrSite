@@ -21,25 +21,25 @@ export function AppSidebar(props) {
 
     // Define navigation items
     const navItems = [
-        { title: "لوحة التحكم", url: "/dashboard", icon: Home, role: ["member", "volunteer", "publisher", "admin"] },
-        { title: "الأخبار", url: "/dashboard/news", icon: Newspaper, role: ["member", "volunteer", "publisher", "admin"] },
-        { title: "الفعاليات", url: "/dashboard/events", icon: Calendar, role: ["member", "volunteer", "publisher", "admin"] },
-        { title: "الوسائط", url: "/media", icon: Image, role: ["member", "volunteer", "publisher", "admin"] },
+        { title: "لوحة التحكم", url: "/dashboard", icon: Home, role: ["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator"] },
+        { title: "الأخبار", url: "/dashboard/news", icon: Newspaper, role: ["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator"] },
+        { title: "الفعاليات", url: "/dashboard/events", icon: Calendar, role: ["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator"] },
+        { title: "الوسائط", url: "/media", icon: Image, role: ["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator"] },
         { title: "إدارة الأخبار", url: "/admin/news", icon: Newspaper, role: ["publisher", "admin"] },
         { title: "إدارة الفعاليات", url: "/admin/events", icon: Calendar, role: ["publisher", "admin"] },
         { title: "الجدول الزمني", url: "/admin/timeline", icon: Clock, role: ["admin"] },
         { title: "الإنجازات", url: "/admin/achievements", icon: Award, role: ["admin"] },
         { title: "الأنشطة المركزية", url: "/admin/activities", icon: Activity, role: ["admin"] },
         { title: "لجنة الشرف", url: "/admin/honor-roll", icon: Award, role: ["admin"] },
-        { title: "الشركاء", url: "/admin/partners", icon: Handshake, role: ["admin"] },
-        { title: "الامتيازات", url: "/admin/privileges", icon: Star, role: ["admin"] },
-        { title: "المستخدمون", url: "/admin/users", icon: Users, role: ["admin"] },
-        { title: "طلبات الانضمام", url: "/admin/join-requests", icon: Users, role: ["admin"] },
+        { title: "الشركاء", url: "/admin/partners", icon: Handshake, role: ["admin", "partnership_manager"] },
+        { title: "الامتيازات", url: "/admin/privileges", icon: Star, role: ["admin", "partnership_manager"] },
+        { title: "المستخدمون", url: "/admin/users", icon: Users, role: ["admin", "hr"] },
+        { title: "طلبات الانضمام", url: "/admin/join-requests", icon: Users, role: ["admin", "hr"] },
         { title: "المناصب", url: "/admin/positions", icon: Settings, role: ["admin"] },
         { title: "الإشعارات", url: "/admin/notifications", icon: Bell, role: ["admin"] },
         { title: "صور السلايدر", url: "/admin/hero-images", icon: Image, role: ["admin"] },
         { title: "إعدادات الموقع", url: "/admin/site-settings", icon: Cog, role: ["admin"] },
-        { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["member", "volunteer", "publisher", "admin"] },
+        { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator"] },
     ]
 
     // Filter navigation items based on user role and authentication status

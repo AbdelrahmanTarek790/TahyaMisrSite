@@ -182,6 +182,9 @@ const getUserStats = async (req, res, next) => {
         const volunteers = await User.countDocuments({ role: "volunteer" })
         const publishers = await User.countDocuments({ role: "publisher" })
         const admins = await User.countDocuments({ role: "admin" })
+        const hr = await User.countDocuments({ role: "hr" })
+        const partnershipManagers = await User.countDocuments({ role: "partnership_manager" })
+        const coordinators = await User.countDocuments({ role: "coordinator" })
 
         res.status(200).json({
             success: true,
@@ -191,6 +194,9 @@ const getUserStats = async (req, res, next) => {
                 volunteers,
                 publishers,
                 admins,
+                hr,
+                partnershipManagers,
+                coordinators,
             },
             error: null,
         })

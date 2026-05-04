@@ -58,7 +58,7 @@ export default function HonorRollPage() {
                                 <Card key={member._id} className="bg-white/5 border-white/10 hover:border-egypt-gold/30 transition-all duration-500 rounded-3xl overflow-hidden group">
                                     <div className="relative aspect-square">
                                         <img 
-                                            src={member.user?.profileImage ? (member.user.profileImage.startsWith('http') ? member.user.profileImage : `https://tmbackend.tahyamisryu.com${member.user.profileImage.startsWith('/') ? '' : '/'}${member.user.profileImage}`) : "/placeholder-user.png"} 
+                                            src={member.user?.profileImage ? (member.user.profileImage.startsWith('http') ? member.user.profileImage : `https://tmbackend.tahyamisryu.com/uploads/${member.user.profileImage.startsWith('/') ? member.user.profileImage.substring(1) : member.user.profileImage}`) : "/placeholder-user.png"} 
                                             alt={member.user?.name}
                                             className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
                                         />

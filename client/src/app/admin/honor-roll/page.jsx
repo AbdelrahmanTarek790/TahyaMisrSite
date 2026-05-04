@@ -61,7 +61,7 @@ const HonorRollManagement = () => {
         try {
             setSearchLoading(true)
             const response = await usersAPI.getAll({ search: query, limit: 10 })
-            setUserResults(response.data || [])
+            setUserResults(response.data.users || [])
         } catch (error) {
             console.error("Error searching users:", error)
             setUserResults([])
@@ -228,7 +228,7 @@ const HonorRollManagement = () => {
                                                     >
                                                         <Avatar className="w-8 h-8 shrink-0">
                                                             <AvatarImage
-                                                                src={u.profileImage ? `${BASE_URL}/uploads/${u.profileImage}` : undefined}
+                                                                src={u.profileImage ? (u.profileImage.startsWith('http') ? u.profileImage : `${BASE_URL}${u.profileImage.startsWith('/uploads/') ? '' : '/uploads/'}${u.profileImage.startsWith('/') ? u.profileImage.substring(1) : u.profileImage}`) : undefined}
                                                                 alt={u.name}
                                                             />
                                                             <AvatarFallback className="text-xs">{getInitials(u.name)}</AvatarFallback>
@@ -249,7 +249,7 @@ const HonorRollManagement = () => {
                                     <div className="mt-2 flex items-center gap-2 p-2 bg-muted rounded-md">
                                         <Avatar className="w-8 h-8">
                                             <AvatarImage
-                                                src={selectedUser.profileImage ? `${BASE_URL}/uploads/${selectedUser.profileImage}` : undefined}
+                                                src={selectedUser.profileImage ? (selectedUser.profileImage.startsWith('http') ? selectedUser.profileImage : `${BASE_URL}${selectedUser.profileImage.startsWith('/uploads/') ? '' : '/uploads/'}${selectedUser.profileImage.startsWith('/') ? selectedUser.profileImage.substring(1) : selectedUser.profileImage}`) : undefined}
                                             />
                                             <AvatarFallback className="text-xs">{getInitials(selectedUser.name)}</AvatarFallback>
                                         </Avatar>
@@ -327,7 +327,7 @@ const HonorRollManagement = () => {
                             <div className="flex items-center gap-3">
                                 <Avatar className="w-12 h-12">
                                     <AvatarImage
-                                        src={member.user?.profileImage ? `${BASE_URL}/uploads/${member.user.profileImage}` : undefined}
+                                        src={member.user?.profileImage ? (member.user.profileImage.startsWith('http') ? member.user.profileImage : `${BASE_URL}${member.user.profileImage.startsWith('/uploads/') ? '' : '/uploads/'}${member.user.profileImage.startsWith('/') ? member.user.profileImage.substring(1) : member.user.profileImage}`) : undefined}
                                         alt={member.user?.name}
                                     />
                                     <AvatarFallback>{member.user?.name ? getInitials(member.user.name) : <User className="w-5 h-5" />}</AvatarFallback>
