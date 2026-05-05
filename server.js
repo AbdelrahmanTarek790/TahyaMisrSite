@@ -30,6 +30,7 @@ const siteSettingsRoutes = require("./routes/siteSettings")
 const honorMemberRoutes = require("./routes/honorMembers")
 const partnerRoutes = require("./routes/partners")
 const privilegeRoutes = require("./routes/privileges")
+const dashboardRoutes = require("./routes/dashboard")
 
 // Security middleware
 app.use(helmet())
@@ -93,6 +94,7 @@ app.use("/api/v1/site-settings", siteSettingsRoutes)
 app.use("/api/v1/honor-roll", honorMemberRoutes)
 app.use("/api/v1/partners", partnerRoutes)
 app.use("/api/v1/privileges", privilegeRoutes)
+app.use("/api/v1/dashboard", dashboardRoutes)
 
 // 404 handler
 app.use("*", (req, res) => {

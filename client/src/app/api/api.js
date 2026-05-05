@@ -45,6 +45,11 @@ api.interceptors.response.use(
     }
 )
 
+// Dashboard API
+export const dashboardAPI = {
+    getStats: (params) => api.get("/dashboard/stats", { params }),
+}
+
 // Auth API
 export const authAPI = {
     login: (credentials) => api.post("/auth/login", credentials),

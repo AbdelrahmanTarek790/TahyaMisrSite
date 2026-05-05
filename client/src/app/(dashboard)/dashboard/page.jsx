@@ -3,7 +3,7 @@ import { useState, useEffect } from "react"
 import { useAuth } from "@/context/AuthContext"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, Newspaper, Calendar, Image, Award, Handshake, Star } from "lucide-react"
-import { newsAPI, eventsAPI, usersAPI, mediaAPI, honorRollAPI, partnersAPI, privilegesAPI } from "@/app/api/api"
+import { newsAPI, eventsAPI, dashboardAPI, partnersAPI } from "@/app/api/api"
 import { useError } from "@/context/ErrorContext"
 import { useLocalization } from "@/hooks/useLocalization.jsx"
 
@@ -12,13 +12,19 @@ const Dashboard = () => {
     const { addError } = useError()
     const { t, isRTL } = useLocalization()
     const [dashboardData, setDashboardData] = useState({
-        newsCount: 0,
-        eventsCount: 0,
-        usersCount: 0,
-        mediaCount: 0,
-        honorRollCount: 0,
-        partnersCount: 0,
-        privilegesCount: 0,
+        totalUsers: 0,
+        totalNews: 0,
+        totalEvents: 0,
+        totalMedia: 0,
+        activeUsers: 0,
+        pendingEvents: 0,
+        totalTimelineEntries: 0,
+        totalActivities: 0,
+        totalAchievements: 0,
+        totalPartners: 0,
+        totalPrivileges: 0,
+        totalJoinRequests: 0,
+        pendingJoinRequests: 0,
         recentNews: [],
         upcomingEvents: [],
         recentPartners: [],
@@ -32,34 +38,20 @@ const Dashboard = () => {
                 setIsLoading(true)
 
                 // Fetch all data in parallel
-                const [newsResponse, eventsResponse, usersResponse, mediaResponse, honorResponse, partnersResponse, privilegesResponse] = await Promise.allSettled([
+                const [statsResponse, newsResponse, eventsResponse, partnersResponse] = await Promise.allSettled([
+                    dashboardAPI.getStats(),
                     newsAPI.getAll({ page: 1, limit: 3 }).catch(() => ({ data: { news: [], total: 0 } })),
                     eventsAPI.getAll({ page: 1, limit: 3 }).catch(() => ({ data: { events: [], total: 0 } })),
-                    user?.role === "admin"
-                        ? usersAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } }))
-                        : Promise.resolve({ data: { total: 0 } }),
-                    mediaAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } })),
-                    honorRollAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } })),
                     partnersAPI.getAll({ page: 1, limit: 3 }).catch(() => ({ data: { partners: [], total: 0 } })),
-                    privilegesAPI.getAll({ page: 1, limit: 1 }).catch(() => ({ data: { total: 0 } })),
                 ])
                 
+                const statsData = statsResponse.status === "fulfilled" ? statsResponse.value.data : {}
                 const newsData = newsResponse.status === "fulfilled" ? newsResponse.value.data : { news: [], pagination: { total: 0 } }
                 const eventsData = eventsResponse.status === "fulfilled" ? eventsResponse.value.data : { events: [], pagination: { total: 0 } }
-                const usersData = usersResponse.status === "fulfilled" ? usersResponse.value.data : { pagination: { total: 0 } }
-                const mediaData = mediaResponse.status === "fulfilled" ? mediaResponse.value.data : { pagination: { total: 0 } }
-                const honorData = honorResponse.status === "fulfilled" ? honorResponse.value.data : { pagination: { total: 0 } }
                 const partnersData = partnersResponse.status === "fulfilled" ? partnersResponse.value.data : { partners: [], pagination: { total: 0 } }
-                const privilegesData = privilegesResponse.status === "fulfilled" ? privilegesResponse.value.data : { pagination: { total: 0 } }
 
                 setDashboardData({
-                    newsCount: newsData.pagination?.total || 0,
-                    eventsCount: eventsData.pagination?.total || 0,
-                    usersCount: usersData.pagination?.total || 0,
-                    mediaCount: mediaData.pagination?.total || 0,
-                    honorRollCount: honorData.pagination?.total || 0,
-                    partnersCount: partnersData.pagination?.total || 0,
-                    privilegesCount: privilegesData.pagination?.total || 0,
+                    ...statsData,
                     recentNews: newsData.news || [],
                     upcomingEvents: eventsData.events || [],
                     recentPartners: partnersData.partners || [],
@@ -78,43 +70,61 @@ const Dashboard = () => {
     const stats = [
         {
             title: t("dashboard.stats.newsArticles"),
-            value: isLoading ? t("dashboard.sections.loading") : dashboardData.newsCount.toString(),
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.totalNews.toString(),
             icon: Newspaper,
             description: t("dashboard.stats.publishedArticles"),
         },
         {
             title: t("dashboard.stats.upcomingEvents"),
-            value: isLoading ? t("dashboard.sections.loading") : dashboardData.eventsCount.toString(),
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.pendingEvents.toString(),
             icon: Calendar,
-            description: t("dashboard.stats.totalEvents"),
+            description: "الفعاليات القادمة",
         },
         {
             title: t("dashboard.stats.mediaItems"),
-            value: isLoading ? t("dashboard.sections.loading") : dashboardData.mediaCount.toString(),
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.totalMedia.toString(),
             icon: Image,
             description: t("dashboard.stats.photosAndVideos"),
         },
         {
             title: t("dashboard.stats.activeMembers"),
-            value: isLoading ? t("dashboard.sections.loading") : dashboardData.usersCount.toString(),
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.totalUsers.toString(),
             icon: Users,
             description: t("dashboard.stats.registeredUsers"),
         },
         {
-            title: "أعضاء لجنة الشرف",
-            value: isLoading ? t("dashboard.sections.loading") : dashboardData.honorRollCount.toString(),
+            title: "طلبات الانضمام",
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.totalJoinRequests.toString(),
+            icon: Users,
+            description: `منها ${dashboardData.pendingJoinRequests} طلبات معلقة`,
+        },
+        {
+            title: "الإنجازات",
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.totalAchievements.toString(),
             icon: Award,
-            description: "إجمالي المكرمين في لوحة الشرف",
+            description: "إجمالي الإنجازات المحققة",
+        },
+        {
+            title: "الأنشطة المركزية",
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.totalActivities.toString(),
+            icon: Award,
+            description: "إجمالي الأنشطة والفعاليات المركزية",
+        },
+        {
+            title: "الجدول الزمني",
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.totalTimelineEntries.toString(),
+            icon: Newspaper,
+            description: "إجمالي محطات الجدول الزمني",
         },
         {
             title: "شركاء النجاح",
-            value: isLoading ? t("dashboard.sections.loading") : dashboardData.partnersCount.toString(),
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.totalPartners.toString(),
             icon: Handshake,
             description: "إجمالي الرعاة والشركاء",
         },
         {
             title: "الامتيازات المتاحة",
-            value: isLoading ? t("dashboard.sections.loading") : dashboardData.privilegesCount.toString(),
+            value: isLoading ? t("dashboard.sections.loading") : dashboardData.totalPrivileges.toString(),
             icon: Star,
             description: "إجمالي المزايا والخصومات",
         },
