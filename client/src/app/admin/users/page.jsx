@@ -65,6 +65,7 @@ const UserManagement = () => {
     const { addError } = useError()
     const { user: currentUser } = useAuth()
     const isCoordinator = currentUser?.role === "coordinator"
+    const isAdmin = currentUser?.role === "admin"
 
     const {
         register,
@@ -586,9 +587,11 @@ const UserManagement = () => {
                                                             <option value="coordinator">Coordinator</option>
                                                             <option value="admin">Admin</option>
                                                         </select>
-                                                        <Button variant="outline" size="sm" onClick={() => handleDeleteUser(user._id)}>
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
+                                                        {isAdmin && (
+                                                            <Button variant="outline" size="sm" onClick={() => handleDeleteUser(user._id)}>
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </Button>
+                                                        )}
                                                     </div>
                                                 )}
                                             </td>
