@@ -33,7 +33,7 @@ export function AppSidebar(props) {
         { title: "لجنة الشرف", url: "/admin/honor-roll", icon: Award, role: ["admin"] },
         { title: "الشركاء", url: "/admin/partners", icon: Handshake, role: ["admin", "partnership_manager"] },
         { title: "الامتيازات", url: "/admin/privileges", icon: Star, role: ["admin", "partnership_manager"] },
-        { title: "المستخدمون", url: "/admin/users", icon: Users, role: ["admin", "hr"] },
+        { title: "المستخدمون", url: "/admin/users", icon: Users, role: ["admin", "hr", "coordinator"] },
         { title: "طلبات الانضمام", url: "/admin/join-requests", icon: Users, role: ["admin", "hr"] },
         { title: "المناصب", url: "/admin/positions", icon: Settings, role: ["admin"] },
         { title: "الإشعارات", url: "/admin/notifications", icon: Bell, role: ["admin"] },

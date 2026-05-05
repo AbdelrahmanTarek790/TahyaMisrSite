@@ -177,14 +177,19 @@ const deleteUser = async (req, res, next) => {
 // @access  Private/Admin
 const getUserStats = async (req, res, next) => {
     try {
-        const totalUsers = await User.countDocuments()
-        const members = await User.countDocuments({ role: "member" })
-        const volunteers = await User.countDocuments({ role: "volunteer" })
-        const publishers = await User.countDocuments({ role: "publisher" })
-        const admins = await User.countDocuments({ role: "admin" })
-        const hr = await User.countDocuments({ role: "hr" })
-        const partnershipManagers = await User.countDocuments({ role: "partnership_manager" })
-        const coordinators = await User.countDocuments({ role: "coordinator" })
+        const filter = {}
+        if (req.query.governorate && req.query.governorate !== "all") {
+            filter.governorate = req.query.governorate
+        }
+
+        const totalUsers = await User.countDocuments(filter)
+        const members = await User.countDocuments({ ...filter, role: "member" })
+        const volunteers = await User.countDocuments({ ...filter, role: "volunteer" })
+        const publishers = await User.countDocuments({ ...filter, role: "publisher" })
+        const admins = await User.countDocuments({ ...filter, role: "admin" })
+        const hr = await User.countDocuments({ ...filter, role: "hr" })
+        const partnershipManagers = await User.countDocuments({ ...filter, role: "partnership_manager" })
+        const coordinators = await User.countDocuments({ ...filter, role: "coordinator" })
 
         res.status(200).json({
             success: true,

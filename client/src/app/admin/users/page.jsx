@@ -11,9 +11,10 @@ import { useError } from "@/context/ErrorContext"
 import { usersAPI, positionsAPI } from "@/app/api/api"
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
-import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter, Download, Loader2 } from "lucide-react"
+import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter, Download, Loader2, Globe } from "lucide-react"
 import { EGYPT_GOVERNORATES } from "@/constants/governorates"
 import { exportUsersToExcel } from "@/utils/excelExport"
+import { useAuth } from "@/context/AuthContext"
 
 // Backend User model validation schema
 const userSchema = z.object({
@@ -62,6 +63,8 @@ const UserManagement = () => {
     const [pagination, setPagination] = useState({ page: 1, limit: 10, total: 0 })
     const [stats, setStats] = useState({ total: 0, members: 0, volunteers: 0, publishers: 0, admins: 0 })
     const { addError } = useError()
+    const { user: currentUser } = useAuth()
+    const isCoordinator = currentUser?.role === "coordinator"
 
     const {
         register,
@@ -137,20 +140,36 @@ const UserManagement = () => {
         }
     }
 
-    const fetchStats = async () => {
+    const fetchStats = useCallback(async () => {
         try {
-            const response = await usersAPI.getStats()
+            const params = {}
+            if (isCoordinator && currentUser?.governorate) {
+                params.governorate = currentUser.governorate
+            } else if (filterGovernorate !== "all") {
+                params.governorate = filterGovernorate
+            }
+
+            const response = await usersAPI.getStats(params)
             setStats(response.data || { total: 0, members: 0, volunteers: 0, publishers: 0, admins: 0 })
         } catch (error) {
             console.warn("Failed to fetch user stats:", error)
         }
-    }
+    }, [isCoordinator, currentUser?.governorate, filterGovernorate])
+
+    useEffect(() => {
+        if (isCoordinator) {
+            if (currentUser?.governorate) {
+                setFilterGovernorate(currentUser.governorate)
+            }
+            setFilterRole("member")
+        }
+    }, [isCoordinator, currentUser?.governorate])
 
     useEffect(() => {
         fetchUsers()
         fetchPositions()
         fetchStats()
-    }, [fetchUsers])
+    }, [fetchUsers, fetchStats])
 
     // Handle limit change - reset to page 1 when limit changes
     useEffect(() => {
@@ -279,8 +298,8 @@ const UserManagement = () => {
     // Clear filters function
     const clearFilters = () => {
         setSearchTerm("")
-        setFilterRole("all")
-        setFilterGovernorate("all")
+        setFilterRole(isCoordinator ? "member" : "all")
+        setFilterGovernorate(isCoordinator && currentUser?.governorate ? currentUser.governorate : "all")
         setFilterUniversity("all")
         setFilterLimit(10)
     }
@@ -363,10 +382,12 @@ const UserManagement = () => {
                         {isExporting ? <Loader2 className="h-4 w-4 mr-2 animate-spin" /> : <Download className="h-4 w-4 mr-2" />}
                         تصدير Excel ({users.length})
                     </Button>
-                    <Button onClick={() => setIsCreateSheetOpen(true)}>
-                        <UserPlus className="h-4 w-4 mr-2" />
-                        إنشاء مستخدم
-                    </Button>
+                    {!isCoordinator && (
+                        <Button onClick={() => setIsCreateSheetOpen(true)}>
+                            <UserPlus className="h-4 w-4 mr-2" />
+                            إنشاء مستخدم
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -385,23 +406,28 @@ const UserManagement = () => {
                 <select
                     value={filterRole}
                     onChange={(e) => setFilterRole(e.target.value)}
-                    className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    disabled={isCoordinator}
+                    className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
                 >
-                    <option value="all">كل المستخدمين</option>
+                    {!isCoordinator && <option value="all">كل المستخدمين</option>}
                     <option value="member">الاعضاء</option>
-                    {/* <option value="volunteer">المتطوعين</option> */}
-                    <option value="publisher">الناشرين</option>
-                    <option value="partnership_manager">مسؤولي الشراكات</option>
-                    <option value="hr">الموارد البشرية (HR)</option>
-                    <option value="coordinator">المنسقين</option>
-                    <option value="admin">المدراء</option>
+                    {!isCoordinator && (
+                        <>
+                            <option value="publisher">الناشرين</option>
+                            <option value="partnership_manager">مسؤولي الشراكات</option>
+                            <option value="hr">الموارد البشرية (HR)</option>
+                            <option value="coordinator">المنسقين</option>
+                            <option value="admin">المدراء</option>
+                        </>
+                    )}
                 </select>
                 <select
                     value={filterGovernorate}
                     onChange={(e) => setFilterGovernorate(e.target.value)}
-                    className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    disabled={isCoordinator}
+                    className="flex h-10 rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
                 >
-                    <option value="all">كل المحافظات</option>
+                    {!isCoordinator && <option value="all">كل المحافظات</option>}
                     {EGYPT_GOVERNORATES.map((governorate) => (
                         <option key={governorate} value={governorate}>
                             {governorate}
@@ -539,27 +565,32 @@ const UserManagement = () => {
                                             </td>
                                             <td className="py-4 px-4 text-sm">{new Date(user.createdAt).toLocaleDateString()}</td>
                                             <td className="py-4 px-4">
-                                                <div className="flex space-x-2">
-                                                    <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
-                                                        <Edit className="h-4 w-4" />
-                                                    </Button>
-                                                    <select
-                                                        value={user.role}
-                                                        onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                                                        className="text-xs rounded border border-gray-300 px-2 py-1"
-                                                    >
-                                                        <option value="member">Member</option>
-
-                                                        <option value="publisher">Publisher</option>
-                                                        <option value="partnership_manager">Partnership Manager</option>
-                                                        <option value="hr">HR</option>
-                                                        <option value="coordinator">Coordinator</option>
-                                                        <option value="admin">Admin</option>
-                                                    </select>
-                                                    <Button variant="outline" size="sm" onClick={() => handleDeleteUser(user._id)}>
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
+                                                {isCoordinator ? (
+                                                    <Badge variant="outline" className="text-gray-400">
+                                                        عرض فقط
+                                                    </Badge>
+                                                ) : (
+                                                    <div className="flex space-x-2">
+                                                        <Button variant="outline" size="sm" onClick={() => handleEdit(user)}>
+                                                            <Edit className="h-4 w-4" />
+                                                        </Button>
+                                                        <select
+                                                            value={user.role}
+                                                            onChange={(e) => handleRoleChange(user._id, e.target.value)}
+                                                            className="text-xs rounded border border-gray-300 px-2 py-1"
+                                                        >
+                                                            <option value="member">Member</option>
+                                                            <option value="publisher">Publisher</option>
+                                                            <option value="partnership_manager">Partnership Manager</option>
+                                                            <option value="hr">HR</option>
+                                                            <option value="coordinator">Coordinator</option>
+                                                            <option value="admin">Admin</option>
+                                                        </select>
+                                                        <Button variant="outline" size="sm" onClick={() => handleDeleteUser(user._id)}>
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                )}
                                             </td>
                                         </tr>
                                     ))}
