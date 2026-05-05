@@ -34,9 +34,14 @@ const getUsers = async (req, res, next) => {
         if (req.query.role && req.query.role !== "all") {
             conditions.push({ role: req.query.role })
         }
-        if (req.query.governorate && req.query.governorate !== "all") {
+        
+        // Enforce governorate for Coordinator
+        if (req.user.role === "coordinator") {
+            conditions.push({ governorate: req.user.governorate })
+        } else if (req.query.governorate && req.query.governorate !== "all") {
             conditions.push({ governorate: req.query.governorate })
         }
+        
         if (req.query.university && req.query.university !== "all") {
             conditions.push({ university: req.query.university })
         }
@@ -178,7 +183,11 @@ const deleteUser = async (req, res, next) => {
 const getUserStats = async (req, res, next) => {
     try {
         const filter = {}
-        if (req.query.governorate && req.query.governorate !== "all") {
+        
+        // Enforce governorate for Coordinator
+        if (req.user.role === "coordinator") {
+            filter.governorate = req.user.governorate
+        } else if (req.query.governorate && req.query.governorate !== "all") {
             filter.governorate = req.query.governorate
         }
 

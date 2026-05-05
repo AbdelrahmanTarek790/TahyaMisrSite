@@ -10,10 +10,10 @@ const router = express.Router()
 router.get("/me", protect, getMe)
 router.put("/me", protect, ...upload.profile(), updateMe)
 
-// Admin/HR routes
-router.get("/stats", protect, authorize("admin", "hr"), getUserStats)
-router.get("/", protect, authorize("admin", "hr"), getUsers)
-router.get("/:id", protect, authorize("admin", "hr"), getUser)
+// Admin/HR/Coordinator routes
+router.get("/stats", protect, authorize("admin", "hr", "coordinator"), getUserStats)
+router.get("/", protect, authorize("admin", "hr", "coordinator"), getUsers)
+router.get("/:id", protect, authorize("admin", "hr", "coordinator"), getUser)
 router.put("/:id", protect, authorize("admin", "hr"), updateUser)
 router.delete("/:id", protect, authorize("admin", "hr"), deleteUser)
 
