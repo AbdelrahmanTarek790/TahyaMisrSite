@@ -1,3 +1,4 @@
+const admin = require('firebase-admin');
 const User = require('../models/User');
 const { sendPushNotification, sendToTopic } = require('../utils/firebase');
 const { notificationSchema } = require('../utils/validation');
@@ -192,8 +193,50 @@ const sendNotificationByGovernorate = async (req, res, next) => {
   }
 };
 
+// @desc    Send notification to users directly from app (topics with data)
+// @route   POST /api/v1/notifications/send
+// @access  Private/Admin
+const sendDirectNotification = async (req, res, next) => {
+  try {
+    const { topic, title, body, data } = req.body;
+
+    if (!topic || !title || !body) {
+      return res.status(400).json({
+        success: false,
+        error: 'Missing required fields: topic, title, or body',
+        data: null
+      });
+    }
+
+    const message = {
+      notification: {
+        title: title,
+        body: body,
+      },
+      data: data || {},
+      topic: topic
+    };
+
+    const response = await admin.messaging().send(message);
+    
+    console.log('Successfully sent message via direct endpoint:', response);
+    res.status(200).json({
+      success: true,
+      data: {
+        messageId: response
+      },
+      error: null
+    });
+
+  } catch (error) {
+    console.error('Error sending message:', error);
+    next(error);
+  }
+};
+
 module.exports = {
   sendNotification,
   sendNotificationByRole,
-  sendNotificationByGovernorate
+  sendNotificationByGovernorate,
+  sendDirectNotification
 };

@@ -3,17 +3,14 @@ const admin = require('firebase-admin');
 // Initialize Firebase Admin (only if not already initialized)
 if (!admin.apps.length) {
   try {
+    const serviceAccount = require('../config/serviceAccountKey.json');
     admin.initializeApp({
-      credential: admin.credential.cert({
-        projectId: process.env.FIREBASE_PROJECT_ID,
-        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      }),
-      projectId: process.env.FIREBASE_PROJECT_ID,
+      credential: admin.credential.cert(serviceAccount)
     });
-    console.log('Firebase Admin initialized successfully');
+    console.log('Firebase Admin initialized successfully using serviceAccountKey.json');
   } catch (error) {
     console.error('Firebase Admin initialization error:', error.message);
+    console.error('Please make sure you have placed your serviceAccountKey.json file in the config folder.');
   }
 }
 

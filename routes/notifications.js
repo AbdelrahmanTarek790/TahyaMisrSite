@@ -2,7 +2,8 @@ const express = require('express');
 const {
   sendNotification,
   sendNotificationByRole,
-  sendNotificationByGovernorate
+  sendNotificationByGovernorate,
+  sendDirectNotification
 } = require('../controllers/notificationController');
 const { protect, admin } = require('../middleware/auth');
 
@@ -14,5 +15,6 @@ router.use(admin);   // All routes require admin role
 router.post('/', sendNotification);
 router.post('/role', sendNotificationByRole);
 router.post('/governorate', sendNotificationByGovernorate);
+router.post('/send', sendDirectNotification);
 
 module.exports = router;
