@@ -5,161 +5,194 @@ const SiteSettings = require("../models/SiteSettings")
 const { generateToken } = require("../middleware/auth")
 const { sendJoinRequestSubmitted, sendJoinRequestApproved, sendJoinRequestDenied } = require("../utils/email")
 const { Filter } = require("../utils/Filter")
-const asyncHandler = require("../middleware/asyncHandler")
 
 // @desc    Create a new join request
 // @route   POST /api/v1/join-requests
 // @access  Public
-const createJoinRequest = asyncHandler(async (req, res, next) => {
-    // Check if join requests are enabled
-    const settings = await SiteSettings.getSettings()
-    if (!settings.joinRequestsEnabled) {
-        return res.status(403).json({
-            status: 'error',
-            message: settings.joinRequestMessage || "طلبات الانضمام معطلة حالياً"
-        })
-    }
-
-    const { name, email, phone, nationalID, governorate, position, membershipNumber, notes } = req.body
-
-    // Validate required fields
-    if (!name || !email || !phone || !nationalID || !governorate) {
-        return res.status(400).json({
-            status: 'error',
-            message: "الاسم، البريد الإلكتروني، الهاتف، الرقم القومي، المحافظة والدور مطلوبة"
-        })
-    }
-
-    // Check if user already exists with this email or nationalID
-    const existingUser = await User.findOne({
-        $or: [{ email }, { nationalId: nationalID }],
-    })
-
-    if (existingUser) {
-        return res.status(400).json({
-            status: 'error',
-            message: "المستخدم مسجل بالفعل بهذا البريد الإلكتروني أو الرقم القومي"
-        })
-    }
-
-    // Check if there's already a pending request with this email or nationalID
-    const existingRequest = await JoinRequest.findOne({
-        $or: [{ email }, { nationalID }],
-        status: "pending",
-    })
-
-    if (existingRequest) {
-        return res.status(400).json({
-            status: 'error',
-            message: "هناك طلب انضمام معلق بالفعل لهذا البريد الإلكتروني أو الرقم القومي"
-        })
-    }
-
-    // Validate position if provided
-    if (position) {
-        const validPosition = await Position.findById(position)
-        if (!validPosition || !validPosition.isActive) {
-            return res.status(400).json({
-                status: 'error',
-                message: "اللجنة المختارة غير صالحة"
+const createJoinRequest = async (req, res, next) => {
+    try {
+        // Check if join requests are enabled
+        const settings = await SiteSettings.getSettings()
+        if (!settings.joinRequestsEnabled) {
+            return res.status(403).json({
+                success: false,
+                error: settings.joinRequestMessage || "طلبات الانضمام معطلة حاليًا",
+                data: null,
             })
         }
-    }
 
-    // Create the join request
-    const joinRequest = await JoinRequest.create({
-        name,
-        email,
-        phone,
-        nationalID,
-        governorate,
-        position: position || undefined,
-        membershipNumber: membershipNumber || undefined,
-        role: "member",
-        notes: notes || undefined,
-    })
+        const { name, email, phone, nationalID, governorate, position, membershipNumber, notes } = req.body
 
-    // Populate position if it exists
-    await joinRequest.populate("position")
+        // Validate required fields
+        if (!name || !email || !phone || !nationalID || !governorate) {
+            return res.status(400).json({
+                success: false,
+                error: "الاسم، البريد الإلكتروني، الهاتف، الرقم القومي، والمحافظة مطلوبة",
+                data: null,
+            })
+        }
 
-    // Send submission confirmation email (non-blocking)
-    try {
-        sendJoinRequestSubmitted(email, name)
-    } catch (e) {
-        /* ignore */
-    }
+        // Check if user already exists with this email or nationalID
+        const existingUser = await User.findOne({
+            $or: [{ email }, { nationalId: nationalID }],
+        })
 
-    res.status(201).json({
-        success: true,
-        message: "تم تقديم طلب الانضمام بنجاح",
-       data: {
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                error: "المستخدم موجود بالفعل بهذا البريد الإلكتروني أو الرقم القومي",
+                data: null,
+            })
+        }
+
+        // Check if there's already a pending request with this email or nationalID
+        const existingRequest = await JoinRequest.findOne({
+            $or: [{ email }, { nationalID }],
+            status: "pending",
+        })
+
+        if (existingRequest) {
+            return res.status(400).json({
+                success: false,
+                error: "طلبات الانضمام معلقة بالفعل لهذا البريد الإلكتروني أو الرقم القومي",
+                data: null,
+            })
+        }
+
+        // Validate position if provided
+        if (position) {
+            const validPosition = await Position.findById(position)
+            if (!validPosition || !validPosition.isActive) {
+                return res.status(400).json({
+                    success: false,
+                    error: "Invalid position selected",
+                    data: null,
+                })
+            }
+        }
+
+        // Validate role
+
+        // Create the join request
+        const joinRequest = await JoinRequest.create({
+            name,
+            email,
+            phone,
+            nationalID,
+            governorate,
+            position: position || undefined,
+            membershipNumber: membershipNumber || undefined,
+            role: "member",
+            notes: notes || undefined,
+        })
+
+        // Populate position if it exists
+        await joinRequest.populate("position")
+
+        // Send submission confirmation email (non-blocking)
+        try {
+            sendJoinRequestSubmitted(email, name)
+        } catch (e) {
+            /* ignore */
+        }
+
+        res.status(201).json({
+            success: true,
+            message: "تم إرسال طلب الانضمام بنجاح",
+            data: {
                 joinRequest,
             },
-    })
-})
+        })
+    } catch (error) {
+        console.error("Error creating join request:", error)
+        res.status(500).json({
+            success: false,
+            error: "خطأ في الخادم",
+            data: null,
+        })
+    }
+}
 
 // @desc    Get all join requests
 // @route   GET /api/v1/join-requests
 // @access  Private (Admin only)
-const getJoinRequests = asyncHandler(async (req, res, next) => {
-    const { status, page = 1, limit = 10 } = req.query
-    const search = Filter(req)
-    
-    // Build filter object
-    const filter = {}
-    if (status && ["pending", "approved", "denied"].includes(status)) {
-        filter.status = status
-    }
+const getJoinRequests = async (req, res, next) => {
+    try {
+        const { status, page = 1, limit = 10 } = req.query
+        const search = Filter(req)
+        // Build filter object
+        const filter = {}
+        if (status && ["pending", "approved", "denied"].includes(status)) {
+            filter.status = status
+        }
 
-    // Calculate pagination
-    const skip = (page - 1) * limit
-    const total = await JoinRequest.countDocuments(search)
+        // Calculate pagination
+        const skip = (page - 1) * limit
+        const total = await JoinRequest.countDocuments(search)
 
-    // Get join requests with pagination
-    const joinRequests = await JoinRequest.find()
-        .where(search)
-        .populate("position")
-        .populate("reviewedBy", "name email")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit))
+        // Get join requests with pagination
+        const joinRequests = await JoinRequest.find()
+            .where(search)
+            .populate("position")
+            .populate("reviewedBy", "name email")
+            .sort({ createdAt: -1 })
+            .skip(skip)
+            .limit(parseInt(limit))
 
-    res.status(200).json({
-        success: true,
-        data: {
-            joinRequests,
-            pagination: {
+        res.status(200).json({
+            success: true,
+            message: "تم استرجاع طلبات الانضمام بنجاح",
+            data: {
+                joinRequests,
+                pagination: {
                     current: parseInt(page),
                     total: Math.ceil(total / limit),
                     count: joinRequests.length,
                     totalCount: total,
+                },
             },
-        },
-    })
-})
+        })
+    } catch (error) {
+        console.error("Error getting join requests:", error)
+        res.status(500).json({
+            success: false,
+            error: "خطأ في الخادم",
+            data: null,
+        })
+    }
+}
 
 // @desc    Get a single join request
 // @route   GET /api/v1/join-requests/:id
 // @access  Private (Admin only)
-const getJoinRequest = asyncHandler(async (req, res, next) => {
-    const joinRequest = await JoinRequest.findById(req.params.id)
-        .populate("position")
-        .populate("reviewedBy", "name email")
+const getJoinRequest = async (req, res, next) => {
+    try {
+        const joinRequest = await JoinRequest.findById(req.params.id).populate("position").populate("reviewedBy", "name email")
 
-    if (!joinRequest) {
-        return res.status(404).json({
-            status: 'error',
-            message: "لم يتم العثور على طلب الانضمام"
-        })
-    }
+        if (!joinRequest) {
+            return res.status(404).json({
+                success: false,
+                error: "طلب الانضمام غير موجود",
+                data: null,
+            })
+        }
 
-    res.status(200).json({
-        success: true,
-         data: {
+        res.status(200).json({
+            success: true,
+            message: "تم استرجاع طلب الانضمام بنجاح",
+            data: {
                 joinRequest,
             },
-    })
-})
+        })
+    } catch (error) {
+        console.error("Error getting join request:", error)
+        res.status(500).json({
+            success: false,
+            error: "خطأ في الخادم",
+            data: null,
+        })
+    }
+}
 
 // @desc    Approve a join request and create user account
 // @route   PATCH /api/v1/join-requests/:id/approve
@@ -173,7 +206,7 @@ const approveJoinRequest = async (req, res, next) => {
         if (!joinRequest) {
             return res.status(404).json({
                 success: false,
-                error: "لم يتم العثور على طلب الانضمام",
+                error: "طلب الانضمام غير موجود",
                 data: null,
             })
         }
@@ -181,7 +214,7 @@ const approveJoinRequest = async (req, res, next) => {
         if (joinRequest.status !== "pending") {
             return res.status(400).json({
                 success: false,
-                error: "تم معالجة طلب الانضمام بالفعل",
+                error: "طلب الانضمام تم معالجته بالفعل",
                 data: null,
             })
         }
@@ -194,7 +227,7 @@ const approveJoinRequest = async (req, res, next) => {
         if (existingUser) {
             return res.status(400).json({
                 success: false,
-                error: "المستخدم موجود بالفعل مع هذا البريد الإلكتروني أو الرقم الوطني",
+                error: "المستخدم موجود بالفعل بهذا البريد الإلكتروني أو الرقم القومي",
                 data: null,
             })
         }
@@ -232,7 +265,7 @@ const approveJoinRequest = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "تمت الموافقة على طلب الانضمام وإنشاء حساب المستخدم بنجاح",
+            message: "تم الموافقة على طلب الانضمام وإنشاء حساب المستخدم بنجاح",
             data: {
                 joinRequest,
                 user,
@@ -244,7 +277,7 @@ const approveJoinRequest = async (req, res, next) => {
         console.error("خطأ في الموافقة على طلب الانضمام:", error)
         res.status(500).json({
             success: false,
-            error: "خطأ في الخادم",
+            error: "Server Error",
             data: null,
         })
     }
@@ -262,7 +295,7 @@ const denyJoinRequest = async (req, res, next) => {
         if (!joinRequest) {
             return res.status(404).json({
                 success: false,
-                error: "لم يتم العثور على طلب الانضمام",
+                error: "Join request not found",
                 data: null,
             })
         }
@@ -270,7 +303,7 @@ const denyJoinRequest = async (req, res, next) => {
         if (joinRequest.status !== "pending") {
             return res.status(400).json({
                 success: false,
-                error: "تم معالجة طلب الانضمام بالفعل",
+                error: "Join request has already been processed",
                 data: null,
             })
         }
@@ -287,21 +320,20 @@ const denyJoinRequest = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "تم رفض طلب الانضمام بنجاح",
+            message: "Join request denied successfully",
             data: {
                 joinRequest,
             },
         })
     } catch (error) {
-        console.error("خطأ في رفض طلب الانضمام:", error)
+        console.error("Error denying join request:", error)
         res.status(500).json({
             success: false,
-            error: "خطأ في الخادم",
+            error: "Server Error",
             data: null,
         })
     }
 }
-
 
 // @desc    Delete a join request
 // @route   DELETE /api/v1/join-requests/:id
@@ -313,7 +345,7 @@ const deleteJoinRequest = async (req, res, next) => {
         if (!joinRequest) {
             return res.status(404).json({
                 success: false,
-                error: "لم يتم العثور على طلب الانضمام",
+                error: "Join request not found",
                 data: null,
             })
         }
@@ -322,14 +354,14 @@ const deleteJoinRequest = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            message: "تم حذف طلب الانضمام بنجاح",
+            message: "Join request deleted successfully",
             data: null,
         })
     } catch (error) {
-        console.error("خطأ في حذف طلب الانضمام:", error)
+        console.error("Error deleting join request:", error)
         res.status(500).json({
             success: false,
-            error: "خطأ في الخادم",
+            error: "Server Error",
             data: null,
         })
     }
