@@ -1,5 +1,5 @@
 const Event = require("../models/Event")
-const { eventSchema, guestEventRegistrationSchema } = require("../utils/validation")
+const {eventSchema, guestEventRegistrationSchema, arabicJoiMessages} = require("../utils/validation")
 const path = require("path")
 const fs = require("fs")
 const { Filter } = require("../utils/Filter")
@@ -33,36 +33,9 @@ const getEvents = async (req, res, next) => {
         })
 
         res.status(200).json({
-            success: true,
-            data: {
-                events: safeEvents,
-                pagination: {
-                    page,
-                    limit,
-                    total,
-                    pages: Math.ceil(total / limit),
-                },
-            },
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Get single event
-// @route   GET /api/v1/events/:id
-// @access  Public
-const getEventById = async (req, res, next) => {
-    try {
-        const event = await Event.findById(req.params.id).populate("createdBy", "name")
-        event.registeredUsers = null
-        if (!event) {
-            return res.status(404).json({
-                success: false,
-                error: "Event not found",
-                data: null,
-            })
         }
 
         const safeEvent = event.toObject()
@@ -70,28 +43,9 @@ const getEventById = async (req, res, next) => {
         safeEvent.guestRegistrationsCount = (event.guestRegistrations || []).length
 
         res.status(200).json({
-            success: true,
-            data: safeEvent,
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Create event
-// @route   POST /api/v1/events
-// @access  Private/Admin
-const createEvent = async (req, res, next) => {
-    try {
-        // Validate input
-        const { error } = eventSchema.validate(req.body)
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                error: error.details[0].message,
-                data: null,
-            })
         }
 
         // Add createdBy field
@@ -107,38 +61,18 @@ const createEvent = async (req, res, next) => {
         const populatedEvent = await Event.findById(event._id).populate("createdBy", "name email")
 
         res.status(201).json({
-            success: true,
-            data: populatedEvent,
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Update event
-// @route   PUT /api/v1/events/:id
-// @access  Private/Admin
-const updateEvent = async (req, res, next) => {
-    try {
-        // Validate input
-        const { error } = eventSchema.validate(req.body)
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                error: error.details[0].message,
-                data: null,
-            })
         }
 
         const existingEvent = await Event.findById(req.params.id)
 
         if (!existingEvent) {
             return res.status(404).json({
-                success: false,
-                error: "Event not found",
-                data: null,
-            })
+            status: 'error',
+            message: "لم يتم العثور على الفعالية"
+        })
         }
 
         // Handle image update
@@ -161,28 +95,9 @@ const updateEvent = async (req, res, next) => {
             .populate("registeredUsers", "name email")
 
         res.status(200).json({
-            success: true,
-            data: event,
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Delete event
-// @route   DELETE /api/v1/events/:id
-// @access  Private/Admin
-const deleteEvent = async (req, res, next) => {
-    try {
-        const event = await Event.findById(req.params.id)
-
-        if (!event) {
-            return res.status(404).json({
-                success: false,
-                error: "Event not found",
-                data: null,
-            })
         }
 
         // Delete associated image
@@ -196,46 +111,25 @@ const deleteEvent = async (req, res, next) => {
         await Event.findByIdAndDelete(req.params.id)
 
         res.status(200).json({
-            success: true,
-            data: { message: "Event deleted successfully" },
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Register for event
-// @route   POST /api/v1/events/:id/register
-// @access  Private
-const registerForEvent = async (req, res, next) => {
-    try {
-        const event = await Event.findById(req.params.id)
-
-        if (!event) {
-            return res.status(404).json({
-                success: false,
-                error: "Event not found",
-                data: null,
-            })
         }
 
         // Check if user is already registered
         if (event.registeredUsers.includes(req.user.id)) {
             return res.status(400).json({
-                success: false,
-                error: "You are already registered for this event",
-                data: null,
-            })
+            status: 'error',
+            message: "أنت مسجل بالفعل في هذه الفعالية"
+        })
         }
 
         // Check if event date has passed
         if (new Date(event.date) < new Date()) {
             return res.status(400).json({
-                success: false,
-                error: "Cannot register for past events",
-                data: null,
-            })
+            status: 'error',
+            message: "لا يمكن التسجيل في فعاليات سابقة"
+        })
         }
 
         // Add user to registered users
@@ -249,70 +143,31 @@ const registerForEvent = async (req, res, next) => {
         safeEvent.guestRegistrationsCount = (updatedEvent.guestRegistrations || []).length
 
         res.status(200).json({
-            success: true,
-            data: safeEvent,
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Get registered users for event
-// @route   GET /api/v1/events/:id/registered-users
-// @access  Private/Admin
-const getEventRegisteredUsers = async (req, res, next) => {
-    try {
-        const event = await Event.findById(req.params.id).populate({
-            path: "registeredUsers",
-            select: "name phone nationalId email position university governorate createdAt",
-            populate: {
-                path: "position",
-                select: "name",
-            },
-        })
-
-        if (!event) {
-            return res.status(404).json({
-                success: false,
-                error: "Event not found",
-                data: null,
-            })
         }
 
         res.status(200).json({
-            success: true,
-            data: {
-                eventTitle: event.title,
-                eventDate: event.date,
-                registeredUsers: event.registeredUsers,
-                guestRegistrations: event.guestRegistrations || [],
-            },
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Public guest registration for event (no account required)
-// @route   POST /api/v1/events/:id/guest-register
-// @access  Public
-const guestRegisterForEvent = async (req, res, next) => {
-    try {
-        const { error } = guestEventRegistrationSchema.validate(req.body)
-        if (error) {
-            return res.status(400).json({ success: false, error: error.details[0].message, data: null })
         }
 
         const event = await Event.findById(req.params.id)
         if (!event) {
-            return res.status(404).json({ success: false, error: "Event not found", data: null })
+            return res.status(404).json({
+            status: 'error',
+            message: "لم يتم العثور على الفعالية"
+        })
         }
 
         // Disallow registration for past events
         if (new Date(event.date) < new Date()) {
-            return res.status(400).json({ success: false, error: "Cannot register for past events", data: null })
+            return res.status(400).json({
+            status: 'error',
+            message: "لا يمكن التسجيل في فعاليات سابقة"
+        })
         }
 
         const { name, email, phone, nationalId, governorate } = req.body
@@ -324,7 +179,10 @@ const guestRegisterForEvent = async (req, res, next) => {
         const alreadyUser = (event.registeredUsers || []).some((u) => String(u) === (req.user?.id || "")) // usually not present here
 
         if (alreadyGuest || alreadyUser) {
-            return res.status(400).json({ success: false, error: "Already registered for this event", data: null })
+            return res.status(400).json({
+            status: 'error',
+            message: "مسجل بالفعل في هذه الفعالية"
+        })
         }
 
         event.guestRegistrations = event.guestRegistrations || []

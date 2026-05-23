@@ -11,16 +11,8 @@ exports.getAchievements = async (req, res) => {
         const achievements = await Achievement.find(filter).sort({ order: 1, createdAt: -1 }).populate("createdBy", "name email")
 
         res.status(200).json({
-            success: true,
-            count: achievements.length,
-            data: achievements,
-        })
-    } catch (error) {
-        console.error("Get achievements error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch achievements",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -34,21 +26,14 @@ exports.getAchievementById = async (req, res) => {
 
         if (!achievement) {
             return res.status(404).json({
-                success: false,
-                message: "Achievement not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على الإنجاز"
+        })
         }
 
         res.status(200).json({
-            success: true,
-            data: achievement,
-        })
-    } catch (error) {
-        console.error("Get achievement by ID error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch achievement",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -63,9 +48,9 @@ exports.createAchievement = async (req, res) => {
         // Validate required fields
         if (!title || !description) {
             return res.status(400).json({
-                success: false,
-                message: "Title and description are required",
-            })
+            status: 'error',
+            message: "العنوان والوصف مطلوبان"
+        })
         }
 
         // Handle image upload
@@ -99,16 +84,8 @@ exports.createAchievement = async (req, res) => {
         })
 
         res.status(201).json({
-            success: true,
-            message: "Achievement created successfully",
-            data: achievement,
-        })
-    } catch (error) {
-        console.error("Create achievement error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to create achievement",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -124,9 +101,9 @@ exports.updateAchievement = async (req, res) => {
 
         if (!achievement) {
             return res.status(404).json({
-                success: false,
-                message: "Achievement not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على الإنجاز"
+        })
         }
 
         // Handle image upload
@@ -165,16 +142,8 @@ exports.updateAchievement = async (req, res) => {
         await achievement.save()
 
         res.status(200).json({
-            success: true,
-            message: "Achievement updated successfully",
-            data: achievement,
-        })
-    } catch (error) {
-        console.error("Update achievement error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to update achievement",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -188,24 +157,16 @@ exports.deleteAchievement = async (req, res) => {
 
         if (!achievement) {
             return res.status(404).json({
-                success: false,
-                message: "Achievement not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على الإنجاز"
+        })
         }
 
         await achievement.deleteOne()
 
         res.status(200).json({
-            success: true,
-            message: "Achievement deleted successfully",
-            data: {},
-        })
-    } catch (error) {
-        console.error("Delete achievement error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to delete achievement",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -219,25 +180,17 @@ exports.toggleAchievementStatus = async (req, res) => {
 
         if (!achievement) {
             return res.status(404).json({
-                success: false,
-                message: "Achievement not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على الإنجاز"
+        })
         }
 
         achievement.isActive = !achievement.isActive
         await achievement.save()
 
         res.status(200).json({
-            success: true,
-            message: `Achievement ${achievement.isActive ? "activated" : "deactivated"} successfully`,
-            data: achievement,
-        })
-    } catch (error) {
-        console.error("Toggle achievement status error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to toggle achievement status",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -251,9 +204,9 @@ exports.reorderAchievements = async (req, res) => {
 
         if (!Array.isArray(achievements)) {
             return res.status(400).json({
-                success: false,
-                message: "Invalid data format. Expected array of achievements",
-            })
+            status: 'error',
+            message: "تنسيق البيانات غير صحيح. المتوقع مصفوفة من الإنجازات"
+        })
         }
 
         // Update order for each achievement
@@ -262,15 +215,8 @@ exports.reorderAchievements = async (req, res) => {
         await Promise.all(updatePromises)
 
         res.status(200).json({
-            success: true,
-            message: "Achievements reordered successfully",
-        })
-    } catch (error) {
-        console.error("Reorder achievements error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to reorder achievements",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }

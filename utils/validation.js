@@ -14,6 +14,17 @@ const registerSchema = Joi.object({
     membershipExpiry: Joi.date().optional(),
     role: Joi.string().valid("member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator").optional(),
     rating: Joi.number().min(0).max(100).optional(),
+    customFieldValues: Joi.array()
+        .items(
+            Joi.object({
+                fieldId: Joi.string().hex().length(24).required(),
+                value: Joi.alternatives().try(
+                    Joi.string().allow(""),
+                    Joi.array().items(Joi.string().allow(""))
+                ).required(),
+            })
+        )
+        .optional(),
 })
 
 const loginSchema = Joi.object({
@@ -33,6 +44,17 @@ const updateUserSchema = Joi.object({
     nationalId: Joi.string().min(14).max(14).optional(),
     role: Joi.string().valid("member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator").optional(),
     rating: Joi.number().min(0).max(100).optional(),
+    customFieldValues: Joi.array()
+        .items(
+            Joi.object({
+                fieldId: Joi.string().hex().length(24).required(),
+                value: Joi.alternatives().try(
+                    Joi.string().allow(""),
+                    Joi.array().items(Joi.string().allow(""))
+                ).required(),
+            })
+        )
+        .optional(),
 })
 
 const forgotPasswordSchema = Joi.object({
@@ -94,7 +116,62 @@ const notificationSchema = Joi.object({
     userIds: Joi.array().items(Joi.string().hex().length(24)).optional(),
 })
 
+// Custom Field validation schema
+const customFieldSchema = Joi.object({
+    label: Joi.string().min(2).max(100).required(),
+    type: Joi.string().valid("text", "textarea", "number", "email", "phone", "radio", "checkbox_list").required(),
+    isPublic: Joi.boolean().optional(),
+    status: Joi.string().valid("active", "inactive").optional(),
+    order: Joi.number().optional(),
+    options: Joi.array().items(Joi.string().min(1)).when("type", {
+        is: Joi.string().valid("radio", "checkbox_list"),
+        then: Joi.required(),
+        otherwise: Joi.optional()
+    })
+})
+
+// Mandatory Update validation schema
+const mandatoryUpdateSchema = Joi.object({
+    fields: Joi.array().items(Joi.string().hex().length(24)).min(1).required(),
+    targetType: Joi.string().valid("global", "targeted").required(),
+    targetUserIds: Joi.array().items(Joi.string().hex().length(24)).optional(),
+    adminMessage: Joi.string().min(5).max(500).required(),
+    notifyByEmail: Joi.boolean().optional(),
+})
+
+// Complete mandatory update validation schema
+const completeMandatoryUpdateSchema = Joi.object({
+    customFieldValues: Joi.array()
+        .items(
+            Joi.object({
+                fieldId: Joi.string().hex().length(24).required(),
+                value: Joi.alternatives().try(
+                    Joi.string().allow(""),
+                    Joi.array().items(Joi.string().allow(""))
+                ).required(),
+            })
+        )
+        .min(1)
+        .required(),
+})
+
+const arabicJoiMessages = {
+    'any.required': 'هذا الحقل مطلوب.',
+    'string.empty': 'لا يمكن أن يكون هذا الحقل فارغاً.',
+    'string.email': 'البريد الإلكتروني غير صالح.',
+    'string.min': 'يجب أن يكون هذا الحقل على الأقل {#limit} أحرف.',
+    'string.max': 'لا يمكن أن يتجاوز هذا الحقل {#limit} أحرف.',
+    'string.length': 'يجب أن يكون هذا الحقل بطول {#limit} أحرف.',
+    'string.hex': 'يجب أن يكون هذا الحقل بصيغة معرف صحيحة.',
+    'number.base': 'يجب أن تكون القيمة رقماً.',
+    'number.min': 'يجب أن تكون القيمة على الأقل {#limit}.',
+    'number.max': 'يجب أن تكون القيمة لا تتجاوز {#limit}.',
+    'date.base': 'يجب أن تكون القيمة تاريخاً صالحاً.',
+    'any.only': 'القيمة المدخلة غير صالحة.',
+}
+
 module.exports = {
+    arabicJoiMessages,
     registerSchema,
     loginSchema,
     updateUserSchema,
@@ -107,4 +184,7 @@ module.exports = {
     mediaSchema,
     notificationSchema,
     guestEventRegistrationSchema,
+    customFieldSchema,
+    mandatoryUpdateSchema,
+    completeMandatoryUpdateSchema,
 }

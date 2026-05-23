@@ -13,16 +13,8 @@ exports.getPartners = async (req, res) => {
         const partners = await Partner.find(filter).sort({ createdAt: -1 })
 
         res.status(200).json({
-            success: true,
-            count: partners.length,
-            data: partners,
-        })
-    } catch (error) {
-        console.error("Get partners error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch partners",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -36,9 +28,9 @@ exports.createPartner = async (req, res) => {
 
         if (!name) {
             return res.status(400).json({
-                success: false,
-                message: "Name is required",
-            })
+            status: 'error',
+            message: "الاسم مطلوب"
+        })
         }
 
         // Handle logo upload
@@ -51,9 +43,9 @@ exports.createPartner = async (req, res) => {
 
         if (!logoPath) {
             return res.status(400).json({
-                success: false,
-                message: "Logo is required",
-            })
+            status: 'error',
+            message: "الشعار مطلوب"
+        })
         }
 
         const partner = await Partner.create({
@@ -66,16 +58,8 @@ exports.createPartner = async (req, res) => {
         })
 
         res.status(201).json({
-            success: true,
-            message: "Partner created successfully",
-            data: partner,
-        })
-    } catch (error) {
-        console.error("Create partner error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to create partner",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -91,9 +75,9 @@ exports.updatePartner = async (req, res) => {
 
         if (!partner) {
             return res.status(404).json({
-                success: false,
-                message: "Partner not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على الشريك"
+        })
         }
 
         // Handle logo upload
@@ -112,16 +96,8 @@ exports.updatePartner = async (req, res) => {
         await partner.save()
 
         res.status(200).json({
-            success: true,
-            message: "Partner updated successfully",
-            data: partner,
-        })
-    } catch (error) {
-        console.error("Update partner error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to update partner",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -135,24 +111,16 @@ exports.deletePartner = async (req, res) => {
 
         if (!partner) {
             return res.status(404).json({
-                success: false,
-                message: "Partner not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على الشريك"
+        })
         }
 
         await partner.deleteOne()
 
         res.status(200).json({
-            success: true,
-            message: "Partner deleted successfully",
-            data: {},
-        })
-    } catch (error) {
-        console.error("Delete partner error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to delete partner",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }

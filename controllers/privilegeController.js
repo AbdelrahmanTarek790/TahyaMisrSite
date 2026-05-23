@@ -13,16 +13,8 @@ exports.getPrivileges = async (req, res) => {
         const privileges = await Privilege.find(filter).sort({ createdAt: -1 })
 
         res.status(200).json({
-            success: true,
-            count: privileges.length,
-            data: privileges,
-        })
-    } catch (error) {
-        console.error("Get privileges error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch privileges",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -36,9 +28,9 @@ exports.createPrivilege = async (req, res) => {
 
         if (!partnerName || !type) {
             return res.status(400).json({
-                success: false,
-                message: "Partner name and type are required",
-            })
+            status: 'error',
+            message: "اسم الشريك ونوع الامتياز مطلوبان"
+        })
         }
 
         // Handle logo upload
@@ -72,16 +64,8 @@ exports.createPrivilege = async (req, res) => {
         })
 
         res.status(201).json({
-            success: true,
-            message: "Privilege created successfully",
-            data: privilege,
-        })
-    } catch (error) {
-        console.error("Create privilege error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to create privilege",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -97,9 +81,9 @@ exports.updatePrivilege = async (req, res) => {
 
         if (!privilege) {
             return res.status(404).json({
-                success: false,
-                message: "Privilege not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على الامتياز"
+        })
         }
 
         // Handle logo upload
@@ -131,16 +115,8 @@ exports.updatePrivilege = async (req, res) => {
         await privilege.save()
 
         res.status(200).json({
-            success: true,
-            message: "Privilege updated successfully",
-            data: privilege,
-        })
-    } catch (error) {
-        console.error("Update privilege error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to update privilege",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -154,24 +130,16 @@ exports.deletePrivilege = async (req, res) => {
 
         if (!privilege) {
             return res.status(404).json({
-                success: false,
-                message: "Privilege not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على الامتياز"
+        })
         }
 
         await privilege.deleteOne()
 
         res.status(200).json({
-            success: true,
-            message: "Privilege deleted successfully",
-            data: {},
-        })
-    } catch (error) {
-        console.error("Delete privilege error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to delete privilege",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }

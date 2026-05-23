@@ -36,7 +36,7 @@ const toggleJoinRequests = async (req, res) => {
         await settings.save()
 
         res.json({
-            message: `Join requests ${settings.joinRequestsEnabled ? "enabled" : "disabled"}`,
+            message: settings.joinRequestsEnabled ? "تم تفعيل طلبات الانضمام بنجاح" : "تم تعطيل طلبات الانضمام بنجاح",
             joinRequestsEnabled: settings.joinRequestsEnabled,
         })
     } catch (error) {

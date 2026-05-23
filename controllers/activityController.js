@@ -11,16 +11,8 @@ exports.getActivities = async (req, res) => {
         const activities = await Activity.find(filter).sort({ order: 1, createdAt: -1 }).populate("createdBy", "name email")
 
         res.status(200).json({
-            success: true,
-            count: activities.length,
-            data: activities,
-        })
-    } catch (error) {
-        console.error("Get activities error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch activities",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -34,21 +26,14 @@ exports.getActivityById = async (req, res) => {
 
         if (!activity) {
             return res.status(404).json({
-                success: false,
-                message: "Activity not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على النشاط"
+        })
         }
 
         res.status(200).json({
-            success: true,
-            data: activity,
-        })
-    } catch (error) {
-        console.error("Get activity by ID error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch activity",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -63,9 +48,9 @@ exports.createActivity = async (req, res) => {
         // Validate required fields
         if (!title) {
             return res.status(400).json({
-                success: false,
-                message: "Title is required",
-            })
+            status: 'error',
+            message: "العنوان مطلوب"
+        })
         }
 
         // Handle image upload
@@ -84,16 +69,8 @@ exports.createActivity = async (req, res) => {
         })
 
         res.status(201).json({
-            success: true,
-            message: "Activity created successfully",
-            data: activity,
-        })
-    } catch (error) {
-        console.error("Create activity error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to create activity",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -109,9 +86,9 @@ exports.updateActivity = async (req, res) => {
 
         if (!activity) {
             return res.status(404).json({
-                success: false,
-                message: "Activity not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على النشاط"
+        })
         }
 
         // Handle image upload
@@ -130,16 +107,8 @@ exports.updateActivity = async (req, res) => {
         await activity.save()
 
         res.status(200).json({
-            success: true,
-            message: "Activity updated successfully",
-            data: activity,
-        })
-    } catch (error) {
-        console.error("Update activity error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to update activity",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -153,24 +122,16 @@ exports.deleteActivity = async (req, res) => {
 
         if (!activity) {
             return res.status(404).json({
-                success: false,
-                message: "Activity not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على النشاط"
+        })
         }
 
         await activity.deleteOne()
 
         res.status(200).json({
-            success: true,
-            message: "Activity deleted successfully",
-            data: {},
-        })
-    } catch (error) {
-        console.error("Delete activity error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to delete activity",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -184,25 +145,17 @@ exports.toggleActivityStatus = async (req, res) => {
 
         if (!activity) {
             return res.status(404).json({
-                success: false,
-                message: "Activity not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على النشاط"
+        })
         }
 
         activity.isActive = !activity.isActive
         await activity.save()
 
         res.status(200).json({
-            success: true,
-            message: `Activity ${activity.isActive ? "activated" : "deactivated"} successfully`,
-            data: activity,
-        })
-    } catch (error) {
-        console.error("Toggle activity status error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to toggle activity status",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -216,9 +169,9 @@ exports.reorderActivities = async (req, res) => {
 
         if (!Array.isArray(activities)) {
             return res.status(400).json({
-                success: false,
-                message: "Invalid data format. Expected array of activities",
-            })
+            status: 'error',
+            message: "تنسيق البيانات غير صحيح. المتوقع مصفوفة من الأنشطة"
+        })
         }
 
         // Update order for each activity
@@ -227,15 +180,8 @@ exports.reorderActivities = async (req, res) => {
         await Promise.all(updatePromises)
 
         res.status(200).json({
-            success: true,
-            message: "Activities reordered successfully",
-        })
-    } catch (error) {
-        console.error("Reorder activities error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to reorder activities",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }

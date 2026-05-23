@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useAuth } from "@/context/AuthContext"
 import { useError } from "@/context/ErrorContext"
-import { usersAPI } from "@/app/api/api"
+import { usersAPI, customFieldsAPI } from "@/app/api/api"
 import { User, Mail, University, MapPin, Phone, Calendar, Edit, Camera } from "lucide-react"
 import CropEasy from "@/components/dialogs/CropEasy"
 
@@ -24,6 +24,7 @@ const profileSchema = z.object({
     governorate: z.string().min(2, "Governorate must be at least 2 characters"),
     faculty: z.string().optional(),
     year: z.string().optional(),
+    nationalId: z.string().length(14, "National ID must be exactly 14 digits").optional().or(z.literal("")),
 })
 
 const Profile = () => {
@@ -34,6 +35,9 @@ const Profile = () => {
     const [openCrop, setOpenCrop] = useState(false)
     const [photoURL, setPhotoURL] = useState(null)
     const [uploading, setUploading] = useState(false)
+    const [customFields, setCustomFields] = useState([])
+    const [dynamicValues, setDynamicValues] = useState({})
+    const [isDynamicDirty, setIsDynamicDirty] = useState(false)
 
     const uploadsBase =
         (window.location.origin.includes("localhost")
@@ -55,8 +59,21 @@ const Profile = () => {
             governorate: user?.governorate || "",
             faculty: user?.faculty || "",
             year: user?.year || "",
+            nationalId: user?.nationalId || "",
         },
     })
+
+    useEffect(() => {
+        const loadCustomFields = async () => {
+            try {
+                const res = await customFieldsAPI.getAll({ status: "active" })
+                setCustomFields(res.data || [])
+            } catch (err) {
+                console.error("Failed to load custom fields", err)
+            }
+        }
+        loadCustomFields()
+    }, [])
 
     useEffect(() => {
         if (user) {
@@ -68,17 +85,47 @@ const Profile = () => {
                 governorate: user.governorate || "",
                 faculty: user.faculty || "",
                 year: user.year || "",
+                nationalId: user.nationalId || "",
             })
+            const initialDynamics = {}
+            if (user.customFieldValues && Array.isArray(user.customFieldValues)) {
+                user.customFieldValues.forEach(cfv => {
+                    const fieldId = typeof cfv.fieldId === 'object' && cfv.fieldId ? cfv.fieldId._id : cfv.fieldId
+                    if (fieldId) {
+                        initialDynamics[fieldId] = cfv.value || ""
+                    }
+                })
+            }
+            setDynamicValues(initialDynamics)
+            setIsDynamicDirty(false)
         }
     }, [user, reset])
+
+    const handleDynamicChange = (fieldId, val) => {
+        setDynamicValues(prev => ({
+            ...prev,
+            [fieldId]: val
+        }))
+        setIsDynamicDirty(true)
+    }
 
     const onSubmit = async (data) => {
         try {
             setIsLoading(true)
-            const response = await usersAPI.updateMe(data)
+            const submitData = {
+                ...data,
+                customFieldValues: JSON.stringify(
+                    Object.entries(dynamicValues).map(([fieldId, value]) => ({
+                        fieldId,
+                        value
+                    }))
+                )
+            }
+            const response = await usersAPI.updateMe(submitData)
             updateUser(response.data.user)
             addError("Profile updated successfully!", "success")
             setIsEditing(false)
+            setIsDynamicDirty(false)
         } catch (error) {
             addError(error.message || "Failed to update profile")
         } finally {
@@ -122,6 +169,17 @@ const Profile = () => {
 
     const handleCancel = () => {
         reset()
+        const initialDynamics = {}
+        if (user && user.customFieldValues && Array.isArray(user.customFieldValues)) {
+            user.customFieldValues.forEach(cfv => {
+                const fieldId = typeof cfv.fieldId === 'object' && cfv.fieldId ? cfv.fieldId._id : cfv.fieldId
+                if (fieldId) {
+                    initialDynamics[fieldId] = cfv.value || ""
+                }
+            })
+        }
+        setDynamicValues(initialDynamics)
+        setIsDynamicDirty(false)
         setIsEditing(false)
     }
 
@@ -255,6 +313,35 @@ const Profile = () => {
                                     <Input {...register("year")} disabled={!isEditing} placeholder="Enter your academic year" />
                                     {errors.year && <p className="text-red-500 text-sm mt-1">{errors.year.message}</p>}
                                 </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-1">National ID</label>
+                                    <Input {...register("nationalId")} disabled={!isEditing} placeholder="Enter 14-digit National ID" />
+                                    {errors.nationalId && <p className="text-red-500 text-sm mt-1">{errors.nationalId.message}</p>}
+                                </div>
+
+                                {customFields.map((field) => (
+                                    <div key={field._id} className={field.type === "textarea" ? "md:col-span-2" : ""}>
+                                        <label className="block text-sm font-medium text-gray-700 mb-1">{field.label}</label>
+                                        {field.type === "textarea" ? (
+                                            <textarea
+                                                value={dynamicValues[field._id] || ""}
+                                                disabled={!isEditing}
+                                                onChange={(e) => handleDynamicChange(field._id, e.target.value)}
+                                                className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                                placeholder={`Enter ${field.label}`}
+                                            />
+                                        ) : (
+                                            <Input
+                                                type={field.type === "number" ? "number" : field.type === "email" ? "email" : "text"}
+                                                value={dynamicValues[field._id] || ""}
+                                                disabled={!isEditing}
+                                                onChange={(e) => handleDynamicChange(field._id, e.target.value)}
+                                                placeholder={`Enter ${field.label}`}
+                                            />
+                                        )}
+                                    </div>
+                                ))}
                             </div>
 
                             {isEditing && (
@@ -262,7 +349,7 @@ const Profile = () => {
                                     <Button type="button" variant="outline" onClick={handleCancel}>
                                         Cancel
                                     </Button>
-                                    <Button type="submit" disabled={isLoading || !isDirty}>
+                                    <Button type="submit" disabled={isLoading || (!isDirty && !isDynamicDirty)}>
                                         {isLoading ? "Saving..." : "Save Changes"}
                                     </Button>
                                 </div>

@@ -13,16 +13,8 @@ exports.getHonorMembers = async (req, res) => {
             .sort({ order: 1, createdAt: -1 })
 
         res.status(200).json({
-            success: true,
-            count: members.length,
-            data: members,
-        })
-    } catch (error) {
-        console.error("Get honor members error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to fetch honor members",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -36,9 +28,9 @@ exports.createHonorMember = async (req, res) => {
 
         if (!userId || !title) {
             return res.status(400).json({
-                success: false,
-                message: "User ID and title are required",
-            })
+            status: 'error',
+            message: "معرف المستخدم واللقب مطلوبان"
+        })
         }
 
         const member = await HonorMember.create({
@@ -53,16 +45,8 @@ exports.createHonorMember = async (req, res) => {
         const populatedMember = await member.populate("user", "name profileImage university")
 
         res.status(201).json({
-            success: true,
-            message: "Honor member created successfully",
-            data: populatedMember,
-        })
-    } catch (error) {
-        console.error("Create honor member error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to create honor member",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -78,9 +62,9 @@ exports.updateHonorMember = async (req, res) => {
 
         if (!member) {
             return res.status(404).json({
-                success: false,
-                message: "Honor member not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على عضو لوحة الشرف"
+        })
         }
 
         // Update fields
@@ -94,16 +78,8 @@ exports.updateHonorMember = async (req, res) => {
         await member.populate("user", "name profileImage university")
 
         res.status(200).json({
-            success: true,
-            message: "Honor member updated successfully",
-            data: member,
-        })
-    } catch (error) {
-        console.error("Update honor member error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to update honor member",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }
@@ -117,24 +93,16 @@ exports.deleteHonorMember = async (req, res) => {
 
         if (!member) {
             return res.status(404).json({
-                success: false,
-                message: "Honor member not found",
-            })
+            status: 'error',
+            message: "لم يتم العثور على عضو لوحة الشرف"
+        })
         }
 
         await member.deleteOne()
 
         res.status(200).json({
-            success: true,
-            message: "Honor member deleted successfully",
-            data: {},
-        })
-    } catch (error) {
-        console.error("Delete honor member error:", error)
-        res.status(500).json({
-            success: false,
-            message: "Failed to delete honor member",
-            error: error.message,
+            status: 'error',
+            message: "
         })
     }
 }

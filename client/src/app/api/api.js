@@ -210,4 +210,23 @@ export const privilegesAPI = {
     delete: (id) => api.delete(`/privileges/${id}`),
 }
 
+// Custom Fields API
+export const customFieldsAPI = {
+    getAll: (params) => api.get("/custom-fields", { params }),
+    getById: (id) => api.get(`/custom-fields/${id}`),
+    create: (data) => api.post("/custom-fields", data),
+    update: (id, data) => api.put(`/custom-fields/${id}`, data),
+    delete: (id) => api.delete(`/custom-fields/${id}`),
+}
+
+// Mandatory Updates API
+export const mandatoryUpdatesAPI = {
+    getMyPending: () => api.get("/mandatory-updates"),
+    getAll: (params) => api.get("/mandatory-updates/admin", { params }),
+    create: (data) => api.post("/mandatory-updates", data),
+    update: (id, data) => api.put(`/mandatory-updates/${id}`, data),
+    delete: (id) => api.delete(`/mandatory-updates/${id}`),
+    complete: (id, data) => api.post(`/mandatory-updates/${id}/complete`, data),
+}
+
 export default api

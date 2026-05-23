@@ -1,5 +1,5 @@
 const News = require("../models/News")
-const { newsSchema } = require("../utils/validation")
+const {newsSchema, arabicJoiMessages} = require("../utils/validation")
 const path = require("path")
 const fs = require("fs")
 const mongoose = require("mongoose")
@@ -18,67 +18,15 @@ const getNews = async (req, res, next) => {
         const total = await News.countDocuments(search)
 
         res.status(200).json({
-            success: true,
-            data: {
-                news,
-                pagination: {
-                    page,
-                    limit,
-                    total,
-                    pages: Math.ceil(total / limit),
-                },
-            },
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Get single news
-// @route   GET /api/v1/news/:id
-// @access  Public
-const getNewsById = async (req, res, next) => {
-    try {
-        const { id } = req.params
-        let query = { slug: id }
-        if (mongoose.Types.ObjectId.isValid(id)) {
-            query = { $or: [{ slug: id }, { _id: id }] }
-        }
-
-        const news = await News.findOne(query).populate("createdBy", "name email")
-
-        if (!news) {
-            return res.status(404).json({
-                success: false,
-                error: "News not found",
-                data: null,
-            })
         }
 
         res.status(200).json({
-            success: true,
-            data: news,
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Create news
-// @route   POST /api/v1/news
-// @access  Private/Admin
-const createNews = async (req, res, next) => {
-    try {
-        // Validate input
-        const { error } = newsSchema.validate(req.body)
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                error: error.details[0].message,
-                data: null,
-            })
         }
 
         // Add createdBy field
@@ -94,38 +42,18 @@ const createNews = async (req, res, next) => {
         const populatedNews = await News.findById(news._id).populate("createdBy", "name email")
 
         res.status(201).json({
-            success: true,
-            data: populatedNews,
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Update news
-// @route   PUT /api/v1/news/:id
-// @access  Private/Admin
-const updateNews = async (req, res, next) => {
-    try {
-        // Validate input
-        const { error } = newsSchema.validate(req.body)
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                error: error.details[0].message,
-                data: null,
-            })
         }
 
         const existingNews = await News.findById(req.params.id)
 
         if (!existingNews) {
             return res.status(404).json({
-                success: false,
-                error: "News not found",
-                data: null,
-            })
+            status: 'error',
+            message: "لم يتم العثور على الخبر"
+        })
         }
 
         // Handle image update
@@ -146,28 +74,9 @@ const updateNews = async (req, res, next) => {
         }).populate("createdBy", "name email")
 
         res.status(200).json({
-            success: true,
-            data: news,
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Delete news
-// @route   DELETE /api/v1/news/:id
-// @access  Private/Admin
-const deleteNews = async (req, res, next) => {
-    try {
-        const news = await News.findById(req.params.id)
-
-        if (!news) {
-            return res.status(404).json({
-                success: false,
-                error: "News not found",
-                data: null,
-            })
         }
 
         // Delete associated image
@@ -182,7 +91,7 @@ const deleteNews = async (req, res, next) => {
 
         res.status(200).json({
             success: true,
-            data: { message: "News deleted successfully" },
+            data: { message: "تم حذف الخبر بنجاح" },
             error: null,
         })
     } catch (error) {

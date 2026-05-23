@@ -100,6 +100,19 @@ const userSchema = new mongoose.Schema(
             enum: ["member", "publisher", "admin", "partnership_manager", "hr", "coordinator"],
             default: "member",
         },
+        customFieldValues: [
+            {
+                fieldId: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "CustomField",
+                    required: true,
+                },
+                value: {
+                    type: mongoose.Schema.Types.Mixed,
+                    default: "",
+                },
+            },
+        ],
         resetPasswordToken: {
             type: String,
         },
@@ -114,6 +127,8 @@ const userSchema = new mongoose.Schema(
 
 // Indexes for performance (remove manual indexes to avoid duplicates)
 userSchema.index({ role: 1 })
+// Compound index for Honor Roll filtering on custom field values
+userSchema.index({ "customFieldValues.fieldId": 1, "customFieldValues.value": 1 })
 
 // Hash password before saving
 userSchema.pre("save", async function (next) {

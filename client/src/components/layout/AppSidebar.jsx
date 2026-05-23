@@ -4,7 +4,7 @@ import * as React from "react"
 
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 
-import { Users, Newspaper, Calendar, Image, Settings, Bell, LogOut, Home, UserCircle, ChevronRight, Clock, Award, Activity, Cog, Handshake, Star } from "lucide-react"
+import { Users, Newspaper, Calendar, Image, Settings, Bell, LogOut, Home, UserCircle, ChevronRight, Clock, Award, Activity, Cog, Handshake, Star, FormInput, ShieldAlert } from "lucide-react"
 import { NavMain } from "../ui/nav-main"
 // import { NavSecondary } from "../ui/nav-secondary"
 
@@ -38,6 +38,8 @@ export function AppSidebar(props) {
         { title: "المناصب", url: "/admin/positions", icon: Settings, role: ["admin"] },
         { title: "الإشعارات", url: "/admin/notifications", icon: Bell, role: ["admin"] },
         { title: "صور السلايدر", url: "/admin/hero-images", icon: Image, role: ["admin"] },
+        { title: "الحقول الديناميكية", url: "/admin/custom-fields", icon: FormInput, role: ["admin"] },
+        { title: "التحديثات الإلزامية", url: "/admin/mandatory-updates", icon: ShieldAlert, role: ["admin"] },
         { title: "إعدادات الموقع", url: "/admin/site-settings", icon: Cog, role: ["admin"] },
         { title: "الإعدادات", url: "/settings", icon: UserCircle, role: ["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator"] },
     ]

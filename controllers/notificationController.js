@@ -1,7 +1,7 @@
 const admin = require('firebase-admin');
 const User = require('../models/User');
 const { sendPushNotification, sendToTopic } = require('../utils/firebase');
-const { notificationSchema } = require('../utils/validation');
+const {notificationSchema, arabicJoiMessages} = require('../utils/validation');
 
 // @desc    Send push notification
 // @route   POST /api/v1/notifications
@@ -9,13 +9,12 @@ const { notificationSchema } = require('../utils/validation');
 const sendNotification = async (req, res, next) => {
   try {
     // Validate input
-    const { error } = notificationSchema.validate(req.body);
+    const { error } = notificationSchema.validate(req.body, { messages: arabicJoiMessages });
     if (error) {
       return res.status(400).json({
-        success: false,
-        error: error.details[0].message,
-        data: null
-      });
+            status: 'error',
+            message: error.details[0].message
+        });
     }
 
     const { title, message, userIds } = req.body;
@@ -28,9 +27,8 @@ const sendNotification = async (req, res, next) => {
 
       if (users.length === 0) {
         return res.status(404).json({
-          success: false,
-          error: 'No valid users found',
-          data: null
+            status: 'error',
+            message: 'لم يتم العثور على مستخدمين صالحين'
         });
       }
 
@@ -75,49 +73,25 @@ const sendNotification = async (req, res, next) => {
     }
 
     res.status(200).json({
-      success: true,
-      data: {
-        message: 'Notification sent successfully',
-        details: result
-      },
-      error: null
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// @desc    Send notification to users by role
-// @route   POST /api/v1/notifications/role
-// @access  Private/Admin
-const sendNotificationByRole = async (req, res, next) => {
-  try {
-    const { title, message, role } = req.body;
-
-    if (!title || !message || !role) {
-      return res.status(400).json({
-        success: false,
-        error: 'Title, message, and role are required',
-        data: null
-      });
+            status: 'error',
+            message: null
+        });
     }
 
     if (!['student', 'volunteer', 'admin'].includes(role)) {
       return res.status(400).json({
-        success: false,
-        error: 'Invalid role specified',
-        data: null
-      });
+            status: 'error',
+            message: 'الدور المحدد غير صالح'
+        });
     }
 
     const users = await User.find({ role });
 
     if (users.length === 0) {
       return res.status(404).json({
-        success: false,
-        error: `No users found with role: ${role}`,
-        data: null
-      });
+            status: 'error',
+            message: `No users found with role: ${role}`
+        });
     }
 
     // In a real implementation, you would use FCM tokens
@@ -128,45 +102,18 @@ const sendNotificationByRole = async (req, res, next) => {
     });
 
     res.status(200).json({
-      success: true,
-      data: {
-        message: 'Notification sent successfully',
-        details: {
-          sent: users.length,
-          role,
-          users: users.map(u => ({ id: u._id, name: u.name, email: u.email }))
-        }
-      },
-      error: null
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// @desc    Send notification to users by governorate
-// @route   POST /api/v1/notifications/governorate
-// @access  Private/Admin
-const sendNotificationByGovernorate = async (req, res, next) => {
-  try {
-    const { title, message, governorate } = req.body;
-
-    if (!title || !message || !governorate) {
-      return res.status(400).json({
-        success: false,
-        error: 'Title, message, and governorate are required',
-        data: null
-      });
+            status: 'error',
+            message: null
+        });
     }
 
     const users = await User.find({ governorate });
 
     if (users.length === 0) {
       return res.status(404).json({
-        success: false,
-        error: `No users found in governorate: ${governorate}`,
-        data: null
-      });
+            status: 'error',
+            message: `No users found in governorate: ${governorate}`
+        });
     }
 
     // In a real implementation, you would use FCM tokens
@@ -177,35 +124,9 @@ const sendNotificationByGovernorate = async (req, res, next) => {
     });
 
     res.status(200).json({
-      success: true,
-      data: {
-        message: 'Notification sent successfully',
-        details: {
-          sent: users.length,
-          governorate,
-          users: users.map(u => ({ id: u._id, name: u.name, email: u.email }))
-        }
-      },
-      error: null
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// @desc    Send notification to users directly from app (topics with data)
-// @route   POST /api/v1/notifications/send
-// @access  Private/Admin
-const sendDirectNotification = async (req, res, next) => {
-  try {
-    const { topic, title, body, data } = req.body;
-
-    if (!topic || !title || !body) {
-      return res.status(400).json({
-        success: false,
-        error: 'Missing required fields: topic, title, or body',
-        data: null
-      });
+            status: 'error',
+            message: null
+        });
     }
 
     const message = {

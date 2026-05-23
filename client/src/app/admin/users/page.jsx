@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { useError } from "@/context/ErrorContext"
-import { usersAPI, positionsAPI } from "@/app/api/api"
+import { usersAPI, positionsAPI, customFieldsAPI } from "@/app/api/api"
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
 import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter, Download, Loader2, Globe } from "lucide-react"
@@ -66,6 +66,8 @@ const UserManagement = () => {
     const { user: currentUser } = useAuth()
     const isCoordinator = currentUser?.role === "coordinator"
     const isAdmin = currentUser?.role === "admin"
+    const [customFields, setCustomFields] = useState([])
+    const [dynamicValues, setDynamicValues] = useState({})
 
     const {
         register,
@@ -167,6 +169,18 @@ const UserManagement = () => {
     }, [isCoordinator, currentUser?.governorate])
 
     useEffect(() => {
+        const fetchCustomFields = async () => {
+            try {
+                const res = await customFieldsAPI.getAll({ status: "active" })
+                setCustomFields(res.data || [])
+            } catch (err) {
+                console.error("Failed to fetch custom fields:", err)
+            }
+        }
+        fetchCustomFields()
+    }, [])
+
+    useEffect(() => {
         fetchUsers()
         fetchPositions()
         fetchStats()
@@ -217,6 +231,16 @@ const UserManagement = () => {
             role: user.role,
             rating: user.rating || 0,
         })
+        const initialDynamics = {}
+        if (user.customFieldValues && Array.isArray(user.customFieldValues)) {
+            user.customFieldValues.forEach(cfv => {
+                const fieldId = typeof cfv.fieldId === 'object' && cfv.fieldId ? cfv.fieldId._id : cfv.fieldId
+                if (fieldId) {
+                    initialDynamics[fieldId] = cfv.value || ""
+                }
+            })
+        }
+        setDynamicValues(initialDynamics)
         setIsSheetOpen(true)
     }
 
@@ -229,6 +253,12 @@ const UserManagement = () => {
                 ...data,
                 membershipExpiry: data.membershipExpiry ? new Date(data.membershipExpiry).toISOString() : undefined,
                 position: data.position || undefined, // Don't send empty string
+                customFieldValues: JSON.stringify(
+                    Object.entries(dynamicValues).map(([fieldId, value]) => ({
+                        fieldId,
+                        value
+                    }))
+                )
             }
 
             // Remove undefined fields
@@ -242,6 +272,7 @@ const UserManagement = () => {
             addError("User updated successfully!", "success")
             setIsSheetOpen(false)
             setEditingUser(null)
+            setDynamicValues({})
             reset()
             fetchUsers()
         } catch (error) {
@@ -282,9 +313,17 @@ const UserManagement = () => {
         }
     }
 
+    const handleDynamicChange = (fieldId, val) => {
+        setDynamicValues(prev => ({
+            ...prev,
+            [fieldId]: val
+        }))
+    }
+
     const handleCloseSheet = () => {
         setIsSheetOpen(false)
         setEditingUser(null)
+        setDynamicValues({})
         reset()
     }
 
@@ -714,6 +753,34 @@ const UserManagement = () => {
                                 {errors.position && <p className="text-red-500 text-sm mt-1">{errors.position.message}</p>}
                             </div>
                         </div>
+
+                        {customFields.length > 0 && (
+                            <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                <label className="text-sm font-bold text-gray-700 block">الحقول الديناميكية</label>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {customFields.map((field) => (
+                                        <div key={field._id} className={field.type === "textarea" ? "col-span-2" : ""}>
+                                            <label className="block text-xs font-medium text-gray-500 mb-1">{field.label}</label>
+                                            {field.type === "textarea" ? (
+                                                <textarea
+                                                    value={dynamicValues[field._id] || ""}
+                                                    onChange={(e) => handleDynamicChange(field._id, e.target.value)}
+                                                    className="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                                    placeholder={`أدخل ${field.label}`}
+                                                />
+                                            ) : (
+                                                <Input
+                                                    type={field.type === "number" ? "number" : field.type === "email" ? "email" : "text"}
+                                                    value={dynamicValues[field._id] || ""}
+                                                    onChange={(e) => handleDynamicChange(field._id, e.target.value)}
+                                                    placeholder={`أدخل ${field.label}`}
+                                                />
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                         <div className="space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
                             <div className="flex justify-between items-center">

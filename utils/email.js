@@ -507,10 +507,95 @@ async function sendJoinRequestDenied(email, name, notes) {
     return sendEmail({ to: email, subject, html, text: `تعديل مطلوب على طلبك. ${notes ? "الملاحظات: " + notes : ""}` })
 }
 
+async function sendMandatoryUpdateNotification(email, name, adminMessage) {
+    const subject = "📋 تحديث مطلوب لملفك الشخصي - اتحاد شباب تحيا مصر"
+    const html = baseTemplate(
+        "تحديث مطلوب لملفك الشخصي",
+        `
+        <div style="text-align: center; margin-bottom: 30px;">
+            <div class="large-icon" style="background: linear-gradient(135deg, #FF6B35 0%, #FFD700 100%); 
+                        color: white; 
+                        padding: 20px; 
+                        border-radius: 50%; 
+                        width: 100px; 
+                        height: 100px; 
+                        margin: 0 auto 20px; 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center;
+                        font-size: 48px;
+                        box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);">
+                📋
+            </div>
+            <h2 style="color: #B31D1D; margin: 0; font-size: 24px;">مرحباً ${name}!</h2>
+            <p style="color: #666; margin: 10px 0 0 0; font-size: 16px;">يرجى تحديث بيانات ملفك الشخصي</p>
+        </div>
+        
+        <div style="background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%); 
+                    border: 2px solid #ffc107; 
+                    border-radius: 12px; 
+                    padding: 25px; 
+                    margin-bottom: 30px;">
+            <h3 style="color: #856404; margin: 0 0 15px 0; font-size: 20px; text-align: center;">
+                ⚠️ تحديث إلزامي
+            </h3>
+            <p style="color: #856404; text-align: center; margin-bottom: 20px; font-size: 16px;">
+                طلبت إدارة الاتحاد تحديث بعض بيانات ملفك الشخصي. يرجى فتح التطبيق وإكمال البيانات المطلوبة.
+            </p>
+        </div>
+        
+        <div style="background-color: #ffffff; 
+                    border: 2px solid #e0e0e0; 
+                    border-radius: 12px; 
+                    padding: 25px; 
+                    margin-bottom: 30px;
+                    border-right: 4px solid #B31D1D;">
+            <h4 style="color: #333; margin: 0 0 15px 0; font-size: 18px;">💬 رسالة من الإدارة:</h4>
+            <div style="color: #555; font-size: 16px; line-height: 1.8; white-space: pre-line; word-break: break-word;">
+                ${adminMessage}
+            </div>
+        </div>
+        
+        <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+            <h4 style="color: #721c24; margin: 0 0 10px 0;">⚠️ ملاحظة مهمة:</h4>
+            <p style="color: #721c24; margin: 0;">
+                لن تتمكن من استخدام التطبيق بشكل كامل حتى يتم إكمال البيانات المطلوبة.
+            </p>
+        </div>
+        
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="https://tahyamisryu.com" 
+               class="button"
+               style="background: linear-gradient(135deg, #B31D1D 0%, #FFD700 100%); 
+                      color: white; 
+                      text-decoration: none; 
+                      padding: 15px 40px; 
+                      border-radius: 30px; 
+                      font-weight: bold; 
+                      display: inline-block;
+                      font-size: 16px;
+                      box-shadow: 0 6px 20px rgba(179, 29, 29, 0.3);
+                      max-width: 90%;
+                      white-space: normal;
+                      word-break: keep-all;">
+                📱 افتح التطبيق الآن
+            </a>
+        </div>
+        `
+    )
+    return sendEmail({
+        to: email,
+        subject,
+        html,
+        text: `مطلوب تحديث ملفك الشخصي: ${adminMessage}`,
+    })
+}
+
 module.exports = {
     sendEmail,
     sendResetPasswordEmail,
     sendJoinRequestSubmitted,
     sendJoinRequestApproved,
     sendJoinRequestDenied,
+    sendMandatoryUpdateNotification,
 }

@@ -1,6 +1,7 @@
 const User = require("../models/User")
-const { updateUserSchema } = require("../utils/validation")
+const { updateUserSchema, arabicJoiMessages } = require("../utils/validation")
 const { Filter } = require("../utils/Filter")
+const { filterUserFields } = require("../utils/userFieldFilter")
 // @desc    Get all users
 // @route   GET /api/v1/users
 // @access  Private/Admin
@@ -51,66 +52,29 @@ const getUsers = async (req, res, next) => {
             query.$and = conditions
         }
 
-        const users = await User.find(query).populate("position").skip(skip).limit(limit).sort({ createdAt: -1 })
+                const users = await User.find(query)
+            .populate("position")
+            .populate("customFieldValues.fieldId")
+            .skip(skip)
+            .limit(limit)
+            .sort({ createdAt: -1 })
 
         const total = await User.countDocuments(query)
+        const filteredUsers = await filterUserFields(req.user, users)
 
         res.status(200).json({
-            success: true,
-            data: {
-                users,
-                pagination: {
-                    page,
-                    limit,
-                    total,
-                    pages: Math.ceil(total / limit),
-                },
-            },
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Get single user
-// @route   GET /api/v1/users/:id
-// @access  Private/Admin
-const getUser = async (req, res, next) => {
-    try {
-        const user = await User.findById(req.params.id).populate("position")
-
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                error: "User not found",
-                data: null,
-            })
         }
 
-        res.status(200).json({
-            success: true,
-            data: user,
-            error: null,
-        })
-    } catch (error) {
-        next(error)
-    }
-}
+        const filteredUser = await filterUserFields(req.user, user)
 
-// @desc    Update user
-// @route   PUT /api/v1/users/:id
-// @access  Private/Admin
-const updateUser = async (req, res, next) => {
-    try {
-        // Validate input
-        const { error } = updateUserSchema.validate(req.body)
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                error: error.details[0].message,
-                data: null,
-            })
+        res.status(200).json({
+            status: 'error',
+            message: null
+        })
+            }
         }
 
         // Don't allow password updates through this endpoint
@@ -118,58 +82,47 @@ const updateUser = async (req, res, next) => {
             delete req.body.password
         }
 
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        }).populate("position")
+        // Prepare update data
+        const updateData = { ...req.body }
 
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                error: "User not found",
-                data: null,
-            })
+        // Handle profile image upload if provided
+        if (req.file) {
+            updateData.profileImage = req.file.filename
         }
 
-        res.status(200).json({
-            success: true,
-            data: user,
-            error: null,
-        })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Delete user
-// @route   DELETE /api/v1/users/:id
-// @access  Private/Admin
-const deleteUser = async (req, res, next) => {
-    try {
-        const user = await User.findById(req.params.id)
+        const user = await User.findByIdAndUpdate(req.params.id, updateData, {
+            new: true,
+            runValidators: true,
+        }).populate("position").populate("customFieldValues.fieldId")
 
         if (!user) {
             return res.status(404).json({
-                success: false,
-                error: "User not found",
-                data: null,
-            })
+            status: 'error',
+            message: "المستخدم غير موجود"
+        })
+        }
+
+        const filteredUser = await filterUserFields(req.user, user)
+
+        res.status(200).json({
+            status: 'error',
+            message: null
+        })
         }
 
         // Don't allow admin to delete themselves
         if (user._id.toString() === req.user.id) {
             return res.status(400).json({
-                success: false,
-                error: "Cannot delete your own account",
-                data: null,
-            })
+            status: 'error',
+            message: "لا يمكنك حذف حسابك الشخصي"
+        })
         }
 
         await User.findByIdAndDelete(req.params.id)
 
         res.status(200).json({
             success: true,
-            data: { message: "User deleted successfully" },
+            data: { message: "تم حذف المستخدم بنجاح" },
             error: null,
         })
     } catch (error) {

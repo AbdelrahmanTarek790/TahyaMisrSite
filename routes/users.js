@@ -14,7 +14,7 @@ router.put("/me", protect, ...upload.profile(), updateMe)
 router.get("/stats", protect, authorize("admin", "hr", "coordinator"), getUserStats)
 router.get("/", protect, authorize("admin", "hr", "coordinator"), getUsers)
 router.get("/:id", protect, authorize("admin", "hr", "coordinator"), getUser)
-router.put("/:id", protect, authorize("admin", "hr"), updateUser)
+router.put("/:id", protect, authorize("admin", "hr"), ...upload.profile(), updateUser)
 router.delete("/:id", protect, authorize("admin"), deleteUser)
 
 module.exports = router

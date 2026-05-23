@@ -1,5 +1,5 @@
 const Media = require('../models/Media');
-const { mediaSchema } = require('../utils/validation');
+const {mediaSchema, arabicJoiMessages} = require('../utils/validation');
 const path = require('path');
 const fs = require('fs');
 
@@ -27,60 +27,15 @@ const getMedia = async (req, res, next) => {
     const total = await Media.countDocuments(filter);
 
     res.status(200).json({
-      success: true,
-      data: {
-        media,
-        pagination: {
-          page,
-          limit,
-          total,
-          pages: Math.ceil(total / limit)
-        }
-      },
-      error: null
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// @desc    Get single media
-// @route   GET /api/v1/media/:id
-// @access  Public
-const getMediaById = async (req, res, next) => {
-  try {
-    const media = await Media.findById(req.params.id)
-      .populate('createdBy', 'name email');
-
-    if (!media) {
-      return res.status(404).json({
-        success: false,
-        error: 'Media not found',
-        data: null
-      });
+            status: 'error',
+            message: null
+        });
     }
 
     res.status(200).json({
-      success: true,
-      data: media,
-      error: null
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// @desc    Upload media
-// @route   POST /api/v1/media
-// @access  Private/Admin
-const uploadMedia = async (req, res, next) => {
-  try {
-    if (!req.file) {
-      return res.status(400).json({
-        success: false,
-        error: 'No file uploaded',
-        data: null
-      });
+            status: 'error',
+            message: null
+        });
     }
 
     // Determine media type based on file mimetype
@@ -94,7 +49,7 @@ const uploadMedia = async (req, res, next) => {
     };
 
     // Validate input
-    const { error } = mediaSchema.validate(mediaData);
+    const { error } = mediaSchema.validate(mediaData, { messages: arabicJoiMessages });
     if (error) {
       // Delete uploaded file if validation fails
       const filePath = path.join(process.env.UPLOAD_PATH || './uploads', req.file.filename);
@@ -103,10 +58,9 @@ const uploadMedia = async (req, res, next) => {
       }
 
       return res.status(400).json({
-        success: false,
-        error: error.details[0].message,
-        data: null
-      });
+            status: 'error',
+            message: error.details[0].message
+        });
     }
 
     const media = await Media.create(mediaData);
@@ -115,35 +69,9 @@ const uploadMedia = async (req, res, next) => {
       .populate('createdBy', 'name email');
 
     res.status(201).json({
-      success: true,
-      data: populatedMedia,
-      error: null
-    });
-  } catch (error) {
-    // Delete uploaded file if error occurs
-    if (req.file) {
-      const filePath = path.join(process.env.UPLOAD_PATH || './uploads', req.file.filename);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    }
-    next(error);
-  }
-};
-
-// @desc    Update media
-// @route   PUT /api/v1/media/:id
-// @access  Private/Admin
-const updateMedia = async (req, res, next) => {
-  try {
-    const media = await Media.findById(req.params.id);
-
-    if (!media) {
-      return res.status(404).json({
-        success: false,
-        error: 'Media not found',
-        data: null
-      });
+            status: 'error',
+            message: null
+        });
     }
 
     // Only allow updating caption
@@ -161,28 +89,9 @@ const updateMedia = async (req, res, next) => {
     ).populate('createdBy', 'name email');
 
     res.status(200).json({
-      success: true,
-      data: updatedMedia,
-      error: null
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-// @desc    Delete media
-// @route   DELETE /api/v1/media/:id
-// @access  Private/Admin
-const deleteMedia = async (req, res, next) => {
-  try {
-    const media = await Media.findById(req.params.id);
-
-    if (!media) {
-      return res.status(404).json({
-        success: false,
-        error: 'Media not found',
-        data: null
-      });
+            status: 'error',
+            message: null
+        });
     }
 
     // Delete associated file
@@ -195,7 +104,7 @@ const deleteMedia = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: { message: 'Media deleted successfully' },
+      data: { message: 'تم حذف ملف الوسائط بنجاح' },
       error: null
     });
   } catch (error) {

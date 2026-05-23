@@ -1,8 +1,9 @@
 const User = require("../models/User")
 const Position = require("../models/Position")
 const { generateToken } = require("../middleware/auth")
-const { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema } = require("../utils/validation")
+const { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, arabicJoiMessages } = require("../utils/validation")
 const { sendResetPasswordEmail } = require("../utils/email")
+const { filterUserFields } = require("../utils/userFieldFilter")
 const upload = require("../utils/upload")
 const crypto = require("crypto")
 const path = require("path")
@@ -13,15 +14,14 @@ const path = require("path")
 const register = async (req, res, next) => {
     try {
         // Validate input
-        const { error } = registerSchema.validate(req.body)
+        const { error } = registerSchema.validate(req.body, { messages: arabicJoiMessages })
         console.log(error);
         
         if (error) {
             return res.status(400).json({
-                success: false,
-                error: error.details[0].message,
-                data: null,
-            })
+            status: 'error',
+            message: error.details[0].message
+        })
         }
 
         const { name, email, password, phone, university,role, nationalId, governorate, position, membershipNumber, membershipExpiry } = req.body
@@ -33,10 +33,9 @@ const register = async (req, res, next) => {
 
         if (existingUser) {
             return res.status(400).json({
-                success: false,
-                error: "User already exists with this email or national ID",
-                data: null,
-            })
+            status: 'error',
+            message: "هذا المستخدم مسجل بالفعل بهذا البريد الإلكتروني أو الرقم القومي"
+        })
         }
 
         // Validate position if provided
@@ -44,10 +43,9 @@ const register = async (req, res, next) => {
             const validPosition = await Position.findById(position)
             if (!validPosition || !validPosition.isActive) {
                 return res.status(400).json({
-                    success: false,
-                    error: "Invalid position selected",
-                    data: null,
-                })
+            status: 'error',
+            message: "اللجنة المختارة غير صالحة"
+        })
             }
         }
 
@@ -69,31 +67,12 @@ const register = async (req, res, next) => {
         // Generate token
         const token = generateToken(user._id)
 
+        const filteredUser = await filterUserFields(user, user)
+
         res.status(201).json({
-            success: true,
-            data: {
-                token,
-                user,
-            },
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-// @desc    Login user
-// @route   POST /api/v1/auth/login
-// @access  Public
-const login = async (req, res, next) => {
-    try {
-        // Validate input
-        const { error } = loginSchema.validate(req.body)
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                error: error.details[0].message,
-                data: null,
-            })
         }
 
         const { email, password } = req.body
@@ -103,10 +82,9 @@ const login = async (req, res, next) => {
 
         if (!user) {
             return res.status(401).json({
-                success: false,
-                error: "Invalid credentials",
-                data: null,
-            })
+            status: 'error',
+            message: "بيانات الدخول غير صحيحة"
+        })
         }
 
         // Check password
@@ -114,63 +92,20 @@ const login = async (req, res, next) => {
 
         if (!isMatch) {
             return res.status(401).json({
-                success: false,
-                error: "Invalid credentials",
-                data: null,
-            })
+            status: 'error',
+            message: "بيانات الدخول غير صحيحة"
+        })
         }
 
         // Generate token
         const token = generateToken(user._id)
 
-        res.status(200).json({
-            success: true,
-            data: {
-                token,
-                user,
-            },
-            error: null,
-        })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Get current user
-// @route   GET /api/v1/users/me
-// @access  Private
-const getMe = async (req, res, next) => {
-    try {
-        const user = await User.findById(req.user.id).populate("position")
+        const filteredUser = await filterUserFields(user, user)
 
         res.status(200).json({
-            success: true,
-            data: user,
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Update current user
-// @route   PUT /api/v1/users/me
-// @access  Private
-const updateMe = async (req, res, next) => {
-    try {
-        // Check if this is a file upload (FormData)
-        const isFormData = req.headers["content-type"]?.includes("multipart/form-data")
-
-        if (!isFormData) {
-            // Regular JSON update - validate input
-            const { updateUserSchema } = require("../utils/validation")
-            const { error } = updateUserSchema.validate(req.body)
-            if (error) {
-                return res.status(400).json({
-                    success: false,
-                    error: error.details[0].message,
-                    data: null,
-                })
             }
         }
 
@@ -179,10 +114,9 @@ const updateMe = async (req, res, next) => {
             const validPosition = await Position.findById(req.body.position)
             if (!validPosition || !validPosition.isActive) {
                 return res.status(400).json({
-                    success: false,
-                    error: "Invalid position selected",
-                    data: null,
-                })
+            status: 'error',
+            message: "اللجنة المختارة غير صالحة"
+        })
             }
         }
 
@@ -197,31 +131,14 @@ const updateMe = async (req, res, next) => {
         const user = await User.findByIdAndUpdate(req.user.id, updateData, {
             new: true,
             runValidators: true,
-        }).populate("position")
+        }).populate("position").populate("customFieldValues.fieldId")
+
+        const filteredUser = await filterUserFields(req.user, user)
 
         res.status(200).json({
-            success: true,
-            data: { user },
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Forgot password
-// @route   POST /api/v1/auth/forgot-password
-// @access  Public
-const forgotPassword = async (req, res, next) => {
-    try {
-        // Validate input
-        const { error } = forgotPasswordSchema.validate(req.body)
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                error: error.details[0].message,
-                data: null,
-            })
         }
 
         const { email } = req.body
@@ -231,10 +148,9 @@ const forgotPassword = async (req, res, next) => {
 
         if (!user) {
             return res.status(404).json({
-                success: false,
-                error: "User not found with this email",
-                data: null,
-            })
+            status: 'error',
+            message: "لا يوجد مستخدم مسجل بهذا البريد الإلكتروني"
+        })
         }
 
         // Generate reset token
@@ -253,37 +169,15 @@ const forgotPassword = async (req, res, next) => {
             await user.save({ validateBeforeSave: false })
 
             return res.status(500).json({
-                success: false,
-                error: "Email could not be sent",
-                data: null,
-            })
+            status: 'error',
+            message: "فشل إرسال البريد الإلكتروني"
+        })
         }
 
         res.status(200).json({
-            success: true,
-            data: {
-                message: "Password reset email sent",
-            },
-            error: null,
+            status: 'error',
+            message: null
         })
-    } catch (error) {
-        next(error)
-    }
-}
-
-// @desc    Reset password
-// @route   POST /api/v1/auth/reset-password
-// @access  Public
-const resetPassword = async (req, res, next) => {
-    try {
-        // Validate input
-        const { error } = resetPasswordSchema.validate(req.body)
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                error: error.details[0].message,
-                data: null,
-            })
         }
 
         const { token, password } = req.body
@@ -299,10 +193,9 @@ const resetPassword = async (req, res, next) => {
 
         if (!user) {
             return res.status(400).json({
-                success: false,
-                error: "Invalid or expired reset token",
-                data: null,
-            })
+            status: 'error',
+            message: "رمز إعادة تعيين كلمة المرور غير صالح أو منتهي الصلاحية"
+        })
         }
 
         // Set new password
@@ -315,33 +208,12 @@ const resetPassword = async (req, res, next) => {
         // Generate new JWT token
         const jwtToken = generateToken(user._id)
 
-        res.status(200).json({
-            success: true,
-            data: {
-                message: "Password reset successful",
-                token: jwtToken,
-                user,
-            },
-            error: null,
-        })
-    } catch (error) {
-        next(error)
-    }
-}
+        const filteredUser = await filterUserFields(user, user)
 
-// @desc    Change password
-// @route   PUT /api/v1/auth/change-password
-// @access  Private
-const changePassword = async (req, res, next) => {
-    try {
-        // Validate input
-        const { error } = changePasswordSchema.validate(req.body)
-        if (error) {
-            return res.status(400).json({
-                success: false,
-                error: error.details[0].message,
-                data: null,
-            })
+        res.status(200).json({
+            status: 'error',
+            message: null
+        })
         }
 
         const { currentPassword, newPassword } = req.body
@@ -354,10 +226,9 @@ const changePassword = async (req, res, next) => {
 
         if (!isMatch) {
             return res.status(400).json({
-                success: false,
-                error: "Current password is incorrect",
-                data: null,
-            })
+            status: 'error',
+            message: "كلمة المرور الحالية غير صحيحة"
+        })
         }
 
         // Set new password
@@ -370,7 +241,7 @@ const changePassword = async (req, res, next) => {
         res.status(200).json({
             success: true,
             data: {
-                message: "Password changed successfully",
+                message: "تم تغيير كلمة المرور بنجاح",
                 token,
             },
             error: null,

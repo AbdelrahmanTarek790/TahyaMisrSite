@@ -6,25 +6,31 @@ const errorHandler = (err, req, res, next) => {
 
   // Mongoose bad ObjectId
   if (err.name === 'CastError') {
-    const message = 'Resource not found';
+    const message = 'العنصر المطلوبة غير موجود أو المعرف غير صحيح.';
     error = { message, statusCode: 404 };
   }
 
   // Mongoose duplicate key
-  if (err.code === 11000) {
-    const message = 'Duplicate field value entered';
+  else if (err.code === 11000) {
+    const message = 'هذه البيانات مسجلة بالفعل في النظام ولا يمكن تكرارها.';
     error = { message, statusCode: 400 };
   }
 
   // Mongoose validation error
-  if (err.name === 'ValidationError') {
-    const message = Object.values(err.errors).map(val => val.message);
-    error = { message: message.join(', '), statusCode: 400 };
+  else if (err.name === 'ValidationError') {
+    const message = 'البيانات المرسلة غير صالحة، برجاء التحقق من الحقول المكتوبة.';
+    error = { message, statusCode: 400 };
   }
 
-  res.status(error.statusCode || 500).json({
+  const statusCode = error.statusCode || 500;
+  let responseMessage = error.message;
+  if (statusCode === 500) {
+    responseMessage = 'حدث خطأ داخلي في الخادم، برجاء المحاولة مرة أخرى لاحقاً.';
+  }
+
+  res.status(statusCode).json({
     success: false,
-    error: error.message || 'Server Error',
+    error: responseMessage || 'حدث خطأ داخلي في الخادم، برجاء المحاولة مرة أخرى لاحقاً.',
     data: null
   });
 };
