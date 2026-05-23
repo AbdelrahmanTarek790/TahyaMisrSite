@@ -71,7 +71,10 @@ const sendNotification = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        data: result
+        data: {
+        message: 'تم إرسال الإشعار بنجاح',
+        details: result
+      },
     });
 });
 
@@ -110,10 +113,14 @@ const sendNotificationByRole = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        data: {
-            sent: users.length,
-            role
+          data: {
+        message: 'تم إرسال الإشعار بنجاح',
+        details: {
+          sent: users.length,
+          role,
+          users: users.map(u => ({ id: u._id, name: u.name, email: u.email }))
         }
+      },
     });
 });
 
@@ -146,9 +153,13 @@ const sendNotificationByGovernorate = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         data: {
+            message: 'تم إرسال الإشعار بنجاح',
+            details: {
             sent: users.length,
-            governorate
-        }
+            governorate,
+            users: users.map(u => ({ id: u._id, name: u.name, email: u.email }))
+            }
+      },
     });
 });
 

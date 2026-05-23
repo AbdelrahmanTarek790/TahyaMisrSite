@@ -32,14 +32,15 @@ const getEvents = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        count: safeEvents.length,
-        pagination: {
-            page,
-            limit,
-            total,
-            pages: Math.ceil(total / limit)
-        },
-        data: safeEvents
+         data: {
+                events: safeEvents,
+                pagination: {
+                    page,
+                    limit,
+                    total,
+                    pages: Math.ceil(total / limit),
+                },
+            },
     })
 })
 

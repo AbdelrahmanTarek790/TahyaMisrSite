@@ -21,14 +21,14 @@ const getTimeline = asyncHandler(async (req, res, next) => {
   res.status(200).json({
     success: true,
     data: {
-      timeline,
-      pagination: {
-        page: pageNum,
-        limit: limitNum,
-        total,
-        pages: Math.ceil(total / limitNum)
+        timeline,
+        pagination: {
+          page: pageNum,
+          limit: limitNum,
+          total,
+          pages: Math.ceil(total / limitNum)
+        }
       }
-    }
   });
 });
 

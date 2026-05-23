@@ -14,7 +14,8 @@ exports.getHonorMembers = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        data: members
+        count: members.length,
+        data: members,
     })
 })
 

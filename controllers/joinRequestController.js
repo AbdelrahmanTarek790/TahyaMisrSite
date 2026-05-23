@@ -92,7 +92,9 @@ const createJoinRequest = asyncHandler(async (req, res, next) => {
     res.status(201).json({
         success: true,
         message: "تم تقديم طلب الانضمام بنجاح",
-        data: joinRequest
+       data: {
+                joinRequest,
+            },
     })
 })
 
@@ -124,14 +126,15 @@ const getJoinRequests = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        count: joinRequests.length,
-        pagination: {
-            page: parseInt(page),
-            limit: parseInt(limit),
-            total,
-            pages: Math.ceil(total / limit)
+        data: {
+            joinRequests,
+            pagination: {
+                    current: parseInt(page),
+                    total: Math.ceil(total / limit),
+                    count: joinRequests.length,
+                    totalCount: total,
+            },
         },
-        data: joinRequests
     })
 })
 
@@ -152,7 +155,9 @@ const getJoinRequest = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        data: joinRequest
+         data: {
+                joinRequest,
+            },
     })
 })
 
@@ -221,7 +226,12 @@ const approveJoinRequest = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         message: "تمت الموافقة على طلب الانضمام وإنشاء حساب المستخدم بنجاح",
-        data: { user }
+          data: {
+                joinRequest,
+                user,
+                tempPassword, // In production, send this via email instead
+                token,
+            },
     })
 })
 
@@ -260,7 +270,9 @@ const denyJoinRequest = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         message: "تم رفض طلب الانضمام بنجاح",
-        data: joinRequest
+         data: {
+                joinRequest,
+            },
     })
 })
 

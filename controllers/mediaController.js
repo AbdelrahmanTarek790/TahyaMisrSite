@@ -28,14 +28,15 @@ const getMedia = asyncHandler(async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    count: media.length,
-    pagination: {
-      page,
-      limit,
-      total,
-      pages: Math.ceil(total / limit)
-    },
-    data: media
+      data: {
+        media,
+        pagination: {
+          page,
+          limit,
+          total,
+          pages: Math.ceil(total / limit)
+        }
+      },
   });
 });
 

@@ -12,6 +12,7 @@ exports.getActivities = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
+        count: activities.length,
         data: activities
     })
 })

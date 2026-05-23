@@ -23,14 +23,15 @@ const getPositions = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        count: positions.length,
-        pagination: {
-            page: parseInt(page),
-            limit: parseInt(limit),
-            total,
-            pages: Math.ceil(total / limit)
-        },
-        data: positions
+        data: {
+                positions,
+                pagination: {
+                    current: parseInt(page),
+                    total: Math.ceil(total / limit),
+                    count: positions.length,
+                    totalCount: total,
+                },
+            },
     })
 })
 

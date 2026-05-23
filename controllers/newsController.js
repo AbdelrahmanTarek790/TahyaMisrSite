@@ -20,14 +20,15 @@ const getNews = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        count: news.length,
-        pagination: {
-            page,
-            limit,
-            total,
-            pages: Math.ceil(total / limit)
-        },
-        data: news
+   data: {
+                news,
+                pagination: {
+                    page,
+                    limit,
+                    total,
+                    pages: Math.ceil(total / limit),
+                },
+            },
     })
 })
 
