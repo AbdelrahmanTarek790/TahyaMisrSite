@@ -4,27 +4,24 @@ const { generateToken } = require("../middleware/auth")
 const { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, arabicJoiMessages } = require("../utils/validation")
 const { sendResetPasswordEmail } = require("../utils/email")
 const { filterUserFields } = require("../utils/userFieldFilter")
-const upload = require("../utils/upload")
 const crypto = require("crypto")
-const path = require("path")
 
-// @desc    Register user
-// @route   POST /api/v1/auth/register
-// @access  Public
+// @desc     Register user
+// @route    POST /api/v1/auth/register
+// @access   Public
 const register = async (req, res, next) => {
     try {
         // Validate input
         const { error } = registerSchema.validate(req.body, { messages: arabicJoiMessages })
-        console.log(error);
         
         if (error) {
             return res.status(400).json({
-            status: 'error',
-            message: error.details[0].message
-        })
+                status: 'error',
+                message: error.details[0].message
+            })
         }
 
-        const { name, email, password, phone, university,role, nationalId, governorate, position, membershipNumber, membershipExpiry } = req.body
+        const { name, email, password, phone, university, role, nationalId, governorate, position, membershipNumber, membershipExpiry } = req.body
 
         // Check if user already exists
         const existingUser = await User.findOne({
@@ -33,9 +30,9 @@ const register = async (req, res, next) => {
 
         if (existingUser) {
             return res.status(400).json({
-            status: 'error',
-            message: "هذا المستخدم مسجل بالفعل بهذا البريد الإلكتروني أو الرقم القومي"
-        })
+                status: 'error',
+                message: "هذا المستخدم مسجل بالفعل بهذا البريد الإلكتروني أو الرقم القومي"
+            })
         }
 
         // Validate position if provided
@@ -43,9 +40,9 @@ const register = async (req, res, next) => {
             const validPosition = await Position.findById(position)
             if (!validPosition || !validPosition.isActive) {
                 return res.status(400).json({
-            status: 'error',
-            message: "اللجنة المختارة غير صالحة"
-        })
+                    status: 'error',
+                    message: "اللجنة المختارة غير صالحة"
+                })
             }
         }
 
@@ -66,15 +63,23 @@ const register = async (req, res, next) => {
 
         // Generate token
         const token = generateToken(user._id)
-
         const filteredUser = await filterUserFields(user, user)
 
         res.status(201).json({
-            status: 'error',
-            message: null
+            status: 'success',
+            message: 'تم تسجيل الحساب بنجاح',
+            data: { token, user: filteredUser }
         })
-        }
+    } catch (error) {
+        next(error)
+    }
+}
 
+// @desc     Login user
+// @route    POST /api/v1/auth/login
+// @access   Public
+const login = async (req, res, next) => {
+    try {
         const { email, password } = req.body
 
         // Check for user
@@ -82,9 +87,9 @@ const register = async (req, res, next) => {
 
         if (!user) {
             return res.status(401).json({
-            status: 'error',
-            message: "بيانات الدخول غير صحيحة"
-        })
+                status: 'error',
+                message: "بيانات الدخول غير صحيحة"
+            })
         }
 
         // Check password
@@ -92,31 +97,55 @@ const register = async (req, res, next) => {
 
         if (!isMatch) {
             return res.status(401).json({
-            status: 'error',
-            message: "بيانات الدخول غير صحيحة"
-        })
+                status: 'error',
+                message: "بيانات الدخول غير صحيحة"
+            })
         }
 
         // Generate token
         const token = generateToken(user._id)
-
         const filteredUser = await filterUserFields(user, user)
 
         res.status(200).json({
-            status: 'error',
-            message: null
+            status: 'success',
+            message: 'تم تسجيل الدخول بنجاح',
+            data: { token, user: filteredUser }
         })
-            }
-        }
+    } catch (error) {
+        next(error)
+    }
+}
 
+// @desc     Get current logged in user
+// @route    GET /api/v1/auth/me
+// @access   Private
+const getMe = async (req, res, next) => {
+    try {
+        const user = await User.findById(req.user.id).populate("position").populate("customFieldValues.fieldId")
+        const filteredUser = await filterUserFields(req.user, user)
+        
+        res.status(200).json({
+            status: 'success',
+            data: filteredUser
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+// @desc     Update user details
+// @route    PUT /api/v1/auth/updateme
+// @access   Private
+const updateMe = async (req, res, next) => {
+    try {
         // Validate position if provided
         if (req.body.position) {
             const validPosition = await Position.findById(req.body.position)
             if (!validPosition || !validPosition.isActive) {
                 return res.status(400).json({
-            status: 'error',
-            message: "اللجنة المختارة غير صالحة"
-        })
+                    status: 'error',
+                    message: "اللجنة المختارة غير صالحة"
+                })
             }
         }
 
@@ -136,11 +165,20 @@ const register = async (req, res, next) => {
         const filteredUser = await filterUserFields(req.user, user)
 
         res.status(200).json({
-            status: 'error',
-            message: null
+            status: 'success',
+            message: 'تم تحديث البيانات بنجاح',
+            data: filteredUser
         })
-        }
+    } catch (error) {
+        next(error)
+    }
+}
 
+// @desc     Forgot password
+// @route    POST /api/v1/auth/forgotpassword
+// @access   Public
+const forgotPassword = async (req, res, next) => {
+    try {
         const { email } = req.body
 
         // Find user by email
@@ -148,9 +186,9 @@ const register = async (req, res, next) => {
 
         if (!user) {
             return res.status(404).json({
-            status: 'error',
-            message: "لا يوجد مستخدم مسجل بهذا البريد الإلكتروني"
-        })
+                status: 'error',
+                message: "لا يوجد مستخدم مسجل بهذا البريد الإلكتروني"
+            })
         }
 
         // Generate reset token
@@ -163,23 +201,30 @@ const register = async (req, res, next) => {
         const emailResult = await sendResetPasswordEmail(email, `https://tahyamisryu.com/reset-password?token=${resetToken}`)
 
         if (!emailResult.success) {
-            // Reset the token fields if email fails
             user.resetPasswordToken = undefined
             user.resetPasswordExpiry = undefined
             await user.save({ validateBeforeSave: false })
 
             return res.status(500).json({
-            status: 'error',
-            message: "فشل إرسال البريد الإلكتروني"
-        })
+                status: 'error',
+                message: "فشل إرسال البريد الإلكتروني"
+            })
         }
 
         res.status(200).json({
-            status: 'error',
-            message: null
+            status: 'success',
+            message: "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني"
         })
-        }
+    } catch (error) {
+        next(error)
+    }
+}
 
+// @desc     Reset password
+// @route    PUT /api/v1/auth/resetpassword
+// @access   Public
+const resetPassword = async (req, res, next) => {
+    try {
         const { token, password } = req.body
 
         // Hash the token to compare with stored token
@@ -193,9 +238,9 @@ const register = async (req, res, next) => {
 
         if (!user) {
             return res.status(400).json({
-            status: 'error',
-            message: "رمز إعادة تعيين كلمة المرور غير صالح أو منتهي الصلاحية"
-        })
+                status: 'error',
+                message: "رمز إعادة تعيين كلمة المرور غير صالح أو منتهي الصلاحية"
+            })
         }
 
         // Set new password
@@ -207,15 +252,23 @@ const register = async (req, res, next) => {
 
         // Generate new JWT token
         const jwtToken = generateToken(user._id)
-
         const filteredUser = await filterUserFields(user, user)
 
         res.status(200).json({
-            status: 'error',
-            message: null
+            status: 'success',
+            message: "تم إعادة تعيين كلمة المرور بنجاح",
+            data: { token: jwtToken, user: filteredUser }
         })
-        }
+    } catch (error) {
+        next(error)
+    }
+}
 
+// @desc     Change password
+// @route    PUT /api/v1/auth/changepassword
+// @access   Private
+const changePassword = async (req, res, next) => {
+    try {
         const { currentPassword, newPassword } = req.body
 
         // Get user with password field
@@ -226,9 +279,9 @@ const register = async (req, res, next) => {
 
         if (!isMatch) {
             return res.status(400).json({
-            status: 'error',
-            message: "كلمة المرور الحالية غير صحيحة"
-        })
+                status: 'error',
+                message: "كلمة المرور الحالية غير صحيحة"
+            })
         }
 
         // Set new password

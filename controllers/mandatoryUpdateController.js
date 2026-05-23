@@ -1,69 +1,121 @@
 const MandatoryUpdate = require("../models/MandatoryUpdate")
 const User = require("../models/User")
 const CustomField = require("../models/CustomField")
-const {mandatoryUpdateSchema, completeMandatoryUpdateSchema, arabicJoiMessages} = require("../utils/validation")
+const { mandatoryUpdateSchema, completeMandatoryUpdateSchema, arabicJoiMessages } = require("../utils/validation")
 const { sendMandatoryUpdateNotification } = require("../utils/email")
 
-// Apple test account email — bypasses all mandatory checks
+// البريد الإلكتروني المخصص لمراجعي آبل لتخطي الحجب
 const APPLE_REVIEWER_EMAIL = "apple@tahyamisryu.com"
 
-// @desc    Get pending mandatory updates for current user
-// @route   GET /api/v1/mandatory-updates
-// @access  Private
+// @desc     Get pending mandatory updates for current user
+// @route    GET /api/v1/mandatory-updates
+// @access   Private
 const getMandatoryUpdates = async (req, res, next) => {
     try {
         const userId = req.user._id
         const userEmail = req.user.email?.toLowerCase()
 
-        // Apple reviewer bypass — return empty list (no pending updates)
+        // 🚨 تخطي حساب مراجعة آبل تماماً وإرجاع قائمة فارغة
         if (userEmail === APPLE_REVIEWER_EMAIL) {
             return res.status(200).json({
-            status: 'error',
-            message: null
-        })
+                status: 'success',
+                data: []
+            })
         }
 
-        // Validate that all field IDs exist
+        // جلب التحديثات الإلزامية النشطة الموجهة للمستخدم (إما عامة للكل أو مخصصة لمعرف المستخدم هذا)
+        // والتي لم يقم المستخدم بإكمالها بعد
+        const pendingUpdates = await MandatoryUpdate.find({
+            status: "active",
+            $or: [
+                { targetType: "global" },
+                { targetUserIds: userId }
+            ],
+            completedBy: { $ne: userId }
+        }).populate("fields")
+
+        res.status(200).json({
+            status: 'success',
+            data: pendingUpdates
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+// @desc     Get all mandatory updates for Admin Dashboard
+// @route    GET /api/v1/mandatory-updates/admin
+// @access   Private/Admin
+const getAdminMandatoryUpdates = async (req, res, next) => {
+    try {
+        const updates = await MandatoryUpdate.find()
+            .populate("fields")
+            .populate("createdBy", "name email")
+            
+        res.status(200).json({
+            status: 'success',
+            data: updates
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+// @desc     Create new mandatory update rule
+// @route    POST /api/v1/mandatory-updates
+// @access   Private/Admin
+const createMandatoryUpdate = async (req, res, next) => {
+    try {
+        // التحقق من المدخلات عبر Joi
+        const { error } = mandatoryUpdateSchema.validate(req.body, { messages: arabicJoiMessages })
+        if (error) {
+            return res.status(400).json({
+                status: 'error',
+                message: error.details[0].message
+            })
+        }
+
+        // التأكد من صحة معرفات الحقول الديناميكية المرسلة ونشاطها
         const fieldCount = await CustomField.countDocuments({
             _id: { $in: req.body.fields },
             status: "active",
         })
         if (fieldCount !== req.body.fields.length) {
             return res.status(400).json({
-            status: 'error',
-            message: "واحد أو أكثر من معرفات الحقول غير صالحة أو غير نشطة"
-        })
+                status: 'error',
+                message: "واحد أو أكثر من معرفات الحقول غير صالحة أو غير نشطة"
+            })
         }
 
-        // If targeted, validate user IDs
+        // التحقق من معرفات المستخدمين في حال كان التحديث مستهدفاً لأعضاء محددين
         if (req.body.targetType === "targeted") {
             if (!req.body.targetUserIds || req.body.targetUserIds.length === 0) {
                 return res.status(400).json({
-            status: 'error',
-            message: "التحديثات المستهدفة تتطلب معرف مستخدم واحد على الأقل"
-        })
+                    status: 'error',
+                    message: "التحديثات المستهدفة تتطلب معرف مستخدم واحد على الأقل"
+                })
             }
             const userCount = await User.countDocuments({
                 _id: { $in: req.body.targetUserIds },
             })
             if (userCount !== req.body.targetUserIds.length) {
                 return res.status(400).json({
-            status: 'error',
-            message: "واحد أو أكثر من معرفات المستخدمين غير صالحة"
-        })
+                    status: 'error',
+                    message: "واحد أو أكثر من معرفات المستخدمين غير صالحة"
+                })
             }
         }
 
+        // إنشاء التحديث في قاعدة البيانات
         const update = await MandatoryUpdate.create({
             ...req.body,
             createdBy: req.user._id,
         })
 
-        // Populate for response
         await update.populate("fields")
         await update.populate("createdBy", "name email")
 
-        // Send email notifications if requested
+        // إرسال الإشعارات بالبريد الإلكتروني بناءً على اختيار الأدمن (Opt-in)
         if (req.body.notifyByEmail) {
             try {
                 let targetUsers
@@ -76,7 +128,6 @@ const getMandatoryUpdates = async (req, res, next) => {
                     )
                 }
 
-                // Send emails in parallel (non-blocking, errors logged but not thrown)
                 const emailPromises = targetUsers.map((user) =>
                     sendMandatoryUpdateNotification(user.email, user.name, req.body.adminMessage).catch(
                         (err) => console.error(`Failed to send email to ${user.email}:`, err)
@@ -85,88 +136,129 @@ const getMandatoryUpdates = async (req, res, next) => {
                 await Promise.allSettled(emailPromises)
             } catch (emailError) {
                 console.error("Error sending notification emails:", emailError)
-                // Don't fail the request — the rule was created successfully
             }
         }
 
         res.status(201).json({
-            status: 'error',
-            message: null
+            status: 'success',
+            message: "تم إنشاء التحديث الإلزامي وتفعيل القاعدة بنجاح",
+            data: update
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+// @desc     Update mandatory update rule
+// @route    PUT /api/v1/mandatory-updates/:id
+// @access   Private/Admin
+const updateMandatoryUpdate = async (req, res, next) => {
+    try {
+        const update = await MandatoryUpdate.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true
+        }).populate("fields")
+
+        if (!update) {
+            return res.status(404).json({
+                status: 'error',
+                message: "لم يتم العثور على التحديث الإلزامي المطلوب"
+            })
         }
 
         res.status(200).json({
-            status: 'error',
-            message: null
+            status: 'success',
+            message: "تم تحديث التحديث الإلزامي بنجاح",
+            data: update
         })
-        }
+    } catch (error) {
+        next(error)
+    }
+}
 
-        await MandatoryUpdate.findByIdAndDelete(req.params.id)
+// @desc     Delete mandatory update rule
+// @route    DELETE /api/v1/mandatory-updates/:id
+// @access   Private/Admin
+const deleteMandatoryUpdate = async (req, res, next) => {
+    try {
+        const update = await MandatoryUpdate.findByIdAndDelete(req.params.id)
+        
+        if (!update) {
+            return res.status(404).json({
+                status: 'error',
+                message: "لم يتم العثور على التحديث الإلزامي المطلوبة لحذفه"
+            })
+        }
 
         res.status(200).json({
-            status: 'error',
-            message: null
+            status: 'success',
+            message: "تم حذف قاعدة التحديث الإلزامي بنجاح"
         })
-        }
+    } catch (error) {
+        next(error)
+    }
+}
 
+// @desc     User submits dynamic custom field values to complete an update
+// @route    POST /api/v1/mandatory-updates/:id/complete
+// @access   Private
+const completeMandatoryUpdate = async (req, res, next) => {
+    try {
         const update = await MandatoryUpdate.findById(req.params.id).populate("fields")
 
         if (!update) {
             return res.status(404).json({
-            status: 'error',
-            message: "لم يتم العثور على التحديث الإلزامي"
-        })
+                status: 'error',
+                message: "لم يتم العثور على التحديث الإلزامي"
+            })
         }
 
-        // Check if user is already completed
+        // التحقق مما إذا كان العضو قد أكمل هذا التحديث مسبقاً
         if (update.completedBy.includes(req.user._id)) {
             return res.status(400).json({
-            status: 'error',
-            message: "لقد أكملت هذا التحديث بالفعل"
-        })
+                status: 'error',
+                message: "لقد أكملت هذا التحديث بالفعل مسبقاً"
+            })
         }
 
-        // Validate that all required fields are submitted
+        // التأكد من إرسال كافة الحقول المطلوبة في هذا التحديث الإلزامي
         const requiredFieldIds = update.fields.map((f) => f._id.toString())
         const submittedFieldIds = req.body.customFieldValues.map((v) => v.fieldId)
         const missingFields = requiredFieldIds.filter((id) => !submittedFieldIds.includes(id))
 
         if (missingFields.length > 0) {
             return res.status(400).json({
-            status: 'error',
-            message: `Missing required fields: ${missingFields.join("
-        })
+                status: 'error',
+                message: "برجاء استكمال ملء جميع الحقول الإلزامية المطلوبة للمتابعة."
+            })
         }
 
-        // Save custom field values to user using atomic array updates
         const user = await User.findById(req.user._id)
 
+        // تحديث أو إضافة القيم الديناميكية الجديدة في ملف العضو
         for (const { fieldId, value } of req.body.customFieldValues) {
             const existingIndex = user.customFieldValues.findIndex(
                 (cfv) => cfv.fieldId.toString() === fieldId
             )
             if (existingIndex !== -1) {
-                // Update existing value
                 user.customFieldValues[existingIndex].value = value
             } else {
-                // Add new value
                 user.customFieldValues.push({ fieldId, value })
             }
         }
 
+        // 🌟 إعلام المونجوس صراحة بتعديل حقل الـ Mixed ليتم حفظ المصفوفات بشكل سليم
+        user.markModified('customFieldValues')
         await user.save({ validateBeforeSave: false })
 
-        // Mark update as completed by this user
+        // إضافة معرف المستخدم الحالي لقائمة المكتملين بالتحديث الإلزامي
         update.completedBy.push(req.user._id)
         await update.save()
 
         res.status(200).json({
-            success: true,
-            data: {
-                message: "تم إكمال التحديث الإلزامي بنجاح",
-                user,
-            },
-            error: null,
+            status: 'success',
+            message: "تم إكمال التحديث الإلزامي وحفظ البيانات بنجاح",
+            data: { user }
         })
     } catch (error) {
         next(error)
