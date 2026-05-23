@@ -29,9 +29,8 @@ const errorHandler = (err, req, res, next) => {
   }
 
   res.status(statusCode).json({
-    success: false,
-    error: responseMessage || 'حدث خطأ داخلي في الخادم، برجاء المحاولة مرة أخرى لاحقاً.',
-    data: null
+    status: 'error',
+    message: responseMessage || 'حدث خطأ داخلي في الخادم، برجاء المحاولة مرة أخرى لاحقاً.'
   });
 };
 

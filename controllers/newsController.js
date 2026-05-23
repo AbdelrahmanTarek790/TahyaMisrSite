@@ -4,100 +4,139 @@ const path = require("path")
 const fs = require("fs")
 const mongoose = require("mongoose")
 const { Filter } = require("../utils/Filter")
+const asyncHandler = require("../middleware/asyncHandler")
+
 // @desc    Get all news
 // @route   GET /api/v1/news
 // @access  Public
-const getNews = async (req, res, next) => {
-    try {
-        const page = parseInt(req.query.page) || 1
-        const limit = parseInt(req.query.limit) || 10
-        const skip = (page - 1) * limit
-        const search = Filter(req)
-        const news = await News.find().where(search).populate("createdBy", "name email").skip(skip).limit(limit).sort({ createdAt: -1 })
+const getNews = asyncHandler(async (req, res, next) => {
+    const page = parseInt(req.query.page) || 1
+    const limit = parseInt(req.query.limit) || 10
+    const skip = (page - 1) * limit
+    const search = Filter(req)
+    const news = await News.find().where(search).populate("createdBy", "name email").skip(skip).limit(limit).sort({ createdAt: -1 })
 
-        const total = await News.countDocuments(search)
+    const total = await News.countDocuments(search)
 
-        res.status(200).json({
-            status: 'error',
-            message: null
-        })
-        }
+    res.status(200).json({
+        success: true,
+        count: news.length,
+        pagination: {
+            page,
+            limit,
+            total,
+            pages: Math.ceil(total / limit)
+        },
+        data: news
+    })
+})
 
-        res.status(200).json({
-            status: 'error',
-            message: null
-        })
-        }
-
-        // Add createdBy field
-        req.body.createdBy = req.user.id
-
-        // Add image path if uploaded
-        if (req.file) {
-            req.body.image = req.file.filename
-        }
-
-        const news = await News.create(req.body)
-
-        const populatedNews = await News.findById(news._id).populate("createdBy", "name email")
-
-        res.status(201).json({
-            status: 'error',
-            message: null
-        })
-        }
-
-        const existingNews = await News.findById(req.params.id)
-
-        if (!existingNews) {
-            return res.status(404).json({
+// @desc    Get single news by ID
+// @route   GET /api/v1/news/:id
+// @access  Public
+const getNewsById = asyncHandler(async (req, res, next) => {
+    const news = await News.findById(req.params.id).populate("createdBy", "name email")
+    if (!news) {
+        return res.status(404).json({
             status: 'error',
             message: "لم يتم العثور على الخبر"
         })
-        }
-
-        // Handle image update
-        if (req.file) {
-            // Delete old image if exists
-            if (existingNews.image) {
-                const oldImagePath = path.join(process.env.UPLOAD_PATH || "./uploads", existingNews.image)
-                if (fs.existsSync(oldImagePath)) {
-                    fs.unlinkSync(oldImagePath)
-                }
-            }
-            req.body.image = req.file.filename
-        }
-
-        const news = await News.findByIdAndUpdate(req.params.id, req.body, {
-            new: true,
-            runValidators: true,
-        }).populate("createdBy", "name email")
-
-        res.status(200).json({
-            status: 'error',
-            message: null
-        })
-        }
-
-        // Delete associated image
-        if (news.image) {
-            const imagePath = path.join(process.env.UPLOAD_PATH || "./uploads", news.image)
-            if (fs.existsSync(imagePath)) {
-                fs.unlinkSync(imagePath)
-            }
-        }
-
-        await News.findByIdAndDelete(req.params.id)
-
-        res.status(200).json({
-            success: true,
-            data: { message: "تم حذف الخبر بنجاح" },
-            error: null,
-        })
-    } catch (error) {
-        next(error)
     }
-}
+    res.status(200).json({
+        success: true,
+        data: news
+    })
+})
+
+// @desc    Create new news
+// @route   POST /api/v1/news
+// @access  Private/Admin
+const createNews = asyncHandler(async (req, res, next) => {
+    // Validate input
+    const { error } = newsSchema.validate(req.body, { messages: arabicJoiMessages })
+    if (error) {
+        return res.status(400).json({
+            status: 'error',
+            message: error.details[0].message
+        })
+    }
+
+    req.body.createdBy = req.user.id
+
+    if (req.file) {
+        req.body.image = req.file.filename
+    }
+
+    const news = await News.create(req.body)
+    const populatedNews = await News.findById(news._id).populate("createdBy", "name email")
+
+    res.status(201).json({
+        success: true,
+        data: populatedNews
+    })
+})
+
+// @desc    Update news
+// @route   PUT /api/v1/news/:id
+// @access  Private/Admin
+const updateNews = asyncHandler(async (req, res, next) => {
+    const existingNews = await News.findById(req.params.id)
+
+    if (!existingNews) {
+        return res.status(404).json({
+            status: 'error',
+            message: "لم يتم العثور على الخبر"
+        })
+    }
+
+    if (req.file) {
+        if (existingNews.image) {
+            const oldImagePath = path.join(process.env.UPLOAD_PATH || "./uploads", existingNews.image)
+            if (fs.existsSync(oldImagePath)) {
+                fs.unlinkSync(oldImagePath)
+            }
+        }
+        req.body.image = req.file.filename
+    }
+
+    const news = await News.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+        runValidators: true,
+    }).populate("createdBy", "name email")
+
+    res.status(200).json({
+        success: true,
+        data: news
+    })
+})
+
+// @desc    Delete news
+// @route   DELETE /api/v1/news/:id
+// @access  Private/Admin
+const deleteNews = asyncHandler(async (req, res, next) => {
+    const news = await News.findById(req.params.id)
+
+    if (!news) {
+        return res.status(404).json({
+            status: 'error',
+            message: "لم يتم العثور على الخبر"
+        })
+    }
+
+    if (news.image) {
+        const imagePath = path.join(process.env.UPLOAD_PATH || "./uploads", news.image)
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath)
+        }
+    }
+
+    await News.findByIdAndDelete(req.params.id)
+
+    res.status(200).json({
+        success: true,
+        message: "تم حذف الخبر بنجاح"
+    })
+})
 
 module.exports = {
     getNews,
