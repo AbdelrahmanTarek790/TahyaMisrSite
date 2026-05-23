@@ -164,138 +164,176 @@ const getJoinRequest = asyncHandler(async (req, res, next) => {
 // @desc    Approve a join request and create user account
 // @route   PATCH /api/v1/join-requests/:id/approve
 // @access  Private (Admin only)
-const approveJoinRequest = asyncHandler(async (req, res, next) => {
-    const { notes, university, membershipExpiry } = req.body
-
-    const joinRequest = await JoinRequest.findById(req.params.id).populate("position")
-
-    if (!joinRequest) {
-        return res.status(404).json({
-            status: 'error',
-            message: "لم يتم العثور على طلب الانضمام"
-        })
-    }
-
-    if (joinRequest.status !== "pending") {
-        return res.status(400).json({
-            status: 'error',
-            message: "تمت معالجة طلب الانضمام بالفعل"
-        })
-    }
-
-    // Check if user already exists (double-check)
-    const existingUser = await User.findOne({
-        $or: [{ email: joinRequest.email }, { nationalId: joinRequest.nationalID }],
-    })
-
-    if (existingUser) {
-        return res.status(400).json({
-            status: 'error',
-            message: "المستخدم مسجل بالفعل بهذا البريد الإلكتروني أو الرقم القومي"
-        })
-    }
-
-    // Generate a temporary password (user should change it on first login)
-    const tempPassword = Math.random().toString(36).slice(-8) + "A1!"
-
-    // Create user account
-    const user = await User.create({
-        name: joinRequest.name,
-        email: joinRequest.email,
-        password: tempPassword,
-        phone: joinRequest.phone,
-        university: university || "غير محدد",
-        nationalId: joinRequest.nationalID,
-        governorate: joinRequest.governorate,
-        position: joinRequest.position,
-        membershipNumber: joinRequest.membershipNumber,
-        membershipExpiry: membershipExpiry || undefined,
-        role: joinRequest.role,
-    })
-
-    // Approve the join request
-    await joinRequest.approve(req.user._id, notes)
-
-    // Send approval email with temp password (non-blocking)
+const approveJoinRequest = async (req, res, next) => {
     try {
-        sendJoinRequestApproved(joinRequest.email, joinRequest.name, tempPassword)
-    } catch (e) {
-        /* ignore */
-    }
+        const { notes, university, membershipExpiry } = req.body
 
-    res.status(200).json({
-        success: true,
-        message: "تمت الموافقة على طلب الانضمام وإنشاء حساب المستخدم بنجاح",
-          data: {
+        const joinRequest = await JoinRequest.findById(req.params.id).populate("position")
+
+        if (!joinRequest) {
+            return res.status(404).json({
+                success: false,
+                error: "لم يتم العثور على طلب الانضمام",
+                data: null,
+            })
+        }
+
+        if (joinRequest.status !== "pending") {
+            return res.status(400).json({
+                success: false,
+                error: "تم معالجة طلب الانضمام بالفعل",
+                data: null,
+            })
+        }
+
+        // Check if user already exists (double-check)
+        const existingUser = await User.findOne({
+            $or: [{ email: joinRequest.email }, { nationalId: joinRequest.nationalID }],
+        })
+
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                error: "المستخدم موجود بالفعل مع هذا البريد الإلكتروني أو الرقم الوطني",
+                data: null,
+            })
+        }
+
+        // Generate a temporary password (user should change it on first login)
+        const tempPassword = Math.random().toString(36).slice(-8) + "A1!"
+
+        // Create user account
+        const user = await User.create({
+            name: joinRequest.name,
+            email: joinRequest.email,
+            password: tempPassword,
+            phone: joinRequest.phone,
+            university: university || "Not specified",
+            nationalId: joinRequest.nationalID,
+            governorate: joinRequest.governorate,
+            position: joinRequest.position,
+            membershipNumber: joinRequest.membershipNumber,
+            membershipExpiry: membershipExpiry || undefined,
+            role: joinRequest.role,
+        })
+
+        // Approve the join request
+        await joinRequest.approve(req.user._id, notes)
+
+        // Generate token for the new user
+        const token = generateToken(user._id)
+
+        // Send approval email with temp password (non-blocking)
+        try {
+            sendJoinRequestApproved(joinRequest.email, joinRequest.name, tempPassword)
+        } catch (e) {
+            /* ignore */
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "تمت الموافقة على طلب الانضمام وإنشاء حساب المستخدم بنجاح",
+            data: {
                 joinRequest,
                 user,
                 tempPassword, // In production, send this via email instead
                 token,
             },
-    })
-})
+        })
+    } catch (error) {
+        console.error("خطأ في الموافقة على طلب الانضمام:", error)
+        res.status(500).json({
+            success: false,
+            error: "خطأ في الخادم",
+            data: null,
+        })
+    }
+}
 
 // @desc    Deny a join request
 // @route   PATCH /api/v1/join-requests/:id/deny
 // @access  Private (Admin only)
-const denyJoinRequest = asyncHandler(async (req, res, next) => {
-    const { notes } = req.body
-
-    const joinRequest = await JoinRequest.findById(req.params.id)
-
-    if (!joinRequest) {
-        return res.status(404).json({
-            status: 'error',
-            message: "لم يتم العثور على طلب الانضمام"
-        })
-    }
-
-    if (joinRequest.status !== "pending") {
-        return res.status(400).json({
-            status: 'error',
-            message: "تمت معالجة طلب الانضمام بالفعل"
-        })
-    }
-
-    // Deny the join request
-    await joinRequest.deny(req.user._id, notes)
-
-    // Send denial email (non-blocking)
+const denyJoinRequest = async (req, res, next) => {
     try {
-        sendJoinRequestDenied(joinRequest.email, joinRequest.name, notes)
-    } catch (e) {
-        /* ignore */
-    }
+        const { notes } = req.body
 
-    res.status(200).json({
-        success: true,
-        message: "تم رفض طلب الانضمام بنجاح",
-         data: {
+        const joinRequest = await JoinRequest.findById(req.params.id)
+
+        if (!joinRequest) {
+            return res.status(404).json({
+                success: false,
+                error: "لم يتم العثور على طلب الانضمام",
+                data: null,
+            })
+        }
+
+        if (joinRequest.status !== "pending") {
+            return res.status(400).json({
+                success: false,
+                error: "تم معالجة طلب الانضمام بالفعل",
+                data: null,
+            })
+        }
+
+        // Deny the join request
+        await joinRequest.deny(req.user._id, notes)
+
+        // Send denial email (non-blocking)
+        try {
+            sendJoinRequestDenied(joinRequest.email, joinRequest.name, notes)
+        } catch (e) {
+            /* ignore */
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "تم رفض طلب الانضمام بنجاح",
+            data: {
                 joinRequest,
             },
-    })
-})
+        })
+    } catch (error) {
+        console.error("خطأ في رفض طلب الانضمام:", error)
+        res.status(500).json({
+            success: false,
+            error: "خطأ في الخادم",
+            data: null,
+        })
+    }
+}
+
 
 // @desc    Delete a join request
 // @route   DELETE /api/v1/join-requests/:id
 // @access  Private (Admin only)
-const deleteJoinRequest = asyncHandler(async (req, res, next) => {
-    const joinRequest = await JoinRequest.findById(req.params.id)
+const deleteJoinRequest = async (req, res, next) => {
+    try {
+        const joinRequest = await JoinRequest.findById(req.params.id)
 
-    if (!joinRequest) {
-        return res.status(404).json({
-            status: 'error',
-            message: "لم يتم العثور على طلب الانضمام"
+        if (!joinRequest) {
+            return res.status(404).json({
+                success: false,
+                error: "لم يتم العثور على طلب الانضمام",
+                data: null,
+            })
+        }
+
+        await JoinRequest.findByIdAndDelete(req.params.id)
+
+        res.status(200).json({
+            success: true,
+            message: "تم حذف طلب الانضمام بنجاح",
+            data: null,
+        })
+    } catch (error) {
+        console.error("خطأ في حذف طلب الانضمام:", error)
+        res.status(500).json({
+            success: false,
+            error: "خطأ في الخادم",
+            data: null,
         })
     }
-
-    await JoinRequest.findByIdAndDelete(req.params.id)
-
-    res.status(200).json({
-        success: true,
-        message: "تم حذف طلب الانضمام بنجاح"
-    })
-})
+}
 
 module.exports = {
     createJoinRequest,
