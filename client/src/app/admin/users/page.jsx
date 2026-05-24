@@ -253,12 +253,10 @@ const UserManagement = () => {
                 ...data,
                 membershipExpiry: data.membershipExpiry ? new Date(data.membershipExpiry).toISOString() : undefined,
                 position: data.position || undefined, // Don't send empty string
-                customFieldValues: JSON.stringify(
-                    Object.entries(dynamicValues).map(([fieldId, value]) => ({
-                        fieldId,
-                        value
-                    }))
-                )
+                customFieldValues: Object.entries(dynamicValues).map(([fieldId, value]) => ({
+                    fieldId,
+                    value
+                }))
             }
 
             // Remove undefined fields

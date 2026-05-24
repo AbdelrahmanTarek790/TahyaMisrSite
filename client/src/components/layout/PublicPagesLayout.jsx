@@ -3,6 +3,7 @@ import React, { lazy, Suspense } from "react"
 import PublicPagesHeader from "./PublicPagesHeader"
 import PublicPagesFooter from "./PublicPagesFooter"
 import FloatingScrollToTop from "../ui/FloatingScrollToTop"
+import ProfileBanner from "./ProfileBanner"
 import { usePathname } from "next/navigation"
 
 // Lazy load sections for better performance
@@ -16,6 +17,7 @@ export default function PublicLayout({ children }) {
     return (
         <div className="flex flex-col min-h-screen bg-background">
             <PublicPagesHeader />
+            <ProfileBanner />
             <main className="flex-grow">
                 {children}
 

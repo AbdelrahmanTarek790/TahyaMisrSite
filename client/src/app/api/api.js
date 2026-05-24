@@ -1,6 +1,7 @@
 import axios from "axios"
 
-const API_BASE_URL = "https://tmbackend.tahyamisryu.com/api/v1"
+// const API_BASE_URL = "https://tmbackend.tahyamisryu.com/api/v1"
+const API_BASE_URL = "http://localhost:8080/api/v1"
 
 // Create axios instance
 const api = axios.create({

@@ -104,6 +104,15 @@ const getUser = asyncHandler(async (req, res, next) => {
 // @route   PUT /api/v1/users/:id
 // @access  Private/Admin
 const updateUser = asyncHandler(async (req, res, next) => {
+    // If it's form data, multer parses arrays/objects as JSON strings
+    if (req.body.customFieldValues && typeof req.body.customFieldValues === 'string') {
+        try {
+            req.body.customFieldValues = JSON.parse(req.body.customFieldValues)
+        } catch (e) {
+            console.error("Failed to parse customFieldValues string")
+        }
+    }
+
     // Validate input
     const { error } = updateUserSchema.validate(req.body, { messages: arabicJoiMessages })
     if (error) {

@@ -34,9 +34,29 @@ const getMandatoryUpdates = asyncHandler(async (req, res, next) => {
         completedBy: { $ne: userId }
     }).populate("fields")
 
+    // جلب الحقول الديناميكية النشطة وحساب المفقود منها
+    const activeCustomFields = await CustomField.find({ status: "active" })
+    const user = await User.findById(userId).lean()
+    
+    const missingFields = activeCustomFields.filter(cf => {
+        const userValueObj = user.customFieldValues?.find(v => 
+            v.fieldId && v.fieldId.toString() === cf._id.toString()
+        )
+        if (!userValueObj) return true
+        
+        const val = userValueObj.value
+        if (cf.type === "checkbox_list") {
+            return !Array.isArray(val) || val.length === 0
+        }
+        return !val || (typeof val === "string" && val.trim() === "")
+    })
+
     res.status(200).json({
         success: true,
-        data: pendingUpdates
+        data: {
+            pendingUpdates,
+            missingFields
+        }
     })
 })
 

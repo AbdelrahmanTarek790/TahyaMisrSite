@@ -22,8 +22,6 @@ const profileSchema = z.object({
     phone: z.string().optional(),
     university: z.string().min(2, "University must be at least 2 characters"),
     governorate: z.string().min(2, "Governorate must be at least 2 characters"),
-    faculty: z.string().optional(),
-    year: z.string().optional(),
     nationalId: z.string().length(14, "National ID must be exactly 14 digits").optional().or(z.literal("")),
 })
 
@@ -57,8 +55,6 @@ const Profile = () => {
             phone: user?.phone || "",
             university: user?.university || "",
             governorate: user?.governorate || "",
-            faculty: user?.faculty || "",
-            year: user?.year || "",
             nationalId: user?.nationalId || "",
         },
     })
@@ -83,8 +79,6 @@ const Profile = () => {
                 phone: user.phone || "",
                 university: user.university || "",
                 governorate: user.governorate || "",
-                faculty: user.faculty || "",
-                year: user.year || "",
                 nationalId: user.nationalId || "",
             })
             const initialDynamics = {}
@@ -114,12 +108,10 @@ const Profile = () => {
             setIsLoading(true)
             const submitData = {
                 ...data,
-                customFieldValues: JSON.stringify(
-                    Object.entries(dynamicValues).map(([fieldId, value]) => ({
-                        fieldId,
-                        value
-                    }))
-                )
+                customFieldValues: Object.entries(dynamicValues).map(([fieldId, value]) => ({
+                    fieldId,
+                    value
+                }))
             }
             const response = await usersAPI.updateMe(submitData)
             updateUser(response.data.user)
@@ -302,17 +294,6 @@ const Profile = () => {
                                     {errors.governorate && <p className="text-red-500 text-sm mt-1">{errors.governorate.message}</p>}
                                 </div>
 
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Faculty</label>
-                                    <Input {...register("faculty")} disabled={!isEditing} placeholder="Enter your faculty" />
-                                    {errors.faculty && <p className="text-red-500 text-sm mt-1">{errors.faculty.message}</p>}
-                                </div>
-
-                                <div>
-                                    <label className="block text-sm font-medium text-gray-700 mb-1">Academic Year</label>
-                                    <Input {...register("year")} disabled={!isEditing} placeholder="Enter your academic year" />
-                                    {errors.year && <p className="text-red-500 text-sm mt-1">{errors.year.message}</p>}
-                                </div>
 
                                 <div>
                                     <label className="block text-sm font-medium text-gray-700 mb-1">National ID</label>

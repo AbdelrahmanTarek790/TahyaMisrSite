@@ -75,11 +75,22 @@ const MandatoryUpdatesManagement = () => {
                 page: pagination.page,
                 limit: pagination.limit,
             })
-            setUpdates(response.data?.updates || [])
-            setPagination((prev) => ({
-                ...prev,
-                total: response.data?.pagination?.total || 0,
-            }))
+            // Handle both response formats:
+            // Backend may return data as flat array or as { updates, pagination }
+            const resData = response.data
+            if (Array.isArray(resData)) {
+                setUpdates(resData)
+                setPagination((prev) => ({
+                    ...prev,
+                    total: resData.length,
+                }))
+            } else {
+                setUpdates(resData?.updates || [])
+                setPagination((prev) => ({
+                    ...prev,
+                    total: resData?.pagination?.total || 0,
+                }))
+            }
         } catch (error) {
             console.error("Failed to fetch mandatory updates:", error)
             addError("فشل في جلب التحديثات الإلزامية")
@@ -207,10 +218,11 @@ const MandatoryUpdatesManagement = () => {
         if (current.includes(fieldId)) {
             setValue(
                 "fields",
-                current.filter((id) => id !== fieldId)
+                current.filter((id) => id !== fieldId),
+                { shouldValidate: true }
             )
         } else {
-            setValue("fields", [...current, fieldId])
+            setValue("fields", [...current, fieldId], { shouldValidate: true })
         }
     }
 
@@ -219,10 +231,11 @@ const MandatoryUpdatesManagement = () => {
         if (current.includes(userId)) {
             setValue(
                 "targetUserIds",
-                current.filter((id) => id !== userId)
+                current.filter((id) => id !== userId),
+                { shouldValidate: true }
             )
         } else {
-            setValue("targetUserIds", [...current, userId])
+            setValue("targetUserIds", [...current, userId], { shouldValidate: true })
         }
     }
 
@@ -415,14 +428,14 @@ const MandatoryUpdatesManagement = () => {
             )}
 
             {/* Create/Edit Sheet */}
-            <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
+            <Sheet open={isSheetOpen} onOpenChange={(open) => { if (!open) handleCloseSheet(); else setIsSheetOpen(true); }}>
                 <SheetContent className="w-[600px] sm:max-w-[600px] overflow-y-auto">
                     <SheetHeader>
                         <SheetTitle>
                             {editingUpdate ? "تعديل التحديث الإلزامي" : "إنشاء تحديث إلزامي جديد"}
                         </SheetTitle>
                     </SheetHeader>
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 mt-6 px-4">
+                    <form onSubmit={handleSubmit(onSubmit, (validationErrors) => { console.error('Form validation errors:', validationErrors); })} className="space-y-6 mt-6 px-4">
                         {/* Field Selection */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -602,7 +615,7 @@ const MandatoryUpdatesManagement = () => {
                                 </div>
                                 <Switch
                                     checked={notifyByEmail}
-                                    onCheckedChange={(checked) => setValue("notifyByEmail", checked)}
+                                    onCheckedChange={(checked) => setValue("notifyByEmail", checked, { shouldValidate: true })}
                                 />
                             </div>
                         )}

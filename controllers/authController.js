@@ -147,16 +147,23 @@ const updateMe = asyncHandler(async (req, res, next) => {
     // Check if this is a file upload (FormData)
     const isFormData = req.headers["content-type"]?.includes("multipart/form-data")
 
-    if (!isFormData) {
-        // Regular JSON update - validate input
-        const { updateUserSchema } = require("../utils/validation")
-        const { error } = updateUserSchema.validate(req.body, { messages: arabicJoiMessages })
-        if (error) {
-            return res.status(400).json({
-                status: 'error',
-                message: error.details[0].message
-            })
+    // If FormData, multer parses arrays/objects as JSON strings
+    if (isFormData && req.body.customFieldValues && typeof req.body.customFieldValues === 'string') {
+        try {
+            req.body.customFieldValues = JSON.parse(req.body.customFieldValues)
+        } catch (e) {
+            console.error("Failed to parse customFieldValues string")
         }
+    }
+
+    // Always validate input
+    const { updateUserSchema } = require("../utils/validation")
+    const { error } = updateUserSchema.validate(req.body, { messages: arabicJoiMessages })
+    if (error) {
+        return res.status(400).json({
+            status: 'error',
+            message: error.details[0].message
+        })
     }
 
     // Validate position if provided

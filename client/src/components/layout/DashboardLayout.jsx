@@ -9,6 +9,7 @@ import { AppSidebar } from "./AppSidebar"
 import { Header } from "./Header"
 import { useLocalization } from "@/hooks/useLocalization"
 import FloatingScrollToTop from "../ui/FloatingScrollToTop"
+import ProfileBanner from "./ProfileBanner"
 import { useRouter } from "next/navigation"
 
 export function DashboardLayout({ children }) {
@@ -44,6 +45,7 @@ export function DashboardLayout({ children }) {
             <AppSidebar variant="inset" side={isRTL ? "right" : "left"} />
             {/* Main area */}
             <SidebarInset>
+                <ProfileBanner />
                 <Header sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
                 <div className="flex flex-1 flex-col">
                     <div className="@container/main flex flex-1 flex-col gap-2">

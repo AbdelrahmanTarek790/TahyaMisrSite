@@ -2,6 +2,7 @@ import "./globals.css"
 import { AuthProvider } from "../context/AuthContext"
 import { ErrorProvider } from "../context/ErrorContext"
 import ErrorDisplay from "@/components/ui/ErrorDisplay"
+import MandatoryUpdateModal from "@/components/dialogs/MandatoryUpdateModal"
 import { LocalizationProvider } from "@/hooks/useLocalization.jsx"
 import { Cairo } from "next/font/google"
 import Script from "next/script"
@@ -54,7 +55,10 @@ export default function RootLayout({ children }) {
                 <LocalizationProvider>
                     <ErrorProvider>
                         <ErrorDisplay />
-                        <AuthProvider>{children}</AuthProvider>
+                        <AuthProvider>
+                            {children}
+                            <MandatoryUpdateModal />
+                        </AuthProvider>
                     </ErrorProvider>
                 </LocalizationProvider>
             </body>

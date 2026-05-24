@@ -1,18 +1,16 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 require('dotenv').config();
 
 const User = require('./models/User');
 const Position = require('./models/Position');
 const News = require('./models/News');
 const Event = require('./models/Event');
+const CustomField = require('./models/CustomField');
+const MandatoryUpdate = require('./models/MandatoryUpdate');
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    await mongoose.connect(process.env.MONGODB_URI);
     console.log('MongoDB Connected for seeding');
   } catch (error) {
     console.error('Database connection error:', error.message);
@@ -22,15 +20,17 @@ const connectDB = async () => {
 
 const seedData = async () => {
   try {
-    // Clear existing data
+    // 1. تنظيف كل الداتا القديمة من الجداول للبدء على نظافة
     await User.deleteMany();
     await Position.deleteMany();
     await News.deleteMany();
     await Event.deleteMany();
+    await CustomField.deleteMany();
+    await MandatoryUpdate.deleteMany();
 
     console.log('Existing data cleared');
 
-    // Create positions
+    // 2. إنشاء المناصب (Positions)
     const positions = await Position.create([
       {
         name: 'President',
@@ -74,13 +74,29 @@ const seedData = async () => {
 
     console.log('Positions created');
 
-    // Create admin user
-    const hashedPassword = await bcrypt.hash('admin123', 10);
-    
+    // 3. إنشاء الحقول الديناميكية العامة (Custom Fields)
+    const field1 = await CustomField.create({
+      label: "رقم العضوية بنقابة المهندسين",
+      type: "number",
+      status: "active",
+      order: 1
+    });
+
+    const field2 = await CustomField.create({
+      label: "اللجنة النوعية المفضلة",
+      type: "radio",
+      options: ["اللجنة التقنية", "لجنة التنظيم والمتابعة", "لجنة العلاقات الخارجية"],
+      status: "active",
+      order: 2
+    });
+
+    console.log('Dynamic Custom Fields created');
+
+    // 4. إنشاء حساب الأدمن (Admin User) - الباسورد نص عادي ليقوم الموديل بتشفيره
     const adminUser = await User.create({
       name: 'Admin User',
       email: 'admin@tahyamisr.org',
-      password: hashedPassword,
+      password: 'admin123', // 🌟 نص عادي علطول
       phone: '01000000000',
       university: 'Cairo University',
       nationalId: '29801010101010',
@@ -91,12 +107,15 @@ const seedData = async () => {
       role: 'admin'
     });
 
-    // Create sample users
+    console.log('Admin User created successfully');
+
+    // 5. إنشاء حسابات الأعضاء للتجربة (نص عادي للباسورد ودور 'member' المتوافق)
     const sampleUsers = await User.create([
       {
+        // أحمد محمد ➡️ حالة الحجب الصارم التام (Hard Block) لوجود تحديث إلزامي له
         name: 'Ahmed Mohamed',
         email: 'ahmed@example.com',
-        password: await bcrypt.hash('password123', 10),
+        password: 'password123', // 🌟 نص عادي علطول
         phone: '01111111111',
         university: 'Cairo University',
         nationalId: '29801010101011',
@@ -104,12 +123,14 @@ const seedData = async () => {
         position: positions[4]._id, // Cairo Representative
         membershipNumber: 'TM-2025-001',
         membershipExpiry: new Date('2026-12-31'),
-        role: 'volunteer'
+        role: 'member', 
+        customFieldValues: [] 
       },
       {
+        // فاطمة حسن ➡️ حالة اللافتة العلوية التنبيهية فقط (Soft Banner)
         name: 'Fatma Hassan',
         email: 'fatma@example.com',
-        password: await bcrypt.hash('password123', 10),
+        password: 'password123', // 🌟 نص عادي علطول
         phone: '01222222222',
         university: 'Alexandria University',
         nationalId: '29801010101012',
@@ -117,25 +138,44 @@ const seedData = async () => {
         position: positions[5]._id, // Alexandria Representative
         membershipNumber: 'TM-2025-002',
         membershipExpiry: new Date('2026-12-31'),
-        role: 'volunteer'
+        role: 'member', 
+        customFieldValues: [] 
       },
       {
+        // عمر علي ➡️ حالة الحساب الكامل (شاشة نظيفة تماماً Clean UI)
         name: 'Omar Ali',
         email: 'omar@example.com',
-        password: await bcrypt.hash('password123', 10),
+        password: 'password123', // 🌟 نص عادي علطول
         phone: '01333333333',
         university: 'Ain Shams University',
         nationalId: '29801010101013',
         governorate: 'Cairo',
         membershipNumber: 'TM-2025-003',
         membershipExpiry: new Date('2026-12-31'),
-        role: 'student'
+        role: 'member', 
+        customFieldValues: [
+          { fieldId: field1._id, value: "98765" },
+          { fieldId: field2._id, value: "اللجنة التقنية" }
+        ]
       }
     ]);
 
-    console.log('Users created');
+    console.log('Sample Users created');
 
-    // Create sample news
+    // 6. إنشاء قاعدة التحديث الإلزامي الصارم (تستهدف أحمد فقط لتقفل شاشته)
+    await MandatoryUpdate.create({
+      title: "تحديث البيانات النقابية الإلزامي",
+      adminMessage: "يا شباب، برجاء إدخال رقم العضوية الخاص بالنقابة لتفعيل الكارنيهات الجديدة الموحدة.",
+      fields: [field1._id], 
+      targetType: "targeted",
+      targetUserIds: [sampleUsers[0]._id], // ربط بـ ID أحمد محمد
+      status: "active",
+      createdBy: adminUser._id
+    });
+
+    console.log('Explicit Mandatory Update Rule created for Ahmed');
+
+    // 7. إنشاء الأخبار التجريبية
     await News.create([
       {
         title: 'Welcome to Tahya Misr Students Union Platform',
@@ -151,7 +191,7 @@ const seedData = async () => {
 
     console.log('News created');
 
-    // Create sample events
+    // 8. إنشاء الفعاليات التجريبية
     await Event.create([
       {
         title: 'Orientation Day for New Members',
@@ -173,13 +213,11 @@ const seedData = async () => {
 
     console.log('\n🎉 Database seeded successfully!');
     console.log('\n📧 Admin Login:');
-    console.log('Email: admin@tahyamisr.org');
-    console.log('Password: admin123');
-    
-    console.log('\n📧 Sample User Logins:');
-    console.log('Email: ahmed@example.com | Password: password123');
-    console.log('Email: fatma@example.com | Password: password123');
-    console.log('Email: omar@example.com | Password: password123');
+    console.log('Email: admin@tahyamisr.org | Password: admin123');
+    console.log('\n📧 Users Logins (Password: password123):');
+    console.log('- Hard Block (🔴): ahmed@example.com');
+    console.log('- Soft Banner (🟡): fatma@example.com');
+    console.log('- Clean UI (🟢): omar@example.com');
 
     process.exit(0);
   } catch (error) {
