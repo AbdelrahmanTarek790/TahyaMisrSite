@@ -64,6 +64,16 @@ const joinRequestSchema = new mongoose.Schema(
             type: String,
             trim: true,
         },
+        isVerified: {
+            type: Boolean,
+            default: false,
+        },
+        otpCode: {
+            type: String,
+        },
+        otpExpires: {
+            type: Date,
+        },
     },
     {
         timestamps: true,

@@ -36,7 +36,12 @@ const getNews = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/news/:id
 // @access  Public
 const getNewsById = asyncHandler(async (req, res, next) => {
-    const news = await News.findById(req.params.id).populate("createdBy", "name email")
+    const { id } = req.params
+    let query = { slug: id }
+    if (mongoose.Types.ObjectId.isValid(id)) {
+        query = { $or: [{ slug: id }, { _id: id }] }
+    }
+    const news = await News.findOne(query).populate("createdBy", "name email")
     if (!news) {
         return res.status(404).json({
             status: 'error',

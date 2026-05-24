@@ -1,5 +1,5 @@
 "use client"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -20,6 +20,13 @@ export default function JoinForm() {
     const [error, setError] = useState("")
     const [joinRequestsEnabled, setJoinRequestsEnabled] = useState(true)
     const [joinRequestMessage, setJoinRequestMessage] = useState("")
+    
+    // OTP states
+    const [otpPhase, setOtpPhase] = useState(false)
+    const [otpCode, setOtpCode] = useState("")
+    const [timeLeft, setTimeLeft] = useState(60)
+    const [verifying, setVerifying] = useState(false)
+    const timerRef = useRef(null)
 
     const [formData, setFormData] = useState({
         name: "",
@@ -51,6 +58,17 @@ export default function JoinForm() {
         }
         fetchData()
     }, [])
+
+    useEffect(() => {
+        if (otpPhase && timeLeft > 0) {
+            timerRef.current = setInterval(() => {
+                setTimeLeft((prev) => prev - 1)
+            }, 1000)
+        } else if (timeLeft === 0) {
+            clearInterval(timerRef.current)
+        }
+        return () => clearInterval(timerRef.current)
+    }, [otpPhase, timeLeft])
 
     const validateForm = () => {
         const newErrors = {}
@@ -114,8 +132,28 @@ export default function JoinForm() {
             }
 
             await joinRequestAPI.create(requestData)
-            setSuccess(true)
+            setOtpPhase(true)
+            setTimeLeft(60)
+        } catch (error) {
+        } finally {
+            setLoading(false)
+        }
+    }
 
+    const handleVerifyOtp = async (e) => {
+        e.preventDefault()
+        if (otpCode.length !== 6) {
+            setError("يرجى إدخال كود التحقق المكون من 6 أرقام")
+            return
+        }
+
+        setVerifying(true)
+        setError("")
+
+        try {
+            await joinRequestAPI.verifyOtp({ email: formData.email, otpCode })
+            setOtpPhase(false)
+            setSuccess(true)
             setFormData({
                 name: "",
                 email: "",
@@ -127,10 +165,24 @@ export default function JoinForm() {
                 role: "member",
                 notes: "",
             })
+            setOtpCode("")
         } catch (error) {
-            setError(error.error || "حدث خطأ أثناء إرسال الطلب")
+            setError(error.error || "كود التحقق غير صحيح أو منتهي الصلاحية")
         } finally {
-            setLoading(false)
+            setVerifying(false)
+        }
+    }
+
+    const handleResendOtp = async () => {
+        if (timeLeft > 0) return
+        setError("")
+        
+        try {
+            await joinRequestAPI.resendOtp({ email: formData.email })
+            setTimeLeft(60)
+            setOtpCode("")
+        } catch (error) {
+            setError(error.error || "حدث خطأ أثناء إعادة إرسال الكود")
         }
     }
 
@@ -149,6 +201,74 @@ export default function JoinForm() {
                         <Button onClick={() => router.push("/")} size="lg" className="font-arabic">
                             العودة إلى الصفحة الرئيسية
                         </Button>
+                    </CardContent>
+                </Card>
+            </div>
+        )
+    }
+
+    if (otpPhase) {
+        return (
+            <div className="min-h-screen bg-background flex flex-col items-center justify-center p-6" dir="rtl">
+                <Card className="max-w-md w-full text-center">
+                    <CardHeader>
+                        <CardTitle className="text-2xl font-bold font-arabic">التحقق من البريد الإلكتروني</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-6">
+                        {error && (
+                            <Alert variant="destructive">
+                                <AlertCircle className="h-4 w-4" />
+                                <AlertDescription className="font-arabic">{error}</AlertDescription>
+                            </Alert>
+                        )}
+                        <p className="text-muted-foreground font-arabic">
+                            تم إرسال كود التحقق إلى بريدك الإلكتروني <strong>{formData.email}</strong>
+                        </p>
+                        
+                        <form onSubmit={handleVerifyOtp} className="space-y-6">
+                            <div className="space-y-2">
+                                <Input
+                                    id="otpCode"
+                                    type="text"
+                                    value={otpCode}
+                                    onChange={(e) => setOtpCode(e.target.value.replace(/[^0-9]/g, "").slice(0, 6))}
+                                    placeholder="أدخل الكود المكون من 6 أرقام"
+                                    className="text-center text-2xl tracking-[0.5em] font-mono h-14"
+                                    maxLength="6"
+                                    dir="ltr"
+                                />
+                            </div>
+                            
+                            <p className="text-sm font-semibold text-red-600 bg-red-50 p-3 rounded-md font-arabic text-right">
+                                ⚠️ تنبيه: قد يستغرق وصول البريد دقيقة واحدة. إذا لم تجد الرسالة في صندوق الوارد (Inbox)، يرجى فحص مجلد الرسائل غير المرغوب فيها (Spam / Junk Mail) فوراً.
+                            </p>
+
+                            <Button
+                                type="submit"
+                                size="lg"
+                                disabled={verifying || otpCode.length !== 6}
+                                className="w-full bg-[linear-gradient(135deg,_rgb(179,29,29),_rgb(255,215,0))] font-arabic"
+                            >
+                                {verifying ? "جاري التحقق..." : "تأكيد الحساب"}
+                            </Button>
+                        </form>
+
+                        <div className="pt-4 border-t text-sm font-arabic">
+                            {timeLeft > 0 ? (
+                                <p className="text-muted-foreground">
+                                    يمكنك إعادة إرسال الكود بعد <span className="font-bold text-foreground">{timeLeft}</span> ثانية
+                                </p>
+                            ) : (
+                                <Button
+                                    type="button"
+                                    variant="link"
+                                    onClick={handleResendOtp}
+                                    className="text-primary hover:underline font-arabic p-0 h-auto"
+                                >
+                                    لم تستلم الكود؟ إعادة إرسال
+                                </Button>
+                            )}
+                        </div>
                     </CardContent>
                 </Card>
             </div>

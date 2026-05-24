@@ -1,7 +1,7 @@
 import axios from "axios"
 
-// const API_BASE_URL = "https://tmbackend.tahyamisryu.com/api/v1"
-const API_BASE_URL = "http://localhost:8080/api/v1"
+const API_BASE_URL = "https://tmbackend.tahyamisryu.com/api/v1"
+//const API_BASE_URL = "http://localhost:8080/api/v1"
 
 // Create axios instance
 const api = axios.create({
@@ -63,6 +63,8 @@ export const authAPI = {
 // Join Request API
 export const joinRequestAPI = {
     create: (requestData) => api.post("/join-requests", requestData),
+    verifyOtp: (data) => api.post("/join-requests/verify-otp", data),
+    resendOtp: (data) => api.post("/join-requests/resend-otp", data),
     getAll: (params) => api.get("/join-requests", { params }),
     getById: (id) => api.get(`/join-requests/${id}`),
     approve: (id, data) => api.patch(`/join-requests/${id}/approve`, data),

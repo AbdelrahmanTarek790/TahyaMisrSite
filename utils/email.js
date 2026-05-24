@@ -591,6 +591,37 @@ async function sendMandatoryUpdateNotification(email, name, adminMessage) {
     })
 }
 
+async function sendVerificationOtpEmail(email, otpCode) {
+    const subject = "🔐 كود التحقق من البريد الإلكتروني - اتحاد شباب تحيا مصر"
+    const html = baseTemplate(
+        "تفعيل حسابك",
+        `
+        <div style="background-color: #e2e3e5; border: 1px solid #d6d8db; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+            <h3 style="color: #383d41; margin: 0 0 10px 0; font-size: 16px;">✉️ التحقق من البريد الإلكتروني</h3>
+            <p style="margin: 0; color: #383d41;">لقد تلقينا طلبك للانضمام إلى منصة اتحاد شباب تحيا مصر. يرجى استخدام الرمز أدناه للتحقق من بريدك الإلكتروني وإكمال طلبك.</p>
+        </div>
+        
+        <div class="info-box" style="background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 8px; padding: 20px; text-align: center; margin-bottom: 20px;">
+            <h3 style="color: #155724; margin: 0 0 15px 0;">رمز التحقق (OTP)</h3>
+            <div class="code-box" style="background-color: #ffffff; border: 2px dashed #28a745; border-radius: 8px; padding: 15px; display: inline-block; max-width: 100%; overflow-wrap: break-word;">
+                <span style="font-size: 32px; font-weight: bold; color: #B31D1D; letter-spacing: 5px; font-family: 'Courier New', monospace; word-break: break-all;">
+                    ${otpCode}
+                </span>
+            </div>
+            <p style="color: #155724; margin: 15px 0 0 0; font-size: 14px;">
+                ⏰ سينتهي هذا الرمز خلال <strong>15 دقيقة</strong> من وقت الإرسال
+            </p>
+        </div>
+        
+        <div style="background-color: #f8d7da; border: 1px solid #f5c6cb; border-radius: 8px; padding: 15px; margin-bottom: 20px;">
+            <h4 style="color: #721c24; margin: 0 0 10px 0;">⚠️ تنبيه:</h4>
+            <p style="color: #721c24; margin: 0;">إذا لم تقم بتقديم طلب الانضمام، يرجى تجاهل هذا البريد.</p>
+        </div>
+        `
+    )
+    return sendEmail({ to: email, subject, html, text: `رمز التحقق: ${otpCode}` })
+}
+
 module.exports = {
     sendEmail,
     sendResetPasswordEmail,
@@ -598,4 +629,5 @@ module.exports = {
     sendJoinRequestApproved,
     sendJoinRequestDenied,
     sendMandatoryUpdateNotification,
+    sendVerificationOtpEmail,
 }

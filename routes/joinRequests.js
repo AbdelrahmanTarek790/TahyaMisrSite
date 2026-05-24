@@ -7,11 +7,15 @@ const {
     approveJoinRequest,
     denyJoinRequest,
     deleteJoinRequest,
+    verifyOtp,
+    resendOtp,
 } = require("../controllers/joinRequestController")
 const { protect, authorize } = require("../middleware/auth")
 
 // Public routes
 router.post("/", createJoinRequest)
+router.post("/verify-otp", verifyOtp)
+router.post("/resend-otp", resendOtp)
 
 // Admin/HR only routes
 router.use(protect)

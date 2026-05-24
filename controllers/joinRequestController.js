@@ -3,7 +3,7 @@ const User = require("../models/User")
 const Position = require("../models/Position")
 const SiteSettings = require("../models/SiteSettings")
 const { generateToken } = require("../middleware/auth")
-const { sendJoinRequestSubmitted, sendJoinRequestApproved, sendJoinRequestDenied } = require("../utils/email")
+const { sendJoinRequestSubmitted, sendJoinRequestApproved, sendJoinRequestDenied, sendVerificationOtpEmail } = require("../utils/email")
 const { Filter } = require("../utils/Filter")
 
 // @desc    Create a new join request
@@ -32,7 +32,7 @@ const createJoinRequest = async (req, res, next) => {
             })
         }
 
-        // Check if user already exists with this email or nationalID
+        // Check if user already exists
         const existingUser = await User.findOne({
             $or: [{ email }, { nationalId: nationalID }],
         })
@@ -40,23 +40,66 @@ const createJoinRequest = async (req, res, next) => {
         if (existingUser) {
             return res.status(400).json({
                 success: false,
-                error: "المستخدم موجود بالفعل بهذا البريد الإلكتروني أو الرقم القومي",
+                error: "تم قبول حسابك بالفعل، برجاء فحص بريدك الإلكتروني للحصول على كلمة المرور المؤقتة وتسجيل الدخول.",
                 data: null,
             })
         }
 
-        // Check if there's already a pending request with this email or nationalID
-        const existingRequest = await JoinRequest.findOne({
+        // Check if there's already a request
+        let existingRequest = await JoinRequest.findOne({
             $or: [{ email }, { nationalID }],
-            status: "pending",
         })
 
         if (existingRequest) {
-            return res.status(400).json({
-                success: false,
-                error: "طلبات الانضمام معلقة بالفعل لهذا البريد الإلكتروني أو الرقم القومي",
-                data: null,
-            })
+            if (existingRequest.isVerified) {
+                if (existingRequest.status === "pending") {
+                    return res.status(400).json({
+                        success: false,
+                        error: "طلب الانضمام الخاص بك قيد المراجعة حالياً، وسيتم إرسال كلمة المرور فور القبول.",
+                        data: null,
+                    })
+                } else if (existingRequest.status === "approved") {
+                    return res.status(400).json({
+                        success: false,
+                        error: "تم قبول حسابك بالفعل، برجاء فحص بريدك الإلكتروني للحصول على كلمة المرور المؤقتة وتسجيل الدخول.",
+                        data: null,
+                    })
+                }
+            } else {
+                // Overwrite unverified request with new OTP
+                const otpCode = Math.floor(100000 + Math.random() * 900000).toString()
+                const otpExpires = Date.now() + 15 * 60 * 1000
+                
+                existingRequest.name = name
+                existingRequest.email = email
+                existingRequest.phone = phone
+                existingRequest.nationalID = nationalID
+                existingRequest.governorate = governorate
+                existingRequest.position = position || undefined
+                existingRequest.membershipNumber = membershipNumber || undefined
+                existingRequest.role = "member"
+                existingRequest.notes = notes || undefined
+                existingRequest.otpCode = otpCode
+                existingRequest.otpExpires = otpExpires
+                existingRequest.status = "pending"
+                
+                await existingRequest.save()
+
+                try {
+                    await sendVerificationOtpEmail(email, otpCode)
+                } catch (e) {
+                    console.error("Email send error", e)
+                }
+
+                return res.status(200).json({
+                    success: true,
+                    message: "تم تحديث الطلب وإرسال كود التحقق (OTP) إلى بريدك الإلكتروني",
+                    data: {
+                        otpSent: true,
+                        email: email
+                    },
+                })
+            }
         }
 
         // Validate position if provided
@@ -65,13 +108,14 @@ const createJoinRequest = async (req, res, next) => {
             if (!validPosition || !validPosition.isActive) {
                 return res.status(400).json({
                     success: false,
-                    error: "Invalid position selected",
+                    error: "اللجنة المختارة غير صالحة",
                     data: null,
                 })
             }
         }
 
-        // Validate role
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString()
+        const otpExpires = Date.now() + 15 * 60 * 1000
 
         // Create the join request
         const joinRequest = await JoinRequest.create({
@@ -84,23 +128,24 @@ const createJoinRequest = async (req, res, next) => {
             membershipNumber: membershipNumber || undefined,
             role: "member",
             notes: notes || undefined,
+            isVerified: false,
+            otpCode,
+            otpExpires,
         })
 
-        // Populate position if it exists
-        await joinRequest.populate("position")
-
-        // Send submission confirmation email (non-blocking)
+        // Send OTP email (non-blocking)
         try {
-            sendJoinRequestSubmitted(email, name)
+            await sendVerificationOtpEmail(email, otpCode)
         } catch (e) {
-            /* ignore */
+            console.error("Email send error", e)
         }
 
         res.status(201).json({
             success: true,
-            message: "تم إرسال طلب الانضمام بنجاح",
+            message: "تم إرسال كود التحقق (OTP) إلى بريدك الإلكتروني",
             data: {
-                joinRequest,
+                otpSent: true,
+                email: email
             },
         })
     } catch (error) {
@@ -121,18 +166,17 @@ const getJoinRequests = async (req, res, next) => {
         const { status, page = 1, limit = 10 } = req.query
         const search = Filter(req)
         // Build filter object
-        const filter = {}
+        const filter = { ...search, isVerified: true }
         if (status && ["pending", "approved", "denied"].includes(status)) {
             filter.status = status
         }
 
         // Calculate pagination
         const skip = (page - 1) * limit
-        const total = await JoinRequest.countDocuments(search)
+        const total = await JoinRequest.countDocuments(filter)
 
         // Get join requests with pagination
-        const joinRequests = await JoinRequest.find()
-            .where(search)
+        const joinRequests = await JoinRequest.find(filter)
             .populate("position")
             .populate("reviewedBy", "name email")
             .sort({ createdAt: -1 })
@@ -367,6 +411,135 @@ const deleteJoinRequest = async (req, res, next) => {
     }
 }
 
+// @desc    Verify OTP for join request
+// @route   POST /api/v1/join-requests/verify-otp
+// @access  Public
+const verifyOtp = async (req, res, next) => {
+    try {
+        const { email, otpCode } = req.body
+
+        if (!email || !otpCode) {
+            return res.status(400).json({
+                success: false,
+                error: "يرجى تقديم البريد الإلكتروني وكود التحقق",
+                data: null,
+            })
+        }
+
+        const joinRequest = await JoinRequest.findOne({ email })
+
+        if (!joinRequest) {
+            return res.status(404).json({
+                success: false,
+                error: "لم يتم العثور على طلب انضمام بهذا البريد الإلكتروني",
+                data: null,
+            })
+        }
+
+        if (joinRequest.isVerified) {
+            return res.status(400).json({
+                success: false,
+                error: "هذا الحساب تم تفعيله مسبقاً",
+                data: null,
+            })
+        }
+
+        if (joinRequest.otpCode !== otpCode || new Date() > joinRequest.otpExpires) {
+            return res.status(400).json({
+                success: false,
+                error: "كود التحقق غير صحيح أو منتهي الصلاحية",
+                data: null,
+            })
+        }
+
+        joinRequest.isVerified = true
+        joinRequest.otpCode = undefined
+        joinRequest.otpExpires = undefined
+        await joinRequest.save()
+
+        // Send submission confirmation email
+        try {
+            await sendJoinRequestSubmitted(email, joinRequest.name)
+        } catch (e) {
+            /* ignore */
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "تم التحقق من البريد الإلكتروني بنجاح وطلبك الآن قيد المراجعة",
+            data: null,
+        })
+    } catch (error) {
+        console.error("Error verifying OTP:", error)
+        res.status(500).json({
+            success: false,
+            error: "خطأ في الخادم",
+            data: null,
+        })
+    }
+}
+
+// @desc    Resend OTP for join request
+// @route   POST /api/v1/join-requests/resend-otp
+// @access  Public
+const resendOtp = async (req, res, next) => {
+    try {
+        const { email } = req.body
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                error: "يرجى تقديم البريد الإلكتروني",
+                data: null,
+            })
+        }
+
+        const joinRequest = await JoinRequest.findOne({ email })
+
+        if (!joinRequest) {
+            return res.status(404).json({
+                success: false,
+                error: "لم يتم العثور على طلب انضمام بهذا البريد الإلكتروني",
+                data: null,
+            })
+        }
+
+        if (joinRequest.isVerified) {
+            return res.status(400).json({
+                success: false,
+                error: "هذا الحساب تم تفعيله مسبقاً",
+                data: null,
+            })
+        }
+
+        const otpCode = Math.floor(100000 + Math.random() * 900000).toString()
+        const otpExpires = Date.now() + 15 * 60 * 1000
+
+        joinRequest.otpCode = otpCode
+        joinRequest.otpExpires = otpExpires
+        await joinRequest.save()
+
+        try {
+            await sendVerificationOtpEmail(email, otpCode)
+        } catch (e) {
+            console.error("Email send error", e)
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "تم إعادة إرسال كود التحقق بنجاح",
+            data: null,
+        })
+    } catch (error) {
+        console.error("Error resending OTP:", error)
+        res.status(500).json({
+            success: false,
+            error: "خطأ في الخادم",
+            data: null,
+        })
+    }
+}
+
 module.exports = {
     createJoinRequest,
     getJoinRequests,
@@ -374,4 +547,6 @@ module.exports = {
     approveJoinRequest,
     denyJoinRequest,
     deleteJoinRequest,
+    verifyOtp,
+    resendOtp,
 }

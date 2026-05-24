@@ -1,7 +1,7 @@
 const User = require("../models/User")
 const Position = require("../models/Position")
 const { generateToken } = require("../middleware/auth")
-const { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, arabicJoiMessages } = require("../utils/validation")
+const { registerSchema, loginSchema, forgotPasswordSchema, resetPasswordSchema, changePasswordSchema, arabicJoiMessages, updateUserSchema } = require("../utils/validation")
 const { sendResetPasswordEmail } = require("../utils/email")
 const { filterUserFields } = require("../utils/userFieldFilter")
 const upload = require("../utils/upload")
@@ -157,7 +157,6 @@ const updateMe = asyncHandler(async (req, res, next) => {
     }
 
     // Always validate input
-    const { updateUserSchema } = require("../utils/validation")
     const { error } = updateUserSchema.validate(req.body, { messages: arabicJoiMessages })
     if (error) {
         return res.status(400).json({
@@ -229,8 +228,8 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
     // Save user with reset token
     await user.save({ validateBeforeSave: false })
 
-    // Send email with reset token
-    const emailResult = await sendResetPasswordEmail(email, `https://tahyamisryu.com/reset-password?token=${resetToken}`)
+    // 🌟 تم الإصلاح: تمرير الـ token الصافي فقط والـ Template هيتكفل بالباقي
+    const emailResult = await sendResetPasswordEmail(email, resetToken)
 
     if (!emailResult.success) {
         // Reset the token fields if email fails
@@ -246,7 +245,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 
     res.status(200).json({
         success: true,
-        message: "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني"
+        message: "تم إرسال رمز إعادة تعيين كلمة المرور إلى بريدك الإلكتروني بنجاح"
     })
 })
 

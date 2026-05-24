@@ -11,7 +11,7 @@ import BackButton from "./BackButton"
 // Server-side data fetching
 async function getNewsItem(id) {
     try {
-        const response = await fetch(`https://tmbackend.tahyamisryu.com/api/v1/news/${id}`, {
+        const response = await fetch(`https://tmbackend.tahyamisryu.com/api/v1/news/${encodeURIComponent(id)}`, {
             next: { revalidate: 60 }, // Revalidate every 60 seconds
         })
 

@@ -9,7 +9,7 @@ import EventRegistration from "./EventRegistration"
 // Server-side data fetching
 async function getEvent(id) {
     try {
-        const response = await fetch(`https://tmbackend.tahyamisryu.com/api/v1/events/${id}`, {
+        const response = await fetch(`https://tmbackend.tahyamisryu.com/api/v1/events/${encodeURIComponent(id)}`, {
             next: { revalidate: 60 }, // Revalidate every 60 seconds
         })
 

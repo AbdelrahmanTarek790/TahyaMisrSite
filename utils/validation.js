@@ -155,6 +155,16 @@ const completeMandatoryUpdateSchema = Joi.object({
         .required(),
 })
 
+// OTP validation schemas
+const verifyOtpSchema = Joi.object({
+    email: Joi.string().email().required(),
+    otpCode: Joi.string().length(6).required(),
+})
+
+const resendOtpSchema = Joi.object({
+    email: Joi.string().email().required(),
+})
+
 const arabicJoiMessages = {
     'any.required': 'هذا الحقل مطلوب.',
     'string.empty': 'لا يمكن أن يكون هذا الحقل فارغاً.',
@@ -187,4 +197,6 @@ module.exports = {
     customFieldSchema,
     mandatoryUpdateSchema,
     completeMandatoryUpdateSchema,
+    verifyOtpSchema,
+    resendOtpSchema,
 }
