@@ -32,6 +32,8 @@ const MandatoryUpdateModal = () => {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [fieldErrors, setFieldErrors] = useState({})
 
+    const [initialValues, setInitialValues] = useState({})
+
     const fetchPendingUpdates = useCallback(async () => {
         try {
             setIsLoading(true)
@@ -51,7 +53,7 @@ const MandatoryUpdateModal = () => {
         } finally {
             setIsLoading(false)
         }
-    }, [])
+    }, [user]) // depend on user so we can prefill
 
     useEffect(() => {
         if (user) {
@@ -63,26 +65,79 @@ const MandatoryUpdateModal = () => {
         const initial = {}
         if (update?.fields) {
             update.fields.forEach((field) => {
-                // Pre-fill from user's existing custom field values
-                const existing = user?.customFieldValues?.find((cfv) => {
-                    const cfvFieldId = typeof cfv.fieldId === "object" && cfv.fieldId
-                        ? cfv.fieldId._id
-                        : cfv.fieldId
-                    return cfvFieldId === field._id
-                })
+                let existingValue = "";
+                
+                if (field._id === "core_nationalId") existingValue = user?.nationalId || "";
+                else if (field._id === "core_name") existingValue = user?.name || "";
+                else if (field._id === "core_phone") existingValue = user?.phone || "";
+                else if (field._id === "core_university") existingValue = user?.university || "";
+                else if (field._id === "core_governorate") existingValue = user?.governorate || "";
+                else if (field._id === "core_email") existingValue = user?.email || "";
+                else {
+                    // It's a CustomField, check customFieldValues
+                    const existingCfv = user?.customFieldValues?.find((cfv) => {
+                        const cfvFieldId = typeof cfv.fieldId === "object" && cfv.fieldId
+                            ? cfv.fieldId._id
+                            : cfv.fieldId
+                        return cfvFieldId === field._id
+                    })
+                    
+                    if (existingCfv && existingCfv.value !== undefined && existingCfv.value !== null && existingCfv.value !== "") {
+                        existingValue = existingCfv.value;
+                    }
+                }
+
                 if (field.type === "checkbox_list") {
-                    initial[field._id] = existing?.value || []
+                    initial[field._id] = Array.isArray(existingValue) ? existingValue : (existingValue ? [existingValue] : [])
                 } else {
-                    initial[field._id] = existing?.value || ""
+                    initial[field._id] = existingValue
                 }
             })
         }
         setFieldValues(initial)
+        setInitialValues(initial)
         setFieldErrors({})
     }
 
     const currentUpdate = pendingUpdates[currentIndex]
     const isOpen = !isLoading && pendingUpdates.length > 0 && !!currentUpdate
+
+    const getSubmitButtonText = () => {
+        if (!currentUpdate?.fields) return "إرسال البيانات"
+
+        let hasPreFilled = false
+        let hasChanges = false
+
+        currentUpdate.fields.forEach((field) => {
+            const initialVal = initialValues[field._id]
+            const currentVal = fieldValues[field._id]
+
+            const isInitialEmpty = field.type === "checkbox_list" 
+                ? (!initialVal || initialVal.length === 0) 
+                : (!initialVal || String(initialVal).trim() === "")
+
+            if (!isInitialEmpty) {
+                hasPreFilled = true
+            }
+
+            // Check if changed
+            if (field.type === "checkbox_list") {
+                const initArr = Array.isArray(initialVal) ? initialVal : []
+                const currArr = Array.isArray(currentVal) ? currentVal : []
+                if (initArr.length !== currArr.length || !initArr.every(v => currArr.includes(v))) {
+                    hasChanges = true
+                }
+            } else {
+                if (String(initialVal || "") !== String(currentVal || "")) {
+                    hasChanges = true
+                }
+            }
+        })
+
+        if (hasChanges && hasPreFilled) return "تعديل وتأكيد"
+        if (hasPreFilled && !hasChanges) return "تأكيد صحة البيانات"
+        return "إرسال البيانات" // Default when empty
+    }
 
     const handleFieldChange = (fieldId, value) => {
         setFieldValues((prev) => ({
@@ -376,10 +431,7 @@ const MandatoryUpdateModal = () => {
                                 جاري الإرسال...
                             </>
                         ) : (
-                            <>
-                                <CheckCircle2 className="h-4 w-4 mr-2" />
-                                إرسال وإكمال التحديث
-                            </>
+                            getSubmitButtonText()
                         )}
                     </Button>
                     <p className="text-xs text-gray-400 text-center">

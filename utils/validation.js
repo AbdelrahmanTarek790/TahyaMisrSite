@@ -9,7 +9,7 @@ const registerSchema = Joi.object({
     university: Joi.string().min(2).max(100).required(),
     nationalId: Joi.string().min(14).max(14).optional(),
     governorate: Joi.string().min(2).max(50).required(),
-    position: Joi.string().hex().length(24).optional(),
+    position: Joi.string().optional(),
     membershipNumber: Joi.string().optional(),
     membershipExpiry: Joi.date().optional(),
     role: Joi.string().valid("member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator").optional(),
@@ -17,7 +17,7 @@ const registerSchema = Joi.object({
     customFieldValues: Joi.array()
         .items(
             Joi.object({
-                fieldId: Joi.string().hex().length(24).required(),
+                fieldId: Joi.string().required(),
                 value: Joi.alternatives().try(
                     Joi.string().allow(""),
                     Joi.array().items(Joi.string().allow(""))
@@ -37,7 +37,7 @@ const updateUserSchema = Joi.object({
     phone: Joi.string().min(10).max(15).optional(),
     university: Joi.string().min(2).max(100).optional(),
     governorate: Joi.string().min(2).max(50).optional(),
-    position: Joi.string().hex().length(24).optional(),
+    position: Joi.string().optional(),
     membershipNumber: Joi.string().optional(),
     membershipExpiry: Joi.date().optional(),
     email: Joi.string().email().optional(),
@@ -47,7 +47,7 @@ const updateUserSchema = Joi.object({
     customFieldValues: Joi.array()
         .items(
             Joi.object({
-                fieldId: Joi.string().hex().length(24).required(),
+                fieldId: Joi.string().required(),
                 value: Joi.alternatives().try(
                     Joi.string().allow(""),
                     Joi.array().items(Joi.string().allow(""))
@@ -113,7 +113,7 @@ const mediaSchema = Joi.object({
 const notificationSchema = Joi.object({
     title: Joi.string().min(5).max(100).required(),
     message: Joi.string().min(10).max(500).required(),
-    userIds: Joi.array().items(Joi.string().hex().length(24)).optional(),
+    userIds: Joi.array().items(Joi.string()).optional(),
 })
 
 // Custom Field validation schema
@@ -132,9 +132,9 @@ const customFieldSchema = Joi.object({
 
 // Mandatory Update validation schema
 const mandatoryUpdateSchema = Joi.object({
-    fields: Joi.array().items(Joi.string().hex().length(24)).min(1).required(),
+    fields: Joi.array().items(Joi.string().required()).min(1).required(),
     targetType: Joi.string().valid("global", "targeted").required(),
-    targetUserIds: Joi.array().items(Joi.string().hex().length(24)).optional(),
+    targetUserIds: Joi.array().items(Joi.string()).optional(),
     adminMessage: Joi.string().min(5).max(500).required(),
     notifyByEmail: Joi.boolean().optional(),
 })
@@ -144,7 +144,7 @@ const completeMandatoryUpdateSchema = Joi.object({
     customFieldValues: Joi.array()
         .items(
             Joi.object({
-                fieldId: Joi.string().hex().length(24).required(),
+                fieldId: Joi.string().required(),
                 value: Joi.alternatives().try(
                     Joi.string().allow(""),
                     Joi.array().items(Joi.string().allow(""))

@@ -5,6 +5,28 @@ const { mandatoryUpdateSchema, completeMandatoryUpdateSchema, arabicJoiMessages 
 const { sendMandatoryUpdateNotification } = require("../utils/email")
 const asyncHandler = require("../middleware/asyncHandler")
 
+const CORE_FIELDS = [
+    { _id: "core_name", label: "الاسم", type: "text" },
+    { _id: "core_phone", label: "رقم الهاتف", type: "phone" },
+    { _id: "core_nationalId", label: "الرقم القومي", type: "text" },
+    { _id: "core_university", label: "الجامعة", type: "text" },
+    { _id: "core_governorate", label: "المحافظة", type: "text" },
+    { _id: "core_email", label: "البريد الإلكتروني", type: "email" }
+]
+
+const resolveMixedFields = async (update) => {
+    const fields = (update.fields || []).map(f => f.toString())
+    const customFieldIds = fields.filter(f => !f.startsWith("core_"))
+    const coreFieldIds = fields.filter(f => f.startsWith("core_"))
+
+    const customFields = await CustomField.find({ _id: { $in: customFieldIds } }).lean()
+    
+    const resolvedCoreFields = coreFieldIds.map(id => CORE_FIELDS.find(c => c._id === id)).filter(Boolean)
+    
+    // Maintain original order or just concat
+    return [...resolvedCoreFields, ...customFields]
+}
+
 // البريد الإلكتروني المخصص لمراجعي آبل لتخطي الحجب
 const APPLE_REVIEWER_EMAIL = "apple@tahyamisryu.com"
 
@@ -32,7 +54,11 @@ const getMandatoryUpdates = asyncHandler(async (req, res, next) => {
             { targetUserIds: userId }
         ],
         completedBy: { $ne: userId }
-    }).populate("fields")
+    }).lean()
+
+    for (const update of pendingUpdates) {
+        update.fields = await resolveMixedFields(update)
+    }
 
     // جلب الحقول الديناميكية النشطة وحساب المفقود منها
     const activeCustomFields = await CustomField.find({ status: "active" })
@@ -64,9 +90,11 @@ const getMandatoryUpdates = asyncHandler(async (req, res, next) => {
 // @route    GET /api/v1/mandatory-updates/admin
 // @access   Private/Admin
 const getAdminMandatoryUpdates = asyncHandler(async (req, res, next) => {
-    const updates = await MandatoryUpdate.find()
-        .populate("fields")
-        .populate("createdBy", "name email")
+    const updates = await MandatoryUpdate.find().populate("createdBy", "name email").lean()
+
+    for (const update of updates) {
+        update.fields = await resolveMixedFields(update)
+    }
         
     res.status(200).json({
         success: true,
@@ -88,15 +116,28 @@ const createMandatoryUpdate = asyncHandler(async (req, res, next) => {
     }
 
     // التأكد من صحة معرفات الحقول الديناميكية المرسلة ونشاطها
-    const fieldCount = await CustomField.countDocuments({
-        _id: { $in: req.body.fields },
-        status: "active",
-    })
-    if (fieldCount !== req.body.fields.length) {
+    const customFieldIds = req.body.fields.filter(f => !f.startsWith("core_"))
+    const coreFieldIds = req.body.fields.filter(f => f.startsWith("core_"))
+
+    const invalidCore = coreFieldIds.filter(id => !CORE_FIELDS.find(c => c._id === id))
+    if (invalidCore.length > 0) {
         return res.status(400).json({
             status: 'error',
-            message: "واحد أو أكثر من معرفات الحقول غير صالحة أو غير نشطة"
+            message: "معرفات الحقول الأساسية غير صالحة"
         })
+    }
+
+    if (customFieldIds.length > 0) {
+        const fieldCount = await CustomField.countDocuments({
+            _id: { $in: customFieldIds },
+            status: "active",
+        })
+        if (fieldCount !== customFieldIds.length) {
+            return res.status(400).json({
+                status: 'error',
+                message: "واحد أو أكثر من معرفات الحقول غير صالحة أو غير نشطة"
+            })
+        }
     }
 
     // التحقق من معرفات المستخدمين في حال كان التحديث مستهدفاً لأعضاء محددين
@@ -165,7 +206,7 @@ const updateMandatoryUpdate = asyncHandler(async (req, res, next) => {
     const update = await MandatoryUpdate.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true
-    }).populate("fields")
+    }).lean()
 
     if (!update) {
         return res.status(404).json({
@@ -173,6 +214,8 @@ const updateMandatoryUpdate = asyncHandler(async (req, res, next) => {
             message: "لم يتم العثور على التحديث الإلزامي المطلوب"
         })
     }
+
+    update.fields = await resolveMixedFields(update)
 
     res.status(200).json({
         success: true,
@@ -204,7 +247,7 @@ const deleteMandatoryUpdate = asyncHandler(async (req, res, next) => {
 // @route    POST /api/v1/mandatory-updates/:id/complete
 // @access   Private
 const completeMandatoryUpdate = asyncHandler(async (req, res, next) => {
-    const update = await MandatoryUpdate.findById(req.params.id).populate("fields")
+    const update = await MandatoryUpdate.findById(req.params.id)
 
     if (!update) {
         return res.status(404).json({
@@ -222,7 +265,7 @@ const completeMandatoryUpdate = asyncHandler(async (req, res, next) => {
     }
 
     // التأكد من إرسال كافة الحقول المطلوبة في هذا التحديث الإلزامي
-    const requiredFieldIds = update.fields.map((f) => f._id.toString())
+    const requiredFieldIds = update.fields.map(f => f.toString())
     const submittedFieldIds = req.body.customFieldValues.map((v) => v.fieldId)
     const missingFields = requiredFieldIds.filter((id) => !submittedFieldIds.includes(id))
 
@@ -235,15 +278,22 @@ const completeMandatoryUpdate = asyncHandler(async (req, res, next) => {
 
     const user = await User.findById(req.user._id)
 
-    // تحديث أو إضافة القيم الديناميكية الجديدة في ملف العضو
+    // تحديث البيانات إما في الحقول الأساسية أو في القيم الديناميكية للعضو
     for (const { fieldId, value } of req.body.customFieldValues) {
-        const existingIndex = user.customFieldValues.findIndex(
-            (cfv) => cfv.fieldId.toString() === fieldId
-        )
-        if (existingIndex !== -1) {
-            user.customFieldValues[existingIndex].value = value
+        if (fieldId.startsWith("core_")) {
+            // Update core field
+            const coreKey = fieldId.replace("core_", "")
+            user[coreKey] = value
         } else {
-            user.customFieldValues.push({ fieldId, value })
+            // Update custom field
+            const existingIndex = user.customFieldValues.findIndex(
+                (cfv) => cfv.fieldId.toString() === fieldId
+            )
+            if (existingIndex !== -1) {
+                user.customFieldValues[existingIndex].value = value
+            } else {
+                user.customFieldValues.push({ fieldId, value })
+            }
         }
     }
 

@@ -11,6 +11,14 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sh
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
 import { useError } from "@/context/ErrorContext"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuCheckboxItem,
+    DropdownMenuTrigger,
+    DropdownMenuSeparator,
+    DropdownMenuLabel,
+} from "@/components/ui/dropdown-menu"
 import { mandatoryUpdatesAPI, customFieldsAPI, usersAPI } from "@/app/api/api"
 import {
     ShieldAlert,
@@ -23,7 +31,18 @@ import {
     Mail,
     Check,
     Search,
+    LayoutList,
+    ChevronDown,
 } from "lucide-react"
+
+const CORE_FIELDS = [
+    { _id: "core_name", label: "الاسم الكامل" },
+    { _id: "core_phone", label: "رقم الهاتف" },
+    { _id: "core_nationalId", label: "الرقم القومي" },
+    { _id: "core_university", label: "الجامعة" },
+    { _id: "core_governorate", label: "المحافظة" },
+    { _id: "core_email", label: "البريد الإلكتروني" },
+]
 
 const mandatoryUpdateSchema = z.object({
     fields: z.array(z.string()).min(1, "يجب اختيار حقل واحد على الأقل"),
@@ -75,8 +94,6 @@ const MandatoryUpdatesManagement = () => {
                 page: pagination.page,
                 limit: pagination.limit,
             })
-            // Handle both response formats:
-            // Backend may return data as flat array or as { updates, pagination }
             const resData = response.data
             if (Array.isArray(resData)) {
                 setUpdates(resData)
@@ -151,7 +168,6 @@ const MandatoryUpdatesManagement = () => {
         try {
             setIsLoading(true)
 
-            // Clean up: remove targetUserIds if global
             const submitData = { ...data }
             if (submitData.targetType === "global") {
                 delete submitData.targetUserIds
@@ -247,7 +263,6 @@ const MandatoryUpdatesManagement = () => {
 
     return (
         <div className="space-y-6">
-            {/* Header */}
             <div className="flex justify-between items-center flex-wrap gap-3">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">التحديثات الإلزامية</h1>
@@ -259,7 +274,6 @@ const MandatoryUpdatesManagement = () => {
                 </Button>
             </div>
 
-            {/* Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <Card>
                     <CardContent className="p-4 text-center">
@@ -285,7 +299,6 @@ const MandatoryUpdatesManagement = () => {
                 </Card>
             </div>
 
-            {/* Updates Table */}
             {isLoading && updates.length === 0 ? (
                 <Card>
                     <CardContent className="flex items-center justify-center py-12">
@@ -402,7 +415,6 @@ const MandatoryUpdatesManagement = () => {
                 </Card>
             )}
 
-            {/* Pagination */}
             {pagination.total > pagination.limit && (
                 <div className="flex justify-center space-x-2">
                     <Button
@@ -427,7 +439,6 @@ const MandatoryUpdatesManagement = () => {
                 </div>
             )}
 
-            {/* Create/Edit Sheet */}
             <Sheet open={isSheetOpen} onOpenChange={(open) => { if (!open) handleCloseSheet(); else setIsSheetOpen(true); }}>
                 <SheetContent className="w-[600px] sm:max-w-[600px] overflow-y-auto">
                     <SheetHeader>
@@ -436,42 +447,49 @@ const MandatoryUpdatesManagement = () => {
                         </SheetTitle>
                     </SheetHeader>
                     <form onSubmit={handleSubmit(onSubmit, (validationErrors) => { console.error('Form validation errors:', validationErrors); })} className="space-y-6 mt-6 px-4">
-                        {/* Field Selection */}
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-2">
                                 الحقول المطلوبة *
                             </label>
-                            <div className="space-y-2 border rounded-lg p-3 max-h-[200px] overflow-y-auto">
-                                {customFields.length === 0 ? (
-                                    <p className="text-sm text-gray-500 text-center py-4">
-                                        لا توجد حقول نشطة. أنشئ حقولاً أولاً.
-                                    </p>
-                                ) : (
-                                    customFields.map((field) => (
-                                        <label
+                            <DropdownMenu>
+                                <DropdownMenuTrigger asChild>
+                                    <Button variant="outline" className="w-full justify-between">
+                                        {selectedFields?.length > 0
+                                            ? `تم اختيار (${selectedFields.length}) حقول`
+                                            : "اختر الحقول المطلوبة..."}
+                                        <ChevronDown className="ml-2 h-4 w-4 opacity-50" />
+                                    </Button>
+                                </DropdownMenuTrigger>
+                                <DropdownMenuContent className="w-full sm:w-[500px] max-h-[300px] overflow-y-auto" align="end">
+                                    <DropdownMenuLabel>الحقول الأساسية</DropdownMenuLabel>
+                                    {CORE_FIELDS.map((field) => (
+                                        <DropdownMenuCheckboxItem
                                             key={field._id}
-                                            className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors ${
-                                                selectedFields?.includes(field._id)
-                                                    ? "bg-blue-50 border border-blue-200"
-                                                    : "hover:bg-gray-50 border border-transparent"
-                                            }`}
+                                            checked={(selectedFields || []).includes(field._id)}
+                                            onCheckedChange={() => toggleFieldSelection(field._id)}
                                         >
-                                            <input
-                                                type="checkbox"
-                                                checked={selectedFields?.includes(field._id) || false}
-                                                onChange={() => toggleFieldSelection(field._id)}
-                                                className="h-4 w-4 text-blue-600 rounded"
-                                            />
-                                            <div className="flex-1">
-                                                <span className="text-sm font-medium">{field.label}</span>
-                                                <Badge variant="outline" className="ml-2 text-xs">
-                                                    {field.type}
-                                                </Badge>
-                                            </div>
-                                        </label>
-                                    ))
-                                )}
-                            </div>
+                                            {field.label}
+                                        </DropdownMenuCheckboxItem>
+                                    ))}
+                                    
+                                    <DropdownMenuSeparator />
+                                    
+                                    <DropdownMenuLabel>الحقول المخصصة الديناميكية</DropdownMenuLabel>
+                                    {customFields.length === 0 ? (
+                                        <div className="p-2 text-sm text-gray-500">لا توجد حقول نشطة</div>
+                                    ) : (
+                                        customFields.map((field) => (
+                                            <DropdownMenuCheckboxItem
+                                                key={field._id}
+                                                checked={(selectedFields || []).includes(field._id)}
+                                                onCheckedChange={() => toggleFieldSelection(field._id)}
+                                            >
+                                                {field.label}
+                                            </DropdownMenuCheckboxItem>
+                                        ))
+                                    )}
+                                </DropdownMenuContent>
+                            </DropdownMenu>
                             {errors.fields && (
                                 <p className="text-red-500 text-sm mt-1">{errors.fields.message}</p>
                             )}

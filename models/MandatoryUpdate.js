@@ -4,8 +4,7 @@ const mandatoryUpdateSchema = new mongoose.Schema(
     {
         fields: [
             {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "CustomField",
+                type: String,
                 required: true,
             },
         ],
