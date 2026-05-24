@@ -26,7 +26,7 @@ const getMandatoryUpdates = asyncHandler(async (req, res, next) => {
     // جلب التحديثات الإلزامية النشطة الموجهة للمستخدم (إما عامة للكل أو مخصصة لمعرف المستخدم هذا)
     // والتي لم يقم المستخدم بإكمالها بعد
     const pendingUpdates = await MandatoryUpdate.find({
-        status: "active",
+        isActive: true,
         $or: [
             { targetType: "global" },
             { targetUserIds: userId }
