@@ -1,4 +1,5 @@
 const CustomField = require("../models/CustomField")
+const User = require("../models/User")
 const {customFieldSchema, arabicJoiMessages} = require("../utils/validation")
 const asyncHandler = require("../middleware/asyncHandler")
 
@@ -90,6 +91,13 @@ const deleteCustomField = asyncHandler(async (req, res, next) => {
         })
     }
     await field.deleteOne()
+
+    // Remove the deleted custom field from all users' customFieldValues
+    await User.updateMany(
+        {},
+        { $pull: { customFieldValues: { fieldId: req.params.id } } }
+    )
+
     res.status(200).json({
         success: true,
         message: "تم حذف الحقل المخصص بنجاح"
