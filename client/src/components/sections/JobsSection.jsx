@@ -19,7 +19,7 @@ const JobsSection = () => {
         try {
             setIsLoading(true)
             const response = await jobsAPI.getAll({ page: 1, limit: 3 })
-            setJobs(response.data || [])
+            setJobs(response.data?.jobs || response.data || [])
         } catch (error) {
             console.error("Failed to fetch jobs:", error)
             setJobs([])
@@ -89,7 +89,7 @@ const JobsSection = () => {
                                 <Link href={`/jobs-and-internships/${job.slug || job._id}`} className="flex flex-col h-full">
                                     <div className="relative overflow-hidden h-56">
                                         <img
-                                            src={job.imageUrl.startsWith('http') ? job.imageUrl : `http://localhost:8080${job.imageUrl}`}
+                                            src={job.imageUrl.startsWith('http') ? job.imageUrl : `https://tmbackend.tahyamisryu.com${job.imageUrl}`}
                                             alt={job.title}
                                             crossOrigin="anonymous"
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
