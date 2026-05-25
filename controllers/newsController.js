@@ -1,4 +1,5 @@
 const News = require("../models/News")
+const { sendToTopic } = require("../utils/firebase")
 const {newsSchema, arabicJoiMessages} = require("../utils/validation")
 const path = require("path")
 const fs = require("fs")
@@ -75,6 +76,20 @@ const createNews = asyncHandler(async (req, res, next) => {
 
     const news = await News.create(req.body)
     const populatedNews = await News.findById(news._id).populate("createdBy", "name email")
+
+    const shouldNotify = req.body.sendNotification === true || req.body.sendNotification === "true";
+    if (shouldNotify) {
+        try {
+            await sendToTopic(
+                "update",
+                "خبر جديد!",
+                req.body.title,
+                { type: "news", id: news._id.toString() }
+            );
+        } catch (error) {
+            console.error("Failed to send Firebase notification:", error.message);
+        }
+    }
 
     res.status(201).json({
         success: true,

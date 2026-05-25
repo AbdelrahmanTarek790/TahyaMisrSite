@@ -12,6 +12,7 @@ const newsSchema = z.object({
     title: z.string().min(3, "Title must be at least 3 characters"),
     content: z.string().min(10, "Content must be at least 10 characters"),
     image: z.any().optional(),
+    sendNotification: z.boolean().optional()
 })
 
 const CreateNewsSheet = ({ isOpen, onClose, onSuccess, editingNews = null }) => {
@@ -33,9 +34,10 @@ const CreateNewsSheet = ({ isOpen, onClose, onSuccess, editingNews = null }) => 
             reset({
                 title: editingNews.title,
                 content: editingNews.content,
+                sendNotification: false,
             })
         } else {
-            reset({ title: "", content: "" })
+            reset({ title: "", content: "", sendNotification: false })
         }
     }, [editingNews, reset])
 
@@ -45,6 +47,11 @@ const CreateNewsSheet = ({ isOpen, onClose, onSuccess, editingNews = null }) => 
             const formData = new FormData()
             formData.append("title", data.title)
             formData.append("content", data.content)
+            
+            if (!editingNews && data.sendNotification) {
+                formData.append("sendNotification", "true")
+            }
+
             if (data.image && data.image[0]) {
                 formData.append("image", data.image[0])
             }
@@ -100,6 +107,20 @@ const CreateNewsSheet = ({ isOpen, onClose, onSuccess, editingNews = null }) => 
                         <Input {...register("image")} type="file" accept="image/*" />
                         {errors.image && <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>}
                     </div>
+
+                    {!editingNews && (
+                        <div className="flex items-center gap-2 mt-4">
+                            <input
+                                type="checkbox"
+                                id="sendNotification"
+                                {...register("sendNotification")}
+                                className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary"
+                            />
+                            <label htmlFor="sendNotification" className="text-sm text-gray-700 cursor-pointer">
+                                إرسال إشعار للمستخدمين (Push Notification)
+                            </label>
+                        </div>
+                    )}
 
                     <div className="flex justify-end gap-2 pt-4">
                         <Button type="button" variant="outline" onClick={handleClose}>

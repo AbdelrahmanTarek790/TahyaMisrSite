@@ -1,4 +1,5 @@
 const Event = require("../models/Event")
+const { sendToTopic } = require("../utils/firebase")
 const {eventSchema, guestEventRegistrationSchema, arabicJoiMessages} = require("../utils/validation")
 const path = require("path")
 const fs = require("fs")
@@ -89,6 +90,20 @@ const createEvent = asyncHandler(async (req, res, next) => {
 
     const event = await Event.create(req.body)
     const populatedEvent = await Event.findById(event._id).populate("createdBy", "name email")
+
+    const shouldNotify = req.body.sendNotification === true || req.body.sendNotification === "true";
+    if (shouldNotify) {
+        try {
+            await sendToTopic(
+                "update",
+                "فعالية جديدة!",
+                req.body.title,
+                { type: "events", id: event._id.toString() }
+            );
+        } catch (error) {
+            console.error("Failed to send Firebase notification:", error.message);
+        }
+    }
 
     res.status(201).json({
         success: true,

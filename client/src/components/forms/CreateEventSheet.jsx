@@ -15,6 +15,7 @@ const eventSchema = z.object({
   date: z.string().min(1, 'Date is required'),
   location: z.string().min(3, 'Location must be at least 3 characters'),
   image: z.any().optional(),
+  sendNotification: z.boolean().optional(),
 });
 
 const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) => {
@@ -38,9 +39,10 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) =
         description: editingEvent.description,
         date: new Date(editingEvent.date).toISOString().split('T')[0],
         location: editingEvent.location,
+        sendNotification: false,
       });
     } else {
-      reset({ title: '', description: '', date: '', location: '' });
+      reset({ title: '', description: '', date: '', location: '', sendNotification: false });
     }
   }, [editingEvent, reset]);
 
@@ -52,6 +54,11 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) =
       formData.append('description', data.description);
       formData.append('date', data.date);
       formData.append('location', data.location);
+      
+      if (!editingEvent && data.sendNotification) {
+        formData.append('sendNotification', 'true');
+      }
+
       if (data.image && data.image[0]) {
         formData.append('image', data.image[0]);
       }
@@ -154,6 +161,20 @@ const CreateEventSheet = ({ isOpen, onClose, onSuccess, editingEvent = null }) =
               <p className="text-red-500 text-sm mt-1">{errors.image.message}</p>
             )}
           </div>
+
+          {!editingEvent && (
+            <div className="flex items-center gap-2 mt-4">
+              <input
+                type="checkbox"
+                id="sendNotification"
+                {...register('sendNotification')}
+                className="w-4 h-4 text-primary rounded border-gray-300 focus:ring-primary"
+              />
+              <label htmlFor="sendNotification" className="text-sm text-gray-700 cursor-pointer">
+                إرسال إشعار للمستخدمين (Push Notification)
+              </label>
+            </div>
+          )}
 
           <div className="flex justify-end gap-2 pt-4">
             <Button type="button" variant="outline" onClick={handleClose}>
