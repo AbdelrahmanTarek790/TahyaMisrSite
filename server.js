@@ -34,6 +34,7 @@ const privilegeRoutes = require("./routes/privileges")
 const dashboardRoutes = require("./routes/dashboard")
 const customFieldRoutes = require("./routes/customFields")
 const mandatoryUpdateRoutes = require("./routes/mandatoryUpdates")
+const jobRoutes = require("./routes/jobRoutes")
 
 // Security middleware
 app.use(helmet())
@@ -101,6 +102,7 @@ app.use("/api/v1/privileges", privilegeRoutes)
 app.use("/api/v1/dashboard", dashboardRoutes)
 app.use("/api/v1/custom-fields", customFieldRoutes)
 app.use("/api/v1/mandatory-updates", mandatoryUpdateRoutes)
+app.use("/api/v1/jobs-and-internships", jobRoutes)
 
 // 404 handler
 app.use("*", (req, res) => {

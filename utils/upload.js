@@ -54,8 +54,11 @@ class ImageProcessor {
             const webpFilename = `${parsedPath.name}.webp`
             const webpPath = path.join(path.dirname(originalPath), webpFilename)
 
+            // Read file to buffer first to prevent sharp locking the file on Windows
+            const imageBuffer = await fs.readFile(originalPath)
+
             // Process image with Sharp
-            await sharp(originalPath)
+            await sharp(imageBuffer)
                 .resize(config.width, config.height, {
                     fit: config.fit,
                     withoutEnlargement: true,

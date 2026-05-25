@@ -9,6 +9,7 @@ const About = lazy(() => import("@/components/sections/About"))
 const Features = lazy(() => import("@/components/sections/Features"))
 const News = lazy(() => import("@/components/sections/News"))
 const Events = lazy(() => import("@/components/sections/Events"))
+const JobsSection = lazy(() => import("@/components/sections/JobsSection"))
 const Contact = lazy(() => import("@/components/sections/Contact"))
 const HonorRoll = lazy(() => import("@/components/sections/HonorRoll"))
 const Partners = lazy(() => import("@/components/sections/Partners"))
@@ -53,6 +54,13 @@ export default function HomeClient() {
                 <SimpleInViewSection animation="fadeInRight" delay={0.2}>
                     <Suspense fallback={<SectionSkeleton />}>
                         <Events />
+                    </Suspense>
+                </SimpleInViewSection>
+
+                {/* Jobs and Internships section - New */}
+                <SimpleInViewSection animation="fadeInUp" delay={0.3}>
+                    <Suspense fallback={<SectionSkeleton />}>
+                        <JobsSection />
                     </Suspense>
                 </SimpleInViewSection>
 

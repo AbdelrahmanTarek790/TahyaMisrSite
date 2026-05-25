@@ -232,4 +232,19 @@ export const mandatoryUpdatesAPI = {
     complete: (id, data) => api.post(`/mandatory-updates/${id}/complete`, data),
 }
 
+// Jobs and Internships API
+export const jobsAPI = {
+    getAll: (params) => api.get("/jobs-and-internships", { params }),
+    getById: (idOrSlug) => api.get(`/jobs-and-internships/${idOrSlug}`),
+    create: (formData) =>
+        api.post("/jobs-and-internships", formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        }),
+    update: (id, formData) =>
+        api.put(`/jobs-and-internships/${id}`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+        }),
+    delete: (id) => api.delete(`/jobs-and-internships/${id}`),
+}
+
 export default api
