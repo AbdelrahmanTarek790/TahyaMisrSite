@@ -166,7 +166,7 @@ const getJoinRequests = async (req, res, next) => {
         const { status, page = 1, limit = 10 } = req.query
         const search = Filter(req)
         // Build filter object
-        const filter = { ...search, isVerified: true }
+        const filter = { ...search,}
         if (status && ["pending", "approved", "denied"].includes(status)) {
             filter.status = status
         }
