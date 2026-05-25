@@ -229,7 +229,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
     await user.save({ validateBeforeSave: false })
 
     // 🌟 تم الإصلاح: تمرير الـ token الصافي فقط والـ Template هيتكفل بالباقي
-    const emailResult = await sendResetPasswordEmail(email, resetToken)
+    const emailResult = await sendResetPasswordEmail(email, `https://tahyamisryu.com/reset-password?token=${resetToken}`)
 
     if (!emailResult.success) {
         // Reset the token fields if email fails
