@@ -20,6 +20,7 @@ const JoinRequestManagement = () => {
 
     const [filters, setFilters] = useState({
         status: "all",
+        isVerified: "all",
         search: "",
         page: 1,
     })
@@ -43,6 +44,9 @@ const JoinRequestManagement = () => {
             if (filters.status !== "all") {
                 params.status = filters.status
             }
+            if (filters.isVerified !== "all") {
+                params.isVerified = filters.isVerified === "verified" ? true : false
+            }
 
             const response = await joinRequestAPI.getAll(params)
             setJoinRequests(response.data.joinRequests || [])
@@ -56,7 +60,7 @@ const JoinRequestManagement = () => {
 
     useEffect(() => {
         fetchJoinRequests()
-    }, [filters.status, filters.page])
+    }, [filters.status, filters.isVerified, filters.page])
 
     // Handle approve request
     const handleApprove = async (requestId) => {
@@ -205,6 +209,16 @@ const JoinRequestManagement = () => {
                                 <SelectItem value="denied">مرفوضة</SelectItem>
                             </SelectContent>
                         </Select>
+                        <Select value={filters.isVerified} onValueChange={(value) => setFilters((prev) => ({ ...prev, isVerified: value, page: 1 }))}>
+                            <SelectTrigger className="w-48">
+                                <SelectValue placeholder="فلترة البريد" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">الكل</SelectItem>
+                                <SelectItem value="verified">تم التحقق</SelectItem>
+                                <SelectItem value="unverified">لم يتم التحقق</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                 </CardContent>
             </Card>
@@ -233,6 +247,9 @@ const JoinRequestManagement = () => {
                                     <div className="flex items-center gap-2">
                                         {getStatusBadge(request.status)}
                                         <Badge variant="outline">{request.role === "member" ? "عضو" : "متطوع"}</Badge>
+                                        <Badge className={request.isVerified ? "bg-teal-100 text-teal-800" : "bg-orange-100 text-orange-800"}>
+                                            {request.isVerified ? "تم التحقق" : "لم يتم التحقق"}
+                                        </Badge>
                                     </div>
                                 </div>
                             </CardHeader>
