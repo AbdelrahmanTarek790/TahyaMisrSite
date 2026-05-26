@@ -43,12 +43,13 @@ const sendPushNotification = async (tokens, title, message, data = {}) => {
 };
 
 // Send notification to all users (topic-based)
-const sendToTopic = async (topic, title, message, data = {}) => {
+const sendToTopic = async (topic, title, message, data = {},image) => {
   try {
     const payload = {
       notification: {
         title,
         body: message,
+        image: image || undefined,
       },
       data: {
         ...data,

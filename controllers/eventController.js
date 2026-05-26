@@ -98,7 +98,8 @@ const createEvent = asyncHandler(async (req, res, next) => {
                 "update",
                 "فعالية جديدة!",
                 req.body.title,
-                { type: "events", id: event._id.toString() }
+                { type: "events", id: event._id.toString() },
+                req.body.image ? `${process.env.BASE_URL}/uploads/${req.body.image}` : undefined
             );
         } catch (error) {
             console.error("Failed to send Firebase notification:", error.message);

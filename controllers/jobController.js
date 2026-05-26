@@ -91,7 +91,8 @@ exports.createJob = async (req, res) => {
                 "update",
                 `New ${category} available!`,
                 title,
-                { type: "jobs", id: job._id.toString() }
+                { type: "jobs", id: job._id.toString() },
+                `${process.env.BASE_URL}/uploads/${req.file.filename}`
             );
         } catch (error) {
             console.error("Failed to send Firebase notification:", error.message);

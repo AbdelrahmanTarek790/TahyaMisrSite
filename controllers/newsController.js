@@ -85,6 +85,7 @@ const createNews = asyncHandler(async (req, res, next) => {
                 "خبر جديد!",
                 req.body.title,
                 { type: "news", id: news._id.toString() }
+                ,req.body.image ? `${process.env.BASE_URL}/uploads/${req.body.image}` : undefined
             );
         } catch (error) {
             console.error("Failed to send Firebase notification:", error.message);
