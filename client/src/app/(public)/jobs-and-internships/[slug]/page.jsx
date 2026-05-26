@@ -17,7 +17,9 @@ async function getJob(slug) {
 }
 
 export async function generateMetadata({ params }) {
-    const job = await getJob(params.slug)
+    const { slug } = await params
+
+    const job = await getJob(slug)
 
     if (!job) {
         return {
@@ -55,7 +57,9 @@ export async function generateMetadata({ params }) {
 }
 
 export default async function JobDetailPage({ params }) {
-    const job = await getJob(params.slug)
+    const { slug } = await params
+    
+    const job = await getJob(slug)
 
     if (!job) {
         notFound()

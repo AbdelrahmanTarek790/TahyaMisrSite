@@ -30,7 +30,7 @@ export default function JobDetailClient({ job }) {
                 // Fetch 4 jobs from the same category to allow filtering out the current one
                 const res = await jobsAPI.getAll({ category: job.category, limit: 4 })
                 // Filter out the current job and take top 3
-                const filtered = (res.data || []).filter(j => j._id !== job._id).slice(0, 3)
+                const filtered = (res.data.jobs || []).filter(j => j._id !== job._id).slice(0, 3)
                 setRelatedJobs(filtered)
             } catch (error) {
                 console.error("Failed to fetch related jobs:", error)
