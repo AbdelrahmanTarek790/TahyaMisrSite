@@ -57,6 +57,10 @@ class ImageProcessor {
             // Read file to buffer first to prevent sharp locking the file on Windows
             const imageBuffer = await fs.readFile(originalPath)
 
+            // Use a temporary output path to avoid same-file conflicts
+            // (e.g., when input is already .webp, output path equals input path)
+            const tempOutputPath = webpPath + ".tmp"
+
             // Process image with Sharp
             await sharp(imageBuffer)
                 .resize(config.width, config.height, {
@@ -69,10 +73,13 @@ class ImageProcessor {
                     effort: 6,
                     smartSubsample: true,
                 })
-                .toFile(webpPath)
+                .toFile(tempOutputPath)
 
             // Remove original file
             await fs.unlink(originalPath)
+
+            // Rename temp to final filename
+            await fs.rename(tempOutputPath, webpPath)
 
             // Update file object
             file.filename = webpFilename
