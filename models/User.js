@@ -97,7 +97,7 @@ const userSchema = new mongoose.Schema(
         },
         role: {
             type: String,
-            enum: ["member", "publisher", "admin", "partnership_manager", "hr", "coordinator"],
+            enum: ["member", "publisher", "admin", "partnership_manager", "hr", "coordinator", "jobs-and-internships"],
             default: "member",
         },
         customFieldValues: [

@@ -167,7 +167,14 @@ const sendNotificationByGovernorate = asyncHandler(async (req, res, next) => {
 // @route   POST /api/v1/notifications/direct
 // @access  Private/Admin
 const sendDirectNotification = asyncHandler(async (req, res, next) => {
-    const { title, body, topic, data } = req.body;
+    let { title, body, topic, data, image } = req.body;
+    
+    // Handle file upload if present
+    if (req.file) {
+        const baseUrl = process.env.BASE_URL || 'https://tmbackend.tahyamisryu.com';
+        image = `${baseUrl}/uploads/${req.file.filename}`;
+    }
+
     if (!title || !body || !topic) {
         return res.status(400).json({
             status: 'error',
@@ -179,6 +186,8 @@ const sendDirectNotification = asyncHandler(async (req, res, next) => {
         notification: {
             title: title,
             body: body,
+            // Only include image if it's truthy to prevent Firebase errors
+            ...(image && { image })
         },
         data: data || {},
         topic: topic
@@ -190,7 +199,8 @@ const sendDirectNotification = asyncHandler(async (req, res, next) => {
     res.status(200).json({
         success: true,
         data: {
-            messageId: response
+            messageId: response,
+            image: image || null
         }
     });
 });

@@ -7,7 +7,7 @@ export default function AdminLayout({ children }) {
     return (
         <LocalizationProvider>
             <ErrorProvider>
-                <RoleGuard allowedRoles={["admin", "publisher", "hr", "partnership_manager", "coordinator"]}>
+                <RoleGuard allowedRoles={["admin", "publisher", "hr", "partnership_manager", "coordinator", "jobs-and-internships"]}>
                     <DashboardLayout>{children}</DashboardLayout>
                 </RoleGuard>
             </ErrorProvider>

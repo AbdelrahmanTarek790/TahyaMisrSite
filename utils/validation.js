@@ -1,9 +1,17 @@
 const Joi = require("joi")
+const { isDisposableEmail } = require("./emailValidator")
+
+const customEmailValidator = (value, helpers) => {
+    if (isDisposableEmail(value)) {
+        return helpers.message('البريد الإلكتروني المؤقت غير مسموح به.');
+    }
+    return value;
+};
 
 // User validation schemas
 const registerSchema = Joi.object({
     name: Joi.string().min(2).max(100).required(),
-    email: Joi.string().email().required(),
+    email: Joi.string().email().custom(customEmailValidator).required(),
     password: Joi.string().min(6).required(),
     phone: Joi.string().min(10).max(15).required(),
     university: Joi.string().min(2).max(100).required(),
@@ -40,7 +48,7 @@ const updateUserSchema = Joi.object({
     position: Joi.string().optional(),
     membershipNumber: Joi.string().optional(),
     membershipExpiry: Joi.date().optional(),
-    email: Joi.string().email().optional(),
+    email: Joi.string().email().custom(customEmailValidator).optional(),
     nationalId: Joi.string().min(14).max(14).optional(),
     role: Joi.string().valid("member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator").optional(),
     rating: Joi.number().min(0).max(100).optional(),
@@ -97,7 +105,7 @@ const eventSchema = Joi.object({
 // Guest registration (public, no account required)
 const guestEventRegistrationSchema = Joi.object({
     name: Joi.string().min(2).max(100).required(),
-    email: Joi.string().email().required(),
+    email: Joi.string().email().custom(customEmailValidator).required(),
     phone: Joi.string().min(7).max(20).optional(),
     nationalId: Joi.string().min(14).max(14).optional(),
     governorate: Joi.string().min(2).max(50).optional(),

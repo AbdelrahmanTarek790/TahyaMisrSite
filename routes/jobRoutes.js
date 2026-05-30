@@ -6,20 +6,17 @@ const {
     updateJob,
     deleteJob
 } = require("../controllers/jobController");
+const { protect, admin, authorize } = require("../middleware/auth");
+const { upload } = require("../utils/upload")
 
 const router = express.Router();
 
-// Middlewares
-const { protect, admin } = require("../middleware/auth");
-const { upload } = require("../utils/upload")
+router.get("/", getJobs)
+router.get("/:id", getJobById)
 
-router.route("/")
-    .get(getJobs)
-    .post(protect, admin, ...upload.single("imageUrl"), createJob);
-
-router.route("/:id")
-    .get(getJobById)
-    .put(protect, admin, ...upload.single("imageUrl"), updateJob)
-    .delete(protect, admin, deleteJob);
+// Admin and Jobs routes
+router.post("/", protect, authorize("admin", "jobs-and-internships"), ...upload.single("imageUrl"), createJob)
+router.put("/:id", protect, authorize("admin", "jobs-and-internships"), ...upload.single("imageUrl"), updateJob)
+router.delete("/:id", protect, admin, deleteJob)
 
 module.exports = router;

@@ -11,7 +11,7 @@ import { useError } from "@/context/ErrorContext"
 import { usersAPI, positionsAPI, customFieldsAPI } from "@/app/api/api"
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
-import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter, Download, Loader2, Globe } from "lucide-react"
+import { Search, Edit, Trash2, Eye, UserPlus, Shield, User, Filter, Download, Loader2, Globe, Briefcase } from "lucide-react"
 import { EGYPT_GOVERNORATES } from "@/constants/governorates"
 import { exportUsersToExcel } from "@/utils/excelExport"
 import { useAuth } from "@/context/AuthContext"
@@ -28,7 +28,7 @@ const userSchema = z.object({
     position: z.string().optional(),
     membershipNumber: z.string().optional(),
     membershipExpiry: z.string().optional(),
-    role: z.enum(["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator"]),
+    role: z.enum(["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator", "jobs-and-internships"]),
     rating: z.preprocess((val) => Number(val), z.number().min(0).max(100)).optional(),
 })
 
@@ -43,7 +43,7 @@ const createUserSchema = z.object({
     position: z.string().optional(),
     membershipNumber: z.string().optional(),
     membershipExpiry: z.string().optional(),
-    role: z.enum(["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator"]),
+    role: z.enum(["member", "volunteer", "publisher", "admin", "partnership_manager", "hr", "coordinator", "jobs-and-internships"]),
     rating: z.preprocess((val) => Number(val), z.number().min(0).max(100)).optional(),
 })
 
@@ -354,6 +354,8 @@ const UserManagement = () => {
                 return <Shield className="h-4 w-4 text-blue-600" />
             case "coordinator":
                 return <Globe className="h-4 w-4 text-teal-500" />
+            case "jobs-and-internships":
+                return <Briefcase className="h-4 w-4 text-orange-500" />
             default:
                 return <User className="h-4 w-4 text-green-500" />
         }
@@ -371,6 +373,8 @@ const UserManagement = () => {
                 return "bg-blue-100 text-blue-800"
             case "coordinator":
                 return "bg-teal-100 text-teal-800"
+            case "jobs-and-internships":
+                return "bg-orange-100 text-orange-800"
             default:
                 return "bg-green-100 text-green-800"
         }
@@ -456,6 +460,7 @@ const UserManagement = () => {
                             <option value="hr">الموارد البشرية (HR)</option>
                             <option value="coordinator">المنسقين</option>
                             <option value="admin">المدراء</option>
+                            <option value="jobs-and-internships">مسؤولي الوظائف والتدريبات</option>
                         </>
                     )}
                 </select>
@@ -623,6 +628,7 @@ const UserManagement = () => {
                                                             <option value="hr">HR</option>
                                                             <option value="coordinator">Coordinator</option>
                                                             <option value="admin">Admin</option>
+                                                            <option value="jobs-and-internships">Jobs & Internships</option>
                                                         </select>
                                                         {isAdmin && (
                                                             <Button variant="outline" size="sm" onClick={() => handleDeleteUser(user._id)}>
@@ -731,6 +737,7 @@ const UserManagement = () => {
                                     <option value="hr">مسؤول موارد بشرية (HR)</option>
                                     <option value="coordinator">منسق محافظة</option>
                                     <option value="admin">مدير</option>
+                                    <option value="jobs-and-internships">مسؤول وظائف وتدريبات</option>
                                 </select>
                                 {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role.message}</p>}
                             </div>
@@ -908,6 +915,7 @@ const UserManagement = () => {
                                     <option value="hr">مسؤول موارد بشرية (HR)</option>
                                     <option value="coordinator">منسق محافظة</option>
                                     <option value="admin">مدير</option>
+                                    <option value="jobs-and-internships">مسؤول وظائف وتدريبات</option>
                                 </select>
                                 {errorsCreate.role && <p className="text-red-500 text-sm mt-1">{errorsCreate.role.message}</p>}
                             </div>

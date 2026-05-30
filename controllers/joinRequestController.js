@@ -5,6 +5,7 @@ const SiteSettings = require("../models/SiteSettings")
 const { generateToken } = require("../middleware/auth")
 const { sendJoinRequestSubmitted, sendJoinRequestApproved, sendJoinRequestDenied, sendVerificationOtpEmail } = require("../utils/email")
 const { Filter } = require("../utils/Filter")
+const { isDisposableEmail } = require("../utils/emailValidator")
 
 // @desc    Create a new join request
 // @route   POST /api/v1/join-requests
@@ -28,6 +29,14 @@ const createJoinRequest = async (req, res, next) => {
             return res.status(400).json({
                 success: false,
                 error: "الاسم، البريد الإلكتروني، الهاتف، الرقم القومي، والمحافظة مطلوبة",
+                data: null,
+            })
+        }
+
+        if (isDisposableEmail(email)) {
+            return res.status(400).json({
+                success: false,
+                error: "البريد الإلكتروني المؤقت غير مسموح به.",
                 data: null,
             })
         }
