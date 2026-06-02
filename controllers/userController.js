@@ -7,37 +7,58 @@ const asyncHandler = require("../middleware/asyncHandler")
 // @desc    Get all users
 // @route   GET /api/v1/users
 // @access  Private/Admin
+const normalizeArabicRegex = (text) => {
+    let escaped = text.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    return escaped
+        .replace(/[أإآا]/g, '[أإآا]')
+        .replace(/[ةه]/g, '[ةه]')
+        .replace(/[ىي]/g, '[ىي]')
+        .replace(/[ؤئء]/g, '[ؤئء]');
+};
+
 const getUsers = asyncHandler(async (req, res, next) => {
     const page = parseInt(req.query.page) || 1
     const limit = parseInt(req.query.limit) || 10
     const skip = (page - 1) * limit
 
-    // Build query with proper AND/OR logic
     const query = {}
     const conditions = []
 
-    // Handle search (OR logic across multiple fields)
+    // معالجة البحث الاحترافي وتحسين الأداء
     if (req.query.search && req.query.search.trim()) {
         const searchTerm = req.query.search.trim()
-        conditions.push({
-            $or: [
-                { name: { $regex: searchTerm, $options: "i" } },
-                { email: { $regex: searchTerm, $options: "i" } },
-                { university: { $regex: searchTerm, $options: "i" } },
-                { governorate: { $regex: searchTerm, $options: "i" } },
-                { nationalId: { $regex: searchTerm, $options: "i" } },
-                { membershipNumber: { $regex: searchTerm, $options: "i" } },
-                { phone: { $regex: searchTerm, $options: "i" } },
-            ],
-        })
+        const isNumeric = /^\d+$/.test(searchTerm) // هل المدخل أرقام فقط؟
+        const isEmail = searchTerm.includes('@')   // هل المدخل إيميل؟
+
+        const orConditions = []
+
+        if (isEmail) {
+            // إذا كان المدخل إيميل، ابحث في حقل الإيميل فقط
+            orConditions.push({ email: { $regex: searchTerm, $options: "i" } })
+        } else if (isNumeric) {
+            // إذا كان المدخل أرقام، ابحث في الحقول الرقمية فقط
+            orConditions.push({ nationalId: { $regex: searchTerm, $options: "i" } })
+            orConditions.push({ membershipNumber: { $regex: searchTerm, $options: "i" } })
+            orConditions.push({ phone: { $regex: searchTerm, $options: "i" } })
+        } else {
+            // إذا كان نصاً، طبق معالجة الحروف وابحث في الحقول النصية فقط
+            const normalizedSearch = normalizeArabicRegex(searchTerm)
+            
+            orConditions.push({ name: { $regex: normalizedSearch, $options: "i" } })
+            orConditions.push({ university: { $regex: normalizedSearch, $options: "i" } })
+            orConditions.push({ governorate: { $regex: normalizedSearch, $options: "i" } })
+        }
+
+        if (orConditions.length > 0) {
+            conditions.push({ $or: orConditions })
+        }
     }
 
-    // Handle exact filters (AND logic)
+    // تجميع بقية فلاتر الـ (AND logic) كما هي دون تغيير
     if (req.query.role && req.query.role !== "all") {
         conditions.push({ role: req.query.role })
     }
     
-    // Enforce governorate for Coordinator
     if (req.user.role === "coordinator") {
         conditions.push({ governorate: req.user.governorate })
     } else if (req.query.governorate && req.query.governorate !== "all") {
@@ -48,11 +69,11 @@ const getUsers = asyncHandler(async (req, res, next) => {
         conditions.push({ university: req.query.university })
     }
 
-    // Combine all conditions with AND
     if (conditions.length > 0) {
         query.$and = conditions
     }
 
+    // جلب البيانات من قاعدة البيانات
     const users = await User.find(query)
         .populate("position")
         .populate("customFieldValues.fieldId")
