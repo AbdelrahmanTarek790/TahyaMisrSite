@@ -181,7 +181,14 @@ const sendDirectNotification = asyncHandler(async (req, res, next) => {
             message: 'العنوان والرسالة والموضوع مطلوبة'
         });
     }
-
+    if (data && typeof data === 'string') {
+        try {
+            data = JSON.parse(data);
+        } catch (e) {
+            console.error('Error parsing notification data:', e);
+            data = {};
+        }
+    }
     const message = {
         notification: {
             title: title,
