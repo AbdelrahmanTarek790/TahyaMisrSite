@@ -5,13 +5,13 @@ const {
   sendNotificationByGovernorate,
   sendDirectNotification
 } = require('../controllers/notificationController');
-const { protect, admin } = require('../middleware/auth');
+const { protect,authorize } = require('../middleware/auth');
 const { upload } = require('../utils/upload');
 
 const router = express.Router();
 
 router.use(protect); // All routes require authentication
-router.use(admin);   // All routes require admin role
+router.use(authorize("admin", "publisher" , "jobs-and-internships"));   // All routes require admin role
 
 router.post('/', sendNotification);
 router.post('/role', sendNotificationByRole);
