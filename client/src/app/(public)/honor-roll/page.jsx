@@ -3,6 +3,7 @@ import { InViewSection, InViewStagger } from "@/components/ui/MotionComponents"
 import { Trophy, Star, Shield } from "lucide-react"
 import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
+import Link from "next/link"
 
 export default function HonorRollPage() {
     const [members, setMembers] = useState([])
@@ -55,32 +56,34 @@ export default function HonorRollPage() {
                     ) : (
                         <InViewStagger className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10" staggerDelay={0.1}>
                             {members.map((member) => (
-                                <Card key={member._id} className="bg-white/5 border-white/10 hover:border-egypt-gold/30 transition-all duration-500 rounded-3xl overflow-hidden group">
-                                    <div className="relative aspect-square">
-                                        <img 
-                                            src={member.user?.profileImage ? (member.user.profileImage.startsWith('http') ? member.user.profileImage : `https://tmbackend.tahyamisryu.com/uploads/${member.user.profileImage.startsWith('/') ? member.user.profileImage.substring(1) : member.user.profileImage}`) : "/placeholder-user.png"} 
-                                            alt={member.user?.name}
-                                            className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-egypt-black via-transparent to-transparent"></div>
-                                        <div className="absolute bottom-6 right-6">
-                                            <div className="bg-egypt-gold p-3 rounded-2xl shadow-glow">
-                                                <Star className="w-6 h-6 text-egypt-black fill-egypt-black" />
+                                <Link href={`/honor-roll/${member._id}`} key={member._id} className="block group h-full focus:outline-none">
+                                    <Card className="h-full bg-white/5 border-white/10 group-hover:border-egypt-gold/30 transition-all duration-500 rounded-3xl overflow-hidden">
+                                        <div className="relative aspect-square">
+                                            <img 
+                                                src={member.user?.profileImage ? (member.user.profileImage.startsWith('http') ? member.user.profileImage : `https://tmbackend.tahyamisryu.com/uploads/${member.user.profileImage.startsWith('/') ? member.user.profileImage.substring(1) : member.user.profileImage}`) : "/placeholder-user.png"} 
+                                                alt={member.user?.name}
+                                                className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-egypt-black via-transparent to-transparent"></div>
+                                            <div className="absolute bottom-6 right-6">
+                                                <div className="bg-egypt-gold p-3 rounded-2xl shadow-glow">
+                                                    <Star className="w-6 h-6 text-egypt-black fill-egypt-black" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <CardContent className="p-8">
-                                        <h2 className="text-2xl font-bold text-egypt-white mb-2 group-hover:text-egypt-gold transition-colors">
-                                            {member.user?.name}
-                                        </h2>
-                                        <p className="text-egypt-gold text-sm font-bold uppercase tracking-wider mb-4">
-                                            {member.title}
-                                        </p>
-                                        <p className="text-egypt-white/60 leading-relaxed italic">
-                                            "{member.description}"
-                                        </p>
-                                    </CardContent>
-                                </Card>
+                                        <CardContent className="p-8">
+                                            <h2 className="text-2xl font-bold text-egypt-white mb-2 group-hover:text-egypt-gold transition-colors">
+                                                {member.user?.name}
+                                            </h2>
+                                            <p className="text-egypt-gold text-sm font-bold uppercase tracking-wider mb-4">
+                                                {member.title}
+                                            </p>
+                                            <p className="text-egypt-white/60 leading-relaxed italic line-clamp-3">
+                                                "{member.description}"
+                                            </p>
+                                        </CardContent>
+                                    </Card>
+                                </Link>
                             ))}
                         </InViewStagger>
                     )}
