@@ -19,6 +19,26 @@ exports.getHonorMembers = asyncHandler(async (req, res, next) => {
     })
 })
 
+// @desc    Get single honor member
+// @route   GET /api/v1/honor-roll/:id
+// @access  Public
+exports.getHonorMemberById = asyncHandler(async (req, res, next) => {
+    const member = await HonorMember.findById(req.params.id)
+        .populate("user", "name profileImage university")
+
+    if (!member) {
+        return res.status(404).json({
+            status: 'error',
+            message: "لم يتم العثور على عضو لوحة الشرف"
+        })
+    }
+
+    res.status(200).json({
+        success: true,
+        data: member
+    })
+})
+
 // @desc    Create new honor member
 // @route   POST /api/v1/honor-roll
 // @access  Private (Admin only)

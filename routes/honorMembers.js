@@ -1,6 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const { getHonorMembers, createHonorMember, updateHonorMember, deleteHonorMember } = require("../controllers/honorMemberController")
+const { getHonorMembers, getHonorMemberById, createHonorMember, updateHonorMember, deleteHonorMember } = require("../controllers/honorMemberController")
 const { protect, authorize } = require("../middleware/auth")
 
 router
@@ -10,6 +10,7 @@ router
 
 router
     .route("/:id")
+    .get(getHonorMemberById)
     .put(protect, authorize("admin"), updateHonorMember)
     .delete(protect, authorize("admin"), deleteHonorMember)
 
