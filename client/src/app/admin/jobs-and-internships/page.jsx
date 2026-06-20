@@ -91,7 +91,8 @@ const JobsManagement = () => {
             scholarships: "منحة",
             jobs: "وظيفة",
             trips: "رحلة",
-            camps: "معسكر"
+            camps: "معسكر",
+            exhibitions_and_conferences: "معرض ومؤتمر"
         }
         return labels[cat] || cat
     }
@@ -154,6 +155,7 @@ const JobsManagement = () => {
                             <SelectItem value="jobs">وظائف</SelectItem>
                             <SelectItem value="trips">رحلات</SelectItem>
                             <SelectItem value="camps">معسكرات</SelectItem>
+                            <SelectItem value="exhibitions_and_conferences">معارض ومؤتمرات</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>

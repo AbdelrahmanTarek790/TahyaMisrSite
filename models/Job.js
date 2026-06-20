@@ -21,7 +21,7 @@ const JobSchema = new mongoose.Schema({
     category: {
         type: String,
         required: [true, "Please specify a category"],
-        enum: ['trainings', 'scholarships', 'jobs', 'trips', 'camps']
+        enum: ['trainings', 'scholarships', 'jobs', 'trips', 'camps', 'exhibitions_and_conferences']
     },
     createdAt: {
         type: Date,

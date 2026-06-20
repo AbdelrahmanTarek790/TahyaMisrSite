@@ -13,6 +13,7 @@ const categories = [
     { id: "jobs", label: "وظائف" },
     { id: "trips", label: "رحلات" },
     { id: "camps", label: "معسكرات" },
+    { id: "exhibitions_and_conferences", label: "معارض ومؤتمرات" },
 ]
 
 export default function JobsClient({ initialJobs, initialTotal }) {

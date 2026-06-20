@@ -14,6 +14,7 @@ const getCategoryLabel = (cat) => {
         jobs: "وظيفة",
         trips: "رحلة",
         camps: "معسكر",
+        exhibitions_and_conferences: "معرض ومؤتمر"
     }
     return labels[cat] || cat
 }

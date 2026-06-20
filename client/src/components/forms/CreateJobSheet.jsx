@@ -12,7 +12,7 @@ import { jobsAPI } from "@/app/api/api"
 const jobSchema = z.object({
     title: z.string().min(3, "العنوان يجب أن يكون 3 أحرف على الأقل"),
     description: z.string().min(10, "الوصف يجب أن يكون 10 أحرف على الأقل"),
-    category: z.enum(["trainings", "scholarships", "jobs", "trips", "camps"], {
+    category: z.enum(["trainings", "scholarships", "jobs", "trips", "camps", "exhibitions_and_conferences"], {
         required_error: "يرجى اختيار الفئة",
     }),
     imageUrl: z.any().optional(),
@@ -131,6 +131,7 @@ const CreateJobSheet = ({ isOpen, onClose, onSuccess, editingJob = null }) => {
                                         <SelectItem value="jobs">وظائف</SelectItem>
                                         <SelectItem value="trips">رحلات</SelectItem>
                                         <SelectItem value="camps">معسكرات</SelectItem>
+                                        <SelectItem value="exhibitions_and_conferences">معارض ومؤتمرات</SelectItem>
                                     </SelectContent>
                                 </Select>
                             )}

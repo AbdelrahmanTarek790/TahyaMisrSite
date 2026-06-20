@@ -33,6 +33,7 @@ export async function generateMetadata({ params }) {
         jobs: "وظيفة",
         trips: "رحلة",
         camps: "معسكر",
+        exhibitions_and_conferences: "معرض ومؤتمر"
     }
     const catLabel = labels[job.category] || job.category
 
